@@ -6,17 +6,16 @@
   background-color: map-get($colors, white);
   padding: 3rem !important;
   width: 100%;
-  max-width: 60rem;
+  max-width: 40rem;
   margin: 5rem auto 0 auto !important;
 
-  .form-group {
-    margin-bottom: 3rem;
+  .login-form {
+    max-width: 300px;
   }
-
-  .form__forgot {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 3rem;
+  .login-form-forgot {
+    float: right;
+  }
+  .login-form-button {
+    width: 100%;
   }
 }

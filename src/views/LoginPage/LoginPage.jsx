@@ -2,59 +2,95 @@ import React, { useState } from 'react'
 
 import axios from 'axios'
 import history from '../../history.js'
-import { Form, Checkbox } from 'antd'
-import { FormGroup, Button } from '../../components'
+import { Form, Icon, Input, Button, Checkbox } from 'antd'
 import './LoginPage.scss'
 
-const loginDefaultData = {
+const defaultLoginData = {
   email: '',
   password: ''
 }
 
-const LoginPage = () => {
+class LoginPage extends React.Component {
+  state = {
+    email: '',
+    password: ''
+  }
 
-  const [formData, setFormData] = useState({ ...loginDefaultData })
-
-  const updateField = (field, value) => {
-    setFormData({
-      ...formData,
+  handleChange = (value, field) => {
+    console.log('dfgdfg: ', value, field)
+    this.setState({
       [field]: value
     })
   }
 
-  const handleLogin = () => {
-    axios.post('http://192.168.88.125/quidox/public/api/login', formData)
-      .then((response) => {
-        if (response.data.success) {
-          window.localStorage.setItem('authToken', response.data.data.token)
-          history.push('/')
-        }
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+  handleSubmit = e => {
+    const loginData = {
+      email: this.state.email,
+      password: this.state.password
+    }
+    e.preventDefault()
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        console.log('Received values of form: ', values)
+        axios.post('http://192.168.88.125/quidox/public/api/login', values)
+          .then((response) => {
+            if (response.data.success) {
+              window.localStorage.setItem('authToken', response.data.data.token)
+              history.push('/')
+            }
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      }
+    })
+  };
+
+  render () {
+    const { email, password } = this.state
+    const { getFieldDecorator } = this.props.form
+    return (
+      <Form onSubmit={this.handleSubmit} className='form'>
+        <Form.Item>
+          {getFieldDecorator('email', {
+            rules: [{ required: true, message: 'Пожалуйста, введите адрес электронной почты!' }]
+          })(
+            <Input
+              prefix={<Icon type='user' style={{ color: 'rgba(0,0,0,.25)' }} />}
+              placeholder='Адрес электронной почты'
+              onChange={e => this.handleChange(e.target.value, 'email')}
+            />
+          )}
+        </Form.Item>
+        <Form.Item>
+          {getFieldDecorator('password', {
+            rules: [{ required: true, message: 'Пожалуйста, введите пароль!' }]
+          })(
+            <Input.Password
+              prefix={<Icon type='lock' style={{ color: 'rgba(0,0,0,.25)' }} />}
+              type='password'
+              placeholder='Введите пароль'
+              // password
+              onChange={e => this.handleChange(e.target.value, 'password')}
+            />
+          )}
+        </Form.Item>
+        <Form.Item>
+          {getFieldDecorator('remember', {
+            valuePropName: 'checked',
+            initialValue: true
+          })(<Checkbox>Запомнить меня</Checkbox>)}
+          <a className='login-form-forgot' href=''>
+            Забыли пароль
+          </a>
+          <Button type='primary' htmlType='submit' className='login-form-button'>
+            Войти
+          </Button>
+          или <a href=''>зарегестрируйтесь сейчас!</a>
+        </Form.Item>
+      </Form>
+    )
   }
-
-  return (
-    <Form className='form'>
-      <FormGroup
-        label='Адрес электронной почты'
-        kind='input'
-        onChange={e => updateField('email', e.target.value)}
-      />
-      <FormGroup
-        label='Пароль'
-        kind='input'
-        onChange={e => updateField('password', e.target.value)}
-      />
-      <div className='form__forgot'>
-        <Checkbox>Запомнить меня</Checkbox>
-        <a href='#' onClick={e => e.preventDefault()}>Забыли пароль?</a>
-      </div>
-      <Button style={{ marginBottom: 30 }} onClick={() => handleLogin()} type='primary' block>Войти</Button>
-      <a href='#' onClick={e => { e.preventDefault(); history.push('/register') }} style={{ marginTop: 30 }}>Регистрация</a>
-    </Form>
-  )
 }
-
-export default LoginPage
+const WrappedLogin = Form.create({ name: 'normal_login' })(LoginPage)
+export default WrappedLogin
