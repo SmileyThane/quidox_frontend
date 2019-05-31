@@ -86,7 +86,7 @@ class LoginPage extends React.Component {
           <Button type='primary' htmlType='submit' className='login-form-button'>
             Войти
           </Button>
-          или <a href=''>зарегестрируйтесь сейчас!</a>
+          или <a href='#' onClick={e => { e.preventDefault(); history.push('/register') }}>зарегестрируйтесь сейчас!</a>
         </Form.Item>
       </Form>
     )

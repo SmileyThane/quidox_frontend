@@ -1,9 +1,24 @@
-import React, { Fragment, useState } from 'react'
 
+import React, { Fragment } from 'react'
 import axios from 'axios'
-import { Steps } from 'antd'
-import { Button, FormGroup } from '../../components'
-import './RegisterPage.scss'
+import {
+  Steps,
+  Form,
+  Input,
+  Tooltip,
+  Icon,
+  Cascader,
+  Select,
+  Row,
+  Col,
+  Checkbox,
+  Button,
+  AutoComplete
+} from 'antd'
+
+const { Option } = Select
+const { Step } = Steps
+const AutoCompleteOption = AutoComplete.Option
 
 const steps = [
   {
@@ -20,134 +35,205 @@ const steps = [
   }
 ]
 
-const { Step } = Steps
+class RegistrationForm extends React.Component {
+  state = {
+    confirmDirty: false,
+    autoCompleteResult: [],
+    currentStep: 0
+  };
 
-const RegisterPage = () => {
-  const defaultFormData = {
-    phone: '',
-    code: '',
-    email: '',
-    name: '',
-    password: ''
-  }
+  handleSubmit = e => {
+    e.preventDefault()
 
-  const [current, setCurrent] = useState(0)
-  const [formData, setFormData] = useState({ ...defaultFormData })
-
-  const updateField = (field, value) => {
-    setFormData({
-      ...formData,
-      [field]: value
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        const registerData = {
+          phone: '' || '+' + values.prefix + values.phone,
+          code: values.code ? values.code : '',
+          email: values.email ? values.email : '',
+          password: values.password ? values.password : '',
+          name: values.name ? values.name : ''
+        }
+        console.log(registerData)
+        switch (this.state.currentStep) {
+          case 0:
+            axios.post('http://192.168.88.125/quidox/public/api/sms/send', registerData)
+              .then((response) => {
+                if (response.data.success) {
+                  this.setState({ currentStep: this.state.currentStep + 1 })
+                }
+              })
+              .catch(function (error) {
+                console.log(error)
+              })
+            break
+          case 1:
+            axios.post('http://192.168.88.125/quidox/public/api/sms/confirm', registerData)
+              .then((response) => {
+                if (response.data.success) {
+                  this.setState({ currentStep: this.state.currentStep + 1 })
+                }
+              })
+              .catch(function (error) {
+                console.log(error)
+              })
+            break
+          case 2:
+            axios.post('http://192.168.88.125/quidox/public/api/register', registerData)
+              .then((response) => {
+                if (response.data.success) {
+                  this.setState({ currentStep: this.state.currentStep + 1 })
+                }
+              })
+              .catch(function (error) {
+                console.log(error)
+              })
+            break
+        }
+      }
     })
-  }
+  };
 
-  const nextStep = () => {
-    const reqObject = {
-      phone: '+' + formData.phone,
-      code: formData.code,
-      email: formData.email,
-      name: formData.name,
-      password: formData.password
+  handleConfirmBlur = e => {
+    const value = e.target.value
+    this.setState({ confirmDirty: this.state.confirmDirty || !!value })
+  };
+
+  compareToFirstPassword = (rule, value, callback) => {
+    const form = this.props.form
+    if (value && value !== form.getFieldValue('password')) {
+      callback('Two passwords that you enter is inconsistent!')
+    } else {
+      callback()
     }
+  };
 
-    switch (current) {
-      case 0:
-        axios.post('http://192.168.88.125/quidox/public/api/sms/send', reqObject)
-          .then((response) => {
-            if (response.data.success) {
-              setCurrent(current + 1)
-            }
-          })
-          .catch(function (error) {
-            console.log(error)
-          })
-        break
-      case 1:
-        axios.post('http://192.168.88.125/quidox/public/api/sms/confirm', reqObject)
-          .then((response) => {
-            console.log(response.data.success)
-            if (response.data.success) {
-              setCurrent(current + 1)
-            }
-          })
-          .catch(function (error) {
-            console.log(error)
-          })
-        break
-      case 2:
-        axios.post('http://192.168.88.125/quidox/public/api/register', reqObject)
-          .then((response) => {
-            console.log(response.data.success)
-            if (response.data.success) {
-              setCurrent(current + 1)
-            }
-          })
-          .catch(function (error) {
-            console.log(error)
-          })
-        break
-      default:
-        break
+  validateToNextPassword = (rule, value, callback) => {
+    const form = this.props.form
+    if (value && this.state.confirmDirty) {
+      form.validateFields(['confirm'], { force: true })
     }
-  }
+    callback()
+  };
 
-  return (
-    <div className='steps'>
-      <Steps
-        size='small'
-        current={current}
-      >
-        {steps.map(item => (
-          <Step key={item.title} title={item.title} />
-        ))}
-      </Steps>
-      <form className='form'>
-        <Fragment>
-          {current === 0 &&
-          <FormGroup
-            kind='input-mask'
-            label='Введите номер телефона'
-            placeholder='+375(__)___-__-__'
-            onChange={e => updateField('phone', e.target.value.replace(/\D+/g, ''))}
-          />
+  render () {
+    const { currentStep } = this.state
+    const { getFieldDecorator } = this.props.form
+
+    const prefixSelector = getFieldDecorator('prefix', {
+      initialValue: '37529'
+    })(
+      <Select style={{ width: 100 }}>
+        <Option value='37529'>+375(29)</Option>
+        <Option value='37533'>+375(33)</Option>
+        <Option value='37544'>+375(44)</Option>
+      </Select>
+    )
+
+    return (
+      <div className='steps'>
+        <Steps
+          size='small'
+          current={currentStep}
+        >
+          {steps.map(item => (
+            <Step key={item.title} title={item.title} />
+          ))}
+        </Steps>
+        <Form className='form' onSubmit={this.handleSubmit}>
+          {currentStep === 0 &&
+            <Form.Item label='Введите номер телефона'>
+              {getFieldDecorator('phone', {
+                rules: [{ required: true, message: 'Пожалуйста, введите номер телефона' }]
+              })(<Input addonBefore={prefixSelector} style={{ width: '100%' }} />)}
+            </Form.Item>
           }
-          {current === 1 &&
-          <FormGroup
-            kind='input'
-            label='Введите полученный код'
-            placeholder='Полученный код'
-            onChange={e => updateField('code', e.target.value)}
-          />
+          {currentStep === 1 &&
+            <Form.Item label='Введите полученный код'>
+              {getFieldDecorator('code', {
+                rules: [
+                  {
+                    type: 'text',
+                    message: 'The input is not valid E-mail!'
+                  },
+                  {
+                    required: true,
+                    message: 'Please input your E-mail!'
+                  }
+                ]
+              })(<Input />)}
+            </Form.Item>
           }
-          {current === 2 &&
-          <Fragment>
-            <FormGroup
-              kind='input'
-              label='Введите адресс электронной почты'
-              placeholder='Адресс электронной почты'
-              onChange={e => updateField('email', e.target.value)}
-            />
-            <FormGroup
-              kind='input'
-              label='Введите ваше имя'
-              placeholder='Ваше имя'
-              onChange={e => updateField('name', e.target.value)}
-            />
-            <FormGroup
-              kind='input'
-              label='Введите пароль'
-              placeholder='Пароль'
-              onChange={e => updateField('password', e.target.value)}
-            />
-          </Fragment>
+          {currentStep === 2 &&
+            <Fragment>
+              <Form.Item label='Введите адрес электронной почты'>
+                {getFieldDecorator('email', {
+                  rules: [
+                    {
+                      type: 'email',
+                      message: 'The input is not valid E-mail!'
+                    },
+                    {
+                      required: true,
+                      message: 'Please input your E-mail!'
+                    }
+                  ]
+                })(<Input />)}
+              </Form.Item>
+              <Form.Item label='Введите ваше имя'>
+                {getFieldDecorator('name', {
+                  rules: [
+                    {
+                      type: 'text',
+                      message: 'The input is not valid E-mail!'
+                    },
+                    {
+                      required: true,
+                      message: 'Please input your E-mail!'
+                    }
+                  ]
+                })(<Input />)}
+              </Form.Item>
+              <Form.Item label='Password' hasFeedback>
+                {getFieldDecorator('password', {
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Please input your password!'
+                    },
+                    {
+                      validator: this.validateToNextPassword
+                    }
+                  ]
+                })(<Input.Password />)}
+              </Form.Item>
+              <Form.Item label='Confirm Password' hasFeedback>
+                {getFieldDecorator('confirm', {
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Please confirm your password!'
+                    },
+                    {
+                      validator: this.compareToFirstPassword
+                    }
+                  ]
+                })(<Input.Password onBlur={this.handleConfirmBlur} />)}
+              </Form.Item>
+            </Fragment>
           }
-        </Fragment>
-      </form>
-      <div className='steps__action'>
-        <Button onClick={() => nextStep()} type='primary'>Продолжить</Button>
+          <Form.Item>
+            <Button type='primary' htmlType='submit'>
+              {currentStep === 3 ? 'Регистрация' : 'Продолжить'}
+            </Button>
+
+          </Form.Item>
+        </Form>
       </div>
-    </div>
-  )
+    )
+  }
 }
 
-export default RegisterPage
+const WrappedRegistrationForm = Form.create({ name: 'register' })(RegistrationForm)
+
+export default WrappedRegistrationForm
