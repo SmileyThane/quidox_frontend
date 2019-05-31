@@ -1,0 +1,20 @@
+@import '../../styles/variables';
+.ant-input-search {
+  position: relative;
+  .ant-input {
+    transition: border-color .2s linear 0s;
+    will-change: border-color;
+    border-radius: .2rem;
+    border: solid map-get($colors, darkSecond);
+    height: 3.8rem;
+    font-size: 1.5rem;
+    border: 1px solid map-get($colors, gray);
+    background-color: transparent;
+    font-family: inherit;
+    color: inherit;
+    box-shadow: none;
+    line-height: normal;
+    padding: 0 1.4rem;
+    width: 100%;
+  }
+}

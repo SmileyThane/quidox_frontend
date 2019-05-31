@@ -1,0 +1,7 @@
+@import '../../styles/variables.scss';
+.ant-btn {
+  &.ant-btn-primary {
+    background-color: map-get($colors, blue) !important;
+    border-color: map-get($colors, blue) !important;
+  }
+}

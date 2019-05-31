@@ -1,0 +1,13 @@
+@import '../../styles/variables';
+.wrapp {
+  position: relative;
+  min-height: 100vh !important;
+  background-color: map-get($colors, bgColor);
+
+  &.wrapp--login {
+    padding-top: 15rem;
+  }
+  &.wrapp--contet {
+    padding-top: 10rem;
+  }
+}

@@ -1,0 +1,19 @@
+@import '~antd/dist/antd.css';
+@import './variables.scss';
+@import './overrides.scss';
+@import 'layout.scss';
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-size: 1.6rem !important;
+  font-family: 'Roboto', sans-serif;
+  text-rendering: optimizeLegibility;
+  color: map-get($colors, dark);
+}
+p {
+  padding: 0;
+  margin: 0;
+}

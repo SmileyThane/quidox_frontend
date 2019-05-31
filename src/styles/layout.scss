@@ -1,0 +1,13 @@
+@import './variables';
+
+.container {
+  width: 100%;
+  max-width: 128rem;
+  padding: 0 7rem;
+  margin: 0 auto;
+}
+.content {
+  border-radius: .2rem;
+  background-color: map-get($colors, white);
+  border: .1rem solid map-get($colors, gray)
+}

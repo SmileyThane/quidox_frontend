@@ -1,0 +1,54 @@
+import React, { Fragment } from 'react'
+
+import { Layout, Icon } from 'antd'
+
+import history from '../../history.js'
+import { Input } from '../'
+import './HeaderBlock.scss'
+
+const { Header } = Layout
+const HeaderBlock = props => {
+
+  const {
+    user: { data }
+  } = props
+
+  const handleLogout = () => {
+    window.localStorage.clear()
+    history.push('/login')
+  }
+
+  return (
+    <Header className='header'>
+      <div className='container'>
+        <div className='header__content'>
+          <aside className='header__left'>
+            <p className='header__logo'>E D M</p>
+          </aside>
+          {window.localStorage.getItem('authToken') &&
+            <Fragment>
+              <Input
+                className='header__input'
+                placeholder='Введите УНП, название документа или компании'
+                onSearch={() => console.log('value')}
+                kind='search'
+              />
+              <div className='user header__user'>
+                {data &&
+                  <span>{data.data.email}</span>
+                }
+                <Icon
+                  className='user__logout-btn'
+                  type='logout'
+                  onClick={() => handleLogout()}
+                />
+              </div>
+            </Fragment>
+          }
+        </div>
+      </div>
+    </Header>
+  )
+}
+
+export default HeaderBlock

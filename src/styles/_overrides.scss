@@ -1,0 +1,79 @@
+@import './variables.scss';
+.ant-layout-header {
+  padding: 0;
+}
+//layout
+.ant-layout {
+  .ant-layout-has-sider {
+    width: 100%;
+    max-width: 128rem;
+    margin: 0 auto;
+    padding: 0 7rem;
+  }
+}
+.ant-layout-footer {
+  background-color: map-get($colors, white);
+}
+//badge
+.badge.ant-badge { 
+  .ant-badge-count {
+    background-color: map-get($colors, blue);
+    margin-right: 1rem;
+    border-radius: .2rem;
+  }
+}
+//sider menu
+.ant-layout-sider {
+  background-color: transparent;
+  .ant-menu {
+    background-color: transparent !important;
+    border-right: 0;
+
+    .ant-menu-submenu {
+
+      .ant-menu-submenu-title {
+
+        &:hover {
+          color: map-get($colors, dark);
+
+          .ant-menu-submenu-arrow {
+            &:before,
+            &:after {
+              background: linear-gradient(to right, map-get($colors, dark), map-get($colors, dark)) !important;
+            }
+          }
+        }
+      }
+    }
+
+    .ant-menu-item {
+      font-size: 1.5rem;
+      color: map-get($colors, dark);
+      border-radius: .2rem;
+
+      a {
+        &:hover {
+          color: inherit !important;
+        }
+
+        i {
+          font-size: 1.8rem;
+        }
+      }
+
+      &.ant-menu-item-selected {
+        background-color: map-get($colors, blueSecond);
+        color: map-get($colors, dark);
+
+        a {
+          color: inherit;
+        }
+
+        &:after {
+          display: none;
+        }
+      }
+    }
+  }
+}
+

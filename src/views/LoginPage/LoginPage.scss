@@ -1,0 +1,22 @@
+@import '../../styles/variables';
+
+.form {
+  border: .1rem solid map-get($colors, gray);
+  border-radius: .2rem;
+  background-color: map-get($colors, white);
+  padding: 3rem !important;
+  width: 100%;
+  max-width: 60rem;
+  margin: 5rem auto 0 auto !important;
+
+  .form-group {
+    margin-bottom: 3rem;
+  }
+
+  .form__forgot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+  }
+}

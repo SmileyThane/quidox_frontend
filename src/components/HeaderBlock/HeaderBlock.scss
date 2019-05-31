@@ -1,0 +1,42 @@
+@import '../../styles/variables';
+.header {
+  background: map-get($colors, white) !important;
+  border-bottom: 1px solid map-get($colors, gray);
+  flex: none;
+  margin-bottom: 1.5rem;
+  height: auto !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+
+  .header__content {
+    display: flex;
+    align-items: center;
+    height: 7rem;
+  }
+  .header__left {
+    flex: none;
+    width: 17.5rem;
+    margin-right: 5.5rem;
+  }
+  .header__logo {
+    font-size: 3rem;
+  }
+  .header__input {
+    margin-right: 3rem;
+    max-width: 46rem;;
+  }
+  .header__user {
+    margin-left: auto;
+  }
+  .user {
+    font-size: 1.5rem;
+    cursor: pointer;
+
+    .user__logout-btn {
+      margin-left: 1rem;
+      color: map-get($colors, orange);
+    }
+  }
+}
