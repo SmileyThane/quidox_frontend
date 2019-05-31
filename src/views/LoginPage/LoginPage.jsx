@@ -81,7 +81,7 @@ class LoginPage extends React.Component {
             initialValue: true
           })(<Checkbox>Запомнить меня</Checkbox>)}
           <a className='login-form-forgot' href=''>
-            Забыли пароль
+            Забыли пароль?
           </a>
           <Button type='primary' htmlType='submit' className='login-form-button'>
             Войти
