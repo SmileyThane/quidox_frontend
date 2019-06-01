@@ -3,10 +3,9 @@ import React, { useEffect } from 'react'
 import { Table } from '../../components'
 import './CompanyPage.scss'
 const CopmanyPage = props => {
-
   const { getCompany, companies: { isFetching, list } } = props
 
-  console.log(list.data)
+  console.log(list)
 
   const getCompanyArray = () => {
     const companyArray = []
@@ -39,13 +38,16 @@ const CopmanyPage = props => {
 
   return (
     <div className='content'>
-      <Table
-        pagination={false}
-        rowKey='id'
-        columns={columns}
-        dataSource={companyArray}
-        loading={isFetching}
-      />
+      {list.length > 0
+        ? <Table
+          pagination={false}
+          rowKey='id'
+          columns={columns}
+          dataSource={companyArray}
+          loading={isFetching}
+        />
+        : <h1>Нет компаний</h1>
+      }
     </div>
   )
 }

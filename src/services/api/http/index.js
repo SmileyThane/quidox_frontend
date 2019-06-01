@@ -7,7 +7,7 @@ import {
 } from './interceptors'
 
 const instance = axios.create({
-  baseURL: 'http://192.168.88.125/quidox/public/api/',
+  baseURL: 'http://178.172.173.203/api',
   headers: {},
   data: {},
   timeout: 180000
