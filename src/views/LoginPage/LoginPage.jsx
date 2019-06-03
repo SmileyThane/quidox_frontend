@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { Link } from 'react-router-dom'
 import axios from 'axios'
 import history from '../../history.js'
 import { Form, Icon, Input, Button, Checkbox } from 'antd'
@@ -16,7 +17,7 @@ class LoginPage extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values)
-        axios.post('http://178.172.173.203/api/login', values)
+        axios.post('https://api.quidox.by/api/login', values)
           .then((response) => {
             if (response.data.success) {
               window.localStorage.setItem('authToken', response.data.data.token)
@@ -60,13 +61,13 @@ class LoginPage extends React.Component {
             valuePropName: 'checked',
             initialValue: true
           })(<Checkbox>Запомнить меня</Checkbox>)}
-          <a className='login-form-forgot' href='#'>
+          <Link className='login-form-forgot' to={'/password-recovery'}>
             Забыли пароль?
-          </a>
+          </Link>
           <Button type='primary' htmlType='submit' className='login-form-button'>
             Войти
           </Button>
-          или <a href='#' onClick={e => { e.preventDefault(); history.push('/register') }}>зарегестрируйтесь сейчас!</a>
+          или <Link to={'/register'}>зарегестрируйтесь сейчас!</Link>
         </Form.Item>
       </Form>
     )

@@ -3,12 +3,13 @@ import { Layout } from 'antd'
 import './FooterBlock.scss'
 
 const { Footer } = Layout
+const hrefLink = '#'
 const FooterBlock = () => {
   return (
     <Footer className='footer'>
-      <a className='footer__link' href='#'>Условия пользования</a>
-      <a className='footer__link' href='#'>Контакты</a>
-      <a className='footer__link' href='#'>О сервисе</a>
+      <a className='footer__link' href={hrefLink}>Условия пользования</a>
+      <a className='footer__link' href={hrefLink}>Контакты</a>
+      <a className='footer__link' href={hrefLink}>О сервисе</a>
     </Footer>
   )
 }

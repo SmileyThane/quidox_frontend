@@ -7,8 +7,10 @@ import { LayoutBlock, HeaderBlock, SiderBlock, ContentBlock, FooterBlock } from 
 const PrivateRoute = ({ component: Component, getUser, ...rest }) => {
 
   useEffect(() => {
-    getUser()
-  }, [])
+    if (window.localStorage.getItem('authToken')) {
+      getUser()
+    }
+  }, [getUser])
 
   return <Route {...rest}
     render={props =>

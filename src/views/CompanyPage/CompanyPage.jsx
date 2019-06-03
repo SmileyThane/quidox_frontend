@@ -21,7 +21,7 @@ const CopmanyPage = props => {
 
   useEffect(() => {
     getCompany()
-  }, [])
+  }, [getCompany])
 
   const columns = [{
     title: 'Имя',

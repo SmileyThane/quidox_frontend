@@ -1,7 +1,7 @@
 
 import React, { Fragment } from 'react'
 import axios from 'axios'
-import history from '../../history'
+// import history from '../../history'
 import {
   Steps,
   Form,
@@ -24,6 +24,10 @@ const steps = [
   },
   {
     title: 'Шаг 3',
+    content: 'First-content'
+  },
+  {
+    title: 'Шаг 4',
     content: 'First-content'
   }
 ]
@@ -53,7 +57,6 @@ class RegistrationForm extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault()
-
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const registerData = {
@@ -63,10 +66,9 @@ class RegistrationForm extends React.Component {
           password: values.password ? values.password : '',
           name: values.name ? values.name : ''
         }
-        console.log(values)
         switch (this.state.currentStep) {
           case 0:
-            axios.post('http://178.172.173.203/api/sms/send', registerData)
+            axios.post('https://api.quidox.by/api/sms/send', registerData)
               .then((response) => {
                 if (response.data.success) {
                   this.setState({ currentStep: this.state.currentStep + 1 })
@@ -77,7 +79,7 @@ class RegistrationForm extends React.Component {
               })
             break
           case 1:
-            axios.post('http://178.172.173.203/api/sms/confirm', registerData)
+            axios.post('https://api.quidox.by/api/sms/confirm', registerData)
               .then((response) => {
                 if (response.data.success) {
                   this.setState({ currentStep: this.state.currentStep + 1 })
@@ -88,16 +90,32 @@ class RegistrationForm extends React.Component {
               })
             break
           case 2:
-            axios.post('http://178.172.173.203/api/register', registerData)
+            axios.post('https://api.quidox.by/api/register', registerData)
               .then((response) => {
                 if (response.data.success) {
-                  history.push('/login')
+                  const id = response.data.data.id
+                  this.setState({
+                    id
+                  })
+                  this.setState({ currentStep: this.state.currentStep + 1 })
                 }
               })
               .catch(function (error) {
                 console.log(error)
               })
             break
+          case 3:
+            axios.get('https://api.quidox.by/api/user/confirm/' + this.state.id, registerData)
+              .then((response) => {
+                if (response.data.success) {
+                // history.push('/login')
+                }
+              })
+              .catch(function (error) {
+                console.log(error)
+              })
+            break
+          default: // Do nothing
         }
       }
     })
@@ -130,9 +148,10 @@ class RegistrationForm extends React.Component {
     const { getFieldDecorator } = this.props.form
 
     const prefixSelector = getFieldDecorator('prefix', {
-      initialValue: '37529'
+      initialValue: '37525'
     })(
       <Select style={{ width: 100 }}>
+        <Option value='37525'>+375(25)</Option>
         <Option value='37529'>+375(29)</Option>
         <Option value='37533'>+375(33)</Option>
         <Option value='37544'>+375(44)</Option>
@@ -230,6 +249,9 @@ class RegistrationForm extends React.Component {
                 })(<Input.Password onBlur={this.handleConfirmBlur} />)}
               </Form.Item>
             </Fragment>
+          }
+          {currentStep === 3 &&
+            <p>{this.state.id}</p>
           }
           <Form.Item>
             <Button type='primary' htmlType='submit'>
