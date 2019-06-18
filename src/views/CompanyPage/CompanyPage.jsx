@@ -38,16 +38,13 @@ const CopmanyPage = props => {
 
   return (
     <div className='content'>
-      {list.length > 0
-        ? <Table
-          pagination={false}
-          rowKey='id'
-          columns={columns}
-          dataSource={companyArray}
-          loading={isFetching}
-        />
-        : <h1>Нет компаний</h1>
-      }
+      <Table
+        pagination={false}
+        rowKey='id'
+        columns={columns}
+        dataSource={companyArray}
+        loading={isFetching}
+      />
     </div>
   )
 }
