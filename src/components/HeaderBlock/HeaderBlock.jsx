@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 
-import { Layout, Icon } from 'antd'
+import { Layout, Icon, Popconfirm } from 'antd'
 
 import history from '../../history.js'
 import { Input } from '../'
@@ -8,7 +8,6 @@ import './HeaderBlock.scss'
 
 const { Header } = Layout
 const HeaderBlock = props => {
-
   const {
     user: { data }
   } = props
@@ -37,11 +36,18 @@ const HeaderBlock = props => {
                 {data &&
                   <span>{data.data.email}</span>
                 }
-                <Icon
-                  className='user__logout-btn'
-                  type='logout'
-                  onClick={() => handleLogout()}
-                />
+                <Popconfirm
+                  placement='bottom'
+                  title='Вы уверены?'
+                  onConfirm={() => handleLogout()}
+                  okText='Выйти'
+                  cancelText='Закрыть'
+                >
+                  <Icon
+                    className='user__logout-btn'
+                    type='logout'
+                  />
+                </Popconfirm>
               </div>
             </Fragment>
           }
