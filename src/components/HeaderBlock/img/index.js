@@ -1,5 +1,5 @@
-import logout from './logout.svg'
+import logo from './Logo.png'
 
 export {
-  logout
+  logo
 }

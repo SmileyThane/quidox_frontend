@@ -8,6 +8,14 @@ const createDocument = data => {
   })
 }
 
+const getOutDocumentsByActiveCompanyId = id => {
+  return http({
+    url: `/documents/out/${id}`,
+    method: 'GET'
+  })
+}
+
 export {
-  createDocument
+  createDocument,
+  getOutDocumentsByActiveCompanyId
 }

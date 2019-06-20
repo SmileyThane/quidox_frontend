@@ -4,6 +4,7 @@ import { Layout, Icon, Popconfirm } from 'antd'
 
 import history from '../../history.js'
 import { Input } from '../'
+import { logo } from './img'
 import './HeaderBlock.scss'
 
 const { Header } = Layout
@@ -22,7 +23,7 @@ const HeaderBlock = props => {
       <div className='container'>
         <div className='header__content'>
           <aside className='header__left'>
-            <p className='header__logo'>E D M</p>
+            <img className='header__logo' src={logo} />
           </aside>
           {window.localStorage.getItem('authToken') &&
             <Fragment>
