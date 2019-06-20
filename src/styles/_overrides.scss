@@ -98,4 +98,9 @@
   max-width: 40rem;
   margin: 0 auto;
 }
+.ant-pagination {
+  &.ant-table-pagination {
+    margin-right: 2rem;
+  }
+}
 

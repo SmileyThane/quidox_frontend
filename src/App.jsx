@@ -11,6 +11,7 @@ import {
   RegisterPage,
   Home,
   NewDocumentPage,
+  DraftsPage,
   CompanyPage,
   ConfirmMessagesPages,
   UnconfirmedMessagesPage,
@@ -28,6 +29,7 @@ function App () {
           <PrivateRoute path='/confirm-messages' component={ConfirmMessagesPages} />
           <PrivateRoute path='/unconfirmed-messages' component={UnconfirmedMessagesPage} />
           <PrivateRoute path='/sent-messages' component={SentMessagesPage} />
+          <PrivateRoute path='/drafts' component={DraftsPage} />
 
           <PublicRoute path='/login' component={LoginPage} />
           <PublicRoute path='/register' component={RegisterPage} />

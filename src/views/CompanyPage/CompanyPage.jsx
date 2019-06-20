@@ -5,8 +5,6 @@ import './CompanyPage.scss'
 const CopmanyPage = props => {
   const { getCompany, companies: { isFetching, list } } = props
 
-  console.log(list)
-
   const getCompanyArray = () => {
     const companyArray = []
     if (list.data) {

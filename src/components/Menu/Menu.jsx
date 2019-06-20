@@ -60,6 +60,12 @@ const AntMenu = props => {
           icon='file-done'
         />
         <MenuItem
+          heading=' Черновики'
+          url='/drafts'
+          key='/drafts'
+          icon='file-text'
+        />
+        <MenuItem
           heading='Компании'
           url='/company'
           key='/company'

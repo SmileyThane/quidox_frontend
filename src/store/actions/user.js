@@ -15,7 +15,7 @@ const getUser = () => dispatch => {
       if (data) {
         dispatch({
           type: GET_USER_SUCCESS,
-          payload: data
+          payload: data.data
         })
       }
       dispatch({

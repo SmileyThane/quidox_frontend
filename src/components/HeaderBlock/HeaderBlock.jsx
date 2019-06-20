@@ -34,7 +34,7 @@ const HeaderBlock = props => {
               />
               <div className='user header__user'>
                 {data &&
-                  <span>{data.data.email}</span>
+                  <span>{data.email}</span>
                 }
                 <Popconfirm
                   placement='bottom'
