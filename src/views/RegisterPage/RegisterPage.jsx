@@ -7,7 +7,8 @@ import {
   Form,
   Input,
   Select,
-  Button
+  Button,
+  notification
 } from 'antd'
 
 const { Option } = Select
@@ -89,12 +90,15 @@ class RegistrationForm extends React.Component {
             axios.post('https://api.quidox.by/api/register', registerData)
               .then((response) => {
                 if (response.data.success) {
-                  history.push('/login')
+                  this.setState({ currentStep: this.state.currentStep + 1 })
                 }
               })
               .catch(function (error) {
                 console.log(error)
               })
+            break
+          case 3:
+            history.push('/login')
             break
           default: // Do nothing
         }
@@ -208,7 +212,8 @@ class RegistrationForm extends React.Component {
                   rules: [
                     {
                       required: true,
-                      message: 'Please input your password!'
+                      message: 'Пароль должен содержать не менее восьми символов, как минимум одну букву и одну цифру',
+                      pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
                     },
                     {
                       validator: this.validateToNextPassword
@@ -231,9 +236,14 @@ class RegistrationForm extends React.Component {
               </Form.Item>
             </Fragment>
           }
+          {currentStep === 3 &&
+            <Fragment>
+              <p>Подтвердите регистрацию, пройдя по ссылке в сообщении, которое вы получите на указанный вами адрес электронной почты</p>
+            </Fragment>
+          }
           <Form.Item>
             <Button type='primary' htmlType='submit'>
-              {currentStep === 2 ? 'Завершить регистрацию' : 'Продолжить'}
+              {currentStep === 3 ? 'Завершить регистрацию' : 'Продолжить'}
             </Button>
 
           </Form.Item>

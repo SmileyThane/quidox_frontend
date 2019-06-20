@@ -9,5 +9,9 @@
 .content {
   border-radius: .2rem;
   background-color: map-get($colors, white);
-  border: .1rem solid map-get($colors, gray)
+  border: .1rem solid map-get($colors, gray);
+
+  &.content_padding {
+    padding: 2rem 0;
+  }
 }

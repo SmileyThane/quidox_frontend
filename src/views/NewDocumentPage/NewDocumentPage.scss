@@ -1,0 +1,29 @@
+@import '../../styles/overrides';
+
+.input-group {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 1.5rem;
+  padding: 0 1.5rem 0 .5rem;
+  &:last-of-type {
+    margin-bottom: 3rem;
+  }
+}
+.label {
+  color: map-get($colors, darkSecond);
+  min-width: 11rem;
+  text-align: right;
+  margin-right: 1.5rem;
+  font-size: 1.5rem;
+}
+.buttons-group {
+  display: flex;
+  justify-content: space-between;
+  padding: 1.5rem 1.5rem;
+
+  &.buttons-group_border-top {
+    padding-bottom: 0;
+    border-top: .1rem solid map-get($colors, gray);
+  }
+}

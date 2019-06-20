@@ -18,3 +18,8 @@
     width: 100%;
   }
 }
+textarea.ant-input {
+  resize: none;
+  height: unset;
+  padding: 0.8rem 1.4rem;
+}
