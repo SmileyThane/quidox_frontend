@@ -2,12 +2,15 @@ import {
   CREATE_DOCUMENT_FETHCING,
   CREATE_DOCUMENT_SUCCESS,
   GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
-  GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS
+  GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
+  GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+  GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS
 } from '../types'
 
 const initialState = {
   list: [],
   outDocumentsList: [],
+  draftDocumentsList: [],
   isFetching: false
 }
 
@@ -32,6 +35,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         outDocumentsList: action.payload.data
+      }
+    case GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:
+      return {
+        ...state,
+        isFetching: action.payload
+      }
+    case GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
+      return {
+        ...state,
+        draftDocumentsList: action.payload.data
       }
     default:
       return state

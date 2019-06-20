@@ -2,7 +2,9 @@ import {
   CREATE_DOCUMENT_FETHCING,
   CREATE_DOCUMENT_SUCCESS,
   GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
-  GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS
+  GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
+  GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+  GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS
 } from '../types'
 
 import { api } from '../../services'
@@ -12,7 +14,7 @@ const createDocument = data => dispatch => {
     type: CREATE_DOCUMENT_FETHCING,
     payload: true
   })
-  return api.document.createDocument(data)
+  return api.documents.createDocument(data)
     .then(({ data }) => {
       if (data) {
         dispatch({
@@ -32,7 +34,7 @@ const getOutDocumentsByActiveCompanyId = id => dispatch => {
     type: GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
     payload: true
   })
-  return api.document.getOutDocumentsByActiveCompanyId(id)
+  return api.documents.getOutDocumentsByActiveCompanyId(id)
     .then(({ data }) => {
       if (data) {
         dispatch({
@@ -47,7 +49,28 @@ const getOutDocumentsByActiveCompanyId = id => dispatch => {
     })
 }
 
+const getDraftDocumentsByActiveCompany = id => dispatch => {
+  dispatch({
+    type: GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+    payload: true
+  })
+  return api.documents.getDraftDocumentsByActiveCompany(id)
+    .then(({ data }) => {
+      if (data) {
+        dispatch({
+          type: GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
+          payload: data
+        })
+      }
+      dispatch({
+        type: GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+        payload: false
+      })
+    })
+}
+
 export {
   createDocument,
-  getOutDocumentsByActiveCompanyId
+  getOutDocumentsByActiveCompanyId,
+  getDraftDocumentsByActiveCompany
 }

@@ -4,11 +4,11 @@ import DraftsPage from './DraftsPage'
 
 const mapStateToProps = state => ({
   user: state.user,
-  drafts: state.drafts
+  documents: state.documents
 })
 
 const mapDispatchToProps = dispatch => ({
-  getDraftsByActiveCompany: id => dispatch(actions.drafts.getDraftsByActiveCompany(id))
+  getDraftDocumentsByActiveCompany: id => dispatch(actions.documents.getDraftDocumentsByActiveCompany(id))
 })
 
 export default connect(

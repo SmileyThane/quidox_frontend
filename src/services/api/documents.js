@@ -15,7 +15,15 @@ const getOutDocumentsByActiveCompanyId = id => {
   })
 }
 
+const getDraftDocumentsByActiveCompany = id => {
+  return http({
+    url: `/documents/drafts/${id}`,
+    method: 'GET'
+  })
+}
+
 export {
   createDocument,
-  getOutDocumentsByActiveCompanyId
+  getOutDocumentsByActiveCompanyId,
+  getDraftDocumentsByActiveCompany
 }

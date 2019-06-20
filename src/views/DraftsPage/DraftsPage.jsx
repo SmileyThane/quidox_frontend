@@ -5,13 +5,13 @@ import { Table } from 'antd'
 const DraftsPage = props => {
   const {
     user: { data },
-    drafts: { list, isFetching },
-    getDraftsByActiveCompany
+    documents: { draftDocumentsList, isFetching },
+    getDraftDocumentsByActiveCompany
   } = props
 
   useEffect(() => {
     if (data) {
-      getDraftsByActiveCompany(data.active_company_id)
+      getDraftDocumentsByActiveCompany(data.active_company_id)
     }
   }, [data])
 
@@ -33,7 +33,7 @@ const DraftsPage = props => {
       <Table
         rowKey='id'
         columns={columns}
-        dataSource={list && list}
+        dataSource={draftDocumentsList && draftDocumentsList}
         loading={isFetching}
       />
     </div>
