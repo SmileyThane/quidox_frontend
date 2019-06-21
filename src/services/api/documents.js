@@ -16,6 +16,13 @@ const sendDocumentToUser = data => {
   })
 }
 
+const getInboxUnconfirmedDocumentsByActiveCompanyId = id => {
+  return http({
+    url: `documents/in/0/${id}`,
+    method: 'GET'
+  })
+}
+
 const getOutDocumentsByActiveCompanyId = id => {
   return http({
     url: `/documents/out/${id}`,
@@ -33,6 +40,7 @@ const getDraftDocumentsByActiveCompany = id => {
 export {
   createDocument,
   sendDocumentToUser,
+  getInboxUnconfirmedDocumentsByActiveCompanyId,
   getOutDocumentsByActiveCompanyId,
   getDraftDocumentsByActiveCompany
 }

@@ -6,7 +6,9 @@ import {
   GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
   GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
   GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
-  GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS
+  GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
+  GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+  GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS
 } from '../types'
 
 import { api } from '../../services'
@@ -47,6 +49,26 @@ const sendDocumentToUser = data => dispatch => {
       }
       dispatch({
         type: SEND_DOCUMENT_TO_USER_FETCHING,
+        payload: false
+      })
+    })
+}
+
+const getInboxUnconfirmedDocumentsByActiveCompanyId = id => dispatch => {
+  dispatch({
+    type: GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+    payload: true
+  })
+  return api.documents.getInboxUnconfirmedDocumentsByActiveCompanyId(id)
+    .then(({ data }) => {
+      if (data) {
+        dispatch({
+          type: GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
+          payload: data
+        })
+      }
+      dispatch({
+        type: GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
         payload: false
       })
     })
@@ -95,6 +117,7 @@ const getDraftDocumentsByActiveCompany = id => dispatch => {
 export {
   createDocument,
   sendDocumentToUser,
+  getInboxUnconfirmedDocumentsByActiveCompanyId,
   getOutDocumentsByActiveCompanyId,
   getDraftDocumentsByActiveCompany
 }
