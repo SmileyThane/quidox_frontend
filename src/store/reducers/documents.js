@@ -56,7 +56,7 @@ export default (state = initialState, action) => {
         ...state,
         inboxDocuments: {
           ...state.inboxDocuments,
-          inboxUnconfirmedDocuments: action.payload.data
+          inboxConfirmedDocuments: action.payload.data
         }
       }
     case GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:

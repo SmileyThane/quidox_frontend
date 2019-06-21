@@ -192,7 +192,7 @@ const NewDocumentPage = props => {
             type='primary'
             onClick={handleSendToUser}
           >
-            <Icon type={isFetching ? 'loading' : 'cloud-upload'} />
+            <Icon type='cloud-upload' />
         Отправить
           </Button>
         </div>
