@@ -36,7 +36,7 @@ const createDocument = data => dispatch => {
 
 const sendDocumentToUser = data => dispatch => {
   dispatch({
-    type: SEND_DOCUMENT_TO_USER_FETCHING,
+    type: CREATE_DOCUMENT_FETHCING,
     payload: true
   })
   return api.documents.sendDocumentToUser(data)
@@ -48,7 +48,7 @@ const sendDocumentToUser = data => dispatch => {
         })
       }
       dispatch({
-        type: SEND_DOCUMENT_TO_USER_FETCHING,
+        type: CREATE_DOCUMENT_FETHCING,
         payload: false
       })
     })

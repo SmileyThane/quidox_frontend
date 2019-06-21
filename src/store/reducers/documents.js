@@ -10,7 +10,6 @@ import {
 } from '../types'
 
 const initialState = {
-  list: [],
   outDocumentsList: [],
   draftDocumentsList: [],
   inboxDocuments: {

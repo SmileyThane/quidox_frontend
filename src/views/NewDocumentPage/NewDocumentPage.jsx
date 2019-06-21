@@ -67,7 +67,7 @@ const NewDocumentPage = props => {
         message.success(`Файл ${docData.name} успешко сохранен`)
         setDocumentState({ ...defaultDocumentData })
       })
-      .cathc(error => {
+      .catch(error => {
         message.error(error.message)
       })
   }
@@ -142,59 +142,61 @@ const NewDocumentPage = props => {
 
   return (
     <div className='content content_padding'>
-      <div className='input-group'>
-        <label className='label'>Получатели</label>
-        <Select
-          mode='multiple'
-          labelInValue
-          value={documentState.value}
-          filterOption={false}
-          notFoundContent={documentState.fetching ? <Spin size='small' /> : null}
-          onSearch={fetchUser}
-          onChange={handleSelect}
-          style={{ width: '100%' }}
-        >
-          {documentState.data.map(d => (
-            <Option key={d.value}>{d.text}</Option>
-          ))}
-        </Select>
-      </div>
-      <div className='input-group'>
-        <label className='label'>Тема</label>
-        <Input kind='text' type='text' value={documentState.name} onChange={e => updateField('name', e.target.value)} />
-      </div>
-      <div className='input-group'>
-        <label className='label'>Комментарий</label>
-        <Input kind='textarea' type='text' value={documentState.description} onChange={e => updateField('description', e.target.value)} />
-      </div>
-      <div className='buttons-group'>
-        <Upload {...uploadProps}>
+      <Spin spinning={isFetching}>
+        <div className='input-group'>
+          <label className='label'>Получатели</label>
+          <Select
+            mode='multiple'
+            labelInValue
+            value={documentState.value}
+            filterOption={false}
+            notFoundContent={documentState.fetching ? <Spin size='small' /> : null}
+            onSearch={fetchUser}
+            onChange={handleSelect}
+            style={{ width: '100%' }}
+          >
+            {documentState.data.map(d => (
+              <Option key={d.value}>{d.text}</Option>
+            ))}
+          </Select>
+        </div>
+        <div className='input-group'>
+          <label className='label'>Тема</label>
+          <Input kind='text' type='text' value={documentState.name} onChange={e => updateField('name', e.target.value)} />
+        </div>
+        <div className='input-group'>
+          <label className='label'>Комментарий</label>
+          <Input kind='textarea' type='text' value={documentState.description} onChange={e => updateField('description', e.target.value)} />
+        </div>
+        <div className='buttons-group'>
+          <Upload {...uploadProps}>
+            <Button
+              type='primary'
+              ghost
+            >
+              <Icon type='upload' />
+          Прикрепить документ
+            </Button>
+          </Upload>
+        </div>
+        <div className='buttons-group buttons-group_border-top'>
+          <Button
+            ghost
+            type='primary'
+            onClick={handleSendToDraft}
+          >
+            <Icon type='file-text' />
+        Сохранить в черновиках
+          </Button>
           <Button
             type='primary'
-            ghost
+            onClick={handleSendToUser}
           >
-            <Icon type='upload' />
-            Прикрепить документ
+            <Icon type={isFetching ? 'loading' : 'cloud-upload'} />
+        Отправить
           </Button>
-        </Upload>
-      </div>
-      <div className='buttons-group buttons-group_border-top'>
-        <Button
-          ghost
-          type='primary'
-          onClick={handleSendToDraft}
-        >
-          <Icon type='file-text' />
-          Сохранить в черновиках
-        </Button>
-        <Button
-          type='primary'
-          onClick={handleSendToUser}
-        >
-          <Icon type={isFetching ? 'loading' : 'cloud-upload'} />
-          Отправить
-        </Button>
-      </div>
+        </div>
+      </Spin>
     </div>
   )
 }
