@@ -97,6 +97,9 @@ const NewDocumentPage = props => {
             })
         }
       })
+      .catch(error => {
+        message.error(error.message)
+      })
   }
 
   const { Option } = Select
