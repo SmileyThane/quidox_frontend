@@ -8,7 +8,9 @@ import {
   GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
   GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
   GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
-  GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS
+  GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
+  GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+  GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS
 } from '../types'
 
 import { api } from '../../services'
@@ -74,6 +76,26 @@ const getInboxUnconfirmedDocumentsByActiveCompanyId = id => dispatch => {
     })
 }
 
+const getInboxСonfirmedDocumentsByActiveCompanyId = id => dipsatch => {
+  dipsatch({
+    type: GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+    payload: true
+  })
+  return api.documents.getInboxСonfirmedDocumentsByActiveCompanyId(id)
+    .then(({ data }) => {
+      if (data) {
+        dipsatch({
+          type: GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
+          payload: data
+        })
+      }
+      dipsatch({
+        type: GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+        payload: false
+      })
+    })
+}
+
 const getOutDocumentsByActiveCompanyId = id => dispatch => {
   dispatch({
     type: GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
@@ -118,6 +140,7 @@ export {
   createDocument,
   sendDocumentToUser,
   getInboxUnconfirmedDocumentsByActiveCompanyId,
+  getInboxСonfirmedDocumentsByActiveCompanyId,
   getOutDocumentsByActiveCompanyId,
   getDraftDocumentsByActiveCompany
 }

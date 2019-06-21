@@ -6,7 +6,9 @@ import {
   GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
   GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
   GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
-  GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS
+  GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
+  GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+  GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS
 } from '../types'
 
 const initialState = {
@@ -37,6 +39,19 @@ export default (state = initialState, action) => {
         isFetching: action.payload
       }
     case GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
+      return {
+        ...state,
+        inboxDocuments: {
+          ...state.inboxDocuments,
+          inboxUnconfirmedDocuments: action.payload.data
+        }
+      }
+    case GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:
+      return {
+        ...state,
+        isFetching: action.payload
+      }
+    case GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
       return {
         ...state,
         inboxDocuments: {
