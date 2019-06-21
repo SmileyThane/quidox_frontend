@@ -3,7 +3,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import history from '../../history.js'
-import { Form, Icon, Input, Button, Checkbox } from 'antd'
+import { Form, Icon, Input, Button, Checkbox, message } from 'antd'
 import './LoginPage.scss'
 
 class LoginPage extends React.Component {
@@ -26,6 +26,7 @@ class LoginPage extends React.Component {
           })
           .catch((error) => {
             console.log(error)
+            message.error(error.message)
           })
       }
     })

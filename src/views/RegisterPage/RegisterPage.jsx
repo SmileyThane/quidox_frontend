@@ -7,7 +7,8 @@ import {
   Form,
   Input,
   Select,
-  Button
+  Button,
+  message
 } from 'antd'
 
 const { Option } = Select
@@ -71,7 +72,7 @@ class RegistrationForm extends React.Component {
                 }
               })
               .catch(function (error) {
-                console.log(error)
+                message.error(error.message)
               })
             break
           case 1:
@@ -82,7 +83,7 @@ class RegistrationForm extends React.Component {
                 }
               })
               .catch(function (error) {
-                console.log(error)
+                message.error(error.message)
               })
             break
           case 2:
@@ -93,7 +94,7 @@ class RegistrationForm extends React.Component {
                 }
               })
               .catch(function (error) {
-                console.log(error)
+                message.error(error.message)
               })
             break
           case 3:
