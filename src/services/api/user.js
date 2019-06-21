@@ -7,6 +7,14 @@ const getUser = () => {
   })
 }
 
+const findUsersByParams = params => {
+  return http({
+    url: `user/company/find/${params}`,
+    method: 'GET'
+  })
+}
+
 export {
-  getUser
+  getUser,
+  findUsersByParams
 }

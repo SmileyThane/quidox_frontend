@@ -1,21 +1,25 @@
 import React, { useState } from 'react'
 
-import { Upload, message, Icon } from 'antd'
+import { findUsersByParams } from '../../services/api/user'
+import { Upload, message, Icon, Select, Spin } from 'antd'
 import { Input, Button } from '../../components'
 import './NewDocumentPage.scss'
 
 const defaultDocumentData = {
   name: '',
-  theme: '',
   description: '',
   document: {},
-  second_documents: []
+  second_documents: [],
+  data: [],
+  value: [],
+  fetching: false,
+  ids: []
 }
 
 const NewDocumentPage = props => {
-
   const {
     createDocument,
+    sendDocumentToUser,
     documents: { isFetching }
   } = props
 
@@ -52,10 +56,9 @@ const NewDocumentPage = props => {
     }
   }
 
-  const handleSend = () => {
+  const handleSendToDraft = () => {
     const docData = {
       name: documentState.name,
-      theme: documentState.theme,
       description: documentState.description,
       document: documentState.document,
       second_documents: documentState.second_documents
@@ -69,15 +72,83 @@ const NewDocumentPage = props => {
       })
   }
 
+  const handleSendToUser = () => {
+    const docDataDraft = {
+      name: documentState.name,
+      description: documentState.description,
+      document: documentState.document,
+      second_documents: documentState.second_documents
+    }
+    return createDocument(docDataDraft)
+      .then(data => {
+        console.log(data)
+        if (data.success) {
+          const docDataToUser = {
+            document_ids: [data.data.id],
+            user_company_id: documentState.ids
+          }
+          sendDocumentToUser(docDataToUser)
+            .then(() => {
+              setDocumentState({ ...defaultDocumentData })
+            })
+        }
+      })
+  }
+
+  const { Option } = Select
+
+  const fetchUser = value => {
+    setDocumentState({
+      ...documentState,
+      fetching: true
+    })
+    findUsersByParams(value)
+      .then(({ data }) => {
+        const dataArray = data.data.map(user => ({
+          text: `${user.company_data.company_number}, ${user.company_data.name}`,
+          value: `${user.id}`
+        }))
+        setDocumentState({
+          ...documentState,
+          data: dataArray,
+          fetching: false
+        })
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+
+  const handleSelect = value => {
+    value.forEach(element => {
+      setDocumentState({
+        ...documentState,
+        ids: [...documentState.ids, Number(element.key)]
+      })
+    })
+  }
+
   return (
     <div className='content content_padding'>
       <div className='input-group'>
         <label className='label'>Получатели</label>
-        <Input kind='text' type='text' value={documentState.name} onChange={e => updateField('name', e.target.value)} />
+        <Select
+          mode='multiple'
+          labelInValue
+          filterOption={false}
+          notFoundContent={documentState.fetching ? <Spin size='small' /> : null}
+          onSearch={fetchUser}
+          onChange={handleSelect}
+          style={{ width: '100%' }}
+        >
+          {documentState.data.map(d => (
+            <Option key={d.value}>{d.text}</Option>
+          ))}
+        </Select>
       </div>
       <div className='input-group'>
         <label className='label'>Тема</label>
-        <Input kind='text' type='text' value={documentState.theme} onChange={e => updateField('theme', e.target.value)} />
+        <Input kind='text' type='text' value={documentState.name} onChange={e => updateField('name', e.target.value)} />
       </div>
       <div className='input-group'>
         <label className='label'>Комментарий</label>
@@ -98,13 +169,14 @@ const NewDocumentPage = props => {
         <Button
           ghost
           type='primary'
+          onClick={handleSendToDraft}
         >
           <Icon type='file' />
           Сохранить в черновиках
         </Button>
         <Button
           type='primary'
-          onClick={handleSend}
+          onClick={handleSendToUser}
         >
           <Icon type={isFetching ? 'loading' : 'cloud-upload'} />
           Отправить

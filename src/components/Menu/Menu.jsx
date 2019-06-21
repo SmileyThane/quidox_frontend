@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect } from 'react'
 
 import { Menu, Icon, Badge } from 'antd'
 
@@ -11,7 +11,10 @@ import './Menu.scss'
 const countMessages = 1
 const { SubMenu } = Menu
 
+
 const AntMenu = props => {
+
+
   return (
     <Fragment>
       <Button
@@ -25,7 +28,7 @@ const AntMenu = props => {
       </Button>
       <Menu
         mode='inline'
-        defaultSelectedKeys={[props.location.pathname] || '/'}
+        defaultSelectedKeys={props.location.pathname === 'new-document' ? [''] : [props.location.pathname]}
         defaultOpenKeys={['sub1']}
       >
         <SubMenu

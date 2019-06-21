@@ -8,6 +8,14 @@ const createDocument = data => {
   })
 }
 
+const sendDocumentToUser = data => {
+  return http({
+    url: 'documents/send',
+    method: 'POST',
+    data
+  })
+}
+
 const getOutDocumentsByActiveCompanyId = id => {
   return http({
     url: `/documents/out/${id}`,
@@ -24,6 +32,7 @@ const getDraftDocumentsByActiveCompany = id => {
 
 export {
   createDocument,
+  sendDocumentToUser,
   getOutDocumentsByActiveCompanyId,
   getDraftDocumentsByActiveCompany
 }

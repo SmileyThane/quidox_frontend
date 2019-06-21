@@ -1,6 +1,8 @@
 import {
   CREATE_DOCUMENT_FETHCING,
   CREATE_DOCUMENT_SUCCESS,
+  SEND_DOCUMENT_TO_USER_FETCHING,
+  SEND_DOCUMENT_TO_USER_SUCCESS,
   GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
   GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
   GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
@@ -24,6 +26,27 @@ const createDocument = data => dispatch => {
       }
       dispatch({
         type: CREATE_DOCUMENT_FETHCING,
+        payload: false
+      })
+      return data
+    })
+}
+
+const sendDocumentToUser = data => dispatch => {
+  dispatch({
+    type: SEND_DOCUMENT_TO_USER_FETCHING,
+    payload: true
+  })
+  return api.documents.sendDocumentToUser(data)
+    .then(({ data }) => {
+      if (data) {
+        dispatch({
+          type: SEND_DOCUMENT_TO_USER_SUCCESS,
+          payload: false
+        })
+      }
+      dispatch({
+        type: SEND_DOCUMENT_TO_USER_FETCHING,
         payload: false
       })
     })
@@ -71,6 +94,7 @@ const getDraftDocumentsByActiveCompany = id => dispatch => {
 
 export {
   createDocument,
+  sendDocumentToUser,
   getOutDocumentsByActiveCompanyId,
   getDraftDocumentsByActiveCompany
 }
