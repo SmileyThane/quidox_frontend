@@ -23,7 +23,7 @@ const HeaderBlock = props => {
       <div className='container'>
         <div className='header__content'>
           <aside className='header__left'>
-            <img className='header__logo' src={logo} />
+            <img className='header__logo' src={logo} alt='Quidox Logo' />
           </aside>
           {window.localStorage.getItem('authToken') &&
             <Fragment>

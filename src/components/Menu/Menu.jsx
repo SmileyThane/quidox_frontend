@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment } from 'react'
 
 import { Menu, Icon, Badge } from 'antd'
 
@@ -11,9 +11,7 @@ import './Menu.scss'
 const countMessages = 1
 const { SubMenu } = Menu
 
-
 const AntMenu = props => {
-
 
   return (
     <Fragment>

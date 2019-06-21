@@ -39,36 +39,36 @@ const NewDocumentPage = props => {
       authorization: 'authorization-text'
     },
     onChange (info) {
+      console.log(info.file.status)
+      setDocumentState({
+        ...documentState,
+        second_documents: info.fileList
+      })
       if (info.file.status !== 'uploading') {
         console.log(info.file, info.fileList)
       }
       if (info.file.status === 'done') {
         message.success(`${info.file.name} файл добавлен успешно`)
-        setDocumentState({
-          ...documentState,
-          document: info.file,
-          second_documents: info.fileList
-
-        })
       } else if (info.file.status === 'error') {
         message.error(`${info.file.name} файл не добавлен.`)
       }
-    }
+    },
+    fileList: documentState.second_documents
   }
 
   const handleSendToDraft = () => {
     const docData = {
       name: documentState.name,
       description: documentState.description,
-      document: documentState.document,
       second_documents: documentState.second_documents
     }
-    return Promise.resolve()
+    return createDocument(docData)
       .then(() => {
-        return createDocument(docData)
-      })
-      .then(() => {
+        message.success(`Файл ${docData.name} успешко сохранен`)
         setDocumentState({ ...defaultDocumentData })
+      })
+      .cathc(error => {
+        message.error(error.message)
       })
   }
 
@@ -89,7 +89,11 @@ const NewDocumentPage = props => {
           }
           sendDocumentToUser(docDataToUser)
             .then(() => {
+              message.success('Сообщение успешно отправлено!')
               setDocumentState({ ...defaultDocumentData })
+            })
+            .catch(error => {
+              message.error(error.message)
             })
         }
       })
@@ -102,29 +106,37 @@ const NewDocumentPage = props => {
       ...documentState,
       fetching: true
     })
-    findUsersByParams(value)
-      .then(({ data }) => {
-        const dataArray = data.data.map(user => ({
-          text: `${user.company_data.company_number}, ${user.company_data.name}`,
-          value: `${user.id}`
-        }))
-        setDocumentState({
-          ...documentState,
-          data: dataArray,
-          fetching: false
+    if (value.length > 0) {
+      findUsersByParams(value)
+        .then(({ data }) => {
+          const dataArray = data.data.map(user => ({
+            text: `${user.company_data.company_number}, ${user.company_data.name}`,
+            value: `${user.id}`
+          }))
+          setDocumentState({
+            ...documentState,
+            data: dataArray,
+            fetching: false
+          })
         })
+        .catch((error) => {
+          console.log(error)
+        })
+    } else {
+      setDocumentState({
+        ...documentState,
+        data: [],
+        fetching: false
       })
-      .catch((error) => {
-        console.log(error)
-      })
+    }
   }
 
   const handleSelect = value => {
-    value.forEach(element => {
-      setDocumentState({
-        ...documentState,
-        ids: [...documentState.ids, Number(element.key)]
-      })
+    const ids = value.map(i => Number(i.key))
+    setDocumentState({
+      ...documentState,
+      ids,
+      value
     })
   }
 
@@ -135,6 +147,7 @@ const NewDocumentPage = props => {
         <Select
           mode='multiple'
           labelInValue
+          value={documentState.value}
           filterOption={false}
           notFoundContent={documentState.fetching ? <Spin size='small' /> : null}
           onSearch={fetchUser}
@@ -171,7 +184,7 @@ const NewDocumentPage = props => {
           type='primary'
           onClick={handleSendToDraft}
         >
-          <Icon type='file' />
+          <Icon type='file-text' />
           Сохранить в черновиках
         </Button>
         <Button

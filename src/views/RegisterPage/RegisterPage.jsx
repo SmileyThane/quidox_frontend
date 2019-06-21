@@ -7,8 +7,7 @@ import {
   Form,
   Input,
   Select,
-  Button,
-  notification
+  Button
 } from 'antd'
 
 const { Option } = Select
