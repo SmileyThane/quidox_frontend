@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { Link } from 'react-router-dom'
 
 import { Table } from 'antd'
 
@@ -17,7 +18,8 @@ const DraftsPage = props => {
 
   const columns = [{
     title: 'Название сообщения',
-    dataIndex: 'name'
+    key: 'name',
+    render: record => <Link to={`/documents/${record.id}`}>{record.name}</Link>
   },
   {
     title: 'Текст сообщения',

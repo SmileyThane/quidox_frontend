@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 
-import { Layout, Icon, Popconfirm } from 'antd'
+import { Layout, Icon, Popconfirm, Skeleton } from 'antd'
 
 import history from '../../history.js'
 import { Input } from '../'
@@ -10,7 +10,7 @@ import './HeaderBlock.scss'
 const { Header } = Layout
 const HeaderBlock = props => {
   const {
-    user: { data }
+    user: { isFetching, data }
   } = props
 
   const handleLogout = () => {
@@ -33,23 +33,25 @@ const HeaderBlock = props => {
                 onSearch={() => console.log('value')}
                 kind='search'
               />
-              <div className='user header__user'>
-                {data &&
+              <Skeleton loading={isFetching} active paragraph={false}>
+                <div className='user header__user'>
+                  {data &&
                   <span>{data.email}</span>
-                }
-                <Popconfirm
-                  placement='bottom'
-                  title='Вы уверены?'
-                  onConfirm={() => handleLogout()}
-                  okText='Выйти'
-                  cancelText='Закрыть'
-                >
-                  <Icon
-                    className='user__logout-btn'
-                    type='logout'
-                  />
-                </Popconfirm>
-              </div>
+                  }
+                  <Popconfirm
+                    placement='bottom'
+                    title='Вы уверены?'
+                    onConfirm={() => handleLogout()}
+                    okText='Выйти'
+                    cancelText='Закрыть'
+                  >
+                    <Icon
+                      className='user__logout-btn'
+                      type='logout'
+                    />
+                  </Popconfirm>
+                </div>
+              </Skeleton>
             </Fragment>
           }
         </div>

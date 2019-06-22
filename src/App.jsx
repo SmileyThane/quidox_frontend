@@ -10,6 +10,7 @@ import {
   LoginPage,
   RegisterPage,
   Home,
+  SingleDocumentPage,
   NewDocumentPage,
   DraftsPage,
   CompanyPage,
@@ -24,6 +25,7 @@ function App () {
       <Router history={history}>
         <Switch>
           <PrivateRoute exact path='/' component={Home} />
+          <PrivateRoute path='/documents/:id' component={SingleDocumentPage} />
           <PrivateRoute path='/new-document' component={NewDocumentPage} />
           <PrivateRoute path='/company' component={CompanyPage} />
           <PrivateRoute path='/confirm-messages' component={ConfirmMessagesPages} />
