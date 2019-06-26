@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'
-import { Link } from 'react-router-dom'
 
-import { Table, Icon } from 'antd'
+import { Table } from '../../components'
 
 const DraftsPage = props => {
   const {
     user: { data },
     documents: { draftDocumentsList, isFetching },
-    getDraftDocumentsByActiveCompany
+    getDraftDocumentsByActiveCompany,
+    removeDocumentById
   } = props
 
   useEffect(() => {
@@ -16,36 +16,14 @@ const DraftsPage = props => {
     }
   }, [data])
 
-  const columns = [{
-    title: 'Имя сообщения',
-    key: 'name',
-    width: 300,
-    render: record => <Link to={`/documents/${record.id}`}>{record.name}</Link>
-  },
-  {
-    title: 'Текст сообщения',
-    dataIndex: 'description',
-    width: 500
-  },
-  {
-    title: 'Дата создания',
-    dataIndex: 'created_at',
-    width: 200
-  },
-  {
-    title: 'Действия',
-    width: 150,
-    render: record => <Icon type='delete' onClick={() => console.log(record.id)} />
-  }]
-
   return (
     <div className='content'>
       <Table
         rowKey='id'
-        columns={columns}
         dataSource={draftDocumentsList && draftDocumentsList}
         loading={isFetching}
         className='document-table'
+        removeDocument={removeDocumentById}
       />
     </div>
   )

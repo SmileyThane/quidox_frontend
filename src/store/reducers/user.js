@@ -1,4 +1,4 @@
-import * as p from '../types'
+import * as t from '../types'
 
 const initialState = {
   data: {},
@@ -7,13 +7,13 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case p.GET_USER_FETCHING: {
+    case t.GET_USER_FETCHING: {
       return {
         ...state,
         isFetching: action.payload
       }
     }
-    case p.GET_USER_SUCCESS: {
+    case t.GET_USER_SUCCESS: {
       return {
         ...state,
         data: action.payload.data

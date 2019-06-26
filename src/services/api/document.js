@@ -7,6 +7,15 @@ const getDocumentById = id => {
   })
 }
 
+const removeDocumentById = (id, type) => {
+  return http({
+    url: `/document/delete/${id}`,
+    method: 'GET',
+    type
+  })
+}
+
 export {
-  getDocumentById
+  getDocumentById,
+  removeDocumentById
 }

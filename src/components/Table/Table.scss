@@ -1,0 +1,19 @@
+@import '../../styles/variables';
+.document-table {
+
+}
+.ant-table-title {
+  background-color: #fafafa;
+  border-bottom: .1rem solid map-get($colors, gray);
+  top: 0 !important;
+}
+.table__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2rem;
+  .table-header__search {
+    width: 100%;
+    max-width: 55rem;
+  }
+}
