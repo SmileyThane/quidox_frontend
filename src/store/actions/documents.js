@@ -1,35 +1,22 @@
-import {
-  CREATE_DOCUMENT_FETHCING,
-  CREATE_DOCUMENT_SUCCESS,
-  SEND_DOCUMENT_TO_USER_FETCHING,
-  SEND_DOCUMENT_TO_USER_SUCCESS,
-  GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
-  GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
-  GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
-  GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
-  GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
-  GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
-  GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
-  GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS
-} from '../types'
+import * as p from '../types'
 
 import { api } from '../../services'
 
 const createDocument = data => dispatch => {
   dispatch({
-    type: CREATE_DOCUMENT_FETHCING,
+    type: p.CREATE_DOCUMENT_FETHCING,
     payload: true
   })
   return api.documents.createDocument(data)
     .then(({ data }) => {
       if (data) {
         dispatch({
-          type: CREATE_DOCUMENT_SUCCESS,
+          type: p.CREATE_DOCUMENT_SUCCESS,
           payload: data
         })
       }
       dispatch({
-        type: CREATE_DOCUMENT_FETHCING,
+        type: p.CREATE_DOCUMENT_FETHCING,
         payload: false
       })
       return data
@@ -38,19 +25,19 @@ const createDocument = data => dispatch => {
 
 const sendDocumentToUser = data => dispatch => {
   dispatch({
-    type: CREATE_DOCUMENT_FETHCING,
+    type: p.CREATE_DOCUMENT_FETHCING,
     payload: true
   })
   return api.documents.sendDocumentToUser(data)
     .then(({ data }) => {
       if (data) {
         dispatch({
-          type: SEND_DOCUMENT_TO_USER_SUCCESS,
+          type: p.SEND_DOCUMENT_TO_USER_SUCCESS,
           payload: false
         })
       }
       dispatch({
-        type: CREATE_DOCUMENT_FETHCING,
+        type: p.CREATE_DOCUMENT_FETHCING,
         payload: false
       })
     })
@@ -58,19 +45,19 @@ const sendDocumentToUser = data => dispatch => {
 
 const getInboxUnconfirmedDocumentsByActiveCompanyId = id => dispatch => {
   dispatch({
-    type: GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+    type: p.GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
     payload: true
   })
   return api.documents.getInboxUnconfirmedDocumentsByActiveCompanyId(id)
     .then(({ data }) => {
       if (data) {
         dispatch({
-          type: GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
+          type: p.GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
           payload: data
         })
       }
       dispatch({
-        type: GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+        type: p.GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
         payload: false
       })
     })
@@ -78,19 +65,19 @@ const getInboxUnconfirmedDocumentsByActiveCompanyId = id => dispatch => {
 
 const getInboxСonfirmedDocumentsByActiveCompanyId = id => dipsatch => {
   dipsatch({
-    type: GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+    type: p.GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
     payload: true
   })
   return api.documents.getInboxСonfirmedDocumentsByActiveCompanyId(id)
     .then(({ data }) => {
       if (data) {
         dipsatch({
-          type: GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
+          type: p.GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
           payload: data
         })
       }
       dipsatch({
-        type: GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+        type: p.GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
         payload: false
       })
     })
@@ -98,19 +85,19 @@ const getInboxСonfirmedDocumentsByActiveCompanyId = id => dipsatch => {
 
 const getOutDocumentsByActiveCompanyId = id => dispatch => {
   dispatch({
-    type: GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+    type: p.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
     payload: true
   })
   return api.documents.getOutDocumentsByActiveCompanyId(id)
     .then(({ data }) => {
       if (data) {
         dispatch({
-          type: GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
+          type: p.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
           payload: data
         })
       }
       dispatch({
-        type: GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+        type: p.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
         payload: false
       })
     })
@@ -118,19 +105,19 @@ const getOutDocumentsByActiveCompanyId = id => dispatch => {
 
 const getDraftDocumentsByActiveCompany = id => dispatch => {
   dispatch({
-    type: GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+    type: p.GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
     payload: true
   })
   return api.documents.getDraftDocumentsByActiveCompany(id)
     .then(({ data }) => {
       if (data) {
         dispatch({
-          type: GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
+          type: p.GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
           payload: data
         })
       }
       dispatch({
-        type: GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+        type: p.GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
         payload: false
       })
     })

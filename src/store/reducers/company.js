@@ -1,7 +1,4 @@
-import {
-  GET_COMPANY_FETCHING,
-  GET_COMPANY_SUCCESS
-} from '../types'
+import * as p from '../types'
 
 const initalState = {
   list: [],
@@ -10,12 +7,12 @@ const initalState = {
 
 export default (state = initalState, action) => {
   switch (action.type) {
-    case GET_COMPANY_FETCHING:
+    case p.GET_COMPANY_FETCHING:
       return {
         ...state,
         isFetching: action.payload
       }
-    case GET_COMPANY_SUCCESS:
+    case p.GET_COMPANY_SUCCESS:
       return {
         ...state,
         list: action.payload

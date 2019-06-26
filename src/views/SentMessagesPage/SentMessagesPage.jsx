@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
+import { Link } from 'react-router-dom'
 
-import { Table } from 'antd'
+import { Table, Icon } from 'antd'
 
 const SentMessagesPage = props => {
   const {
@@ -17,15 +18,24 @@ const SentMessagesPage = props => {
 
   const columns = [{
     title: 'Название сообщения',
-    dataIndex: 'name'
+    key: 'name',
+    width: 300,
+    render: record => <Link to={`/documents/${record.id}`}>{record.name}</Link>
   },
   {
     title: 'Текст сообщения',
-    dataIndex: 'description'
+    dataIndex: 'description',
+    width: 500
   },
   {
     title: 'Дата создания',
-    dataIndex: 'created_at'
+    dataIndex: 'created_at',
+    width: 200
+  },
+  {
+    title: 'Действия',
+    width: 150,
+    render: record => <Icon type='delete' onClick={() => console.log(record.id)} />
   }]
 
   return (
@@ -35,6 +45,7 @@ const SentMessagesPage = props => {
         columns={columns}
         dataSource={outDocumentsList && outDocumentsList}
         loading={isFetching}
+        className='document-table'
       />
     </div>
   )

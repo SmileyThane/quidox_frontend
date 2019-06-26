@@ -1,7 +1,4 @@
-import {
-  GET_DOCUMENT_BY_ID_FETCHING,
-  GET_DOCUMENT_BY_ID_SUCCESS
-} from '../types'
+import * as p from '../types'
 
 const initialState = {
   data: {},
@@ -10,12 +7,12 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case GET_DOCUMENT_BY_ID_FETCHING:
+    case p.GET_DOCUMENT_BY_ID_FETCHING:
       return {
         ...state,
         isFetching: action.payload
       }
-    case GET_DOCUMENT_BY_ID_SUCCESS:
+    case p.GET_DOCUMENT_BY_ID_SUCCESS:
       return {
         ...state,
         data: action.payload.data

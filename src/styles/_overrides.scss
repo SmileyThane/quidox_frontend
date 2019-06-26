@@ -116,3 +116,12 @@
   }
 }
 
+.document-table {
+  .ant-table-tbody > tr > td {
+    word-wrap: break-word;
+    &:nth-of-type(2) {
+      max-width: 50rem;
+    }
+  }
+}
+
