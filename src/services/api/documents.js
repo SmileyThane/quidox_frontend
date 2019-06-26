@@ -44,11 +44,20 @@ const getDraftDocumentsByActiveCompany = id => {
   })
 }
 
+const removeDocumentsByIds = data => {
+  return http({
+    url: `document/multiple/delete`,
+    method: 'POST',
+    data
+  })
+}
+
 export {
   createDocument,
   sendDocumentToUser,
   getInboxUnconfirmedDocumentsByActiveCompanyId,
   getInboxСonfirmedDocumentsByActiveCompanyId,
   getOutDocumentsByActiveCompanyId,
-  getDraftDocumentsByActiveCompany
+  getDraftDocumentsByActiveCompany,
+  removeDocumentsByIds
 }

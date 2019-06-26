@@ -79,6 +79,16 @@ export default (state = initialState, action) => {
         ...state,
         draftDocumentsList: state.draftDocumentsList.filter(i => i.id !== action.payload)
       }
+    case t.REMOVE_DOCUMENTS_BY_IDS_FETCHING:
+      return {
+        ...state,
+        isFetching: action.payload
+      }
+    case t.REMOVE_DRAFT_DOCUMENTS_BY_IDS_SUCCESS:
+      return {
+        ...state,
+        draftDocumentsList: state.draftDocumentsList.filter(i => action.payload.ids.indexOf(i.id) === -1)
+      }
     default:
       return state
   }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import { Link } from 'react-router-dom'
-import { Table, Icon } from 'antd'
+import { Table, Icon, Popconfirm, message } from 'antd'
 import { Input } from '../'
 import './Table.scss'
 
@@ -9,7 +9,7 @@ const defaultTableState = {
   selectedRowKeys: []
 }
 
-const AntdTable = ({ children, removeDocument, ...rest }) => {
+const AntdTable = ({ children, type, removeDocument, removeDocuments, ...rest }) => {
   const [tableState, setTableState] = useState({ ...defaultTableState })
 
   const columns = [
@@ -19,7 +19,7 @@ const AntdTable = ({ children, removeDocument, ...rest }) => {
       width: 200
     },
     {
-      title: 'Имя сообщения',
+      title: 'Тема',
       key: 'name',
       width: 300,
       render: record => <Link to={`/documents/${record.id}`}>{record.name}</Link>
@@ -40,17 +40,27 @@ const AntdTable = ({ children, removeDocument, ...rest }) => {
   }
 
   const handleRemove = (type) => {
-    removeDocument(tableState.selectedRowKeys[0], type)
-      .then(() => {
-        setTableState({ ...defaultTableState })
-      })
+    if (tableState.selectedRowKeys.length === 0) {
+      message.error('Нет выбраных документов!')
+      return null
+    }
+    if (tableState.selectedRowKeys.length > 1) {
+      const obj = {
+        ids: tableState.selectedRowKeys
+      }
+      removeDocuments(obj, type)
+    } else {
+      removeDocument(tableState.selectedRowKeys[0], type)
+        .then(() => {
+          setTableState({ ...defaultTableState })
+        })
+    }
   }
 
   const rowSelection = {
     selectedRowKeys: tableState.selectedRowKeys,
     onChange: onSelectChange
   }
-
   return (
     <Table
       className='table'
@@ -60,7 +70,14 @@ const AntdTable = ({ children, removeDocument, ...rest }) => {
         (
           <div className='table__header table-header'>
             <div className='table-header__actions'>
-              <Icon type='delete' style={{ color: '#FF7D1D' }} onClick={() => handleRemove('draft')} />
+              <Popconfirm
+                title='Вы уверены?'
+                onConfirm={() => handleRemove(type)}
+                okText='Удалить'
+                cancelText='Отмена'
+              >
+                <Icon type='delete' style={{ color: '#FF7D1D' }} />
+              </Popconfirm>
             </div>
             <div className='table-header__search'>
               <Input kind='search' placeholder='Введите дату, отправителя, тему...' />

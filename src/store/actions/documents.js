@@ -123,11 +123,35 @@ const getDraftDocumentsByActiveCompany = id => dispatch => {
     })
 }
 
+const removeDocumentsByIds = (ids, type) => dispatch => {
+  dispatch({
+    type: t.REMOVE_DOCUMENTS_BY_IDS_FETCHING,
+    payload: true
+  })
+  return api.documents.removeDocumentsByIds(ids)
+    .then(({ data }) => {
+      if (data) {
+        switch (type) {
+          case 'draft':
+            dispatch({
+              type: t.REMOVE_DRAFT_DOCUMENTS_BY_IDS_SUCCESS,
+              payload: ids
+            })
+        }
+      }
+      dispatch({
+        type: t.REMOVE_DOCUMENTS_BY_IDS_FETCHING,
+        payload: false
+      })
+    })
+}
+
 export {
   createDocument,
   sendDocumentToUser,
   getInboxUnconfirmedDocumentsByActiveCompanyId,
   getInboxСonfirmedDocumentsByActiveCompanyId,
   getOutDocumentsByActiveCompanyId,
-  getDraftDocumentsByActiveCompany
+  getDraftDocumentsByActiveCompany,
+  removeDocumentsByIds
 }

@@ -142,10 +142,10 @@ const NewDocumentPage = props => {
       value
     })
   }
-
+  console.log(isFetching)
   return (
     <div className='content content_padding'>
-      <Spin spinning={isFetching}>
+      <Spin spinning={!!isFetching}>
         <div className='input-group'>
           <label className='label'>Получатели</label>
           <Select

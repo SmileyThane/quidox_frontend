@@ -7,7 +7,8 @@ const DraftsPage = props => {
     user: { data },
     documents: { draftDocumentsList, isFetching },
     getDraftDocumentsByActiveCompany,
-    removeDocumentById
+    removeDocumentById,
+    removeDocumentsByIds
   } = props
 
   useEffect(() => {
@@ -24,6 +25,8 @@ const DraftsPage = props => {
         loading={isFetching}
         className='document-table'
         removeDocument={removeDocumentById}
+        removeDocuments={removeDocumentsByIds}
+        type='draft'
       />
     </div>
   )
