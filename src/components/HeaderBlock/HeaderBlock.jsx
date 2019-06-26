@@ -43,7 +43,7 @@ const HeaderBlock = props => {
                     title='Вы уверены?'
                     onConfirm={() => handleLogout()}
                     okText='Выйти'
-                    cancelText='Закрыть'
+                    cancelText='Отмена'
                   >
                     <Icon
                       className='user__logout-btn'

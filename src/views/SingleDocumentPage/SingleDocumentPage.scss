@@ -1,0 +1,56 @@
+@import '../../styles/variables';
+.document {
+  padding: 1.5rem;
+  .document__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .document__header_left {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
+  }
+  .document__icon {
+    font-size: 4rem;
+    color: map-get($colors, blue);
+    margin-right: 1.5rem;
+  }
+  .document__title {
+    font-size: 2rem;
+    margin: 0;
+  }
+  .document__date {
+    font-size: 1.5rem;
+  }
+  .document__content {
+    margin-top: 3rem;
+  }
+  .info__item {
+    display: flex;
+    justify-content: flex-start;
+    align-items: baseline;
+  }
+  .info__title {
+    width: 14.2rem;
+    min-width: 14.2rem;;
+    padding-right: 1.5rem;
+    text-align: right;
+    color: map-get($colors, darkSecond);
+    font-size: 1.5rem;
+  }
+  .info__content {
+    padding-left: 1.5rem;
+    border-left: .1rem solid map-get($colors, gray);
+    font-size: 1.5rem;
+  }
+  .document__attached-doc {
+    margin-top: 1.5rem;
+  }
+  .document__actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+  }
+}

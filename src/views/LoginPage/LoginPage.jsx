@@ -68,7 +68,7 @@ class LoginPage extends React.Component {
           <Button type='primary' htmlType='submit' className='login-form-button'>
             Войти
           </Button>
-          или <Link to={'/register'}>зарегестрируйтесь сейчас!</Link>
+          или <Link to={'/register'}>зарегистрируйтесь сейчас!</Link>
         </Form.Item>
       </Form>
     )
