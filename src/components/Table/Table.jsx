@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 
 import { Link } from 'react-router-dom'
+import { getTimeStamp } from '../../helpers'
 import { Table, Icon, Popconfirm, message } from 'antd'
 import { Input } from '../'
 import './Table.scss'
@@ -21,7 +22,7 @@ const AntdTable = props => {
       title: 'Дата',
       width: 200,
       dataIndex: 'created_at',
-      sorter: (a, b) => Math.round(new Date(a.created_at).getTime() / 1000) - Math.round(new Date(b.created_at).getTime() / 1000)
+      sorter: (a, b) => getTimeStamp(a.created_at) - getTimeStamp(b.created_at)
     },
     {
       title: 'Тема',

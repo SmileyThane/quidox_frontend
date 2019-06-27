@@ -1,3 +1,12 @@
-const buildSetter = (state, setter) => obj => setter({ ...state, ...obj })
+// const buildSetter = (state, setter) => obj => setter({ ...state, ...obj })
 
-const setState = buildSetter(userState, setUserState)
+// const setState = buildSetter(userState, setUserState)
+
+/**
+ * convert string date to timestamp
+ * @param {string} time
+ * @returns {number}
+ */
+export const getTimeStamp = (time) => {
+  return Math.round(new Date(time).getTime() / 1000)
+}
