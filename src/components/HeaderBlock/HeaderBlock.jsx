@@ -36,7 +36,7 @@ const HeaderBlock = props => {
               <Skeleton loading={isFetching} active paragraph={false}>
                 <div className='user header__user'>
                   {data &&
-                  <span>{data.email}</span>
+                  <span onClick={() => history.push('/user-me')}>{data.email}</span>
                   }
                   <Popconfirm
                     placement='bottom'

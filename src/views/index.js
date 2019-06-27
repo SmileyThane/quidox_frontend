@@ -1,5 +1,6 @@
 import LoginPage from './LoginPage'
 import RegisterPage from './RegisterPage'
+import UserInfoPage from './UserInfoPage'
 import Home from './Home'
 import SingleDocumentPage from './SingleDocumentPage'
 import NewDocumentPage from './NewDocumentPage'
@@ -12,6 +13,7 @@ import SentMessagesPage from './SentMessagesPage'
 export {
   LoginPage,
   RegisterPage,
+  UserInfoPage,
   Home,
   SingleDocumentPage,
   NewDocumentPage,

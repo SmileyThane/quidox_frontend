@@ -9,6 +9,7 @@ import { PrivateRoute, PublicRoute } from './components'
 import {
   LoginPage,
   RegisterPage,
+  UserInfoPage,
   Home,
   SingleDocumentPage,
   NewDocumentPage,
@@ -32,6 +33,7 @@ function App () {
           <PrivateRoute path='/unconfirmed-messages' component={UnconfirmedMessagesPage} />
           <PrivateRoute path='/sent-messages' component={SentMessagesPage} />
           <PrivateRoute path='/drafts' component={DraftsPage} />
+          <PrivateRoute path='/user-me' component={UserInfoPage} />
 
           <PublicRoute path='/login' component={LoginPage} />
           <PublicRoute path='/register' component={RegisterPage} />
