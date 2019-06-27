@@ -46,16 +46,22 @@ const CopmanyPage = props => {
     dataIndex: 'company_number'
   },
   {
+    title: 'Данные компании',
+    dataIndex: 'description'
+  },
+  {
     title: 'Статус',
     render: record => (
       <Fragment>
         {companyState.activeCompanyId &&
-        <Tag color={(record.id === companyState.activeCompanyId) ? '#87d068' : '#FF7D1D'}>{companyState.activeCompanyId}</Tag>
+        <Tag color={(record.id === companyState.activeCompanyId) ? '#87d068' : '#FF7D1D'}>
+          {(record.id === companyState.activeCompanyId) ? 'Активная' : 'Не активная'}
+        </Tag>
         }
       </Fragment>
     )
   }]
-  console.log(companyState.activeCompanyId)
+  console.log(list)
   return (
     <div className='content'>
       <Table

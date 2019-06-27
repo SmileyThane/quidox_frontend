@@ -6,17 +6,22 @@ import { Input } from '../'
 import './Table.scss'
 
 const defaultTableState = {
-  selectedRowKeys: []
+  selectedRowKeys: [],
+  searchText: ''
 }
 
-const AntdTable = ({ children, type, removeDocument, removeDocuments, ...rest }) => {
+const AntdTable = props => {
+
+  const { children, type, removeDocument, removeDocuments, ...rest } = props
+
   const [tableState, setTableState] = useState({ ...defaultTableState })
 
   const columns = [
     {
       title: 'Дата',
+      width: 200,
       dataIndex: 'created_at',
-      width: 200
+      sorter: (a, b) => Math.round(new Date(a.created_at).getTime() / 1000) - Math.round(new Date(b.created_at).getTime() / 1000)
     },
     {
       title: 'Тема',
@@ -32,7 +37,6 @@ const AntdTable = ({ children, type, removeDocument, removeDocuments, ...rest })
   ]
 
   const onSelectChange = selectedRowKeys => {
-    console.log('selectedRowKeys changed: ', selectedRowKeys)
     setTableState({
       ...tableState,
       selectedRowKeys
@@ -49,18 +53,35 @@ const AntdTable = ({ children, type, removeDocument, removeDocuments, ...rest })
         ids: tableState.selectedRowKeys
       }
       removeDocuments(obj, type)
+        .then(() => {
+          message.success('Документы удалены')
+          setTableState({ ...defaultTableState })
+        })
     } else {
       removeDocument(tableState.selectedRowKeys[0], type)
         .then(() => {
+          message.success('Документ удален')
           setTableState({ ...defaultTableState })
         })
+        .catch(error => {
+          message.error(error.message)
+        })
     }
+  }
+
+  const handleSearch = e => {
+    setTableState({
+      ...tableState,
+      searchText: e.target.value
+    })
   }
 
   const rowSelection = {
     selectedRowKeys: tableState.selectedRowKeys,
     onChange: onSelectChange
   }
+
+  console.log(tableState.searchText)
   return (
     <Table
       className='table'
@@ -80,9 +101,8 @@ const AntdTable = ({ children, type, removeDocument, removeDocuments, ...rest })
               </Popconfirm>
             </div>
             <div className='table-header__search'>
-              <Input kind='search' placeholder='Введите дату, отправителя, тему...' />
+              <Input kind='search' onChange={e => handleSearch(e)} placeholder='Введите дату, отправителя, тему...' />
             </div>
-            <div className='table-header__pagination'></div>
           </div>
         )}
       {...rest}

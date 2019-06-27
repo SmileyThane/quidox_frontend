@@ -1,5 +1,4 @@
 import * as t from '../types'
-import { id } from 'postcss-selector-parser';
 
 const initialState = {
   outDocumentsList: [],
