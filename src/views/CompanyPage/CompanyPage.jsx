@@ -1,13 +1,29 @@
-import React, { useEffect } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 
 import { Table, Tag } from 'antd'
 import './CompanyPage.scss'
+
+const defaultCompanyState = {
+  activeCompanyId: null
+}
+
 const CopmanyPage = props => {
   const {
     getCompany,
     companies: { isFetching, list },
     user: { data }
   } = props
+
+  useEffect(() => {
+    getCompany()
+    if (data) {
+      setCompanyState({
+        activeCompanyId: +data.active_company_id
+      })
+    }
+  }, [data])
+
+  const [companyState, setCompanyState] = useState({ ...defaultCompanyState })
 
   const getCompanyArray = () => {
     const companyArray = []
@@ -21,11 +37,6 @@ const CopmanyPage = props => {
 
   const companyArray = getCompanyArray()
 
-  console.log(companyArray)
-  useEffect(() => {
-    getCompany()
-  }, [getCompany, data])
-
   const columns = [{
     title: 'Имя',
     dataIndex: 'name'
@@ -37,10 +48,14 @@ const CopmanyPage = props => {
   {
     title: 'Статус',
     render: record => (
-      <Tag color={(data.active_company_id && record.id === data.active_company_id) ? '#87d068' : '#FF7D1D'}>Status</Tag>
+      <Fragment>
+        {companyState.activeCompanyId &&
+        <Tag color={(record.id === companyState.activeCompanyId) ? '#87d068' : '#FF7D1D'}>{companyState.activeCompanyId}</Tag>
+        }
+      </Fragment>
     )
   }]
-  console.log(data.active_company_id)
+  console.log(companyState.activeCompanyId)
   return (
     <div className='content'>
       <Table
