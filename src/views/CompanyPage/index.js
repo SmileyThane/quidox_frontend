@@ -3,7 +3,8 @@ import CompanyPage from './CompanyPage'
 import actions from '../../store/actions'
 
 const mapStateToProps = state => ({
-  companies: state.company
+  companies: state.company,
+  user: state.user
 })
 
 const mapDispatchToProps = dispatch => ({

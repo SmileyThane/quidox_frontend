@@ -1,9 +1,13 @@
 import React, { useEffect } from 'react'
 
-import { Table } from '../../components'
+import { Table, Tag } from 'antd'
 import './CompanyPage.scss'
 const CopmanyPage = props => {
-  const { getCompany, companies: { isFetching, list } } = props
+  const {
+    getCompany,
+    companies: { isFetching, list },
+    user: { data }
+  } = props
 
   const getCompanyArray = () => {
     const companyArray = []
@@ -17,23 +21,26 @@ const CopmanyPage = props => {
 
   const companyArray = getCompanyArray()
 
+  console.log(companyArray)
   useEffect(() => {
     getCompany()
-  }, [getCompany])
+  }, [getCompany, data])
 
   const columns = [{
     title: 'Имя',
     dataIndex: 'name'
   },
   {
-    title: 'Описание',
-    dataIndex: 'description'
-  },
-  {
     title: 'УНП',
     dataIndex: 'company_number'
+  },
+  {
+    title: 'Статус',
+    render: record => (
+      <Tag color={(data.active_company_id && record.id === data.active_company_id) ? '#87d068' : '#FF7D1D'}>Status</Tag>
+    )
   }]
-
+  console.log(data.active_company_id)
   return (
     <div className='content'>
       <Table

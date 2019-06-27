@@ -68,7 +68,7 @@ const UserInfoPage = props => {
       })
     }
   }
-  console.log(userState)
+
   return (
     <div className='content'>
       <Spin spinning={isFetching}>
@@ -86,10 +86,10 @@ const UserInfoPage = props => {
             <Input kind='text' onChange={e => updateField('phone', e.target.value)} value={userState.phone} disabled={!userState.isEditMode} />
           </div>
           <div className='user-info-group user-info-group_full-width'>
-            <p className='user-info-name'>Активная компания</p>
+            <p className='user-info-name'>Активная компания:</p>
             <Select
               style={{ width: '100%' }}
-              value={userState.active_company_id}
+              value={!isNaN(userState.active_company_id) ? userState.active_company_id : ''}
               disabled={!userState.isEditMode}
               onChange={v => setUserState({ ...userState, active_company_id: v })}
             >

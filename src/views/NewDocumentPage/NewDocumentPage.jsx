@@ -112,8 +112,9 @@ const NewDocumentPage = props => {
     if (value.length > 0) {
       findUsersByParams(value)
         .then(({ data }) => {
+          console.log(data)
           const dataArray = data.data.map(user => ({
-            text: `${user.company_data.company_number}, ${user.company_data.name}`,
+            text: `${user.user_data.email} (УНП:${user.company_data.company_number}; Компания:${user.company_data.name})`,
             value: `${user.id}`
           }))
           setDocumentState({
