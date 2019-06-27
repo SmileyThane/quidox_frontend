@@ -19,6 +19,18 @@ export default (state = initialState, action) => {
         data: action.payload.data
       }
     }
+    case t.UPDATE_USER_FETCHING: {
+      return {
+        ...state,
+        isFetching: action.payload
+      }
+    }
+    case t.UPDATE_USER_SUCCESS: {
+      return {
+        ...state,
+        data: action.payload.data
+      }
+    }
     default:
       return state
   }

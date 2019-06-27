@@ -14,7 +14,16 @@ const findUsersByParams = params => {
   })
 }
 
+const updateUser = data => {
+  return http({
+    url: 'user/update',
+    method: 'POST',
+    data
+  })
+}
+
 export {
   getUser,
+  updateUser,
   findUsersByParams
 }

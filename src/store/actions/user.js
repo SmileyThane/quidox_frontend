@@ -23,6 +23,27 @@ const getUser = () => dispatch => {
     })
 }
 
+const updateUser = data => dispatch => {
+  dispatch({
+    type: t.UPDATE_USER_FETCHING,
+    payload: true
+  })
+  return api.user.updateUser(data)
+    .then(({ data }) => {
+      if (data) {
+        dispatch({
+          type: t.UPDATE_USER_SUCCESS,
+          payload: data
+        })
+      }
+      dispatch({
+        type: t.UPDATE_USER_FETCHING,
+        payload: false
+      })
+    })
+}
+
 export {
-  getUser
+  getUser,
+  updateUser
 }
