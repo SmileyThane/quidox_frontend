@@ -83,7 +83,6 @@ const AntdTable = props => {
     onChange: onSelectChange
   }
 
-  console.log(tableState.searchText)
   return (
     <Table
       className='table'

@@ -39,13 +39,12 @@ const NewDocumentPage = props => {
       authorization: 'authorization-text'
     },
     onChange (info) {
-      console.log(info.file.status)
+      console.log(info.fileList.map(i => i.originFileObj))
       setDocumentState({
         ...documentState,
         second_documents: info.fileList
       })
       if (info.file.status !== 'uploading') {
-        console.log(info.file, info.fileList)
       }
       if (info.file.status === 'done') {
         message.success(`${info.file.name} файл добавлен успешно`)
@@ -60,8 +59,9 @@ const NewDocumentPage = props => {
     const docData = {
       name: documentState.name,
       description: documentState.description,
-      second_documents: documentState.second_documents
+      second_documents: documentState.second_documents.map(i => i.originFileObj)
     }
+    console.log(docData)
     return createDocument(docData)
       .then(() => {
         message.success(`Файл ${docData.name} успешко сохранен`)
@@ -79,6 +79,7 @@ const NewDocumentPage = props => {
       document: documentState.document,
       second_documents: documentState.second_documents
     }
+
     return createDocument(docDataDraft)
       .then(data => {
         console.log(data)
