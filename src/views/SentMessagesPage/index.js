@@ -8,7 +8,9 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getOutDocumentsByActiveCompanyId: id => dispatch(actions.documents.getOutDocumentsByActiveCompanyId(id))
+  getOutDocumentsByActiveCompanyId: id => dispatch(actions.documents.getOutDocumentsByActiveCompanyId(id)),
+  removeDocumentById: (id, type) => dispatch(actions.document.removeDocumentById(id, type)),
+  removeDocumentsByIds: (ids, type) => dispatch(actions.documents.removeDocumentsByIds(ids, type))
 })
 
 export default connect(

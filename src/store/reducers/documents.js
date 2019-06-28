@@ -78,6 +78,28 @@ export default (state = initialState, action) => {
         ...state,
         draftDocumentsList: state.draftDocumentsList.filter(i => i.id !== action.payload)
       }
+    case t.REMOVE_INBOX_UNCONFIRMED_DOCUMENT_BY_ID_SUCCESS:
+      return {
+        ...state,
+        inboxDocuments: {
+          ...state.inboxDocuments,
+          inboxUnconfirmedDocuments: state.inboxDocuments.inboxUnconfirmedDocuments.filter(i => i.id !== action.payload)
+        }
+      }
+    case t.REMOVE_INBOX_CONFIRMED_DOCUMENT_BY_ID_SUCCESS: {
+      return {
+        ...state,
+        inboxDocuments: {
+          ...state.inboxDocuments,
+          inboxConfirmedDocuments: state.inboxDocuments.inboxConfirmedDocuments.filter(i => i.id !== action.payload)
+        }
+      }
+    }
+    case t.REMOVE_OUT_DOCUMENT_BY_ID_SUCCESS:
+      return {
+        ...state,
+        outDocumentsList: state.outDocumentsList.filter(i => i.id !== action.payload)
+      }
     case t.REMOVE_DOCUMENTS_BY_IDS_FETCHING:
       return {
         ...state,
@@ -88,6 +110,30 @@ export default (state = initialState, action) => {
         ...state,
         draftDocumentsList: state.draftDocumentsList.filter(i => action.payload.ids.indexOf(i.id) === -1)
       }
+    case t.REMOVE_OUT_DOCUMENTS_BY_IDS_SUCCESS:
+      return {
+        ...state,
+        outDocumentsList: state.outDocumentsList.filter(i => action.payload.ids.indexOf(i.id) === -1)
+
+      }
+    case t.REMOVE_INBOX_UNCONFIRMED_DOCUMENTS_BY_IDS_SUCCESS: {
+      return {
+        ...state,
+        inboxDocuments: {
+          ...state.inboxDocuments,
+          inboxUnconfirmedDocuments: state.inboxDocuments.inboxUnconfirmedDocuments.filter(i => action.payload.ids.indexOf(i.id) === -1)
+        }
+      }
+    }
+    case t.REMOVE_INBOX_CONFIRMED_DOCUMENTS_BY_IDS_SUCCESS: {
+      return {
+        ...state,
+        inboxDocuments: {
+          ...state.inboxDocuments,
+          inboxConfirmedDocuments: state.inboxDocuments.inboxConfirmedDocuments.filter(i => action.payload.ids.indexOf(i.id) === -1)
+        }
+      }
+    }
     default:
       return state
   }

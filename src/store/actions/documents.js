@@ -1,3 +1,4 @@
+/* eslint-disable no-fallthrough */
 import * as t from '../types'
 
 import { api } from '../../services'
@@ -135,6 +136,21 @@ const removeDocumentsByIds = (ids, type) => dispatch => {
           case 'draft':
             dispatch({
               type: t.REMOVE_DRAFT_DOCUMENTS_BY_IDS_SUCCESS,
+              payload: ids
+            })
+          case 'out':
+            dispatch({
+              type: t.REMOVE_OUT_DOCUMENTS_BY_IDS_SUCCESS,
+              payload: ids
+            })
+          case 'unconfirmed':
+            dispatch({
+              type: t.REMOVE_INBOX_UNCONFIRMED_DOCUMENTS_BY_IDS_SUCCESS,
+              payload: ids
+            })
+          case 'confirmed':
+            dispatch({
+              type: t.REMOVE_INBOX_CONFIRMED_DOCUMENTS_BY_IDS_SUCCESS,
               payload: ids
             })
         }
