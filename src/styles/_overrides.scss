@@ -146,3 +146,13 @@
   }
 }
 
+.ant-select-auto-complete {
+  width: 100%;
+  .ant-input.ant-select-search__field {
+    border-radius: .2rem !important;
+    height: 3.8rem;
+  }
+  .ant-select-selection__placeholder {
+    margin-top: -0.7rem;
+  }
+}

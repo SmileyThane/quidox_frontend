@@ -16,31 +16,35 @@ const sendDocumentToUser = data => {
   })
 }
 
-const getInboxUnconfirmedDocumentsByActiveCompanyId = id => {
+const getInboxUnconfirmedDocumentsByActiveCompanyId = (id, params) => {
   return http({
     url: `documents/in/0/${id}`,
-    method: 'GET'
+    method: 'GET',
+    params
   })
 }
 
-const getInboxСonfirmedDocumentsByActiveCompanyId = id => {
+const getInboxСonfirmedDocumentsByActiveCompanyId = (id, params) => {
   return http({
     url: `documents/in/1/${id}`,
-    method: 'GET'
+    method: 'GET',
+    params
   })
 }
 
-const getOutDocumentsByActiveCompanyId = id => {
+const getOutDocumentsByActiveCompanyId = (id, params) => {
   return http({
     url: `/documents/out/${id}`,
-    method: 'GET'
+    method: 'GET',
+    params
   })
 }
 
-const getDraftDocumentsByActiveCompany = id => {
+const getDraftDocumentsByActiveCompany = (id, params) => {
   return http({
     url: `/documents/drafts/${id}`,
-    method: 'GET'
+    method: 'GET',
+    params
   })
 }
 

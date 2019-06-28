@@ -44,12 +44,12 @@ const sendDocumentToUser = data => dispatch => {
     })
 }
 
-const getInboxUnconfirmedDocumentsByActiveCompanyId = id => dispatch => {
+const getInboxUnconfirmedDocumentsByActiveCompanyId = (id, params) => dispatch => {
   dispatch({
     type: t.GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
     payload: true
   })
-  return api.documents.getInboxUnconfirmedDocumentsByActiveCompanyId(id)
+  return api.documents.getInboxUnconfirmedDocumentsByActiveCompanyId(id, params)
     .then(({ data }) => {
       if (data) {
         dispatch({
@@ -64,12 +64,12 @@ const getInboxUnconfirmedDocumentsByActiveCompanyId = id => dispatch => {
     })
 }
 
-const getInboxСonfirmedDocumentsByActiveCompanyId = id => dipsatch => {
+const getInboxСonfirmedDocumentsByActiveCompanyId = (id, params) => dipsatch => {
   dipsatch({
     type: t.GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
     payload: true
   })
-  return api.documents.getInboxСonfirmedDocumentsByActiveCompanyId(id)
+  return api.documents.getInboxСonfirmedDocumentsByActiveCompanyId(id, params)
     .then(({ data }) => {
       if (data) {
         dipsatch({
@@ -84,12 +84,12 @@ const getInboxСonfirmedDocumentsByActiveCompanyId = id => dipsatch => {
     })
 }
 
-const getOutDocumentsByActiveCompanyId = id => dispatch => {
+const getOutDocumentsByActiveCompanyId = (id, params) => dispatch => {
   dispatch({
     type: t.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
     payload: true
   })
-  return api.documents.getOutDocumentsByActiveCompanyId(id)
+  return api.documents.getOutDocumentsByActiveCompanyId(id, params)
     .then(({ data }) => {
       if (data) {
         dispatch({
@@ -104,12 +104,12 @@ const getOutDocumentsByActiveCompanyId = id => dispatch => {
     })
 }
 
-const getDraftDocumentsByActiveCompany = id => dispatch => {
+const getDraftDocumentsByActiveCompany = (id, params) => dispatch => {
   dispatch({
     type: t.GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
     payload: true
   })
-  return api.documents.getDraftDocumentsByActiveCompany(id)
+  return api.documents.getDraftDocumentsByActiveCompany(id, params)
     .then(({ data }) => {
       if (data) {
         dispatch({

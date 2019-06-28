@@ -26,6 +26,8 @@ const DraftsPage = props => {
         className='document-table'
         removeDocument={removeDocumentById}
         removeDocuments={removeDocumentsByIds}
+        getDocumentsWithParams={getDraftDocumentsByActiveCompany}
+        activeCompany={data.active_company_id}
         type='draft'
       />
     </div>

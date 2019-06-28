@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 
+import _ from 'lodash'
 import { Link } from 'react-router-dom'
 import { getTimeStamp } from '../../helpers'
-import { Table, Icon, Popconfirm, message } from 'antd'
-import { Input } from '../'
+import { Table, Icon, Popconfirm, AutoComplete, message } from 'antd'
 import './Table.scss'
 
 const defaultTableState = {
@@ -13,7 +13,7 @@ const defaultTableState = {
 
 const AntdTable = props => {
 
-  const { children, type, removeDocument, removeDocuments, ...rest } = props
+  const { activeCompany, getDocumentsWithParams, children, type, removeDocument, removeDocuments, ...rest } = props
 
   const [tableState, setTableState] = useState({ ...defaultTableState })
 
@@ -70,11 +70,12 @@ const AntdTable = props => {
     }
   }
 
-  const handleSearch = e => {
-    setTableState({
-      ...tableState,
-      searchText: e.target.value
-    })
+  const handleSearch = value => {
+    if (value.length >= 3) {
+      getDocumentsWithParams(activeCompany, { parameter: value })
+    } else {
+      getDocumentsWithParams(activeCompany)
+    }
   }
 
   const rowSelection = {
@@ -102,7 +103,7 @@ const AntdTable = props => {
               </Popconfirm>
             </div>
             <div className='table-header__search'>
-              <Input kind='search' onChange={e => handleSearch(e)} placeholder='Введите дату, отправителя, тему...' />
+              <AutoComplete onSearch={_.debounce(handleSearch, 500)} placeholder='Введите дату, отправителя, тему...' />
             </div>
           </div>
         )}

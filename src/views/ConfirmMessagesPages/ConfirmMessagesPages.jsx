@@ -26,6 +26,8 @@ const ConfirmMessagesPages = props => {
         className='document-table'
         removeDocument={removeDocumentById}
         removeDocuments={removeDocumentsByIds}
+        getDocumentsWithParams={getInboxСonfirmedDocumentsByActiveCompanyId}
+        activeCompany={data.active_company_id}
         type='confirmed'
       />
     </div>

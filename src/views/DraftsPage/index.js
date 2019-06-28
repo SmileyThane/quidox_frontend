@@ -8,7 +8,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getDraftDocumentsByActiveCompany: id => dispatch(actions.documents.getDraftDocumentsByActiveCompany(id)),
+  getDraftDocumentsByActiveCompany: (id, params) => dispatch(actions.documents.getDraftDocumentsByActiveCompany(id, params)),
   removeDocumentById: (id, type) => dispatch(actions.document.removeDocumentById(id, type)),
   removeDocumentsByIds: (ids, type) => dispatch(actions.documents.removeDocumentsByIds(ids, type))
 })

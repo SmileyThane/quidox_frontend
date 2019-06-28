@@ -26,6 +26,8 @@ const SentMessagesPage = props => {
         className='document-table'
         removeDocument={removeDocumentById}
         removeDocuments={removeDocumentsByIds}
+        getDocumentsWithParams={getOutDocumentsByActiveCompanyId}
+        activeCompany={data.active_company_id}
         type='out'
       />
     </div>

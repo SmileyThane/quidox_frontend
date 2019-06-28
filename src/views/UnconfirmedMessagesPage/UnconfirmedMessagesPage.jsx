@@ -26,6 +26,8 @@ const UnconfirmedMessagesPage = props => {
         className='document-table'
         removeDocument={removeDocumentById}
         removeDocuments={removeDocumentsByIds}
+        getDocumentsWithParams={getInboxUnconfirmedDocumentsByActiveCompanyId}
+        activeCompany={data.active_company_id}
         type='unconfirmed'
       />
     </div>
