@@ -103,12 +103,19 @@
     margin-right: 2rem;
   }
 }
+.ant-select {
+  min-height: 3.8rem;
+  border-radius: 0;
+
+  .ant-select-selection {
+    height: auto;
+    padding-bottom: .7rem;
+  }
+}
 .ant-select-selection {
   &.ant-select-selection--multiple {
-    height: 3.8rem;
-    border-radius: 0;
     .ant-select-selection__rendered {
-      line-height: 3.6rem;
+      line-height: 1.6rem;
       .ant-select-selection__choice {
         margin-top: .7rem;
       }

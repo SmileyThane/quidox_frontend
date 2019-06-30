@@ -62,7 +62,7 @@ const NewDocumentPage = props => {
       }
     })
       .then(() => {
-        message.success(`Документ ${documentState.name}`)
+        message.success(`Документ ${documentState.name} успешно сохранен!`)
         setDocumentState({ ...defaultDocumentData })
       })
       .catch(error => {
@@ -175,7 +175,10 @@ const NewDocumentPage = props => {
         </div>
         <div className='buttons-group'>
           <input type='file' id={upload} hidden multiple onChange={event => getSecondDocuments(event)} />
-          <label className='label-btn' htmlFor={upload}>Прикрепить файл(ы)</label>
+          <label className='label-btn' htmlFor={upload}>
+            <Icon type='upload' style={{ marginRight: 10 }} />
+            Прикрепить файл(ы)
+          </label>
         </div>
         <div className='files-group'>
           <ul className='attached-files'>
