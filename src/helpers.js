@@ -3,7 +3,7 @@
 // const setState = buildSetter(userState, setUserState)
 
 /**
- * convert string date to timestamp
+ * convert date to timestamp
  * @param {string} time
  * @returns {number}
  */

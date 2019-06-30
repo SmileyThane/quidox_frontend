@@ -27,3 +27,47 @@
     border-top: .1rem solid map-get($colors, gray);
   }
 }
+.label-btn {
+  color: map-get($colors, blue);
+  border: .1rem solid map-get($colors, blue);
+  cursor: pointer;
+  font-size: 1.5rem;
+  text-align: center;
+  padding: .5rem 1.5rem;
+  display: inline-block;
+}
+
+.attached-files {
+  padding: 0 1.5rem;
+  margin: 0 0 1.5rem 0;
+  list-style: none;
+
+  .attached-file {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: .1rem solid map-get($colors, gray);
+
+    .attached-file__count {
+      color: map-get($colors, gray);
+      font-size: 1.4rem;
+      margin-right: 2rem;
+    }
+    .attached-file__name {
+      font-weight: 500;
+      width: 100%;
+    }
+    .attached-file__actions {
+      width: 10rem;
+      max-width: 10rem;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+
+      i:first-of-type {
+        margin-right: 1rem;
+      }
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 
+import axios from 'axios'
 import { findUsersByParams } from '../../services/api/user'
 import { Upload, message, Icon, Select, Spin } from 'antd'
 import { Input, Button } from '../../components'
@@ -32,43 +33,41 @@ const NewDocumentPage = props => {
     })
   }
 
-  const uploadProps = {
-    name: 'file',
-    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-    headers: {
-      authorization: 'authorization-text'
-    },
-    onChange (info) {
-      console.log(info.fileList.map(i => i.originFileObj))
-      setDocumentState({
-        ...documentState,
-        second_documents: info.fileList
-      })
-      if (info.file.status !== 'uploading') {
-      }
-      if (info.file.status === 'done') {
-        message.success(`${info.file.name} файл добавлен успешно`)
-      } else if (info.file.status === 'error') {
-        message.error(`${info.file.name} файл не добавлен.`)
-      }
-    },
-    fileList: documentState.second_documents
+  const getSecondDocuments = e => {
+    setDocumentState({
+      ...documentState,
+      second_documents: [...e.target.files]
+    })
   }
 
   const handleSendToDraft = () => {
-    const docData = {
-      name: documentState.name,
-      description: documentState.description,
-      second_documents: documentState.second_documents.map(i => i.originFileObj)
-    }
-    console.log(docData)
-    return createDocument(docData)
+    const formData = new FormData()
+
+    formData.append(
+      'name',
+      documentState.name
+    )
+    formData.append(
+      'description',
+      documentState.description
+    )
+    formData.append(
+      'second_documents',
+      documentState.second_documents
+    )
+    return axios.post('https://api.quidox.by/api/document/create', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
+      }
+    })
       .then(() => {
-        message.success(`Файл ${docData.name} успешко сохранен`)
+        message.success(`Документ ${documentState.name}`)
         setDocumentState({ ...defaultDocumentData })
       })
       .catch(error => {
         message.error(error.message)
+        setDocumentState({ ...defaultDocumentData })
       })
   }
 
@@ -144,7 +143,8 @@ const NewDocumentPage = props => {
       value
     })
   }
-  console.log(isFetching)
+  const upload = 'upload'
+  console.log(documentState.second_documents)
   return (
     <div className='content content_padding'>
       <Spin spinning={!!isFetching}>
@@ -174,17 +174,28 @@ const NewDocumentPage = props => {
           <Input kind='textarea' type='text' value={documentState.description} onChange={e => updateField('description', e.target.value)} />
         </div>
         <div className='buttons-group'>
-          <Upload {...uploadProps}>
-            <Button
-              type='primary'
-              ghost
-            >
-              <Icon type='upload' />
-          Прикрепить документ
-            </Button>
-          </Upload>
+          <input type='file' id={upload} hidden multiple onChange={event => getSecondDocuments(event)} />
+          <label className='label-btn' htmlFor={upload}>Прикрепить файл(ы)</label>
         </div>
-        <div className='buttons-group buttons-group_border-top'>
+        <div className='files-group'>
+          <ul className='attached-files'>
+            {documentState.second_documents.map((e, i) => (
+              <li className='attached-file' key={i}>
+                <span className='attached-file__count'>{i + 1}</span>
+                <p className='attached-file__name'>{e.name}</p>
+                <div className='attached-file__actions'>
+                  <Icon style={{ color: '#3278fb' }} type='edit' />
+                  <Icon
+                    onClick={() => setDocumentState({ ...documentState, second_documents: documentState.second_documents.filter((e, index) => index !== i) })}
+                    style={{ color: '#FF7D1D' }}
+                    type='close'
+                  />
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className='buttons-group'>
           <Button
             ghost
             type='primary'
