@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import axios from 'axios'
 import { findUsersByParams } from '../../services/api/user'
-import { Upload, message, Icon, Select, Spin } from 'antd'
+import { message, Icon, Select, Spin } from 'antd'
 import { Input, Button } from '../../components'
 import './NewDocumentPage.scss'
 
@@ -10,7 +10,7 @@ const defaultDocumentData = {
   name: '',
   description: '',
   document: {},
-  second_documents: [],
+  files: [],
   data: [],
   value: [],
   fetching: false,
@@ -33,15 +33,23 @@ const NewDocumentPage = props => {
     })
   }
 
-  const getSecondDocuments = e => {
+  const getFiles = e => {
+    console.log(e.target.files, e.target.curFiles)
     setDocumentState({
       ...documentState,
-      second_documents: [...e.target.files]
+      files: documentState.files.concat([...e.target.files])
+    })
+  }
+
+  const removeFile = (index) => {
+    setDocumentState({
+      ...documentState,
+      files: documentState.files.filter((e, i) => i !== index)
     })
   }
 
   const handleSendToDraft = () => {
-    const formData = new FormData()
+    const formData = new window.FormData()
 
     formData.append(
       'name',
@@ -51,10 +59,11 @@ const NewDocumentPage = props => {
       'description',
       documentState.description
     )
-    formData.append(
-      'second_documents',
-      documentState.second_documents
-    )
+
+    documentState.files.forEach(file => {
+      formData.append(`file-${file.name}`, file)
+    })
+    console.log(formData)
     return axios.post('https://api.quidox.by/api/document/create', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -76,12 +85,11 @@ const NewDocumentPage = props => {
       name: documentState.name,
       description: documentState.description,
       document: documentState.document,
-      second_documents: documentState.second_documents
+      second_documents: documentState.files
     }
 
     return createDocument(docDataDraft)
       .then(data => {
-        console.log(data)
         if (data.success) {
           const docDataToUser = {
             document_ids: [data.data.id],
@@ -112,7 +120,6 @@ const NewDocumentPage = props => {
     if (value.length > 0) {
       findUsersByParams(value)
         .then(({ data }) => {
-          console.log(data)
           const dataArray = data.data.map(user => ({
             text: `${user.user_data.email} (УНП:${user.company_data.company_number}; Компания:${user.company_data.name})`,
             value: `${user.id}`
@@ -143,8 +150,7 @@ const NewDocumentPage = props => {
       value
     })
   }
-  const upload = 'upload'
-  console.log(documentState.second_documents)
+  console.log(documentState.files)
   return (
     <div className='content content_padding'>
       <Spin spinning={!!isFetching}>
@@ -174,22 +180,22 @@ const NewDocumentPage = props => {
           <Input kind='textarea' type='text' value={documentState.description} onChange={e => updateField('description', e.target.value)} />
         </div>
         <div className='buttons-group'>
-          <input type='file' id={upload} hidden multiple onChange={event => getSecondDocuments(event)} />
-          <label className='label-btn' htmlFor={upload}>
+          <input type='file' id='upload' hidden multiple onChange={event => getFiles(event)} />
+          <label className='label-btn' htmlFor='upload'>
             <Icon type='upload' style={{ marginRight: 10 }} />
             Прикрепить файл(ы)
           </label>
         </div>
         <div className='files-group'>
           <ul className='attached-files'>
-            {documentState.second_documents.map((e, i) => (
+            {documentState.files && documentState.files.map((e, i) => (
               <li className='attached-file' key={i}>
                 <span className='attached-file__count'>{i + 1}</span>
                 <p className='attached-file__name'>{e.name}</p>
                 <div className='attached-file__actions'>
                   <Icon style={{ color: '#3278fb' }} type='edit' />
                   <Icon
-                    onClick={() => setDocumentState({ ...documentState, second_documents: documentState.second_documents.filter((e, index) => index !== i) })}
+                    onClick={() => removeFile(i)}
                     style={{ color: '#FF7D1D' }}
                     type='close'
                   />
