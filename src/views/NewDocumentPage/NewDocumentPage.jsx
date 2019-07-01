@@ -60,8 +60,8 @@ const NewDocumentPage = props => {
       documentState.description
     )
 
-    documentState.files.forEach(file => {
-      formData.append(`file-${file.name}`, file)
+    documentState.files.forEach((file, index) => {
+      formData.append(`second_documents[${index}]`, file)
     })
     console.log(formData)
     return axios.post('https://api.quidox.by/api/document/create', formData, {
