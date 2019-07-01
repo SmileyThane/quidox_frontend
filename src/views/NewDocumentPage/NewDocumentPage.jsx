@@ -63,7 +63,6 @@ const NewDocumentPage = props => {
     documentState.files.forEach((file, index) => {
       formData.append(`second_documents[${index}]`, file)
     })
-    console.log(formData)
     return axios.post('https://api.quidox.by/api/document/create', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -81,20 +80,33 @@ const NewDocumentPage = props => {
   }
 
   const handleSendToUser = () => {
-    const docDataDraft = {
-      name: documentState.name,
-      description: documentState.description,
-      document: documentState.document,
-      second_documents: documentState.files
-    }
+    const formData = new window.FormData()
 
-    return createDocument(docDataDraft)
-      .then(data => {
+    formData.append(
+      'name',
+      documentState.name
+    )
+    formData.append(
+      'description',
+      documentState.description
+    )
+
+    documentState.files.forEach((file, index) => {
+      formData.append(`second_documents[${index}]`, file)
+    })
+    return axios.post('https://api.quidox.by/api/document/create', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
+      }
+    })
+      .then(({ data }) => {
         if (data.success) {
           const docDataToUser = {
             document_ids: [data.data.id],
             user_company_id: documentState.ids
           }
+          console.log(docDataToUser)
           sendDocumentToUser(docDataToUser)
             .then(() => {
               message.success('Сообщение успешно отправлено!')
@@ -150,7 +162,7 @@ const NewDocumentPage = props => {
       value
     })
   }
-  console.log(documentState.files)
+
   return (
     <div className='content content_padding'>
       <Spin spinning={!!isFetching}>

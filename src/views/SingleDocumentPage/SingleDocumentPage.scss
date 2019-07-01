@@ -46,11 +46,28 @@
     font-size: 1.5rem;
   }
   .document__attached-doc {
-    margin-top: 1.5rem;
+    margin-top: 4rem;
   }
   .document__actions {
     display: flex;
     justify-content: space-between;
     margin-top: 1.5rem;
   }
+}
+
+.single-document {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+
+  .single-document__name {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+}
+
+.ant-list-item {
+  border-top: .1rem solid map-get($colors, gray);
+  border-bottom: .1rem solid map-get($colors, gray) !important;
 }

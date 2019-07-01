@@ -10,3 +10,7 @@
 export const getTimeStamp = (time) => {
   return Math.round(new Date(time).getTime() / 1000)
 }
+
+export const getFileName = (url) => {
+  return url.substring(url.lastIndexOf('/') + 1)
+}
