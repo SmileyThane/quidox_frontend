@@ -61,7 +61,6 @@ const CopmanyPage = props => {
       </Fragment>
     )
   }]
-  console.log(list)
   return (
     <div className='content'>
       <Table

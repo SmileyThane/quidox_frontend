@@ -8,7 +8,10 @@ import {
 
 const instance = axios.create({
   baseURL: 'https://api.quidox.by/api',
-  headers: {},
+  headers: {
+    'X-Frame-Options': 'sameorigin',
+    'Access-Control-Allow-Origin': '*'
+  },
   data: {},
   timeout: 180000
 })
