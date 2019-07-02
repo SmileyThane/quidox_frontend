@@ -10,6 +10,7 @@ import Input from './Input'
 import Button from './Button'
 import FormGroup from './FormGroup'
 import Table from './Table'
+import PDFViewer from './PDFViewer'
 
 export {
   PrivateRoute,
@@ -23,5 +24,6 @@ export {
   Input,
   Button,
   FormGroup,
-  Table
+  Table,
+  PDFViewer
 }

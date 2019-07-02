@@ -1,18 +1,15 @@
 import React, { useEffect, useState, Fragment } from 'react'
 
-import { Document, Page, pdfjs } from 'react-pdf'
 import { getFileName } from '../../helpers'
-import { Spin, Icon, List, Modal } from 'antd'
+import { Spin, Icon, List } from 'antd'
 import history from '../../history'
-import { Button } from '../../components'
+import { Button, PDFViewer } from '../../components'
+import PDFJSBACKEND from '../../backends/pdfjs'
 import './SingleDocumentPage.scss'
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
 
 const defaultDocumentState = {
   isVasible: false,
-  numPages: null,
-  pageNumber: 1,
-  pdfLink: null
+  pdfLink: ''
 }
 
 const SingleDocumentPage = props => {
@@ -76,8 +73,8 @@ const SingleDocumentPage = props => {
                 <List
                   itemLayout='horizontal'
                   dataSource={data.attachments}
-                  renderItem={(item, index) => (
-                    <List.Item actions={[<Icon style={{ color: '#3278fb', fontSize: 20 }} type='download' />]}>
+                  renderItem={item => (
+                    <List.Item actions={[<a href={item.original_path}><Icon style={{ color: '#3278fb', fontSize: 20 }} type='download' /></a>]}>
                       <div className='single-document'>
                         <Icon style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }} type='eye' onClick={() => showModal(item)} />
                         <p className='single-document__name'>{getFileName(item.original_path)}</p>
@@ -109,18 +106,15 @@ const SingleDocumentPage = props => {
         </div>
       </Spin>
       {documentState.isVasible &&
-        <Modal
-          visible
-          onCancel={() => hideModal()}
-        >
-          <Document
-            file={documentState.pdfLink}
-            onLoadSuccess={onDocumentLoadSuccess}
-          >
-            <Page pageNumber={documentState.pageNumber} />
-          </Document>
-          <p>Page {documentState.pageNumber} of {documentState.numPages}</p>
-        </Modal>
+        <div className='pdf-container'>
+          <div className='pdf-container__close'>
+            <Icon style={{ fontSize: 30 }} type='close' onClick={() => setDocumentState({ ...documentState, isVasible: false })} />
+          </div>
+          <PDFViewer
+            backend={PDFJSBACKEND}
+            src={documentState.pdfLink}
+          />
+        </div>
       }
     </Fragment>
   )

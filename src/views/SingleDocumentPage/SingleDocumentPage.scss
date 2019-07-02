@@ -68,6 +68,26 @@
 }
 
 .ant-list-item {
-  border-top: .1rem solid map-get($colors, gray);
-  border-bottom: .1rem solid map-get($colors, gray) !important;
+  border-bottom: .1rem solid map-get($colors, gray) !important; 
+}
+.pdf-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+
+  .pdf-container__close {
+    height: 4rem;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 1rem;
+    background-color: map-get($colors, gray);
+  }
 }
