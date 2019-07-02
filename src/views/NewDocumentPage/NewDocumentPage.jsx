@@ -19,7 +19,6 @@ const defaultDocumentData = {
 
 const NewDocumentPage = props => {
   const {
-    createDocument,
     sendDocumentToUser,
     documents: { isFetching }
   } = props
@@ -49,6 +48,11 @@ const NewDocumentPage = props => {
   }
 
   const handleSendToDraft = () => {
+
+    setDocumentState({
+      ...documentState,
+      fetching: true
+    })
     const formData = new window.FormData()
 
     formData.append(
@@ -80,6 +84,10 @@ const NewDocumentPage = props => {
   }
 
   const handleSendToUser = () => {
+    setDocumentState({
+      ...documentState,
+      fetching: true
+    })
     const formData = new window.FormData()
 
     formData.append(
@@ -114,6 +122,7 @@ const NewDocumentPage = props => {
             })
             .catch(error => {
               message.error(error.message)
+              setDocumentState({ ...defaultDocumentData })
             })
         }
       })
@@ -165,7 +174,7 @@ const NewDocumentPage = props => {
 
   return (
     <div className='content content_padding'>
-      <Spin spinning={!!isFetching}>
+      <Spin spinning={!!documentState.fetching}>
         <div className='input-group'>
           <label className='label'>Получатели</label>
           <Select

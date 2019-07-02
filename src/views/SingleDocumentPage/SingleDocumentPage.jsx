@@ -41,6 +41,13 @@ const SingleDocumentPage = props => {
     })
   }
 
+  const hideModal = () => {
+    setDocumentState({
+      ...documentState,
+      isVasible: false
+    })
+  }
+
   const [documentState, setDocumentState] = useState({ ...defaultDocumentState })
 
   console.log(data)
@@ -104,6 +111,7 @@ const SingleDocumentPage = props => {
       {documentState.isVasible &&
         <Modal
           visible
+          onCancel={() => hideModal()}
         >
           <Document
             file={documentState.pdfLink}
