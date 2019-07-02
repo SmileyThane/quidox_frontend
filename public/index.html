@@ -20,8 +20,120 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>React App</title>
+
+    <!--<script type="text/javascript" src="./avcmxwebp-1.1.5-min.js"></script>-->
+
+    <script type="text/javascript">
+      var avcmx, conn;
+      var msg, cert, issuerCert;
+      var AVCMR_BASE = 0xE82A0100;
+      var AVCMR_SIGN_INVALID = AVCMR_BASE + 0x27;
+
+      function handleError(e) {
+        var lastError = avcmx.GetLastError();
+        if (lastError > 0) {
+          alert(avcmx.GetErrorInformation(lastError, 0));
+        } else {
+          throw e;
+        }
+      }
+
+      function pluginLoaded() {
+        avcmx = document.getElementById('oavcmx');
+        try {
+          var params = avcmx.CreateParameters(0);
+          avcmx.CreateConnectionAsync(params, 0, function (e, cnn) {
+            if (e) {
+              alert(avcmx.GetErrorInformation(e, 0));
+              return;
+            }
+            conn = cnn;
+          });
+        } catch (e) {
+          handleError(e);
+        }
+      }
+
+      function sign(file) {
+        try {
+          var blob = avcmx.CreateBlob(0);
+          blob.SetAsText(document.getElementById('data'+file).value, 0);
+
+          var dataMessage = conn.CreateMessage(blob, 0);
+          dataMessage.SignAsync(0, function (e, signed) {
+            if (e) {
+              alert(avcmx.GetErrorInformation(e, 0));
+              return;
+            }
+            try {
+              document.getElementById('signedData'+file).value = signed.Blob.GetAsBase64(0);
+              verify(file);
+              var str = 'file'+file
+              document.getElementById(str).classList.add('verifited')
+            } catch (e) {
+              handleError(e);
+            }
+          });
+        } catch (e) {
+          handleError(e);
+        }
+      }
+
+      function verify($id) {
+        try {
+
+          var blob = avcmx.CreateBlob(0);
+          blob.SetAsBase64(document.getElementById('signedData'+$id).value, 0);
+          console.log(document.getElementById('signedData'+$id).value);
+          msg = conn.CreateMessage(blob, 0);
+          if (!msg.IsSigned()) {
+            alert("Ошибка подписи");
+            return;
+          }
+
+          try {
+            msg.Verify(0);
+          } catch (e) {
+            if (lastErrorIs(AVCMR_SIGN_INVALID)) {
+              document.getElementById('verifiedData'+$id).value = "Подпись не верна";
+              return;
+            } else {
+              throw e;
+            }
+          }
+
+          var sign = msg.Signs(0);
+          cert = sign.SignerCertificate;
+          issuerCert = cert.IssuerCertificate;
+
+          var name = cert.Subject;
+          //document.getElementById('result').value = "Подпись верна. Подписано: " + name;
+          var content = msg.Content;
+          //document.getElementById('message').value = content.GetAsText(0);
+          var date = new Date(sign.SignDateTimeSec * 1000);
+          //document.getElementById('date').value = date.toString();
+          document.getElementById('verifiedData'+$id).value = "Подпись верна. Подписано: " + name+"\n"+date.toString();
+          //alert("Подпись верна. Подписано: " + name+"\n"+content.GetAsText(0)+"\n"+date.toString());
+        } catch (e) {
+          handleError(e);
+        }
+      }
+
+      function viewSignerCert() {
+        cert.ShowAsync(0, function (e) {
+          if (e) {
+            alert(avcmx.GetErrorInformation(e, 0));
+            return;
+          }
+        });
+      }
+    </script>
   </head>
+
   <body>
+    <object id="oavcmx" type="application/x-avcmx-web-plugin" width="0" height="0">
+      <!--<param name="onload" value="pluginLoaded" />-->
+    </object>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <!--
