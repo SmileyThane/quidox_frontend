@@ -19,8 +19,7 @@ const defaultDocumentData = {
 
 const NewDocumentPage = props => {
   const {
-    sendDocumentToUser,
-    documents: { isFetching }
+    sendDocumentToUser
   } = props
 
   const [documentState, setDocumentState] = useState({ ...defaultDocumentData })

@@ -15,7 +15,7 @@ const ConfirmMessagesPages = props => {
     if (data) {
       getInboxСonfirmedDocumentsByActiveCompanyId(data.active_company_id)
     }
-  }, [data])
+  }, [data, getInboxСonfirmedDocumentsByActiveCompanyId])
 
   return (
     <div className='content'>

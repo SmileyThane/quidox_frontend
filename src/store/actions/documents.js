@@ -153,6 +153,7 @@ const removeDocumentsByIds = (ids, type) => dispatch => {
               type: t.REMOVE_INBOX_CONFIRMED_DOCUMENTS_BY_IDS_SUCCESS,
               payload: ids
             })
+          default:
         }
       }
       dispatch({

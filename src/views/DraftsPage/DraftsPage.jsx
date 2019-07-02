@@ -15,7 +15,7 @@ const DraftsPage = props => {
     if (data) {
       getDraftDocumentsByActiveCompany(data.active_company_id)
     }
-  }, [data])
+  }, [data, getDraftDocumentsByActiveCompany])
 
   return (
     <div className='content'>

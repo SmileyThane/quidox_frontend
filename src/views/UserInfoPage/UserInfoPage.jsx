@@ -37,7 +37,7 @@ const UserInfoPage = props => {
         active_company_id: +data.active_company_id
       })
     }
-  }, [data])
+  }, [data, userState])
 
   const Option = Select.Option
 

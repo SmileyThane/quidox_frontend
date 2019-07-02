@@ -20,15 +20,10 @@ const SingleDocumentPage = props => {
   } = props
 
   useEffect(() => {
-    getDocumentById(match.params.id)
-  }, [])
-
-  const onDocumentLoadSuccess = ({ numPages }) => {
-    setDocumentState({
-      ...documentState,
-      numPages
-    })
-  }
+    if (match) {
+      getDocumentById(match.params.id)
+    }
+  }, [match, getDocumentById])
 
   const showModal = item => {
     setDocumentState({
@@ -108,7 +103,7 @@ const SingleDocumentPage = props => {
       {documentState.isVasible &&
         <div className='pdf-container'>
           <div className='pdf-container__close'>
-            <Icon style={{ fontSize: 30 }} type='close' onClick={() => setDocumentState({ ...documentState, isVasible: false })} />
+            <Icon style={{ fontSize: 30 }} type='close' onClick={() => hideModal()} />
           </div>
           <PDFViewer
             backend={PDFJSBACKEND}

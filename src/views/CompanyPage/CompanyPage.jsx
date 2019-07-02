@@ -21,7 +21,7 @@ const CopmanyPage = props => {
         activeCompanyId: +data.active_company_id
       })
     }
-  }, [data])
+  }, [data, getCompany])
 
   const [companyState, setCompanyState] = useState({ ...defaultCompanyState })
 

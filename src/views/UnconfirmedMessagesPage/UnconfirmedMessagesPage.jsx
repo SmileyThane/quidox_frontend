@@ -15,7 +15,7 @@ const UnconfirmedMessagesPage = props => {
     if (data) {
       getInboxUnconfirmedDocumentsByActiveCompanyId(data.active_company_id)
     }
-  }, [data])
+  }, [data, getInboxUnconfirmedDocumentsByActiveCompanyId])
 
   return (
     <div className='content'>

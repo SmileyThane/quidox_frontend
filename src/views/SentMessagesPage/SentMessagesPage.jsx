@@ -15,7 +15,7 @@ const SentMessagesPage = props => {
     if (data) {
       getOutDocumentsByActiveCompanyId(data.active_company_id)
     }
-  }, [data])
+  }, [data, getOutDocumentsByActiveCompanyId])
 
   return (
     <div className='content'>
