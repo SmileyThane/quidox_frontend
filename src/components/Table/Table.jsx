@@ -32,13 +32,7 @@ const AntdTable = props => {
     },
     {
       title: 'Текст сообщения',
-      dataIndex: 'description',
-      width: 600
-    },
-    {
-      title: '123',
-      key: 'id',
-      width: 100
+      dataIndex: 'description'
     }
   ]
 
