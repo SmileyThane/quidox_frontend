@@ -37,7 +37,7 @@ const UserInfoPage = props => {
         active_company_id: +data.active_company_id
       })
     }
-  }, [data, userState])
+  }, [data])
 
   const Option = Select.Option
 
@@ -56,7 +56,7 @@ const UserInfoPage = props => {
       })
       updateUser(userState)
         .then(() => {
-          message.success('Пользователь успешно обновлен')
+          message.success('Данные успешно обновлены')
         })
         .catch(error => {
           message.error(error.message)
