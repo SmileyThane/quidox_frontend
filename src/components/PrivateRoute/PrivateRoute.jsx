@@ -9,6 +9,7 @@ const PrivateRoute = ({ component: Component, getUser, ...rest }) => {
   useEffect(() => {
     if (window.localStorage.getItem('authToken')) {
       getUser()
+      window.pluginLoaded()
     }
   }, [getUser])
 
