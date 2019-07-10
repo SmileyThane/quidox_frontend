@@ -20,19 +20,25 @@ const AntdTable = props => {
   const columns = [
     {
       title: 'Дата',
-      width: 150,
       dataIndex: 'created_at',
       sorter: (a, b) => getTimeStamp(a.created_at) - getTimeStamp(b.created_at)
     },
     {
+      title: 'Отправитель'
+    },
+    {
       title: 'Тема',
       key: 'name',
-      width: 250,
       render: record => <Link to={`/documents/${record.id}`}>{record.name}</Link>
     },
     {
-      title: 'Текст сообщения',
-      dataIndex: 'description'
+      title: 'Кол-во приложенных документы'
+    },
+    {
+      title: 'Статус'
+    },
+    {
+      title: 'Квитанция'
     }
   ]
 

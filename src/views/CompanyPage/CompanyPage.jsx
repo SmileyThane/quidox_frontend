@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react'
 
-import { Table, Tag } from 'antd'
+import { Table, Tag, Popconfirm, message } from 'antd'
 import './CompanyPage.scss'
 
 const defaultCompanyState = {
@@ -37,6 +37,14 @@ const CopmanyPage = props => {
 
   const companyArray = getCompanyArray()
 
+  const changeActiveCompany = company => {
+    if (company.id === companyState.activeCompanyId) {
+      message.error('Компания является активной!')
+      return null
+    }
+    console.log(company.id)
+  }
+
   const columns = [{
     title: 'Имя',
     dataIndex: 'name'
@@ -54,9 +62,16 @@ const CopmanyPage = props => {
     render: record => (
       <Fragment>
         {companyState.activeCompanyId &&
-        <Tag color={(record.id === companyState.activeCompanyId) ? '#87d068' : '#FF7D1D'}>
-          {(record.id === companyState.activeCompanyId) ? 'Активная' : 'Не активная'}
-        </Tag>
+          <Popconfirm
+            title='Сделать компанию активной?'
+            onConfirm={() => changeActiveCompany(record)}
+            okText='Сделать активной'
+            cancelText='Закрыть'
+          >
+            <Tag style={{ cursor: 'pointer' }} color={(record.id === companyState.activeCompanyId) ? '#87d068' : '#FF7D1D'}>
+              {(record.id === companyState.activeCompanyId) ? 'Активная' : 'Не активная'}
+            </Tag>
+          </Popconfirm>
         }
       </Fragment>
     )

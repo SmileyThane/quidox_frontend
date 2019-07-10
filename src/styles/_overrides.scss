@@ -122,15 +122,6 @@
     }
   }
 }
-
-.document-table {
-  .ant-table-tbody > tr > td {
-    word-wrap: break-word;
-    &:nth-of-type(4) {
-      max-width: 10rem;
-    }
-  }
-}
 .ant-select-selection {
   transition: border-color .2s linear 0s;
   will-change: border-color;

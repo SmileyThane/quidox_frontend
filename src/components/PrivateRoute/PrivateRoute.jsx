@@ -6,11 +6,15 @@ import { LayoutBlock, HeaderBlock, SiderBlock, ContentBlock, FooterBlock } from 
 
 const PrivateRoute = ({ component: Component, getUser, ...rest }) => {
 
-  useEffect(() => {
+  // eslint-disable-next-line spaced-comment
+  const isIE = /*@cc_on!@*/false || !!document.documentMode
 
+  useEffect(() => {
     if (window.localStorage.getItem('authToken')) {
       getUser()
-      window.pluginLoaded()
+      if (isIE) {
+        window.pluginLoaded()
+      }
     }
   }, [getUser])
 
