@@ -43,7 +43,28 @@ const changeActiveCompanyById = id => dispatch => {
     })
 }
 
+const createCompany = data => dispatch => {
+  dispatch({
+    type: t.CREATE_COMPANY_FETCHING,
+    payload: true
+  })
+  return api.company.createCompany(data)
+    .then(({ data }) => {
+      if (data) {
+        dispatch({
+          type: t.CREATE_COMPANY_SUCCESS,
+          payload: data
+        })
+      }
+      dispatch({
+        type: t.CREATE_COMPANY_FETCHING,
+        payload: false
+      })
+    })
+}
+
 export {
   getCompany,
+  createCompany,
   changeActiveCompanyById
 }

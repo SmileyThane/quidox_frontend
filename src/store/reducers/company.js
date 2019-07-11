@@ -1,4 +1,4 @@
-import * as p from '../types'
+import * as t from '../types'
 
 const initalState = {
   list: [],
@@ -7,15 +7,27 @@ const initalState = {
 
 export default (state = initalState, action) => {
   switch (action.type) {
-    case p.GET_COMPANY_FETCHING:
+    case t.GET_COMPANY_FETCHING:
       return {
         ...state,
         isFetching: action.payload
       }
-    case p.GET_COMPANY_SUCCESS:
+    case t.GET_COMPANY_SUCCESS:
       return {
         ...state,
-        list: action.payload
+        list: action.payload.data
+      }
+      case t.CREATE_COMPANY_FETCHING:
+        return {
+        ...state,
+        isFetching: action.payload
+      }
+      case t.CREATE_COMPANY_SUCCESS:
+      console.log(state.list)
+
+        return {
+        ...state,
+        list: [...state.list, action.payload.data]
       }
     default:
       return state

@@ -24,6 +24,7 @@ const isIE = /*@cc_on!@*/false || !!document.documentMode
 const CopmanyPage = props => {
   const {
     getCompany,
+    createCompany,
     changeActiveCompanyById,
     companies: { isFetching, list },
     user: { data }
@@ -39,18 +40,6 @@ const CopmanyPage = props => {
   }, [data, getCompany])
 
   const [companyState, setCompanyState] = useState({ ...defaultCompanyState })
-
-  const getCompanyArray = () => {
-    const companyArray = []
-    if (list.data) {
-      list.data.forEach(element => {
-        companyArray.push(element.company_data)
-      })
-    }
-    return companyArray
-  }
-
-  const companyArray = getCompanyArray()
 
   const onClick = () => {
     setCompanyState({
@@ -110,17 +99,33 @@ const CopmanyPage = props => {
     }
   }
 
+  const handleCreateCompany = () => {
+    const newCompanyData = {
+      name: companyState.newCompanyFullName,
+      company_number: +companyState.newCompanyNumber,
+      description: companyState.newCompanyCity
+    }
+    createCompany(newCompanyData)
+      .then(() => {
+        setCompanyState({ ...defaultCompanyState })
+        message.success('Компания создана успешно!!')
+      })
+      .catch(error => {
+        message.error(error.message)
+      })
+  }
+
   const columns = [{
     title: 'Имя',
-    dataIndex: 'name'
+    dataIndex: 'company_name'
   },
   {
     title: 'УНП',
-    dataIndex: 'company_number'
+    dataIndex: 'company_data.company_number'
   },
   {
     title: 'Данные компании',
-    dataIndex: 'description'
+    dataIndex: 'company_data.description'
   },
   {
     title: 'Статус',
@@ -146,10 +151,10 @@ const CopmanyPage = props => {
     <Fragment>
       <div className='content content_small-margin'>
         <Table
-          pagination={false}
+          pagination
           rowKey='id'
           columns={columns}
-          dataSource={companyArray}
+          dataSource={list}
           loading={isFetching}
         />
       </div>
@@ -170,6 +175,7 @@ const CopmanyPage = props => {
         visible={companyState.showModal}
         title='Данные копмании'
         closable={false}
+        onOk={handleCreateCompany}
       >
         <div className='document document_modal'>
           <div className='info'>

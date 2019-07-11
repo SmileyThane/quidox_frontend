@@ -14,7 +14,16 @@ const changeActiveCompanyById = id => {
   })
 }
 
+const createCompany = data => {
+  return http({
+    url: '/company/store',
+    method: 'POST',
+    data
+  })
+}
+
 export {
   getCompany,
-  changeActiveCompanyById
+  changeActiveCompanyById,
+  createCompany
 }
