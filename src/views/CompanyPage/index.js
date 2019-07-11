@@ -8,7 +8,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getCompany: () => dispatch(actions.company.getCompany())
+  getCompany: () => dispatch(actions.company.getCompany()),
+  changeActiveCompanyById: id => dispatch(actions.company.changeActiveCompanyById(id))
 })
 
 export default connect(

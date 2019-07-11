@@ -31,6 +31,15 @@ export default (state = initialState, action) => {
         data: action.payload.data
       }
     }
+    case t.CHANGE_ACTIVE_COMPANY_BY_ID_SUCCESS: {
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          active_company_id: action.payload
+        }
+      }
+    }
     default:
       return state
   }

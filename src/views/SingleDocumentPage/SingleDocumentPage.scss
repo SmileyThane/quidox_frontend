@@ -1,6 +1,9 @@
 @import '../../styles/variables';
 .document {
   padding: 1.5rem;
+  &.document_modal {
+    padding: 0;
+  }
   .document__header {
     display: flex;
     justify-content: space-between;
@@ -31,6 +34,10 @@
     display: flex;
     justify-content: flex-start;
     align-items: baseline;
+    margin-bottom: 1.5rem;
+    &:last-of-type {
+      margin-bottom: 0;
+    }
   }
   .info__title {
     width: 14.2rem;

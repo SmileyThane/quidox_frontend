@@ -9,6 +9,7 @@ import './CompanyPage.scss'
 
 const defaultCompanyState = {
   activeCompanyId: null,
+  selectedCompanyId: null,
   newCompanyDate: '',
   newCompanyNumber: '',
   newCompanyName: '',
@@ -23,6 +24,7 @@ const isIE = /*@cc_on!@*/false || !!document.documentMode
 const CopmanyPage = props => {
   const {
     getCompany,
+    changeActiveCompanyById,
     companies: { isFetching, list },
     user: { data }
   } = props
@@ -97,8 +99,15 @@ const CopmanyPage = props => {
     if (company.id === companyState.activeCompanyId) {
       message.error('Компания является активной!')
       return null
+    } else {
+      changeActiveCompanyById(company.id)
+        .then(() => {
+          message.success('Активная компания изменена успешно!')
+        })
+        .catch(error => {
+          message.error(error.message)
+        })
     }
-    console.log(company.id)
   }
 
   const columns = [{
@@ -132,6 +141,7 @@ const CopmanyPage = props => {
       </Fragment>
     )
   }]
+  console.log(companyState.activeCompanyId)
   return (
     <Fragment>
       <div className='content content_small-margin'>
@@ -158,12 +168,34 @@ const CopmanyPage = props => {
       <input type='hidden' id='attrValue' size='80' disabled='disabled' />
       <Modal
         visible={companyState.showModal}
+        title='Данные копмании'
+        closable={false}
       >
-        <div>{companyState.newCompanyDate}</div>
-        <div>{companyState.newCompanyNumber}</div>
-        <div>{companyState.newCompanyName}</div>
-        <div>{companyState.newCompanyCity}</div>
-        <div>{companyState.newCompanyFullName}</div>
+        <div className='document document_modal'>
+          <div className='info'>
+            <div className='info__item'>
+              <div className='info__title'>Дата создания</div>
+              <div className='info__content'>{companyState.newCompanyDate}</div>
+            </div>
+            <div className='info__item'>
+              <div className='info__title'>УНП</div>
+              <div className='info__content'>{companyState.newCompanyNumber}</div>
+            </div>
+            <div className='info__item'>
+              <div className='info__title'>Имя компании</div>
+              <div className='info__content'>{companyState.newCompanyName}</div>
+            </div>
+            <div className='info__item'>
+              <div className='info__title'>Место нахождения компании</div>
+              <div className='info__content'>{companyState.newCompanyCity}</div>
+            </div>
+            <div className='info__item'>
+              <div className='info__title'>Полное имя компании</div>
+              <div className='info__content'>{companyState.newCompanyFullName}</div>
+            </div>
+          </div>
+        </div>
+
       </Modal>
     </Fragment>
   )

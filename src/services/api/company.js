@@ -7,6 +7,14 @@ const getCompany = () => {
   })
 }
 
+const changeActiveCompanyById = id => {
+  return http({
+    url: `/user/company/set/${id}`,
+    method: 'GET'
+  })
+}
+
 export {
-  getCompany
+  getCompany,
+  changeActiveCompanyById
 }

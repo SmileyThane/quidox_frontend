@@ -23,6 +23,27 @@ const getCompany = () => dispatch => {
     })
 }
 
+const changeActiveCompanyById = id => dispatch => {
+  dispatch({
+    type: t.CHANGE_ACTIVE_COMPANY_BY_ID_FETCHING,
+    payload: true
+  })
+  return api.company.changeActiveCompanyById(id)
+    .then(({ data }) => {
+      if (data.success) {
+        dispatch({
+          type: t.CHANGE_ACTIVE_COMPANY_BY_ID_SUCCESS,
+          payload: id
+        })
+      }
+      dispatch({
+        type: t.CHANGE_ACTIVE_COMPANY_BY_ID_FETCHING,
+        payload: false
+      })
+    })
+}
+
 export {
-  getCompany
+  getCompany,
+  changeActiveCompanyById
 }
