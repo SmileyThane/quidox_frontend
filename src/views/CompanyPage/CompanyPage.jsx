@@ -1,10 +1,19 @@
 import React, { Fragment, useEffect, useState } from 'react'
 
-import { Table, Tag, Popconfirm, message } from 'antd'
+import axios from '../../services/api/http'
+
+import { Table, Tag, Popconfirm, message, Modal, Button } from 'antd'
+
 import './CompanyPage.scss'
 
 const defaultCompanyState = {
-  activeCompanyId: null
+  activeCompanyId: null,
+  newCompanyDate: '',
+  newCompanyNumber: '',
+  newCompanyName: '',
+  newCompanyCity: '',
+  newCompanyFullName: '',
+  showModal: false
 }
 
 const CopmanyPage = props => {
@@ -36,6 +45,49 @@ const CopmanyPage = props => {
   }
 
   const companyArray = getCompanyArray()
+
+  const onClick = () => {
+    setCompanyState({
+      ...companyState,
+      showModal: true
+    })
+
+    window.sign('NewCompany')
+    setTimeout(function () {
+      const companyData = document.getElementById('verifiedDataNewCompany').value
+      const companyDataArr = companyData.split(';')
+      let address = ''
+      companyDataArr.forEach(function (element) {
+        if (element.indexOf('2.5.4.7') > -1) {
+          address = address + ' ' + element.substring(element.indexOf('<') + 1, element.indexOf('>'))
+        }
+        if (element.indexOf('2.5.4.9') > -1) {
+          address = address + ' ' + element.substring(element.indexOf('<') + 1, element.indexOf('>'))
+        }
+        if (element.indexOf('1.2.112.1.2.1.1.1.1.2') > -1) {
+          const result = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
+          axios.get(`/company/find/data/${result}`)
+            .then(response => {
+              console.log(response)
+              const res = JSON.parse(JSON.stringify(response.data))
+              setCompanyState({
+                ...companyState,
+                showModal: true,
+                newCompanyDate: res.data[0].DC,
+                newCompanyNumber: result,
+                newCompanyName: res.data[0].VFN,
+                newCompanyCity: address,
+                newCompanyFullName: res.data[0].VNM
+
+              })
+            })
+            .catch(error => {
+              console.log(error.message)
+            })
+        }
+      })
+    }, 1000)
+  }
 
   const changeActiveCompany = company => {
     if (company.id === companyState.activeCompanyId) {
@@ -85,6 +137,24 @@ const CopmanyPage = props => {
         dataSource={companyArray}
         loading={isFetching}
       />
+      <Button onClick={onClick}>Add new company</Button>
+      <input type='hidden' id='dataNewCompany' value={data.email} />
+      <input type='hidden' id='attr' size='80' value='1.2.112.1.2.1.1.1.1.2' />
+      <div id='attrCertSelectContainer' style={{ display: 'none' }}>
+        <span id='certExtAbsent' />
+        <select style={{ visibility: 'hidden' }} id='attrCertSelect' />
+      </div>
+      <input type='hidden' id='attrValue' size='80' disabled='disabled' />
+      <Modal
+        visible={companyState.showModal}
+      >
+        <div>{companyState.newCompanyDate}</div>
+        <div>{companyState.newCompanyNumber}</div>
+        <div>{companyState.newCompanyName}</div>
+        <div>{companyState.newCompanyCity}</div>
+        <div>{companyState.newCompanyFullName}</div>
+      </Modal>
+
     </div>
   )
 }

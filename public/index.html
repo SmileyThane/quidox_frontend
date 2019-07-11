@@ -24,40 +24,60 @@
     <!--<script type="text/javascript" src="./avcmxwebp-1.1.5-min.js"></script>-->
 
     <script type="text/javascript">
-      var avcmx, conn;
-      var msg, cert, issuerCert;
+      var avcmx, conn, resultText;
+      var msg, cert, attrCert;
+      var delayTimer;
+      var foundAttrCerts = [];
+      var needAttrCert = false;
       var AVCMR_BASE = 0xE82A0100;
+      var AVCMR_NOT_FOUND = AVCMR_BASE + 0x25;
       var AVCMR_SIGN_INVALID = AVCMR_BASE + 0x27;
+
+      function lastErrorIs(error) {
+          var lastError = parseInt(avcmx.GetLastError());
+          return lastError && (error == lastError || (error == (AVCMR_BASE + (lastError & 0xFFFF))));
+      }
 
       function handleError(e) {
         var lastError = avcmx.GetLastError();
-        if (lastError > 0) {
-          alert(avcmx.GetErrorInformation(lastError, 0));
-        } else {
-          throw e;
-        }
+          if (lastError > 0) {
+              alert(avcmx.GetErrorInformation(lastError, 0));
+          } else {
+              throw e;
+          }
       }
 
       function pluginLoaded() {
-        avcmx = document.getElementById('oavcmx');
-        try {
-          var params = avcmx.CreateParameters(0);
-          avcmx.CreateConnectionAsync(params, 0, function (e, cnn) {
+          avcmx = document.getElementById('oavcmx');
+          try {
+              var params = avcmx.CreateParameters(0);
+              avcmx.CreateConnectionAsync(params, 0, function (e, cnn) {
+                if (e) {
+                  alert(avcmx.GetErrorInformation(e, 0));
+                  return;
+                }
+                conn = cnn;
+              });
+          } catch (e) {
+              handleError(e);
+          }
+      }
+
+
+
+      function viewSignerCert() {
+          cert.ShowAsync(0, function (e) {
             if (e) {
               alert(avcmx.GetErrorInformation(e, 0));
               return;
             }
-            conn = cnn;
           });
-        } catch (e) {
-          handleError(e);
-        }
       }
 
       function sign(file) {
         try {
           var blob = avcmx.CreateBlob(0);
-          blob.SetAsText(document.getElementById('data'+file).value, 0);
+          blob.SetAsText(document.getElementById('data' + file).value, 0);
 
           var dataMessage = conn.CreateMessage(blob, 0);
           dataMessage.SignAsync(0, function (e, signed) {
@@ -66,10 +86,15 @@
               return;
             }
             try {
-              document.getElementById('signedData'+file).value = signed.Blob.GetAsBase64(0);
+              var input = document.createElement("input");
+              input.type = "hidden";
+              input.id = "signedData" + file; // set the CSS class
+              document.body.appendChild(input);
+              document.getElementById('signedData' + file).value = signed.Blob.GetAsBase64(0);
               verify(file);
-              var str = 'file'+file
-              document.getElementById(str).classList.add('verifited')
+
+              // var str = 'file'+file
+              // document.getElementById(str).classList.add('verifited')
             } catch (e) {
               handleError(e);
             }
@@ -77,56 +102,155 @@
         } catch (e) {
           handleError(e);
         }
-      }
+    }
 
-      function verify($id) {
-        try {
-
-          var blob = avcmx.CreateBlob(0);
-          blob.SetAsBase64(document.getElementById('signedData'+$id).value, 0);
-          console.log(document.getElementById('signedData'+$id).value);
-          msg = conn.CreateMessage(blob, 0);
-          if (!msg.IsSigned()) {
-            alert("Ошибка подписи");
+      function verify(file) {
+        var attrOid = document.getElementById('attr').value;
+        if (!attrOid.length) {
+            alert("Необходимо выбрать требуемый атрибут");
             return;
-          }
-
-          try {
-            msg.Verify(0);
-          } catch (e) {
-            if (lastErrorIs(AVCMR_SIGN_INVALID)) {
-              document.getElementById('verifiedData'+$id).value = "Подпись не верна";
-              return;
-            } else {
-              throw e;
-            }
-          }
-
-          var sign = msg.Signs(0);
-          cert = sign.SignerCertificate;
-          issuerCert = cert.IssuerCertificate;
-
-          var name = cert.Subject;
-          //document.getElementById('result').value = "Подпись верна. Подписано: " + name;
-          var content = msg.Content;
-          //document.getElementById('message').value = content.GetAsText(0);
-          var date = new Date(sign.SignDateTimeSec * 1000);
-          //document.getElementById('date').value = date.toString();
-          document.getElementById('verifiedData'+$id).value = "Подпись верна. Подписано: " + name+"\n"+date.toString();
-          //alert("Подпись верна. Подписано: " + name+"\n"+content.GetAsText(0)+"\n"+date.toString());
-        } catch (e) {
-          handleError(e);
         }
-      }
+        try {
+          console.log(11111)
+            var blob = avcmx.CreateBlob(0);
+            blob.SetAsBase64(document.getElementById('signedData' + file).value, 0);
 
-      function viewSignerCert() {
-        cert.ShowAsync(0, function (e) {
-          if (e) {
-            alert(avcmx.GetErrorInformation(e, 0));
-            return;
-          }
-        });
-      }
+            msg = conn.CreateMessage(blob, 0);
+            if (!msg.IsSigned()) {
+                alert("Сообщение не является подписанным сообщением");
+                return;
+            }
+            try {
+                msg.Verify(0);
+            } catch (e) {
+                if (lastErrorIs(AVCMR_SIGN_INVALID)) {
+                    alert("Подпись не верна");
+                    return;
+                } else {
+                    throw e;
+                }
+            }
+
+
+            console.log(2222222)
+
+            var sign = msg.Signs(0);
+            cert = sign.SignerCertificate;
+            var attrCerts = sign.SignerAttributeCertificates;
+
+            var contentText = msg.Content.GetAsText(0);
+            var name = cert.Subject;
+            var resultText = "Подпись верна. Подписано: " + name + "\n";
+
+            var attrVal = "";
+            try {
+                var ext = conn.OwnCertificate.GetExtensionByOid(attrOid, 0);
+                console.log(ext)
+                attrVal = ext.ValueAsString;
+            } catch (e) {
+              console.log(e)
+                if (lastErrorIs(AVCMR_NOT_FOUND)) {
+                    needAttrCert = true;
+                } else {
+                    throw e;
+                }
+            }
+
+            console.log(attrVal, contentText)
+
+            if (attrVal == contentText) {
+                // resultText += "Сообщение подписано сертификатом открытого ключа с требуемым атрибутом, значение атрибута: " + attrVal;
+
+                document.getElementById('signedDataResult').value = resultText;
+                return;
+            } else {
+                // resultText += "Сертификат открытого ключа подписанта не содержит требуемый атрибут\n" +
+                // "Поиск атрибутных сертификатов в сообщении...\n";
+
+                if (attrCerts.Count) {
+                    for (var i = 0; i < attrCerts.Count; i++) {
+                        var acert = attrCerts.Item(i);
+                        resultText += "Найден атрибутный сертификат №" + acert.Serial.GetAsHex(0) + "\n";
+                        var attrsText = "";
+                        var attrFound = false;
+                        for (var j = 0; j < acert.AttributesCount; j++) {
+                            var attr = acert.GetAttributeByIndex(j, 0);
+                            if (attr.Oid == attrOid && attr.ValueAsString == contentText) {
+                                attrFound = true;
+                            }
+                            attrsText += attr.Oid + "(" + attr.OidName + ")" + "=<" + attr.ValueAsString + ">;";
+                        }
+                        attrsText = attrsText.substr(0, attrsText.length - 1);
+                        resultText += "Атрибуты: " + attrsText + "\n";
+
+                        if (attrFound) {
+                            // resultText += "Этот атрибутный сертификат подходит для удостоверения данной ЭЦП\n";
+                            var res = acert.CheckValidity(0);
+                            if (res == 0) {
+                                // resultText += "Проверка атрибутного сертификата окончена успешно";
+                                attrCert = acert;
+                                break;
+                            } else {
+                                // resultText += "Ошибка при проверке атрибутного сертификата: " + avcmx.GetErrorInformation(res, 0);
+                            }
+                        } else {
+                            // resultText += "Этот атрибутный сертификат не подходит для удостоверения данной ЭЦП\n";
+                        }
+                    }
+                } else {
+                    // resultText += "В сообщении не найдено ниодного атрибутного сертификата соответствующего сертификату подписанта\n";
+                }
+
+                if (!attrCert) {
+                    // resultText += "Поиск атрибутных сертификатов в хранилище...\n";
+                    attrCerts = conn.SelectAttributeCertificates(cert, avcmx.CreateParameters(0), 0);
+                    if (attrCerts.Count) {
+                        for (var i = 0; i < attrCerts.Count; i++) {
+                            var acert = attrCerts.Item(i);
+                            resultText += "Найден атрибутный сертификат №" + acert.Serial.GetAsHex(0) + "\n";
+                            var attrsText = "";
+                            var attrFound = false;
+                            for (var j = 0; j < acert.AttributesCount; j++) {
+                                var attr = acert.GetAttributeByIndex(j, 0);
+                                if (attr.Oid == attrOid && attr.ValueAsString == contentText) {
+                                    attrFound = true;
+                                }
+                                attrsText += attr.Oid + "(" + attr.OidName + ")" + "=<" + attr.ValueAsString + ">;";
+                            }
+                            attrsText = attrsText.substr(0, attrsText.length - 1);
+                            resultText += "Атрибуты: " + attrsText + "\n";
+
+                            if (attrFound) {
+                                // resultText += "Этот атрибутный сертификат подходит для удостоверения данной ЭЦП\n";
+                                var res = acert.CheckValidity(0);
+                                if (res == 0) {
+                                    // resultText += "Проверка атрибутного сертификата окончена успешно";
+                                    attrCert = acert;
+                                    break;
+                                } else {
+                                    //resultText += "Ошибка при проверке атрибутного сертификата: " + avcmx.GetErrorInformation(res, 0);
+                                }
+                            } else {
+                                // resultText += "Этот атрибутный сертификат не подходит для удостоверения данной ЭЦП\n";
+                            }
+                        }
+                    } else {
+                        // resultText += "В хранилище не найдено ниодного атрибутного сертификата соответствующего сертификату подписанта\n";
+                    }
+                }
+            }
+            // alert(resultText);
+            // console.log(resultText);
+            var input = document.createElement("input");
+            input.type = "hidden";
+            input.id = "verifiedData" + file; // set the CSS class
+            document.body.appendChild(input);
+            document.getElementById('verifiedData' + file).value = resultText;
+
+        } catch (e) {
+            handleError(e);
+        }
+    }
     </script>
   </head>
 
