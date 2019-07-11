@@ -111,7 +111,6 @@
             return;
         }
         try {
-          console.log(11111)
             var blob = avcmx.CreateBlob(0);
             blob.SetAsBase64(document.getElementById('signedData' + file).value, 0);
 
@@ -130,10 +129,6 @@
                     throw e;
                 }
             }
-
-
-            console.log(2222222)
-
             var sign = msg.Signs(0);
             cert = sign.SignerCertificate;
             var attrCerts = sign.SignerAttributeCertificates;

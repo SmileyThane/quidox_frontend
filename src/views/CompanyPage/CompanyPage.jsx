@@ -2,7 +2,8 @@ import React, { Fragment, useEffect, useState } from 'react'
 
 import axios from '../../services/api/http'
 
-import { Table, Tag, Popconfirm, message, Modal, Button } from 'antd'
+import { Button } from '../../components'
+import { Table, Tag, Popconfirm, message, Modal } from 'antd'
 
 import './CompanyPage.scss'
 
@@ -15,6 +16,9 @@ const defaultCompanyState = {
   newCompanyFullName: '',
   showModal: false
 }
+
+// eslint-disable-next-line spaced-comment
+const isIE = /*@cc_on!@*/false || !!document.documentMode
 
 const CopmanyPage = props => {
   const {
@@ -129,15 +133,22 @@ const CopmanyPage = props => {
     )
   }]
   return (
-    <div className='content'>
-      <Table
-        pagination={false}
-        rowKey='id'
-        columns={columns}
-        dataSource={companyArray}
-        loading={isFetching}
-      />
-      <Button onClick={onClick}>Add new company</Button>
+    <Fragment>
+      <div className='content content_small-margin'>
+        <Table
+          pagination={false}
+          rowKey='id'
+          columns={columns}
+          dataSource={companyArray}
+          loading={isFetching}
+        />
+      </div>
+      {!isIE &&
+        <p>Создание компании возможно только в браузере Internet Explorer</p>
+      }
+      {isIE &&
+        <Button type='primary' onClick={onClick}>Add new company</Button>
+      }
       <input type='hidden' id='dataNewCompany' value={data.email} />
       <input type='hidden' id='attr' size='80' value='1.2.112.1.2.1.1.1.1.2' />
       <div id='attrCertSelectContainer' style={{ display: 'none' }}>
@@ -154,8 +165,7 @@ const CopmanyPage = props => {
         <div>{companyState.newCompanyCity}</div>
         <div>{companyState.newCompanyFullName}</div>
       </Modal>
-
-    </div>
+    </Fragment>
   )
 }
 
