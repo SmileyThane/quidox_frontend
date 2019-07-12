@@ -94,9 +94,17 @@ const CopmanyPage = props => {
       changeActiveCompanyById(company.id)
         .then(() => {
           message.success('Активная компания изменена успешно!')
+          setCompanyState({
+            ...companyState,
+            showModal: !companyState.showModal
+          })
         })
         .catch(error => {
           message.error(error.message)
+          setCompanyState({
+            ...companyState,
+            showModal: !companyState.showModal
+          })
         })
     }
   }
@@ -179,6 +187,7 @@ const CopmanyPage = props => {
         title='Данные компании'
         closable={false}
         onOk={handleCreateCompany}
+        onCancel={() => setCompanyState({ ...companyState, showModal: !companyState.showModal })}
       >
         <div className='document document_modal'>
           <div className='info'>
