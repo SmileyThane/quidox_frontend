@@ -77,18 +77,20 @@ class RegistrationForm extends React.Component {
             break
           case 1:
             axios.post('https://api.quidox.by/api/sms/confirm', registerData)
-              .then((response) => {
+              .then(response => {
                 if (response.data.success) {
                   this.setState({ currentStep: this.state.currentStep + 1 })
+                } else {
+                  throw new Error(response.data.error)
                 }
               })
-              .catch(function (error) {
+              .catch(error => {
                 message.error(error.message)
               })
             break
           case 2:
             axios.post('https://api.quidox.by/api/register', registerData)
-              .then((response) => {
+              .then(response => {
                 if (response.data.success) {
                   this.setState({ currentStep: this.state.currentStep + 1 })
                 }
