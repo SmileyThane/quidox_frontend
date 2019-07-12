@@ -154,3 +154,13 @@
     margin-top: -0.7rem;
   }
 }
+
+.steps {
+  .ant-select-selection-selected-value {
+    padding-right: 0 !important;
+  }
+  .ant-select-arrow {
+    right: 5px !important;
+  }
+}
+
