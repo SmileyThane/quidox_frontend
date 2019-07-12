@@ -167,11 +167,11 @@ class RegistrationForm extends React.Component {
                 rules: [
                   {
                     type: 'string',
-                    message: 'The input is not valid E-mail!'
+                    message: 'Код введен не правильно!'
                   },
                   {
                     required: true,
-                    message: 'Please input your E-mail!'
+                    message: 'Пожалуйста, введите полученный код!'
                   }
                 ]
               })(<Input onChange={e => this.handleChange(e.target.value, 'code')} />)}
@@ -184,11 +184,11 @@ class RegistrationForm extends React.Component {
                   rules: [
                     {
                       type: 'email',
-                      message: 'The input is not valid E-mail!'
+                      message: 'Не правильный адрес электронной почты!'
                     },
                     {
                       required: true,
-                      message: 'Please input your E-mail!'
+                      message: 'Пожалуйста, введите адрес электронной почты!'
                     }
                   ]
                 })(<Input />)}
@@ -198,11 +198,11 @@ class RegistrationForm extends React.Component {
                   rules: [
                     {
                       type: 'string',
-                      message: 'The input is not valid E-mail!'
+                      message: 'Не правильное имя'
                     },
                     {
                       required: true,
-                      message: 'Please input your E-mail!'
+                      message: 'Пожалуйста, введите ваше имя!'
                     }
                   ]
                 })(<Input />)}
@@ -212,8 +212,8 @@ class RegistrationForm extends React.Component {
                   rules: [
                     {
                       required: true,
-                      message: 'Пароль должен содержать не менее восьми символов, как минимум одну букву и одну цифру',
-                      pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
+                      message: 'Минимум восемь символов, как минимум одна буква, одна цифра и один специальный символ',
+                      pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
                     },
                     {
                       validator: this.validateToNextPassword
@@ -226,7 +226,7 @@ class RegistrationForm extends React.Component {
                   rules: [
                     {
                       required: true,
-                      message: 'Please confirm your password!'
+                      message: 'Пожалуйста, подтвердите ваш пороль!'
                     },
                     {
                       validator: this.compareToFirstPassword

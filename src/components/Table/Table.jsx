@@ -32,9 +32,9 @@ const AntdTable = props => {
       render: record => <Link to={`/documents/${record.id}`}>{record.name}</Link>
     },
     {
-      title: 'Кол-во приложенных документы',
+      title: 'Кол-во вложенных документы',
       key: 'attachments',
-      render: record => <p style={{ textAlign: 'center' }} >{record.attachments.length === 0 ? 'Нет приложенных документов' : record.attachments.length }</p>
+      render: record => <p style={{ textAlign: 'center' }} >{record.attachments.length === 0 ? 'Нет вложенных документов' : record.attachments.length }</p>
     },
     {
       title: 'Статус'
@@ -95,6 +95,7 @@ const AntdTable = props => {
       className='table'
       columns={columns}
       rowSelection={rowSelection}
+      locale={{ emptyText: 'Нет данных' }}
       title={() =>
         (
           <div className='table__header table-header'>

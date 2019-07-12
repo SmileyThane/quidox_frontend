@@ -3,7 +3,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import axios from '../../services/api/http'
 
 import { Button } from '../../components'
-import { Table, Tag, Popconfirm, message, Modal } from 'antd'
+import { Table, Tag, Popconfirm, message, Modal, Typography } from 'antd'
 
 import './CompanyPage.scss'
 
@@ -17,6 +17,8 @@ const defaultCompanyState = {
   newCompanyFullName: '',
   showModal: false
 }
+
+const { Text } = Typography
 
 // eslint-disable-next-line spaced-comment
 const isIE = /*@cc_on!@*/false || !!document.documentMode
@@ -156,10 +158,11 @@ const CopmanyPage = props => {
           columns={columns}
           dataSource={list}
           loading={isFetching}
+          locale={{ emptyText: 'Нет созданных компаний' }}
         />
       </div>
       {!isIE &&
-        <p>Создание компании возможно только в браузере Internet Explorer</p>
+        <Text type='secondary'>Создание компании возможно только в браузере Internet Explorer</Text>
       }
       {isIE &&
         <Button type='primary' onClick={onClick}>Add new company</Button>
@@ -173,7 +176,7 @@ const CopmanyPage = props => {
       <input type='hidden' id='attrValue' size='80' disabled='disabled' />
       <Modal
         visible={companyState.showModal}
-        title='Данные копмании'
+        title='Данные компании'
         closable={false}
         onOk={handleCreateCompany}
       >
