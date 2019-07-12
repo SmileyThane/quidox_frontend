@@ -17,17 +17,17 @@ export default (state = initalState, action) => {
         ...state,
         list: action.payload.data
       }
-      case t.CREATE_COMPANY_FETCHING:
-        return {
+    case t.CREATE_COMPANY_FETCHING:
+      return {
         ...state,
         isFetching: action.payload
       }
-      case t.CREATE_COMPANY_SUCCESS:
-      console.log(state.list)
+    case t.CREATE_COMPANY_SUCCESS:
+      const res = JSON.parse(JSON.stringify(action.payload.data))
 
-        return {
+      return {
         ...state,
-        list: [...state.list, action.payload.data]
+        list: [...state.list, res]
       }
     default:
       return state
