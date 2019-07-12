@@ -24,7 +24,7 @@ export default (state = initalState, action) => {
       }
     case t.CREATE_COMPANY_SUCCESS:
       const res = JSON.parse(JSON.stringify(action.payload.data))
-
+      console.log(res)
       return {
         ...state,
         list: [...state.list, res]
