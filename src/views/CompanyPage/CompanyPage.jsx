@@ -8,7 +8,6 @@ import { Table, Tag, Popconfirm, message, Modal, Typography } from 'antd'
 import './CompanyPage.scss'
 
 const defaultCompanyState = {
-  activeCompanyId: null,
   selectedCompanyId: null,
   newCompanyDate: '',
   newCompanyNumber: '',
@@ -34,12 +33,7 @@ const CopmanyPage = props => {
 
   useEffect(() => {
     getCompany()
-    if (data) {
-      setCompanyState({
-        activeCompanyId: +data.active_company_id
-      })
-    }
-  }, [data, getCompany])
+  }, [])
 
   const [companyState, setCompanyState] = useState({ ...defaultCompanyState })
 
@@ -65,7 +59,6 @@ const CopmanyPage = props => {
           const result = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
           axios.get(`/company/find/data/${result}`)
             .then(response => {
-              console.log(response)
               const res = JSON.parse(JSON.stringify(response.data))
               setCompanyState({
                 ...companyState,
@@ -79,7 +72,7 @@ const CopmanyPage = props => {
               })
             })
             .catch(error => {
-              console.log(error.message)
+              message.error(error.message)
             })
         }
       })
@@ -87,7 +80,7 @@ const CopmanyPage = props => {
   }
 
   const changeActiveCompany = company => {
-    if (company.id === companyState.activeCompanyId) {
+    if (company.id === data.active_company_id) {
       message.error('Компания является активной!')
       return null
     } else {
@@ -127,7 +120,7 @@ const CopmanyPage = props => {
 
   const columns = [{
     title: 'Имя',
-    dataIndex: 'company_name'
+    dataIndex: 'company_data.name'
   },
   {
     title: 'УНП',
@@ -141,22 +134,22 @@ const CopmanyPage = props => {
     title: 'Статус',
     render: record => (
       <Fragment>
-        {companyState.activeCompanyId &&
+        {data.active_company_id &&
           <Popconfirm
             title='Сделать компанию активной?'
             onConfirm={() => changeActiveCompany(record)}
             okText='Сделать активной'
             cancelText='Закрыть'
           >
-            <Tag style={{ cursor: 'pointer' }} color={(record.id === companyState.activeCompanyId) ? '#87d068' : '#FF7D1D'}>
-              {(record.id === companyState.activeCompanyId) ? 'Активная' : 'Не активная'}
+            <Tag style={{ cursor: 'pointer' }} color={(record.id === data.active_company_id) ? '#87d068' : '#FF7D1D'}>
+              {(record.id === data.active_company_id) ? 'Активная' : 'Не активная'}
             </Tag>
           </Popconfirm>
         }
       </Fragment>
     )
   }]
-  console.log(companyState.activeCompanyId)
+
   return (
     <Fragment>
       <div className='content content_small-margin'>
