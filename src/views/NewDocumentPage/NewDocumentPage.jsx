@@ -45,7 +45,8 @@ const NewDocumentPage = props => {
   const removeFile = (index) => {
     setDocumentState({
       ...documentState,
-      files: documentState.files.filter((e, i) => i !== index)
+      files: documentState.files.filter((e, i) => i !== index),
+      base64files: documentState.base64files.filter((e, i) => i !== index)
     })
   }
 
@@ -183,12 +184,7 @@ const NewDocumentPage = props => {
         ...documentState,
         base64files: [...documentState.base64files, reader.result]
       })
-      const fileInput = React.createElement('input', {
-        type: 'hidden',
-        id: 'file',
-        value: reader.result
-      })
-      console.log(document.getElementById('file'))
+
 
     }
     reader.onerror = function (error) {
