@@ -3,7 +3,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import axios from '../../services/api/http'
 
 import { Button } from '../../components'
-import { Table, Tag, Popconfirm, message, Modal, Typography } from 'antd'
+import { Table, Tag, Popconfirm, message, Modal, Typography, Spin } from 'antd'
 
 import './CompanyPage.scss'
 
@@ -14,7 +14,8 @@ const defaultCompanyState = {
   newCompanyName: '',
   newCompanyCity: '',
   newCompanyFullName: '',
-  showModal: false
+  showModal: false,
+  modalFetching: false
 }
 
 const { Text } = Typography
@@ -40,7 +41,8 @@ const CopmanyPage = props => {
   const onClick = () => {
     setCompanyState({
       ...companyState,
-      showModal: true
+      showModal: true,
+      modalFetching: true
     })
 
     window.sign('NewCompany')
@@ -63,6 +65,7 @@ const CopmanyPage = props => {
               setCompanyState({
                 ...companyState,
                 showModal: true,
+                modalFetching: false,
                 newCompanyDate: res.data[0].DC,
                 newCompanyNumber: result,
                 newCompanyName: res.data[0].VFN,
@@ -183,6 +186,7 @@ const CopmanyPage = props => {
         onCancel={() => setCompanyState({ ...companyState, showModal: !companyState.showModal })}
       >
         <div className='document document_modal'>
+          <Spin spinning={companyState.showModal}>
           <div className='info'>
             <div className='info__item'>
               <div className='info__title'>Дата создания</div>
@@ -205,6 +209,7 @@ const CopmanyPage = props => {
               <div className='info__content'>{companyState.newCompanyFullName}</div>
             </div>
           </div>
+          </Spin>
         </div>
 
       </Modal>

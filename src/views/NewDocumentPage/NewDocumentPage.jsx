@@ -11,6 +11,9 @@ const defaultDocumentData = {
   description: '',
   document: {},
   files: [],
+  base64files: [],
+  certs: [],
+  fileHashes: [],
   data: [],
   value: [],
   fetching: false,
@@ -171,6 +174,29 @@ const NewDocumentPage = props => {
     })
   }
 
+  const verifyFile = index => {
+    const reader = new FileReader()
+    reader.readAsDataURL(documentState.files[index])
+    reader.onload = function () {
+      console.log(reader.result)
+      setDocumentState({
+        ...documentState,
+        base64files: [...documentState.base64files, reader.result]
+      })
+      const fileInput = React.createElement('input', {
+        type: 'hidden',
+        id: 'file',
+        value: reader.result
+      })
+      console.log(document.getElementById('file'))
+
+    }
+    reader.onerror = function (error) {
+      console.log('Error: ', error);
+    }
+  }
+
+  console.log(documentState.base64files)
   return (
     <div className='content content_padding'>
       <Spin spinning={!!documentState.fetching}>
@@ -213,7 +239,7 @@ const NewDocumentPage = props => {
                 <span className='attached-file__count'>{i + 1}</span>
                 <p className='attached-file__name'>{e.name}</p>
                 <div className='attached-file__actions'>
-                  <Icon style={{ color: '#3278fb' }} type='edit' />
+                  <Icon onClick={() =>verifyFile(i)} style={{ color: '#3278fb' }} type='edit' />
                   <Icon
                     onClick={() => removeFile(i)}
                     style={{ color: '#FF7D1D' }}
@@ -242,6 +268,21 @@ const NewDocumentPage = props => {
           </Button>
         </div>
       </Spin>
+      {/* <input type='hidden' id='dataNewCompany' value={documentState.base64files} /> */}
+      {documentState.base64files.map((item, index) =>
+        React.createElement('input', {
+          key: {index},
+          type: 'hidden',
+          id: `file-${index}`,
+          value: documentState.base64files[index]
+        })
+        )}
+      <input type='hidden' id='attr' size='80' value='1.2.112.1.2.1.1.1.1.2' />
+      <div id='attrCertSelectContainer' style={{ display: 'none' }}>
+        <span id='certExtAbsent' />
+        <select style={{ visibility: 'hidden' }} id='attrCertSelect' />
+      </div>
+      <input type='hidden' id='attrValue' size='80' disabled='disabled' />
     </div>
   )
 }
