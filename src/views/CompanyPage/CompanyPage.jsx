@@ -65,7 +65,6 @@ const CopmanyPage = props => {
               setCompanyState({
                 ...companyState,
                 showModal: true,
-                modalFetching: false,
                 newCompanyDate: res.data[0].DC,
                 newCompanyNumber: result,
                 newCompanyName: res.data[0].VFN,
@@ -73,6 +72,12 @@ const CopmanyPage = props => {
                 newCompanyFullName: res.data[0].VNM
 
               })
+              if (companyState.newCompanyName.length) {
+                setCompanyState({
+                  ...companyState,
+                  modalFetching: false
+                })
+              }
             })
             .catch(error => {
               message.error(error.message)
@@ -169,7 +174,7 @@ const CopmanyPage = props => {
         <Text type='secondary'>Создание компании возможно только в браузере Internet Explorer</Text>
       }
       {isIE &&
-        <Button type='primary' onClick={onClick}>Add new company</Button>
+        <Button type='primary' onClick={onClick}>Создать компанию</Button>
       }
       <input type='hidden' id='dataNewCompany' value={data.email} />
       <input type='hidden' id='attr' size='80' value='1.2.112.1.2.1.1.1.1.2' />
@@ -187,28 +192,28 @@ const CopmanyPage = props => {
       >
         <div className='document document_modal'>
           <Spin spinning={companyState.showModal}>
-          <div className='info'>
-            <div className='info__item'>
-              <div className='info__title'>Дата создания</div>
-              <div className='info__content'>{companyState.newCompanyDate}</div>
+            <div className='info'>
+              <div className='info__item'>
+                <div className='info__title'>Дата создания</div>
+                <div className='info__content'>{companyState.newCompanyDate}</div>
+              </div>
+              <div className='info__item'>
+                <div className='info__title'>УНП</div>
+                <div className='info__content'>{companyState.newCompanyNumber}</div>
+              </div>
+              <div className='info__item'>
+                <div className='info__title'>Имя компании</div>
+                <div className='info__content'>{companyState.newCompanyName}</div>
+              </div>
+              <div className='info__item'>
+                <div className='info__title'>Место нахождения компании</div>
+                <div className='info__content'>{companyState.newCompanyCity}</div>
+              </div>
+              <div className='info__item'>
+                <div className='info__title'>Полное имя компании</div>
+                <div className='info__content'>{companyState.newCompanyFullName}</div>
+              </div>
             </div>
-            <div className='info__item'>
-              <div className='info__title'>УНП</div>
-              <div className='info__content'>{companyState.newCompanyNumber}</div>
-            </div>
-            <div className='info__item'>
-              <div className='info__title'>Имя компании</div>
-              <div className='info__content'>{companyState.newCompanyName}</div>
-            </div>
-            <div className='info__item'>
-              <div className='info__title'>Место нахождения компании</div>
-              <div className='info__content'>{companyState.newCompanyCity}</div>
-            </div>
-            <div className='info__item'>
-              <div className='info__title'>Полное имя компании</div>
-              <div className='info__content'>{companyState.newCompanyFullName}</div>
-            </div>
-          </div>
           </Spin>
         </div>
 

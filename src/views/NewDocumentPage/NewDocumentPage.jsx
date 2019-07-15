@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 
 import axios from 'axios'
+import _ from 'lodash'
 import { findUsersByParams } from '../../services/api/user'
 import { message, Icon, Select, Spin } from 'antd'
 import { Input, Button } from '../../components'
@@ -134,14 +135,12 @@ const NewDocumentPage = props => {
       })
   }
 
-  const { Option } = Select
-
   const fetchUser = value => {
     setDocumentState({
       ...documentState,
       fetching: true
     })
-    if (value.length > 0) {
+    if (value.length > 2) {
       findUsersByParams(value)
         .then(({ data }) => {
           const dataArray = data.data.map(user => ({
@@ -167,7 +166,8 @@ const NewDocumentPage = props => {
   }
 
   const handleSelect = value => {
-    const ids = value.map(i => Number(i.key))
+    const ids = value.map(i => i.key)
+    console.log(ids)
     setDocumentState({
       ...documentState,
       ids,
@@ -175,8 +175,17 @@ const NewDocumentPage = props => {
     })
   }
 
+  const { Option } = Select
+  const children = []
+  if (documentState.data.length) {
+    for (let index = 0; index < documentState.data.length; index++) {
+      const element = documentState.data[index]
+      children.push(<Option key={element.value}>{element.text}</Option>)
+    }
+  }
+
   const verifyFile = index => {
-    const reader = new FileReader()
+    const reader = new window.FileReader()
     reader.readAsDataURL(documentState.files[index])
     reader.onload = function () {
       console.log(reader.result)
@@ -184,33 +193,29 @@ const NewDocumentPage = props => {
         ...documentState,
         base64files: [...documentState.base64files, reader.result]
       })
-
-
     }
     reader.onerror = function (error) {
-      console.log('Error: ', error);
+      message.error(error.message)
     }
   }
 
-  console.log(documentState.base64files)
   return (
     <div className='content content_padding'>
       <Spin spinning={!!documentState.fetching}>
         <div className='input-group'>
           <label className='label'>Получатели</label>
           <Select
-            mode='multiple'
+            mode='tags'
             labelInValue
+            tokenSeparators={[',']}
             value={documentState.value}
             filterOption={false}
             notFoundContent={documentState.fetching ? <Spin size='small' /> : null}
-            onSearch={fetchUser}
+            onSearch={_.debounce(fetchUser, 400)}
             onChange={handleSelect}
             style={{ width: '100%' }}
           >
-            {documentState.data.map(d => (
-              <Option key={d.value}>{d.text}</Option>
-            ))}
+            {children}
           </Select>
         </div>
         <div className='input-group'>
