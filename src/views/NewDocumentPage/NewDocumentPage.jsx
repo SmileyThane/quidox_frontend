@@ -211,7 +211,7 @@ const NewDocumentPage = props => {
             value={documentState.value}
             filterOption={false}
             notFoundContent={documentState.fetching ? <Spin size='small' /> : null}
-            onSearch={_.debounce(fetchUser, 400)}
+            onSearch={fetchUser}
             onChange={handleSelect}
             style={{ width: '100%' }}
           >
