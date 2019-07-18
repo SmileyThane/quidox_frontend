@@ -28,10 +28,10 @@ const NewDocumentPage = props => {
 
   const [documentState, setDocumentState] = useState({ ...defaultDocumentData })
 
-  const updateField = (field, value) => {
+  const updateField = (field, v) => {
     setDocumentState({
       ...documentState,
-      [field]: value
+      [field]: v
     })
   }
 
@@ -52,7 +52,6 @@ const NewDocumentPage = props => {
   }
 
   const handleSendToDraft = () => {
-
     setDocumentState({
       ...documentState,
       fetching: true
@@ -116,7 +115,7 @@ const NewDocumentPage = props => {
         if (data.success) {
           const docDataToUser = {
             document_ids: [data.data.id],
-            user_company_id: documentState.ids
+            user_company_id: documentState.value.map(i => i.key)
           }
           console.log(docDataToUser)
           sendDocumentToUser(docDataToUser)
@@ -135,60 +134,46 @@ const NewDocumentPage = props => {
       })
   }
 
-  const fetchUser = value => {
-    setDocumentState({
-      ...documentState,
-      fetching: true
-    })
-    if (value.length > 2) {
-      findUsersByParams(value)
+  const fetchUser = _.debounce(v => {
+    if (v.length > 2) {
+      setDocumentState({
+        ...documentState,
+        fetching: true
+      })
+      findUsersByParams(v)
         .then(({ data }) => {
-          const dataArray = data.data.map(user => ({
-            text: `${user.user_data.email} (УНП:${user.company_data.company_number}; Компания:${user.company_data.name})`,
-            value: `${user.id}`
-          }))
+          const dataIds = documentState.data.map(i => i.key)
+          const dataArray = data.data
+            .map(user => ({
+              label: `${user.user_data.email} (УНП:${user.company_data.company_number}; Компания:${user.company_data.name})`,
+              key: `${user.id}`
+            }))
+            .filter(i => !dataIds.includes(i.key))
           setDocumentState({
             ...documentState,
-            data: dataArray,
+            data: [...documentState.data, ...dataArray],
             fetching: false
           })
         })
-        .catch((error) => {
-          console.log(error)
+        .catch(error => {
+          message.error(error.message)
         })
-    } else {
-      setDocumentState({
-        ...documentState,
-        data: [],
-        fetching: false
-      })
     }
-  }
+  }, 200)
 
-  const handleSelect = value => {
-    const ids = value.map(i => i.key)
-    console.log(ids)
+  const handleSelect = v => {
     setDocumentState({
       ...documentState,
-      ids,
-      value
+      data: v,
+      value: v
     })
   }
 
   const { Option } = Select
-  const children = []
-  if (documentState.data.length) {
-    for (let index = 0; index < documentState.data.length; index++) {
-      const element = documentState.data[index]
-      children.push(<Option key={element.value}>{element.text}</Option>)
-    }
-  }
-
   const verifyFile = index => {
     const reader = new window.FileReader()
     reader.readAsDataURL(documentState.files[index])
     reader.onload = function () {
-      console.log(reader.result)
       setDocumentState({
         ...documentState,
         base64files: [...documentState.base64files, reader.result]
@@ -199,6 +184,7 @@ const NewDocumentPage = props => {
     }
   }
 
+  console.log(documentState.value.map(i => i.key))
   return (
     <div className='content content_padding'>
       <Spin spinning={!!documentState.fetching}>
@@ -215,7 +201,7 @@ const NewDocumentPage = props => {
             onChange={handleSelect}
             style={{ width: '100%' }}
           >
-            {children}
+            {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
           </Select>
         </div>
         <div className='input-group'>
