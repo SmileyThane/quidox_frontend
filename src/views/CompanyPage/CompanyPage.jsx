@@ -69,15 +69,9 @@ const CopmanyPage = props => {
                 newCompanyNumber: result,
                 newCompanyName: res.data[0].VFN,
                 newCompanyCity: address,
-                newCompanyFullName: res.data[0].VNM
-
+                newCompanyFullName: res.data[0].VNM,
+                modalFetching: !res.data[0].VFN
               })
-              if (companyState.newCompanyName.length) {
-                setCompanyState({
-                  ...companyState,
-                  modalFetching: false
-                })
-              }
             })
             .catch(error => {
               message.error(error.message)
@@ -191,7 +185,7 @@ const CopmanyPage = props => {
         onCancel={() => setCompanyState({ ...companyState, showModal: !companyState.showModal })}
       >
         <div className='document document_modal'>
-          <Spin spinning={companyState.showModal}>
+          <Spin spinning={companyState.modalFetching}>
             <div className='info'>
               <div className='info__item'>
                 <div className='info__title'>Дата создания</div>

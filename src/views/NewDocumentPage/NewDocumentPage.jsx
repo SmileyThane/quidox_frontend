@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {useEffect, useState} from 'react'
 
 import axios from 'axios'
 import _ from 'lodash'
@@ -15,6 +15,7 @@ const defaultDocumentData = {
   base64files: [],
   certs: [],
   fileHashes: [],
+  fileData: [],
   data: [],
   value: [],
   fetching: false,
@@ -39,7 +40,10 @@ const NewDocumentPage = props => {
     console.log(e.target.files, e.target.curFiles)
     setDocumentState({
       ...documentState,
-      files: documentState.files.concat([...e.target.files])
+      files: documentState.files.concat([...e.target.files]),
+      base64files: [...documentState.base64files, null],
+      fileHashes: [...documentState.fileHashes, null],
+      fileData: [...documentState.fileData, null]
     })
   }
 
@@ -47,7 +51,9 @@ const NewDocumentPage = props => {
     setDocumentState({
       ...documentState,
       files: documentState.files.filter((e, i) => i !== index),
-      base64files: documentState.base64files.filter((e, i) => i !== index)
+      base64files: documentState.base64files.filter((e, i) => i !== index),
+      fileHashes: documentState.fileHashes.filter((e, i) => i !== index),
+      fileData: documentState.fileData.filter((e, i) => i !== index)
     })
   }
 
@@ -76,9 +82,35 @@ const NewDocumentPage = props => {
         'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
       }
     })
-      .then(() => {
+      .then(({ data }) => {
         message.success(`Документ ${documentState.name} успешно сохранен!`)
-        setDocumentState({ ...defaultDocumentData })
+
+        if (documentState.fileHashes.filter(i => !!i).length) {
+          const newData = {
+            documents: [
+              {
+                id: data.data.id,
+                attachments: documentState.fileHashes
+                  .map((item, i) => ({
+                    id: data.data.attachments[i].id,
+                    hash: item,
+                    data: documentState.fileData[i]
+                  }))
+              }
+            ]
+          }
+
+          return axios.post('https://api.quidox.by/api/documents/confirm', newData, {
+            headers: {
+              'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
+            }
+          })
+            .then(() => {
+              message.success(`файлы успешно подписаны!`)
+              // setDocumentState({ ...defaultDocumentData })
+            })
+        }
+
       })
       .catch(error => {
         message.error(error.message)
@@ -174,17 +206,46 @@ const NewDocumentPage = props => {
     const reader = new window.FileReader()
     reader.readAsDataURL(documentState.files[index])
     reader.onload = function () {
-      setDocumentState({
-        ...documentState,
-        base64files: [...documentState.base64files, reader.result]
-      })
+      // setDocumentState({
+      //   ...documentState,
+      //   base64files: [...documentState.base64files, reader.result]
+      // })
+      var input = document.createElement("input");
+      input.type = "hidden";
+      input.id = "dataFile-" + index;
+      document.body.appendChild(input);
+      document.getElementById("dataFile-" + index).value = reader.result
+      window.sign("File-" + index)
+
+      setTimeout(() => {
+        const value = document.getElementById('verifiedData' + "File-" + index).value
+        const signedValue = document.getElementById('signedData' + "File-" + index).value
+        setDocumentState({
+          ...documentState,
+          base64files: [
+            ...documentState.base64files.slice(0, index),
+            reader.result,
+            ...documentState.base64files.slice(index + 1)
+          ],
+          fileHashes: [
+            ...documentState.fileHashes.slice(0, index),
+            signedValue,
+            ...documentState.fileHashes.slice(index + 1)
+          ],
+          fileData: [
+            ...documentState.fileData.slice(0, index),
+            value,
+            ...documentState.fileData.slice(index + 1)
+          ]
+        })
+      }, 1000)
     }
     reader.onerror = function (error) {
       message.error(error.message)
     }
   }
 
-  console.log(documentState.value.map(i => i.key))
+  console.log(documentState)
   return (
     <div className='content content_padding'>
       <Spin spinning={!!documentState.fetching}>
@@ -222,11 +283,11 @@ const NewDocumentPage = props => {
         <div className='files-group'>
           <ul className='attached-files'>
             {documentState.files && documentState.files.map((e, i) => (
-              <li className='attached-file' key={i}>
+              <li className='attached-file' key={e.name}>
                 <span className='attached-file__count'>{i + 1}</span>
                 <p className='attached-file__name'>{e.name}</p>
                 <div className='attached-file__actions'>
-                  <Icon onClick={() =>verifyFile(i)} style={{ color: '#3278fb' }} type='edit' />
+                  <Icon onClick={() => verifyFile(i)} style={{ color: '#3278fb' }} type='edit' />
                   <Icon
                     onClick={() => removeFile(i)}
                     style={{ color: '#FF7D1D' }}
@@ -255,15 +316,6 @@ const NewDocumentPage = props => {
           </Button>
         </div>
       </Spin>
-      {/* <input type='hidden' id='dataNewCompany' value={documentState.base64files} /> */}
-      {documentState.base64files.map((item, index) =>
-        React.createElement('input', {
-          key: {index},
-          type: 'hidden',
-          id: `file-${index}`,
-          value: documentState.base64files[index]
-        })
-        )}
       <input type='hidden' id='attr' size='80' value='1.2.112.1.2.1.1.1.1.2' />
       <div id='attrCertSelectContainer' style={{ display: 'none' }}>
         <span id='certExtAbsent' />
