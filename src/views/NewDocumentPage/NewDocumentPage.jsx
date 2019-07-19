@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react'
 import axios from 'axios'
 import _ from 'lodash'
 import { findUsersByParams } from '../../services/api/user'
-import { message, Icon, Select, Spin } from 'antd'
+import { message, Icon, Select, Spin, Tag } from 'antd'
 import { Input, Button } from '../../components'
 import './NewDocumentPage.scss'
 
@@ -19,9 +19,10 @@ const defaultDocumentData = {
   data: [],
   value: [],
   fetching: false,
-  ids: []
+  ids: [],
 }
-
+// eslint-disable-next-line spaced-comment
+const isIE = /*@cc_on!@*/false || !!document.documentMode
 const NewDocumentPage = props => {
   const {
     sendDocumentToUser
@@ -107,7 +108,7 @@ const NewDocumentPage = props => {
           })
             .then(() => {
               message.success(`файлы успешно подписаны!`)
-              // setDocumentState({ ...defaultDocumentData })
+              setDocumentState({ ...defaultDocumentData})
             })
         }
 
@@ -119,30 +120,7 @@ const NewDocumentPage = props => {
   }
 
   const handleSendToUser = () => {
-    setDocumentState({
-      ...documentState,
-      fetching: true
-    })
-    const formData = new window.FormData()
-
-    formData.append(
-      'name',
-      documentState.name
-    )
-    formData.append(
-      'description',
-      documentState.description
-    )
-
-    documentState.files.forEach((file, index) => {
-      formData.append(`second_documents[${index}]`, file)
-    })
-    return axios.post('https://api.quidox.by/api/document/create', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
-      }
-    })
+    handleSendToDraft()
       .then(({ data }) => {
         if (data.success) {
           const docDataToUser = {
@@ -153,7 +131,10 @@ const NewDocumentPage = props => {
           sendDocumentToUser(docDataToUser)
             .then(() => {
               message.success('Сообщение успешно отправлено!')
-              setDocumentState({ ...defaultDocumentData })
+              setDocumentState({
+              ...documentState,
+              fetching: false
+            })
             })
             .catch(error => {
               message.error(error.message)
@@ -286,8 +267,11 @@ const NewDocumentPage = props => {
               <li className='attached-file' key={e.name}>
                 <span className='attached-file__count'>{i + 1}</span>
                 <p className='attached-file__name'>{e.name}</p>
+                { documentState.fileHashes[i] && <Tag color="#3278fb">ЭЦП</Tag> }
                 <div className='attached-file__actions'>
+                {isIE &&
                   <Icon onClick={() => verifyFile(i)} style={{ color: '#3278fb' }} type='edit' />
+                }
                   <Icon
                     onClick={() => removeFile(i)}
                     style={{ color: '#FF7D1D' }}

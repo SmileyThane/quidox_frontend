@@ -8,12 +8,13 @@ const PrivateRoute = ({ component: Component, getUser, ...rest }) => {
 
   // eslint-disable-next-line spaced-comment
   const isIE = /*@cc_on!@*/false || !!document.documentMode
-
   useEffect(() => {
     if (window.localStorage.getItem('authToken')) {
       getUser()
       if (isIE) {
-        window.pluginLoaded()
+        setTimeout(() => {
+          window.pluginLoaded()
+        }, 1500)
       }
     }
   }, [getUser])

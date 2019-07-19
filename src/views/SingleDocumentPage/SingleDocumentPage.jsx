@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Fragment } from 'react'
 
 import { getFileName } from '../../helpers'
-import { Spin, Icon, List } from 'antd'
+import { Spin, Icon, List, Tag, Popover, Modal } from 'antd'
 import history from '../../history'
 import { Button, PDFViewer } from '../../components'
 import PDFJSBACKEND from '../../backends/pdfjs'
@@ -9,7 +9,9 @@ import './SingleDocumentPage.scss'
 
 const defaultDocumentState = {
   isVasible: false,
-  pdfLink: ''
+  pdfLink: '',
+  userData: [],
+  showModal: false
 }
 
 const SingleDocumentPage = props => {
@@ -40,9 +42,25 @@ const SingleDocumentPage = props => {
     })
   }
 
+  const splitting = (str) => {
+    const arr = []
+    const strItem = str.split(';').forEach(element => {
+      arr.push(element.replace(/[-+()><=\s]/g, ' '))
+    })
+    return arr
+  }
+
+  const showUserData = (data) => {
+    setDocumentState({
+      ...documentState,
+      showModal: !documentState.showModal,
+      userData: data
+    })
+  }
+
+
   const [documentState, setDocumentState] = useState({ ...defaultDocumentState })
 
-  console.log(data)
   return (
     <Fragment>
       <Spin spinning={isFetching}>
@@ -59,6 +77,10 @@ const SingleDocumentPage = props => {
             </div>
             <div className='document__content'>
               <div className='document__info info'>
+              <div className='info__item'>
+                  <div className='info__title'>Отправители</div>
+                  <div className='info__content'>{data.author && data.author.company_name}</div>
+                </div>
                 <div className='info__item'>
                   <div className='info__title'>Комментарий</div>
                   <div className='info__content'>{data.description}</div>
@@ -68,11 +90,28 @@ const SingleDocumentPage = props => {
                 <List
                   itemLayout='horizontal'
                   dataSource={data.attachments}
-                  renderItem={item => (
-                    <List.Item actions={[<a href={item.original_path}><Icon style={{ color: '#3278fb', fontSize: 20 }} type='download' /></a>]}>
+                  renderItem={(item, index) => (
+                    <List.Item key={index} actions={[<a href={item.original_path}><Icon style={{ color: '#3278fb', fontSize: 20 }} type='download' /></a>]}>
                       <div className='single-document'>
                         <Icon style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }} type='eye' onClick={() => showModal(item)} />
-                        <p className='single-document__name'>{getFileName(item.original_path)}</p>
+                        <p style={{ marginRight: 10 }} className='single-document__name'>{getFileName(item.original_path)}</p>
+                        {item.users_companies.length && item.users_companies.map((item, index) => (
+                            <Fragment key={index}>
+                              {item.is_verified && 
+                                <Popover 
+                                  content={
+                                    <div>
+                                      <p>Дата подписи: {item.verification_date}</p>
+                                      <p>{splitting(item.verification_info)[0]}</p>
+                                    </div>
+                                  }
+                                  >
+                                  <Tag  onClick={() => showUserData(splitting(item.verification_info))} style={{ cursor: 'pointer' }} color="#3278fb">ЭЦП</Tag>
+                                </Popover>
+                              }
+                            </Fragment>
+                        ))                           
+                        }
                       </div>
                     </List.Item>
                   )}
@@ -110,6 +149,21 @@ const SingleDocumentPage = props => {
             src={documentState.pdfLink}
           />
         </div>
+      }
+      {documentState.showModal &&
+        <Modal
+          title='Данные ЕЦП'
+          visible
+          closable={false}
+          footer={null}
+        >
+          <Fragment>
+            {documentState.userData.map((item, index) => (
+              <p key={index}>{item}</p>
+            ))}
+            <Button style={{ marginTop: 20 }} onClick={() => setDocumentState({ ...documentState, showModal: !documentState.showModal })} type='primary'>Закрыть</Button>
+          </Fragment>
+        </Modal>
       }
     </Fragment>
   )
