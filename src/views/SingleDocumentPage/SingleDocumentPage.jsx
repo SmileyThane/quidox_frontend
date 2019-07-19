@@ -95,9 +95,9 @@ const SingleDocumentPage = props => {
                       <div className='single-document'>
                         <Icon style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }} type='eye' onClick={() => showModal(item)} />
                         <p style={{ marginRight: 10 }} className='single-document__name'>{getFileName(item.original_path)}</p>
-                        {item.users_companies.length && item.users_companies.map((item, index) => (
+                        {item.users_companies.length ? item.users_companies.map((item, index) => (
                             <Fragment key={index}>
-                              {item.is_verified && 
+                              {item.is_verified ? 
                                 <Popover 
                                   content={
                                     <div>
@@ -108,9 +108,11 @@ const SingleDocumentPage = props => {
                                   >
                                   <Tag  onClick={() => showUserData(splitting(item.verification_info))} style={{ cursor: 'pointer' }} color="#3278fb">ЭЦП</Tag>
                                 </Popover>
+                                : null
                               }
                             </Fragment>
-                        ))                           
+                        )) 
+                        : null                          
                         }
                       </div>
                     </List.Item>
