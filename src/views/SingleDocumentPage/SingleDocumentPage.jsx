@@ -9,7 +9,7 @@ import './SingleDocumentPage.scss'
 
 const defaultDocumentState = {
   isVasible: false,
-  pdfLink: '',
+  fileLink: '',
   userData: [],
   showModal: false
 }
@@ -31,7 +31,7 @@ const SingleDocumentPage = props => {
     setDocumentState({
       ...documentState,
       isVasible: true,
-      pdfLink: item.preview_path
+      fileLink: item.preview_path
     })
   }
 
@@ -146,10 +146,18 @@ const SingleDocumentPage = props => {
           <div className='pdf-container__close'>
             <Icon style={{ fontSize: 30 }} type='close' onClick={() => hideModal()} />
           </div>
-          <PDFViewer
-            backend={PDFJSBACKEND}
-            src={documentState.pdfLink}
-          />
+          {['jpg', 'png', 'jpeg'].includes(documentState.fileLink.split('.').pop())
+            ?
+            <div class='img-wrapp'>
+              <img class='modal-img' src={documentState.fileLink} alt="img"/>
+            </div>
+            :
+            <PDFViewer
+              backend={PDFJSBACKEND}
+              src={documentState.fileLink}
+            />
+          }
+
         </div>
       }
       {documentState.showModal &&
