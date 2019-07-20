@@ -127,7 +127,30 @@ const NewDocumentPage = props => {
   }
 
   const handleSendToUser = () => {
-    handleSendToDraft()
+    setDocumentState({
+      ...documentState,
+      fetching: true
+    })
+    const formData = new window.FormData()
+
+    formData.append(
+      'name',
+      documentState.name
+    )
+    formData.append(
+      'description',
+      documentState.description
+    )
+
+    documentState.files.forEach((file, index) => {
+      formData.append(`second_documents[${index}]`, file)
+    })
+    return axios.post('https://api.quidox.by/api/document/create', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
+      }
+    })
       .then(({ data }) => {
         if (data.success) {
           const docDataToUser = {
@@ -138,10 +161,7 @@ const NewDocumentPage = props => {
           sendDocumentToUser(docDataToUser)
             .then(() => {
               message.success('Сообщение успешно отправлено!')
-              setDocumentState({
-              ...documentState,
-              fetching: false
-            })
+              setDocumentState({ ...defaultDocumentData })
             })
             .catch(error => {
               message.error(error.message)
@@ -153,6 +173,7 @@ const NewDocumentPage = props => {
         message.error(error.message)
       })
   }
+
 
   const fetchUser = _.debounce(v => {
     if (v.length > 2) {
