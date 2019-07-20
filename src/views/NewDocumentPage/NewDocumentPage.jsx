@@ -85,8 +85,15 @@ const NewDocumentPage = props => {
     })
       .then(({ data }) => {
         message.success(`Документ ${documentState.name} успешно сохранен!`)
-
+        setDocumentState({
+          ...documentState,
+          fetching: false
+        })
         if (documentState.fileHashes.filter(i => !!i).length) {
+          setDocumentState({
+            ...documentState,
+            fetching: true
+          })
           const newData = {
             documents: [
               {
@@ -226,7 +233,7 @@ const NewDocumentPage = props => {
     }
   }
 
-  console.log(documentState)
+
   return (
     <div className='content content_padding'>
       <Spin spinning={!!documentState.fetching}>

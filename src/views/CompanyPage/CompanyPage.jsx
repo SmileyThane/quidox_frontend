@@ -181,7 +181,7 @@ const CopmanyPage = props => {
         visible={companyState.showModal}
         title='Данные компании'
         closable={false}
-        onOk={handleCreateCompany}
+        footer={null}
         onCancel={() => setCompanyState({ ...companyState, showModal: !companyState.showModal })}
       >
         <div className='document document_modal'>
@@ -208,6 +208,7 @@ const CopmanyPage = props => {
                 <div className='info__content'>{companyState.newCompanyFullName}</div>
               </div>
             </div>
+            <Button style={{ margin: '20px 0 0 20px' }} onClick={handleCreateCompany} type='primary'>Создать</Button>
           </Spin>
         </div>
 
