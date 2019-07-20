@@ -24,7 +24,9 @@ const AntdTable = props => {
       sorter: (a, b) => getTimeStamp(a.created_at) - getTimeStamp(b.created_at)
     },
     {
-      title: 'Отправитель'
+      title: 'Отправитель',
+      key: 'author',
+      render: record => <p>{record.author.company_name}</p>
     },
     {
       title: 'Тема',
