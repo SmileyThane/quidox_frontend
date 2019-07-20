@@ -89,17 +89,17 @@ const CopmanyPage = props => {
       changeActiveCompanyById(company.id)
         .then(() => {
           message.success('Активная компания изменена успешно!')
-          setCompanyState({
-            ...companyState,
-            showModal: !companyState.showModal
-          })
+          // setCompanyState({
+          //   ...companyState,
+          //   showModal: !companyState.showModal
+          // })
         })
         .catch(error => {
           message.error(error.message)
-          setCompanyState({
-            ...companyState,
-            showModal: !companyState.showModal
-          })
+          // setCompanyState({
+          //   ...companyState,
+          //   showModal: !companyState.showModal
+          // })
         })
     }
   }

@@ -3,7 +3,8 @@ import axios from 'axios'
 // import { config } from '../../../constants'
 
 import {
-  token
+  token,
+  connection
 } from './interceptors'
 
 const instance = axios.create({
@@ -16,5 +17,6 @@ const instance = axios.create({
   timeout: 180000
 })
 token(instance)
+connection(instance)
 
 export default instance
