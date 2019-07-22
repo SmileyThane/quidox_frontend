@@ -93,7 +93,7 @@ const UserInfoPage = props => {
               disabled={!userState.isEditMode}
               onChange={v => setUserState({ ...userState, active_company_id: v })}
             >
-              {companies.map(i => <Option key={i.id} value={i.id}>{i.company_name}({i.role_name})</Option>)}
+              {companies.map(i => <Option key={i.id} value={i.id}>{i.company_name}</Option>)}
             </Select>
           </div>
           <div className='user-info-group user-info-group_full-width'>

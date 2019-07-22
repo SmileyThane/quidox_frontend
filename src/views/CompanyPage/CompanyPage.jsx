@@ -82,11 +82,11 @@ const CopmanyPage = props => {
   }
 
   const changeActiveCompany = company => {
-    if (company.id === data.active_company_id) {
+    if (company.company_data.id === data.active_company_id) {
       message.error('Компания является активной!')
       return null
     } else {
-      changeActiveCompanyById(company.id)
+      changeActiveCompanyById(company.company_data.id)
         .then(() => {
           message.success('Активная компания изменена успешно!')
           // setCompanyState({
@@ -143,8 +143,8 @@ const CopmanyPage = props => {
             okText='Сделать активной'
             cancelText='Закрыть'
           >
-            <Tag style={{ cursor: 'pointer' }} color={(record.id === data.active_company_id) ? '#87d068' : '#FF7D1D'}>
-              {(record.id === data.active_company_id) ? 'Активная' : 'Не активная'}
+            <Tag style={{ cursor: 'pointer' }} color={(record.company_data.id === data.active_company_id) ? '#87d068' : '#FF7D1D'}>
+              {(record.company_data.id === data.active_company_id) ? 'Активная' : 'Не активная'}
             </Tag>
           </Popconfirm>
         }
