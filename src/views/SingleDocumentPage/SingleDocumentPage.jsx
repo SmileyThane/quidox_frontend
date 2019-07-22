@@ -158,7 +158,7 @@ const SingleDocumentPage = props => {
                     <List.Item key={index} actions={[<a href={item.original_path}><Icon style={{ color: '#3278fb', fontSize: 20 }} type='download' /></a>]}>
                       <div className='single-document'>
                         <Icon style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }} type='eye' onClick={() => showModal(item)} />
-                        <p style={{ marginRight: 10 }} className='single-document__name'>{getFileName(item.original_path)}</p>
+                        <p style={{ marginRight: 10 }} className='single-document__name'>{item.name}</p>
                         {item.users_companies.length ? item.users_companies.map((item, index) => (
                             <Fragment key={index}>
                               {item.is_verified ? 
@@ -226,7 +226,7 @@ const SingleDocumentPage = props => {
       }
       {documentState.showModal &&
         <Modal
-          title={ documentState.modalType === 'ecp' ? 'Данные ЕЦП' : 'Получатели' }
+          title={ documentState.modalType === 'ecp' ? 'Данные ЭЦП' : 'Получатели' }
           visible
           closable={false}
           footer={null}
