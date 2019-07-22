@@ -15,6 +15,7 @@ const defaultUserState = {
 
 const UserInfoPage = props => {
   const {
+    companies: { list },
     user: {
       isFetching,
       data: {
@@ -34,7 +35,7 @@ const UserInfoPage = props => {
         name: data.name,
         email: data.email,
         phone: data.phone,
-        active_company_id: +data.active_company_id
+        active_company_id: data.active_company_id
       })
     }
   }, [data])
@@ -68,7 +69,7 @@ const UserInfoPage = props => {
       })
     }
   }
-
+  console.log(data)
   return (
     <div className='content'>
       <Spin spinning={isFetching}>
@@ -91,9 +92,12 @@ const UserInfoPage = props => {
               style={{ width: '100%' }}
               value={!isNaN(userState.active_company_id) ? userState.active_company_id : ''}
               disabled={!userState.isEditMode}
-              onChange={v => setUserState({ ...userState, active_company_id: v })}
+              onChange={v => {
+                console.log(v)
+                setUserState({ ...userState, active_company_id: v })
+              }}
             >
-              {companies.map(i => <Option key={i.id} value={i.id}>{i.company_name}</Option>)}
+              {companies && companies.map(i => <Option key={i.company_id} value={i.company_id}>{i.company_name}</Option>)}
             </Select>
           </div>
           <div className='user-info-group user-info-group_full-width'>
