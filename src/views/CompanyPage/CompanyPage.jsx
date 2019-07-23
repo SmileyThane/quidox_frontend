@@ -59,9 +59,11 @@ const CopmanyPage = props => {
         }
         if (element.indexOf('1.2.112.1.2.1.1.1.1.2') > -1) {
           const result = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
+          console.log('Its a company number:', result)
           axios.get(`/company/find/data/${result}`)
             .then(response => {
               const res = JSON.parse(JSON.stringify(response.data))
+              console.log('Its a parse JSON', res)
               setCompanyState({
                 ...companyState,
                 showModal: true,
@@ -73,6 +75,7 @@ const CopmanyPage = props => {
                 modalFetching: !res.data[0].VFN
               })
             })
+            console.log(companyState)
             .catch(error => {
               message.error(error.message)
             })
