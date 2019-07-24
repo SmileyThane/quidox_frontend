@@ -13,7 +13,7 @@ const defaultTableState = {
 
 const AntdTable = props => {
 
-  const { activeCompany, getDocumentsWithParams, children, type, removeDocument, removeDocuments, ...rest } = props
+  const { activeCompany, draft = false, getDocumentsWithParams, children, type, columnName = '', removeDocument, removeDocuments, ...rest } = props
 
   const [tableState, setTableState] = useState({ ...defaultTableState })
 
@@ -24,9 +24,9 @@ const AntdTable = props => {
       sorter: (a, b) => getTimeStamp(a.created_at) - getTimeStamp(b.created_at)
     },
     {
-      title: 'Отправитель',
-      key: 'author',
-      render: record => <p>{record.author.company_name}</p>
+      title: type !== 'draft' && `${columnName}`,
+      key: type !== 'draft' && 'author',
+      render: record => type !== 'draft' && <p>{record.author.company_name}</p>
     },
     {
       title: 'Тема',

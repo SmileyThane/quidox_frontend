@@ -29,6 +29,7 @@ const UnconfirmedMessagesPage = props => {
         getDocumentsWithParams={getInboxUnconfirmedDocumentsByActiveCompanyId}
         activeCompany={data.active_company_id}
         type='unconfirmed'
+        columnName='Отправитель'
       />
     </div>
   )
