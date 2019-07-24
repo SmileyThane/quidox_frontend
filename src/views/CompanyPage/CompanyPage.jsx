@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react'
 
-import axios from '../../services/api/http'
+import moment from 'moment'
 
 import { Button } from '../../components'
 import { Table, Tag, Popconfirm, message, Modal, Typography, Spin } from 'antd'
@@ -14,6 +14,7 @@ const defaultCompanyState = {
   newCompanyName: '',
   newCompanyCity: '',
   newCompanyFullName: '',
+  yourPosition: '',
   showModal: false,
   modalFetching: false
 }
@@ -50,6 +51,9 @@ const CopmanyPage = props => {
       const companyData = document.getElementById('verifiedDataNewCompany').value
       const companyDataArr = companyData.split(';')
       let address = ''
+      let name = ''
+      let position = ''
+      let result = ''
       companyDataArr.forEach(function (element) {
         if (element.indexOf('2.5.4.7') > -1) {
           address = address + ' ' + element.substring(element.indexOf('<') + 1, element.indexOf('>'))
@@ -57,28 +61,24 @@ const CopmanyPage = props => {
         if (element.indexOf('2.5.4.9') > -1) {
           address = address + ' ' + element.substring(element.indexOf('<') + 1, element.indexOf('>'))
         }
-        if (element.indexOf('1.2.112.1.2.1.1.1.1.2') > -1) {
-          const result = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-          console.log('Its a company number:', result)
-          axios.get(`/company/find/data/${result}`)
-            .then(response => {
-              const res = JSON.parse(JSON.stringify(response.data))
-              console.log('Its a parse JSON', res)
-              setCompanyState({
-                ...companyState,
-                showModal: true,
-                newCompanyDate: res.data[0].DC,
-                newCompanyNumber: result,
-                newCompanyName: res.data[0].VFN,
-                newCompanyCity: address,
-                newCompanyFullName: res.data[0].VNM,
-                modalFetching: !res.data[0].VFN
-              })
-            })
-            .catch(error => {
-              message.error(error.message)
-            })
+        if (element.indexOf('2.5.4.10') > -1) {
+          name = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
         }
+        if (element.indexOf('2.5.4.12') > -1) {
+          position = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
+        }
+        if (element.indexOf('1.2.112.1.2.1.1.1.1.2') > -1) {
+          result = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
+        }
+      })
+      setCompanyState({
+        ...companyState,
+        showModal: true,
+        newCompanyDate: moment().format('DD MM YYYY, HH:mm'),
+        newCompanyNumber: result,
+        newCompanyName: name,
+        newCompanyCity: address,
+        yourPosition: position,
       })
     }, 1000)
   }
@@ -91,27 +91,22 @@ const CopmanyPage = props => {
       changeActiveCompanyById(company.company_data.id)
         .then(() => {
           message.success('Активная компания изменена успешно!')
-          // setCompanyState({
-          //   ...companyState,
-          //   showModal: !companyState.showModal
-          // })
         })
         .catch(error => {
           message.error(error.message)
-          // setCompanyState({
-          //   ...companyState,
-          //   showModal: !companyState.showModal
-          // })
         })
     }
   }
 
   const handleCreateCompany = () => {
     const newCompanyData = {
-      name: companyState.newCompanyFullName,
+      name: companyState.newCompanyName,
       company_number: +companyState.newCompanyNumber,
-      description: companyState.newCompanyCity
+      description: companyState.newCompanyCity,
+      data: companyState.newCompanyDate,
+      your_position: companyState.yourPosition
     }
+    console.log(newCompanyData)
     createCompany(newCompanyData)
       .then(() => {
         setCompanyState({ ...defaultCompanyState })
@@ -153,7 +148,6 @@ const CopmanyPage = props => {
       </Fragment>
     )
   }]
-
   return (
     <Fragment>
       <div className='content content_small-margin'>
@@ -206,8 +200,8 @@ const CopmanyPage = props => {
                 <div className='info__content'>{companyState.newCompanyCity}</div>
               </div>
               <div className='info__item'>
-                <div className='info__title'>Полное имя компании</div>
-                <div className='info__content'>{companyState.newCompanyFullName}</div>
+                <div className='info__title'>Должность сотруднка</div>
+                <div className='info__content'>{companyState.yourPosition}</div>
               </div>
             </div>
             <Button style={{ margin: '20px 0 0 20px' }} onClick={handleCreateCompany} type='primary'>Создать</Button>

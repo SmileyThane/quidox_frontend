@@ -38,7 +38,7 @@ const NewDocumentPage = props => {
   }
 
   const getFiles = e => {
-    console.log(e.target.files, e.target.curFiles)
+    console.log(e)
     setDocumentState({
       ...documentState,
       files: documentState.files.concat([...e.target.files]),
