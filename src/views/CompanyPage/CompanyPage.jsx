@@ -75,7 +75,6 @@ const CopmanyPage = props => {
                 modalFetching: !res.data[0].VFN
               })
             })
-            console.log(companyState)
             .catch(error => {
               message.error(error.message)
             })
