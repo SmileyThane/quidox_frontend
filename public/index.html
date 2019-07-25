@@ -133,7 +133,6 @@
 
             var contentText = msg.Content.GetAsText(0);
             var name = cert.Subject;
-            console.log(name)
             var resultText = "Подпись верна. Подписано: " + name + "\n";
 
             var attrVal = "";
@@ -201,6 +200,7 @@
                             var acert = attrCerts.Item(i);
                             resultText += "Найден атрибутный сертификат №" + acert.Serial.GetAsHex(0) + "\n";
                             var attrsText = "";
+                            var attrArray = []
                             var attrFound = false;
                             for (var j = 0; j < acert.AttributesCount; j++) {
                                 var attr = acert.GetAttributeByIndex(j, 0);
@@ -208,10 +208,10 @@
                                     attrFound = true;
                                 }
                                 attrsText += attr.Oid + "(" + attr.OidName + ")" + "=<" + attr.ValueAsString + ">;";
+                                attrArray[attr.Oid] = attr.ValueAsString
                             }
                             attrsText = attrsText.substr(0, attrsText.length - 1);
                             resultText += "Атрибуты: " + attrsText + "\n";
-
                             if (attrFound) {
                                 // resultText += "Этот атрибутный сертификат подходит для удостоверения данной ЭЦП\n";
                                 var res = acert.CheckValidity(0);
@@ -233,6 +233,7 @@
             }
             // alert(resultText);
             // console.log(resultText);
+            console.log(attrArray)
             var input = document.createElement("input");
             input.type = "hidden";
             input.id = "verifiedData" + file; // set the CSS class
