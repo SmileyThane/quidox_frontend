@@ -135,7 +135,6 @@
             var contentText = msg.Content.GetAsText(0);
             var name = cert.Subject;
             var resultText = "Подпись верна. Подписано: " + name + "\n";
-
             var attrVal = "";
             try {
                 var ext = conn.OwnCertificate.GetExtensionByOid(attrOid, 0);
@@ -148,8 +147,8 @@
                 }
             }
 
-            // console.log('attrVal:', attrVal) attrVal for me its ''
-            // console.log('contentText', contentText)
+            console.log('attrVal:', attrVal)
+            console.log('contentText', contentText)
 
             if (attrVal == contentText) {
                 // resultText += "Сообщение подписано сертификатом открытого ключа с требуемым атрибутом, значение атрибута: " + attrVal;
@@ -236,6 +235,8 @@
             if (!attrVal) {
               companyNumber = attrArray[attrOid]
               console.log(companyNumber)
+            } else {
+              companyNumber = attrVal
             }
             // alert(resultText);
             // console.log(resultText);
