@@ -104,6 +104,7 @@
 
       function verify(file) {
         var attrOid = document.getElementById('attr').value;
+        var 
         if (!attrOid.length) {
             alert("Необходимо выбрать требуемый атрибут");
             return;
@@ -228,7 +229,7 @@
                         }
                     } else {
                         // resultText += "В хранилище не найдено ниодного атрибутного сертификата соответствующего сертификату подписанта\n";
-                        console.log(cert.Subject.split(','))
+                        console.log(cert.Subject.split(',').push(attrVal))
                     }
                 }
             }
