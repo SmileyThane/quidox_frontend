@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 
 import axios from 'axios'
 import _ from 'lodash'
@@ -19,7 +19,7 @@ const defaultDocumentData = {
   data: [],
   value: [],
   fetching: false,
-  ids: [],
+  ids: []
 }
 // eslint-disable-next-line spaced-comment
 const isIE = /*@cc_on!@*/false || !!document.documentMode
@@ -115,10 +115,9 @@ const NewDocumentPage = props => {
           })
             .then(() => {
               message.success(`файлы успешно подписаны!`)
-              setDocumentState({ ...defaultDocumentData})
+              setDocumentState({ ...defaultDocumentData })
             })
         }
-
       })
       .catch(error => {
         message.error(error.message)
@@ -145,6 +144,15 @@ const NewDocumentPage = props => {
     documentState.files.forEach((file, index) => {
       formData.append(`second_documents[${index}]`, file)
     })
+    console.log(documentState.value.length)
+    if (!documentState.value.length > 0) {
+      message.error('Введите получателя!')
+      setDocumentState({
+        ...documentState,
+        fetching: false
+      })
+      return null
+    }
     return axios.post('https://api.quidox.by/api/document/create', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -157,7 +165,6 @@ const NewDocumentPage = props => {
             document_ids: [data.data.id],
             user_company_id: documentState.value.map(i => i.key)
           }
-          console.log(docDataToUser)
           sendDocumentToUser(docDataToUser)
             .then(() => {
               message.success('Сообщение успешно отправлено!')
@@ -173,7 +180,6 @@ const NewDocumentPage = props => {
         message.error(error.message)
       })
   }
-
 
   const fetchUser = _.debounce(v => {
     if (v.length > 2) {
@@ -219,16 +225,16 @@ const NewDocumentPage = props => {
       //   ...documentState,
       //   base64files: [...documentState.base64files, reader.result]
       // })
-      var input = document.createElement("input");
-      input.type = "hidden";
-      input.id = "dataFile-" + index;
-      document.body.appendChild(input);
-      document.getElementById("dataFile-" + index).value = reader.result
-      window.sign("File-" + index)
+      var input = document.createElement('input')
+      input.type = 'hidden';
+      input.id = 'dataFile-' + index
+      document.body.appendChild(input)
+      document.getElementById('dataFile-' + index).value = reader.result
+      window.sign('File-' + index)
 
       setTimeout(() => {
-        const value = document.getElementById('verifiedData' + "File-" + index).value
-        const signedValue = document.getElementById('signedData' + "File-" + index).value
+        const value = document.getElementById('verifiedData' + 'File-' + index).value
+        const signedValue = document.getElementById('signedData' + 'File-' + index).value
         setDocumentState({
           ...documentState,
           base64files: [
@@ -253,7 +259,6 @@ const NewDocumentPage = props => {
       message.error(error.message)
     }
   }
-
 
   return (
     <div className='content content_padding'>
@@ -295,11 +300,11 @@ const NewDocumentPage = props => {
               <li className='attached-file' key={e.name}>
                 <span className='attached-file__count'>{i + 1}</span>
                 <p className='attached-file__name'>{e.name}</p>
-                { documentState.fileHashes[i] && <Tag color="#3278fb">ЭЦП</Tag> }
+                { documentState.fileHashes[i] && <Tag color='#3278fb'>ЭЦП</Tag> }
                 <div className='attached-file__actions'>
-                {isIE &&
+                  {isIE &&
                   <Icon onClick={() => verifyFile(i)} style={{ color: '#3278fb' }} type='edit' />
-                }
+                  }
                   <Icon
                     onClick={() => removeFile(i)}
                     style={{ color: '#FF7D1D' }}
