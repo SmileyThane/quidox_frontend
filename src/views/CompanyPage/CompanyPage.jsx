@@ -106,7 +106,7 @@ const CopmanyPage = props => {
   const handleCreateCompany = () => {
     const newCompanyData = {
       name: companyState.newCompanyName,
-      company_number: +companyState.newCompanyNumber,
+      company_number: companyState.newCompanyNumber ? +companyState.newCompanyNumber : +document.getElementById('companyNumberGlobal').value,
       description: companyState.newCompanyCity,
       data: companyState.newCompanyDate,
       your_position: companyState.yourPosition
@@ -172,6 +172,7 @@ const CopmanyPage = props => {
       }
       <input type='hidden' id='dataNewCompany' value={data.email} />
       <input type='hidden' id='attr' size='80' value='1.2.112.1.2.1.1.1.1.2' />
+      <input type="hidden" id='companyNumberGlobal' />
       <div id='attrCertSelectContainer' style={{ display: 'none' }}>
         <span id='certExtAbsent' />
         <select style={{ visibility: 'hidden' }} id='attrCertSelect' />
