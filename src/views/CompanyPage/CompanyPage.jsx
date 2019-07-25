@@ -57,23 +57,23 @@ const CopmanyPage = props => {
       companyDataArr.forEach(function (element) {
         if (element.indexOf('2.5.4.7') > -1) {
           address = address + ' ' + element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-          console.log('address', address)
+          // console.log('address', address)
         }
         if (element.indexOf('2.5.4.9') > -1) {
           address = address + ' ' + element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-          console.log('address', address)
+          // console.log('address', address)
         }
         if (element.indexOf('2.5.4.10') > -1) {
           name = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-          console.log('name', name)
+          // console.log('name', name)
         }
         if (element.indexOf('2.5.4.12') > -1) {
           position = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-          console.log('position', position)
+          // console.log('position', position)
         }
         if (element.indexOf('1.2.112.1.2.1.1.1.1.2') > -1) {
           result = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-          console.log('result', result)
+          // console.log('result', result)
         }
       })
       setCompanyState({
@@ -111,7 +111,6 @@ const CopmanyPage = props => {
       data: companyState.newCompanyDate,
       your_position: companyState.yourPosition
     }
-    console.log(newCompanyData)
     createCompany(newCompanyData)
       .then(() => {
         setCompanyState({ ...defaultCompanyState })

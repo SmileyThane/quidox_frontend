@@ -133,15 +133,14 @@
 
             var contentText = msg.Content.GetAsText(0);
             var name = cert.Subject;
+            console.log(name)
             var resultText = "Подпись верна. Подписано: " + name + "\n";
 
             var attrVal = "";
             try {
                 var ext = conn.OwnCertificate.GetExtensionByOid(attrOid, 0);
-                console.log(ext)
                 attrVal = ext.ValueAsString;
             } catch (e) {
-              console.log(e)
                 if (lastErrorIs(AVCMR_NOT_FOUND)) {
                     needAttrCert = true;
                 } else {
@@ -149,7 +148,8 @@
                 }
             }
 
-            console.log(attrVal, contentText)
+            // console.log('attrVal:', attrVal) attrVal for me its ''
+            // console.log('contentText', contentText)
 
             if (attrVal == contentText) {
                 // resultText += "Сообщение подписано сертификатом открытого ключа с требуемым атрибутом, значение атрибута: " + attrVal;
@@ -159,8 +159,7 @@
             } else {
                 // resultText += "Сертификат открытого ключа подписанта не содержит требуемый атрибут\n" +
                 // "Поиск атрибутных сертификатов в сообщении...\n";
-
-                if (attrCerts.Count) {
+                if (attrCerts.Count) { // c
                     for (var i = 0; i < attrCerts.Count; i++) {
                         var acert = attrCerts.Item(i);
                         resultText += "Найден атрибутный сертификат №" + acert.Serial.GetAsHex(0) + "\n";
