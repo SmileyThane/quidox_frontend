@@ -147,7 +147,7 @@
                 }
             }
             companyNumber = attrVal
-            console.log('companyNumber:', companyNumber)
+            // console.log('companyNumber:', companyNumber)
             // console.log('contentText', contentText)
 
             if (attrVal == contentText) {
@@ -234,11 +234,8 @@
             }
             if (!attrVal) {
               companyNumber = attrArray[attrOid]
-              console.log(companyNumber)
             }
-            // alert(resultText);
-            // console.log(resultText);
-            console.log(attrArray)
+            console.log('COMPANY NUMBER:', companyNumber)
             var input = document.createElement("input");
             input.type = "hidden";
             input.id = "verifiedData" + file; // set the CSS class
