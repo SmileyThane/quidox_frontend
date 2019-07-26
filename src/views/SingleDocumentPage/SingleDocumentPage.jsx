@@ -169,13 +169,14 @@ const SingleDocumentPage = props => {
         }
       ]
     }
-
-    return axios.post('https://api.quidox.by/api/documents/confirm', newData, {
+    console.log(newData)
+    axios.post('https://api.quidox.by/api/documents/confirm', newData, {
       headers: {
         'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
       }
     })
       .then(() => {
+        console.log('then')
         message.success(`файлы успешно подписаны!`)
         setDocumentState({ ...defaultDocumentState })
       })
