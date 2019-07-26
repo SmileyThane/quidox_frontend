@@ -321,6 +321,12 @@ const SingleDocumentPage = props => {
           }
         </Modal>
       }
+      <input type='hidden' id='attr' size='80' value='1.2.112.1.2.1.1.1.1.2' />
+      <div id='attrCertSelectContainer' style={{ display: 'none' }}>
+        <span id='certExtAbsent' />
+        <select style={{ visibility: 'hidden' }} id='attrCertSelect' />
+      </div>
+      <input type='hidden' id='attrValue' size='80' disabled='disabled' />
     </Fragment>
   )
 }

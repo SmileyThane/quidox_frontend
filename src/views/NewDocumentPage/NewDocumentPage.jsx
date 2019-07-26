@@ -241,7 +241,7 @@ const NewDocumentPage = props => {
       message.error(error.message)
     }
   }
-  // console.log('state', documentState.files)
+  
   return (
     <div className='content content_padding'>
       <Spin spinning={!!documentState.fetching}>
