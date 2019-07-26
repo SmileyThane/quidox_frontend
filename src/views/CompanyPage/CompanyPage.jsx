@@ -11,6 +11,7 @@ const defaultCompanyState = {
   selectedCompanyId: null,
   newCompanyDate: '',
   newCompanyNumber: '',
+  newIpNumber: '',
   newCompanyName: '',
   newCompanyCity: '',
   newCompanyFullName: '',
@@ -49,6 +50,7 @@ const CopmanyPage = props => {
     window.sign('NewCompany', 'createNewCompany')
     setTimeout(function () {
       const companyData = document.getElementById('verifiedDataNewCompany').value
+      const ipData = document.getElementById('companyNumberGlobal').value
       const companyDataArr = companyData.split(';')
       let address = ''
       let name = ''
@@ -81,9 +83,10 @@ const CopmanyPage = props => {
         showModal: true,
         newCompanyDate: moment().format('DD MM YYYY, HH:mm'),
         newCompanyNumber: result,
+        newIpNumber: ipData,
         newCompanyName: name,
         newCompanyCity: address,
-        yourPosition: position,
+        yourPosition: position
       })
     }, 1000)
   }
@@ -192,10 +195,12 @@ const CopmanyPage = props => {
                 <div className='info__title'>Дата создания</div>
                 <div className='info__content'>{companyState.newCompanyDate}</div>
               </div>
+              {(companyState.newCompanyNumber || companyState.ipData ) &&
               <div className='info__item'>
                 <div className='info__title'>УНП</div>
-                <div className='info__content'>{companyState.newCompanyNumber ? companyState.newCompanyNumber : document.getElementById('companyNumberGlobal').value }</div>
+                <div className='info__content'>{companyState.newCompanyNumber ? companyState.newCompanyNumber : companyState.ipData }</div>
               </div>
+              }
               {companyState.newCompanyName &&
                 <div className='info__item'>
                   <div className='info__title'>Имя компании</div>
