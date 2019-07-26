@@ -12,7 +12,6 @@ const defaultCompanyState = {
   selectedCompanyId: null,
   newCompanyDate: '',
   newCompanyNumber: '',
-  newIpNumber: '',
   newCompanyName: '',
   newCompanyCity: '',
   newCompanyFullName: '',
@@ -80,7 +79,7 @@ const CopmanyPage = props => {
         }
       })
       if (result) {
-        console.log('GET FORM JACKET')
+        console.log('GET FROM JACKET')
         setCompanyState({
           ...companyState,
           showModal: true,
@@ -91,7 +90,7 @@ const CopmanyPage = props => {
           yourPosition: position
         })
       } else {
-        console.log('GET FORM GOV.BY')
+        console.log('GET FROM GOV.BY')
         console.log('SENDED IP NUMBER:', ipData)
         axios.get(`/company/find/data/${ipData}`)
           .then(response => {

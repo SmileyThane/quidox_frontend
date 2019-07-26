@@ -29,7 +29,7 @@ const SentMessagesPage = props => {
         getDocumentsWithParams={getOutDocumentsByActiveCompanyId}
         activeCompany={data.active_company_id}
         type='out'
-        columnName='Получатель'
+        columnName='Отправитель'
       />
     </div>
   )
