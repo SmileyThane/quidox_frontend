@@ -140,21 +140,9 @@ const SingleDocumentPage = props => {
       const signedValue = document.getElementById('signedData' + 'File-' + index).value
       setDocumentState({
         ...documentState,
-        base64files: [
-          ...documentState.base64files.slice(0, index),
-          base64,
-          ...documentState.base64files.slice(index + 1)
-        ],
-        fileHashes: [
-          ...documentState.fileHashes.slice(0, index),
-          signedValue,
-          ...documentState.fileHashes.slice(index + 1)
-        ],
-        fileData: [
-          ...documentState.fileData.slice(0, index),
-          value,
-          ...documentState.fileData.slice(index + 1)
-        ]
+        base64files: base64,
+        fileHashes: signedValue,
+        fileData: value
       })
     }, 1000)
     const newData = {
