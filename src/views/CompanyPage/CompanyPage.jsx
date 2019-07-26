@@ -195,11 +195,17 @@ const CopmanyPage = props => {
                 <div className='info__title'>Дата создания</div>
                 <div className='info__content'>{companyState.newCompanyDate}</div>
               </div>
-              {(companyState.newCompanyNumber || companyState.ipData ) &&
+              {companyState.newCompanyNumber &&
               <div className='info__item'>
                 <div className='info__title'>УНП</div>
-                <div className='info__content'>{companyState.newCompanyNumber ? companyState.newCompanyNumber : companyState.ipData }</div>
+                <div className='info__content'>{companyState.newCompanyNumber}</div>
               </div>
+              }
+              {companyState.newIpNumber &&
+                <div className='info__item'>
+                  <div className='info__title'>УНП</div>
+                  <div className='info__content'>{companyState.newIpNumber}</div>
+                </div>
               }
               {companyState.newCompanyName &&
                 <div className='info__item'>
