@@ -18,10 +18,10 @@ const defaultDocumentState = {
   value: [],
   fetching: false,
   modalType: 'ecp',
-  base64files: [],
-  certs: [],
-  fileHashes: [],
-  fileData: []
+  base64files: '',
+  certs: '',
+  fileHashes: '',
+  fileData: ''
 }
 
 const SingleDocumentPage = props => {
@@ -158,28 +158,32 @@ const SingleDocumentPage = props => {
       })
     }, 1000)
     const newData = {
-      id: item.id,
-      attachments: documentState.fileHashes
-        .map((item, i) => ({
-          id: item.attachments[i].id,
-          hash: item,
-          data: documentState.fileData[i]
-        }))
+      id: data.id,
+      attachments: [
+        {
+          id: item.id,
+          hash: documentState.fileHashes,
+          data: documentState.fileData
+        }
+
+      ]
     }
-    console.log('Sending data:', newData)
-    axios.post('https://api.quidox.by/api/documents/confirm', newData, {
-      headers: {
-        'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
-      }
-    })
-      .then(() => {
-        console.log('then')
-        message.success(`файлы успешно подписаны!`)
-        setDocumentState({ ...defaultDocumentState })
+    if (documentState.fileHashes && documentState.fileData) {
+      console.log(newData)
+      axios.post('https://api.quidox.by/api/documents/confirm', newData, {
+        headers: {
+          'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
+        }
       })
-      .catch(error => {
-        message.error(error.message)
-      })
+        .then(() => {
+          console.log('then')
+          message.success('файл успешно подписан!')
+          setDocumentState({ ...defaultDocumentState })
+        })
+        .catch(error => {
+          message.error(error.message)
+        })
+    }
   }
 
   const { Option } = Select
