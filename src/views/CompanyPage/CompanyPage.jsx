@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 
 import moment from 'moment'
 
+import axios from '../../services/api/http'
 import { Button } from '../../components'
 import { Table, Tag, Popconfirm, message, Modal, Typography, Spin } from 'antd'
 
@@ -78,16 +79,36 @@ const CopmanyPage = props => {
           // console.log('result', result)
         }
       })
-      setCompanyState({
-        ...companyState,
-        showModal: true,
-        newCompanyDate: moment().format('DD MM YYYY, HH:mm'),
-        newCompanyNumber: result,
-        newIpNumber: ipData,
-        newCompanyName: name,
-        newCompanyCity: address,
-        yourPosition: position
-      })
+      if (companyData) {
+        setCompanyState({
+          ...companyState,
+          showModal: true,
+          newCompanyDate: moment().format('DD MM YYYY, HH:mm'),
+          newCompanyNumber: result,
+          newIpNumber: ipData,
+          newCompanyName: name,
+          newCompanyCity: address,
+          yourPosition: position
+        })
+      } else {
+        axios.get(`/company/find/data/${ipData}`)
+          .then(response => {
+            const res = JSON.parse(JSON.stringify(response.data))
+            setCompanyState({
+              ...companyState,
+              showModal: true,
+              newCompanyDate: res.data[0].DC,
+              newIpNumber: ipData,
+              newCompanyName: res.data[0].VFN,
+              newCompanyCity: address,
+              newCompanyFullName: res.data[0].VNM,
+              modalFetching: !res.data[0].VFN
+            })
+          })
+          .catch(error => {
+            message.error(error.message)
+          })
+      }
     }, 1000)
   }
 
