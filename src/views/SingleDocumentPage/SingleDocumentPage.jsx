@@ -148,6 +148,7 @@ const SingleDocumentPage = props => {
       })
     }, 1000)
     const newData = {
+     documents: [{
       id: data.id,
       attachments: [
         {
@@ -155,18 +156,17 @@ const SingleDocumentPage = props => {
           hash: documentState.fileHashes,
           data: documentState.fileData
         }
-
       ]
+     }]
     }
     if (documentState.fileHashes && documentState.fileData) {
       console.log(newData)
-      axios.post('https://api.quidox.by/api/documents/confirm', newData, {
+      return axios.post('https://api.quidox.by/api/documents/confirm', newData, {
         headers: {
           'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
         }
       })
         .then(() => {
-          console.log('then')
           message.success('файл успешно подписан!')
           setDocumentState({ ...defaultDocumentState })
         })

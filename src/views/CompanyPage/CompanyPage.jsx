@@ -77,7 +77,7 @@ const CopmanyPage = props => {
         setCompanyState({
           ...companyState,
           showModal: true,
-          newCompanyDate: moment().format('DD MM YYYY, HH:mm'),
+          newCompanyDate: moment().format('DD/MM/YYYY HH:mm'),
           newCompanyNumber: result,
           newCompanyName: name,
           newCompanyCity: address,
@@ -90,7 +90,7 @@ const CopmanyPage = props => {
             setCompanyState({
               ...companyState,
               showModal: true,
-              newCompanyDate: moment().format('DD MM YYYY, HH:mm'),
+              newCompanyDate: moment().format('DD/MM/YYYY HH:mm'),
               newCompanyNumber: ipData,
               newCompanyName: res.data[0].VFN,
               newCompanyCity: address,
@@ -125,7 +125,7 @@ const CopmanyPage = props => {
       name: companyState.newCompanyName,
       company_number: companyState.newCompanyNumber ? companyState.newCompanyNumber : document.getElementById('companyNumberGlobal').value,
       description: companyState.newCompanyCity,
-      data: companyState.newCompanyDate,
+      registration_date: companyState.newCompanyDate,
       your_position: companyState.yourPosition
     }
     createCompany(newCompanyData)
