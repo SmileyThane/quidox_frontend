@@ -79,7 +79,7 @@ const CopmanyPage = props => {
           // console.log('result', result)
         }
       })
-      if (companyData) {
+      if (result) {
         console.log('GET FORM JACKET')
         setCompanyState({
           ...companyState,
