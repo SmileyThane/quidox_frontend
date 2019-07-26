@@ -97,7 +97,7 @@ const CopmanyPage = props => {
             setCompanyState({
               ...companyState,
               showModal: true,
-              newCompanyDate: res.data[0].DC,
+              newCompanyDate: moment().format('DD MM YYYY, HH:mm'),
               newIpNumber: ipData,
               newCompanyName: res.data[0].VFN,
               newCompanyCity: address,
