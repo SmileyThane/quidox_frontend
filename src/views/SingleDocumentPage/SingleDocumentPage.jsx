@@ -127,7 +127,8 @@ const SingleDocumentPage = props => {
       })
   }
 
-  const verifyFile = (base64, index) => {
+  const verifyFile = (item, index) => {
+    const base64 = item.encoded_file
     var input = document.createElement('input')
     input.type = 'hidden'
     input.id = 'dataFile-' + index
@@ -157,17 +158,13 @@ const SingleDocumentPage = props => {
       })
     }, 1000)
     const newData = {
-      documents: [
-        {
-          id: data.data.id,
-          attachments: documentState.fileHashes
-            .map((item, i) => ({
-              id: data.data.attachments[i].id,
-              hash: item,
-              data: documentState.fileData[i]
-            }))
-        }
-      ]
+      id: item.id,
+      attachments: documentState.fileHashes
+        .map((item, i) => ({
+          id: item.attachments[i].id,
+          hash: item,
+          data: documentState.fileData[i]
+        }))
     }
     console.log(newData)
     axios.post('https://api.quidox.by/api/documents/confirm', newData, {
@@ -219,7 +216,7 @@ const SingleDocumentPage = props => {
                   renderItem={(item, index) => (
                     <List.Item key={index}
                       actions={[
-                        <Icon type='edit' style={{ color: '#3278fb', fontSize: 18, marginRight: 5 }} onClick={() => verifyFile(item.encoded_file, index)} />,
+                        <Icon type='edit' style={{ color: '#3278fb', fontSize: 18, marginRight: 5 }} onClick={() => verifyFile(item, index)} />,
                         <a href={item.original_path}><Icon style={{ color: '#3278fb', fontSize: 20 }} type='download' /></a>
                       ]}>
                       <div className='single-document'>
