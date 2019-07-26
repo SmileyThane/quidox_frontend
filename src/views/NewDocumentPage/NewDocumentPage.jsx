@@ -123,8 +123,10 @@ const NewDocumentPage = props => {
             .then(() => {
               message.success(`файлы успешно подписаны!`)
               setDocumentState({ ...defaultDocumentData })
+              return data
             })
         }
+        return data
       })
       .catch(error => {
         message.error(error.message)
@@ -133,24 +135,6 @@ const NewDocumentPage = props => {
   }
 
   const handleSendToUser = () => {
-    setDocumentState({
-      ...documentState,
-      fetching: true
-    })
-    const formData = new window.FormData()
-
-    formData.append(
-      'name',
-      documentState.name
-    )
-    formData.append(
-      'description',
-      documentState.description
-    )
-
-    documentState.files.forEach((file, index) => {
-      formData.append(`second_documents[${index}]`, file)
-    })
     if (!documentState.value.length > 0) {
       message.error('Введите получателя!')
       setDocumentState({
@@ -159,16 +143,12 @@ const NewDocumentPage = props => {
       })
       return null
     }
-    return axios.post('https://api.quidox.by/api/document/create', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
-      }
-    })
+    handleSendToDraft()
       .then(({ data }) => {
-        if (data.success) {
+        console.log(data)
+        if (data) {
           const docDataToUser = {
-            document_ids: [data.data.id],
+            document_ids: [data.id],
             user_company_id: documentState.value.map(i => i.key)
           }
           sendDocumentToUser(docDataToUser)
