@@ -46,7 +46,7 @@ const CopmanyPage = props => {
       modalFetching: true
     })
 
-    window.sign('NewCompany')
+    window.sign('NewCompany', 'createNewCompany')
     setTimeout(function () {
       const companyData = document.getElementById('verifiedDataNewCompany').value
       const companyDataArr = companyData.split(';')
@@ -106,7 +106,7 @@ const CopmanyPage = props => {
   const handleCreateCompany = () => {
     const newCompanyData = {
       name: companyState.newCompanyName,
-      company_number: companyState.newCompanyNumber ? +companyState.newCompanyNumber : +document.getElementById('companyNumberGlobal').value,
+      company_number: companyState.newCompanyNumber ? companyState.newCompanyNumber : document.getElementById('companyNumberGlobal').value,
       description: companyState.newCompanyCity,
       data: companyState.newCompanyDate,
       your_position: companyState.yourPosition

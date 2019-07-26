@@ -72,7 +72,7 @@
           });
       }
 
-      function sign(file) {
+      function sign(file, actionType) {
         try {
           var blob = avcmx.CreateBlob(0);
           blob.SetAsText(document.getElementById('data' + file).value, 0);
@@ -89,7 +89,7 @@
               input.id = "signedData" + file; // set the CSS class
               document.body.appendChild(input);
               document.getElementById('signedData' + file).value = signed.Blob.GetAsBase64(0);
-              verify(file);
+              verify(file, actionType);
 
               // var str = 'file'+file
               // document.getElementById(str).classList.add('verifited')
@@ -102,7 +102,7 @@
         }
     }
 
-      function verify(file) {
+      function verify(file, actionType) {
         var attrOid = document.getElementById('attr').value;
         var companyNumber;
         if (!attrOid.length) {
@@ -234,8 +234,10 @@
             if (!attrVal) {
               companyNumber = attrArray[attrOid]
             }
-            console.log('COMPANY NUMBER:', companyNumber)
-            document.getElementById('companyNumberGlobal').value = companyNumber;
+            if (actionType === 'createNewCompany') {
+              console.log('COMPANY NUMBER:', companyNumber)
+              document.getElementById('companyNumberGlobal').value = companyNumber;
+            }
             var input = document.createElement("input");
             input.type = "hidden";
             input.id = "verifiedData" + file; // set the CSS class
