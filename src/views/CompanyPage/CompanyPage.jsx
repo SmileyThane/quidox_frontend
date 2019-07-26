@@ -59,27 +59,21 @@ const CopmanyPage = props => {
       companyDataArr.forEach(function (element) {
         if (element.indexOf('2.5.4.7') > -1) {
           address = address + ' ' + element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-          // console.log('address', address)
         }
         if (element.indexOf('2.5.4.9') > -1) {
           address = address + ' ' + element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-          // console.log('address', address)
         }
         if (element.indexOf('2.5.4.10') > -1) {
           name = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-          // console.log('name', name)
         }
         if (element.indexOf('2.5.4.12') > -1) {
           position = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-          // console.log('position', position)
         }
         if (element.indexOf('1.2.112.1.2.1.1.1.1.2') > -1) {
           result = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-          // console.log('result', result)
         }
       })
       if (result) {
-        console.log('GET FROM JACKET')
         setCompanyState({
           ...companyState,
           showModal: true,
@@ -90,8 +84,6 @@ const CopmanyPage = props => {
           yourPosition: position
         })
       } else {
-        console.log('GET FROM GOV.BY')
-        console.log('SENDED IP NUMBER:', ipData)
         axios.get(`/company/find/data/${ipData}`)
           .then(response => {
             const res = JSON.parse(JSON.stringify(response.data))
@@ -177,6 +169,7 @@ const CopmanyPage = props => {
       </Fragment>
     )
   }]
+
   return (
     <Fragment>
       <div className='content content_small-margin'>
