@@ -1,6 +1,6 @@
 import React, { useEffect, useState, Fragment } from 'react'
 
-import { getFileName } from '../../helpers'
+import axios from 'axios'
 import { Spin, Icon, List, Tag, Popover, Modal, Select, message } from 'antd'
 import history from '../../history'
 import { findUsersByParams } from '../../services/api/user'
@@ -17,7 +17,11 @@ const defaultDocumentState = {
   data: [],
   value: [],
   fetching: false,
-  modalType: 'ecp'
+  modalType: 'ecp',
+  base64files: [],
+  certs: [],
+  fileHashes: [],
+  fileData: []
 }
 
 const SingleDocumentPage = props => {
@@ -27,6 +31,8 @@ const SingleDocumentPage = props => {
     getDocumentById,
     sendDocumentToUser
   } = props
+
+  const [documentState, setDocumentState] = useState({ ...defaultDocumentState })
 
   useEffect(() => {
     if (match) {
@@ -51,7 +57,7 @@ const SingleDocumentPage = props => {
 
   const splitting = (str) => {
     const arr = []
-    const strItem = str.split(';').forEach(element => {
+    str.split(';').forEach(element => {
       arr.push(element.replace(/[-+()><=\s]/g, ' '))
     })
     return arr
@@ -107,23 +113,78 @@ const SingleDocumentPage = props => {
       user_company_id: documentState.value.map(i => i.key)
     }
     sendDocumentToUser(docDataToUser)
-    .then(() => {
-      message.success('Сообщение успешно отправлено!')
+      .then(() => {
+        message.success('Сообщение успешно отправлено!')
+        setDocumentState({
+          ...documentState,
+          fetching: false,
+          showModal: false
+        })
+      })
+      .catch(error => {
+        message.error(error.message)
+        setDocumentState({ ...defaultDocumentState })
+      })
+  }
+
+  const verifyFile = (base64, index) => {
+    var input = document.createElement('input')
+    input.type = 'hidden'
+    input.id = 'dataFile-' + index
+    document.body.appendChild(input)
+    document.getElementById('dataFile-' + index).value = base64
+    window.sign('File-' + index)
+    setTimeout(() => {
+      const value = document.getElementById('verifiedData' + 'File-' + index).value
+      const signedValue = document.getElementById('signedData' + 'File-' + index).value
       setDocumentState({
-      ...documentState,
-      fetching: false,
-      showModal: false
+        ...documentState,
+        base64files: [
+          ...documentState.base64files.slice(0, index),
+          base64,
+          ...documentState.base64files.slice(index + 1)
+        ],
+        fileHashes: [
+          ...documentState.fileHashes.slice(0, index),
+          signedValue,
+          ...documentState.fileHashes.slice(index + 1)
+        ],
+        fileData: [
+          ...documentState.fileData.slice(0, index),
+          value,
+          ...documentState.fileData.slice(index + 1)
+        ]
+      })
+    }, 1000)
+    const newData = {
+      documents: [
+        {
+          id: data.data.id,
+          attachments: documentState.fileHashes
+            .map((item, i) => ({
+              id: data.data.attachments[i].id,
+              hash: item,
+              data: documentState.fileData[i]
+            }))
+        }
+      ]
+    }
+
+    return axios.post('https://api.quidox.by/api/documents/confirm', newData, {
+      headers: {
+        'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
+      }
     })
-    })
-    .catch(error => {
-      message.error(error.message)
-      setDocumentState({ ...defaultDocumentState })
-    })
+      .then(() => {
+        message.success(`файлы успешно подписаны!`)
+        setDocumentState({ ...defaultDocumentState })
+      })
+      .catch(error => {
+        message.error(error.message)
+      })
   }
 
   const { Option } = Select
-
-  const [documentState, setDocumentState] = useState({ ...defaultDocumentState })
 
   return (
     <Fragment>
@@ -141,7 +202,7 @@ const SingleDocumentPage = props => {
             </div>
             <div className='document__content'>
               <div className='document__info info'>
-              <div className='info__item'>
+                <div className='info__item'>
                   <div className='info__title'>Отправители</div>
                   <div className='info__content'>{data.author && data.author.company_name}</div>
                 </div>
@@ -155,28 +216,32 @@ const SingleDocumentPage = props => {
                   itemLayout='horizontal'
                   dataSource={data.attachments}
                   renderItem={(item, index) => (
-                    <List.Item key={index} actions={[<a href={item.original_path}><Icon style={{ color: '#3278fb', fontSize: 20 }} type='download' /></a>]}>
+                    <List.Item key={index}
+                      actions={[
+                        <Icon type='edit' style={{ color: '#3278fb', fontSize: 18, marginRight: 5 }} onClick={() => verifyFile(item.encoded_file, index)} />,
+                        <a href={item.original_path}><Icon style={{ color: '#3278fb', fontSize: 20 }} type='download' /></a>
+                      ]}>
                       <div className='single-document'>
                         <Icon style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }} type='eye' onClick={() => showModal(item)} />
                         <p style={{ marginRight: 10 }} className='single-document__name'>{item.name}</p>
                         {item.users_companies.length ? item.users_companies.map((item, index) => (
-                            <Fragment key={index}>
-                              {item.is_verified ? 
-                                <Popover 
-                                  content={
-                                    <div>
-                                      <p style={{ fontSize: 10 }}>Дата подписи: {item.verification_date}</p>
-                                      <p style={{ fontSize: 10 }}>{splitting(item.verification_info)[0]}</p>
-                                    </div>
-                                  }
-                                  >
-                                  <Tag  onClick={() => showUserData('ecp', splitting(item.verification_info))} style={{ cursor: 'pointer' }} color="#3278fb">ЭЦП</Tag>
-                                </Popover>
-                                : null
-                              }
-                            </Fragment>
-                        )) 
-                        : null                          
+                          <Fragment key={index}>
+                            {item.is_verified
+                              ? <Popover
+                                content={
+                                  <div>
+                                    <p style={{ fontSize: 10 }}>Дата подписи: {item.verification_date}</p>
+                                    <p style={{ fontSize: 10 }}>{splitting(item.verification_info)[0]}</p>
+                                  </div>
+                                }
+                              >
+                                <Tag onClick={() => showUserData('ecp', splitting(item.verification_info))} style={{ cursor: 'pointer' }} color='#3278fb'>ЭЦП</Tag>
+                              </Popover>
+                              : null
+                            }
+                          </Fragment>
+                        ))
+                          : null
                         }
                       </div>
                     </List.Item>
@@ -211,12 +276,10 @@ const SingleDocumentPage = props => {
             <Icon style={{ fontSize: 30 }} type='close' onClick={() => hideModal()} />
           </div>
           {['jpg', 'png', 'jpeg'].includes(documentState.fileLink.split('.').pop())
-            ?
-            <div className='img-wrapp'>
-              <img className='modal-img' src={documentState.fileLink} alt="img"/>
+            ? <div className='img-wrapp'>
+              <img className='modal-img' src={documentState.fileLink} alt='img' />
             </div>
-            :
-            <PDFViewer
+            : <PDFViewer
               backend={PDFJSBACKEND}
               src={documentState.fileLink}
             />
@@ -226,33 +289,32 @@ const SingleDocumentPage = props => {
       }
       {documentState.showModal &&
         <Modal
-          title={ documentState.modalType === 'ecp' ? 'Данные ЭЦП' : 'Получатели' }
+          title={documentState.modalType === 'ecp' ? 'Данные ЭЦП' : 'Получатели'}
           visible
           closable={false}
           footer={null}
         >
-          {documentState.modalType === 'ecp' ?
-            <Fragment>
+          {documentState.modalType === 'ecp'
+            ? <Fragment>
               {documentState.userData.map((item, index) => (
                 <p key={index}>{item}</p>
               ))}
               <Button style={{ marginTop: 20 }} onClick={() => setDocumentState({ ...documentState, showModal: !documentState.showModal })} type='primary'>Закрыть</Button>
-            </Fragment> 
-            :
-            <Fragment>
-                <Select
-                  mode='tags'
-                  labelInValue
-                  tokenSeparators={[',']}
-                  value={documentState.value}
-                  filterOption={false}
-                  notFoundContent={documentState.fetching ? <Spin size='small' /> : null}
-                  onSearch={fetchUser}
-                  onChange={handleSelect}
-                  style={{ width: '100%' }}
-                >
-                  {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
-                </Select>
+            </Fragment>
+            : <Fragment>
+              <Select
+                mode='tags'
+                labelInValue
+                tokenSeparators={[',']}
+                value={documentState.value}
+                filterOption={false}
+                notFoundContent={documentState.fetching ? <Spin size='small' /> : null}
+                onSearch={fetchUser}
+                onChange={handleSelect}
+                style={{ width: '100%' }}
+              >
+                {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
+              </Select>
               <Button style={{ marginTop: 20 }} type='primary' onClick={sendToUser}>Отправить</Button>
               <Button style={{ marginLeft: 20 }} type='primary' ghost onClick={() => setDocumentState({ ...documentState, showModal: false })}>Отмена</Button>
             </Fragment>
