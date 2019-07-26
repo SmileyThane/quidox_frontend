@@ -23,6 +23,8 @@ const defaultDocumentState = {
   fileHashes: '',
   fileData: ''
 }
+// eslint-disable-next-line spaced-comment
+const isIE = /*@cc_on!@*/false || !!document.documentMode
 
 const SingleDocumentPage = props => {
   const {
@@ -207,10 +209,16 @@ const SingleDocumentPage = props => {
                   dataSource={data.attachments}
                   renderItem={(item, index) => (
                     <List.Item key={index}
-                      actions={[
-                        <Icon type='edit' style={{ color: '#3278fb', fontSize: 18, marginRight: 5 }} onClick={() => verifyFile(item, index)} />,
-                        <a href={item.original_path}><Icon style={{ color: '#3278fb', fontSize: 20 }} type='download' /></a>
-                      ]}>
+                      actions={isIE
+                        ? [
+                          <Icon type='edit' style={{ color: '#3278fb', fontSize: 18, marginRight: 5 }} onClick={() => verifyFile(item, index)} />,
+                          <a href={item.original_path}><Icon style={{ color: '#3278fb', fontSize: 20 }} type='download' /></a>
+                        ]
+                        : [
+                          <a href={item.original_path}><Icon style={{ color: '#3278fb', fontSize: 20 }} type='download' /></a>
+                        ]
+                      }
+                    >
                       <div className='single-document'>
                         <Icon style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }} type='eye' onClick={() => showModal(item)} />
                         <p style={{ marginRight: 10 }} className='single-document__name'>{item.name}</p>
