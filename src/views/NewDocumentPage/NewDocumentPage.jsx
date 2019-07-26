@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useRef, useState } from 'react'
 
 import axios from 'axios'
 import _ from 'lodash'
 import { findUsersByParams } from '../../services/api/user'
-import { message, Icon, Select, Spin, Tag } from 'antd'
+import { message, Icon, Select, Spin, Tag, Upload } from 'antd'
 import { Input, Button } from '../../components'
 import './NewDocumentPage.scss'
 
@@ -24,6 +24,7 @@ const defaultDocumentData = {
 // eslint-disable-next-line spaced-comment
 const isIE = /*@cc_on!@*/false || !!document.documentMode
 const NewDocumentPage = props => {
+  const inputNode = useRef(null)
   const {
     sendDocumentToUser
   } = props
@@ -38,7 +39,6 @@ const NewDocumentPage = props => {
   }
 
   const getFiles = e => {
-    console.log(e)
     setDocumentState({
       ...documentState,
       files: documentState.files.concat([...e.target.files]),
@@ -49,6 +49,13 @@ const NewDocumentPage = props => {
   }
 
   const removeFile = (index) => {
+    console.log(index)
+    console.log('ref input', inputNode.current.files)
+    let arr = Array.from(inputNode.current.files)
+    console.log('before remove:', arr)
+    delete inputNode.current.files[index]
+    console.log('after remove', arr)
+    console.log('mode after remove', inputNode.current.files)
     setDocumentState({
       ...documentState,
       files: documentState.files.filter((e, i) => i !== index),
@@ -144,7 +151,6 @@ const NewDocumentPage = props => {
     documentState.files.forEach((file, index) => {
       formData.append(`second_documents[${index}]`, file)
     })
-    console.log(documentState.value.length)
     if (!documentState.value.length > 0) {
       message.error('Введите получателя!')
       setDocumentState({
@@ -221,12 +227,8 @@ const NewDocumentPage = props => {
     const reader = new window.FileReader()
     reader.readAsDataURL(documentState.files[index])
     reader.onload = function () {
-      // setDocumentState({
-      //   ...documentState,
-      //   base64files: [...documentState.base64files, reader.result]
-      // })
       var input = document.createElement('input')
-      input.type = 'hidden';
+      input.type = 'hidden'
       input.id = 'dataFile-' + index
       document.body.appendChild(input)
       document.getElementById('dataFile-' + index).value = reader.result
@@ -259,7 +261,7 @@ const NewDocumentPage = props => {
       message.error(error.message)
     }
   }
-
+  // console.log('state', documentState.files)
   return (
     <div className='content content_padding'>
       <Spin spinning={!!documentState.fetching}>
@@ -288,7 +290,7 @@ const NewDocumentPage = props => {
           <Input kind='textarea' type='text' value={documentState.description} onChange={e => updateField('description', e.target.value)} />
         </div>
         <div className='buttons-group'>
-          <input type='file' id='upload' hidden multiple onChange={event => getFiles(event)} />
+          <input type='file' id='upload' hidden multiple onChange={event => getFiles(event)} ref={inputNode} />
           <label className='label-btn' htmlFor='upload'>
             <Icon type='upload' style={{ marginRight: 10 }} />
             Прикрепить файл(ы)

@@ -172,7 +172,7 @@ const CopmanyPage = props => {
       }
       <input type='hidden' id='dataNewCompany' value={data.email} />
       <input type='hidden' id='attr' size='80' value='1.2.112.1.2.1.1.1.1.2' />
-      <input type="hidden" id='companyNumberGlobal' />
+      <input type='hidden' id='companyNumberGlobal' />
       <div id='attrCertSelectContainer' style={{ display: 'none' }}>
         <span id='certExtAbsent' />
         <select style={{ visibility: 'hidden' }} id='attrCertSelect' />
@@ -180,7 +180,7 @@ const CopmanyPage = props => {
       <input type='hidden' id='attrValue' size='80' disabled='disabled' />
       <Modal
         visible={companyState.showModal}
-        title='Данные компании'
+        title={companyState.newCompanyNumber ? 'Данные компании' : 'Данные ИП'}
         closable={false}
         footer={null}
         onCancel={() => setCompanyState({ ...companyState, showModal: !companyState.showModal })}
@@ -194,20 +194,26 @@ const CopmanyPage = props => {
               </div>
               <div className='info__item'>
                 <div className='info__title'>УНП</div>
-                <div className='info__content'>{companyState.newCompanyNumber}</div>
+                <div className='info__content'>{companyState.newCompanyNumber ? companyState.newCompanyNumber : document.getElementById('companyNumberGlobal').value }</div>
               </div>
-              <div className='info__item'>
-                <div className='info__title'>Имя компании</div>
-                <div className='info__content'>{companyState.newCompanyName}</div>
-              </div>
-              <div className='info__item'>
-                <div className='info__title'>Место нахождения компании</div>
-                <div className='info__content'>{companyState.newCompanyCity}</div>
-              </div>
-              <div className='info__item'>
-                <div className='info__title'>Должность сотруднка</div>
-                <div className='info__content'>{companyState.yourPosition}</div>
-              </div>
+              {companyState.newCompanyName &&
+                <div className='info__item'>
+                  <div className='info__title'>Имя компании</div>
+                  <div className='info__content'>{companyState.newCompanyName}</div>
+                </div>
+              }
+              {companyState.newCompanyCity &&
+                <div className='info__item'>
+                  <div className='info__title'>Место нахождения компании</div>
+                  <div className='info__content'>{companyState.newCompanyCity}</div>
+                </div>
+              }
+              {companyState.yourPosition &&
+                <div className='info__item'>
+                  <div className='info__title'>Должность сотруднка</div>
+                  <div className='info__content'>{companyState.yourPosition}</div>
+                </div>
+              }
             </div>
             <Button style={{ margin: '20px 0 0 20px' }} onClick={handleCreateCompany} type='primary'>Создать</Button>
           </Spin>
