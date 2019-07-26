@@ -86,13 +86,13 @@ const CopmanyPage = props => {
           showModal: true,
           newCompanyDate: moment().format('DD MM YYYY, HH:mm'),
           newCompanyNumber: result,
-          newIpNumber: ipData,
           newCompanyName: name,
           newCompanyCity: address,
           yourPosition: position
         })
       } else {
         console.log('GET FORM GOV.BY')
+        console.log('SENDED IP NUMBER:', ipData)
         axios.get(`/company/find/data/${ipData}`)
           .then(response => {
             const res = JSON.parse(JSON.stringify(response.data))
@@ -100,7 +100,7 @@ const CopmanyPage = props => {
               ...companyState,
               showModal: true,
               newCompanyDate: moment().format('DD MM YYYY, HH:mm'),
-              newIpNumber: ipData,
+              newCompanyNumber: ipData,
               newCompanyName: res.data[0].VFN,
               newCompanyCity: address,
               newCompanyFullName: res.data[0].VNM,
@@ -223,12 +223,6 @@ const CopmanyPage = props => {
                 <div className='info__title'>УНП</div>
                 <div className='info__content'>{companyState.newCompanyNumber}</div>
               </div>
-              }
-              {companyState.newIpNumber &&
-                <div className='info__item'>
-                  <div className='info__title'>УНП</div>
-                  <div className='info__content'>{companyState.newIpNumber}</div>
-                </div>
               }
               {companyState.newCompanyName &&
                 <div className='info__item'>
