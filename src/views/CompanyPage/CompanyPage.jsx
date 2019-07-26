@@ -80,6 +80,7 @@ const CopmanyPage = props => {
         }
       })
       if (companyData) {
+        console.log('GET FORM JACKET')
         setCompanyState({
           ...companyState,
           showModal: true,
@@ -91,6 +92,7 @@ const CopmanyPage = props => {
           yourPosition: position
         })
       } else {
+        console.log('GET FORM GOV.BY')
         axios.get(`/company/find/data/${ipData}`)
           .then(response => {
             const res = JSON.parse(JSON.stringify(response.data))
