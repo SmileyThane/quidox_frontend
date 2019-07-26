@@ -166,7 +166,7 @@ const SingleDocumentPage = props => {
           data: documentState.fileData[i]
         }))
     }
-    console.log(newData)
+    console.log('Sending data:', newData)
     axios.post('https://api.quidox.by/api/documents/confirm', newData, {
       headers: {
         'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
@@ -183,7 +183,7 @@ const SingleDocumentPage = props => {
   }
 
   const { Option } = Select
-
+  console.log(documentState)
   return (
     <Fragment>
       <Spin spinning={isFetching}>
