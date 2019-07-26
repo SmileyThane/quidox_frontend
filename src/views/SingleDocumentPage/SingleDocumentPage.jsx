@@ -140,44 +140,40 @@ const SingleDocumentPage = props => {
     setTimeout(() => {
       const value = document.getElementById('verifiedData' + 'File-' + index).value
       const signedValue = document.getElementById('signedData' + 'File-' + index).value
-      setDocumentState({
-        ...documentState,
-        base64files: base64,
-        fileHashes: signedValue,
-        fileData: value
-      })
+      const newData = {
+        documents: [{
+         id: data.id,
+         attachments: [
+           {
+             id: item.id,
+             hash: signedValue,
+             data: value
+           }
+         ]
+        }]
+       }
+         return axios.post('https://api.quidox.by/api/documents/confirm', newData, {
+           headers: {
+             'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
+           }
+         })
+           .then(() => {
+             message.success('файл успешно подписан!')
+             setDocumentState({ ...defaultDocumentState })
+           })
+           .catch(error => {
+             message.error(error.message)
+           })
+      // setDocumentState({
+      //   ...documentState,
+      //   base64files: base64,
+      //   fileHashes: signedValue,
+      //   fileData: value
+      // })
     }, 1000)
-    const newData = {
-     documents: [{
-      id: data.id,
-      attachments: [
-        {
-          id: item.id,
-          hash: documentState.fileHashes,
-          data: documentState.fileData
-        }
-      ]
-     }]
-    }
-    if (documentState.fileHashes && documentState.fileData) {
-      console.log(newData)
-      return axios.post('https://api.quidox.by/api/documents/confirm', newData, {
-        headers: {
-          'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
-        }
-      })
-        .then(() => {
-          message.success('файл успешно подписан!')
-          setDocumentState({ ...defaultDocumentState })
-        })
-        .catch(error => {
-          message.error(error.message)
-        })
-    }
   }
 
   const { Option } = Select
-  console.log(documentState)
   return (
     <Fragment>
       <Spin spinning={isFetching}>

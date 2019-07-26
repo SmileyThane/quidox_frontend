@@ -123,7 +123,7 @@ const CopmanyPage = props => {
   const handleCreateCompany = () => {
     const newCompanyData = {
       name: companyState.newCompanyName,
-      company_number: companyState.newCompanyNumber ? companyState.newCompanyNumber : document.getElementById('companyNumberGlobal').value,
+      company_number: companyState.newCompanyNumber,
       description: companyState.newCompanyCity,
       registration_date: companyState.newCompanyDate,
       your_position: companyState.yourPosition
