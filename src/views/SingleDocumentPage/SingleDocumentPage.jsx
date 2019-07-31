@@ -1,6 +1,8 @@
 import React, { useEffect, useState, Fragment } from 'react'
 
 import axios from 'axios'
+import { api } from '../../services'
+import fileDownload from 'js-file-download'
 import { Spin, Icon, List, Tag, Popover, Modal, Select, message } from 'antd'
 import history from '../../history'
 import { findUsersByParams } from '../../services/api/user'
@@ -59,6 +61,9 @@ const SingleDocumentPage = props => {
 
   const splitting = (str) => {
     const arr = []
+    if (!str) {
+      return null
+    }
     str.split(';').forEach(element => {
       arr.push(element.replace(/[-+()><=\s]/g, ' '))
     })
@@ -142,35 +147,41 @@ const SingleDocumentPage = props => {
       const signedValue = document.getElementById('signedData' + 'File-' + index).value
       const newData = {
         documents: [{
-         id: data.id,
-         attachments: [
-           {
-             id: item.id,
-             hash: signedValue,
-             data: value
-           }
-         ]
+          id: data.id,
+          attachments: [
+            {
+              id: item.id,
+              hash: signedValue,
+              data: value
+            }
+          ]
         }]
-       }
-         return axios.post('https://api.quidox.by/api/documents/confirm', newData, {
-           headers: {
-             'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
-           }
-         })
-           .then(() => {
-             message.success('файл успешно подписан!')
-             setDocumentState({ ...defaultDocumentState })
-           })
-           .catch(error => {
-             message.error(error.message)
-           })
-      // setDocumentState({
-      //   ...documentState,
-      //   base64files: base64,
-      //   fileHashes: signedValue,
-      //   fileData: value
-      // })
+      }
+      return axios.post('https://api.quidox.by/api/documents/confirm', newData, {
+        headers: {
+          'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
+        }
+      })
+        .then(() => {
+          message.success('файл успешно подписан!')
+          setDocumentState({ ...defaultDocumentState })
+        })
+        .catch(error => {
+          message.error(error.message)
+        })
     }, 1000)
+  }
+
+  const downloadFile = (id, withCert) => {
+    api.document.downloadDocument(id, withCert)
+      .then((response) => {
+        if (response.data) {
+          const url = response.data.data
+          console.log(url)
+          const fileName = url.substring(url.lastIndexOf('/') + 1)
+          fileDownload(response.data, fileName)
+        }
+      })
   }
 
   const { Option } = Select
@@ -245,11 +256,11 @@ const SingleDocumentPage = props => {
             </div>
             <div className='document__actions'>
               <div className='document__actions__left'>
-                <Button style={{ marginRight: 15 }} ghost type='primary'>
+                <Button style={{ marginRight: 15 }} ghost type='primary' onClick={() => downloadFile(data.id, false)}>
                   <Icon type='download' />
               Скачать всё
                 </Button>
-                <Button ghost type='primary'>
+                <Button ghost type='primary' onClick={() => downloadFile(data.id, true)}>
                   <Icon type='download' />
               Скачать всё с сигнатурами
                 </Button>
