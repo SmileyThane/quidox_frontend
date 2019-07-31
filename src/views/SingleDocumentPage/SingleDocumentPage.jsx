@@ -186,8 +186,15 @@ const SingleDocumentPage = props => {
           })
           .then(response => {
             fileDownload(response.data, `${generateHash({ length: 10 })}.zip`);
+            message.success('Архив успешно загружен!')
+          })
+          .catch(error => {
+            message.error(error.message)
           })
         }
+      })
+      .catch(error => {
+        message.error(error.message)
       })
   }
 
