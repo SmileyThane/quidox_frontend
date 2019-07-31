@@ -173,7 +173,7 @@ const SingleDocumentPage = props => {
     }, 1000)
   }
 
-  const downloadFile = (id, withCert) => {
+  const downloadArchive = (id, withCert) => {
     api.document.downloadDocument(id, withCert)
       .then((response) => {
         if (response.data) {
@@ -270,11 +270,11 @@ const SingleDocumentPage = props => {
             </div>
             <div className='document__actions'>
               <div className='document__actions__left'>
-                <Button style={{ marginRight: 15 }} ghost type='primary' onClick={() => downloadFile(data.id, false)}>
+                <Button style={{ marginRight: 15 }} ghost type='primary' onClick={() => downloadArchive(data.id, false)}>
                   <Icon type='download' />
               Скачать всё
                 </Button>
-                <Button ghost type='primary' onClick={() => downloadFile(data.id, true)}>
+                <Button ghost type='primary' onClick={() => downloadArchive(data.id, true)}>
                   <Icon type='download' />
               Скачать всё с сигнатурами
                 </Button>
