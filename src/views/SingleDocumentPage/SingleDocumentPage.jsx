@@ -3,6 +3,7 @@ import React, { useEffect, useState, Fragment } from 'react'
 import axios from 'axios'
 import { api } from '../../services'
 import fileDownload from 'js-file-download'
+import generateHash from 'random-hash';
 import { Spin, Icon, List, Tag, Popover, Modal, Select, message } from 'antd'
 import history from '../../history'
 import { findUsersByParams } from '../../services/api/user'
@@ -176,10 +177,16 @@ const SingleDocumentPage = props => {
     api.document.downloadDocument(id, withCert)
       .then((response) => {
         if (response.data) {
-          const url = response.data.data
-          console.log(url)
-          const fileName = url.substring(url.lastIndexOf('/') + 1)
-          fileDownload(response.data, fileName)
+          axios.get(response.data.data, {
+            'responseType': 'arraybuffer',
+            headers: {
+              'Authorization': 'Bearer ' + window.localStorage.getItem('authToken'),
+              'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
+            }
+          })
+          .then(response => {
+            fileDownload(response.data, `${generateHash({ length: 10 })}.zip`);
+          })
         }
       })
   }
