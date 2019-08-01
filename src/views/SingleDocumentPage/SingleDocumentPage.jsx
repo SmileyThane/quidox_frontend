@@ -3,7 +3,7 @@ import React, { useEffect, useState, Fragment } from 'react'
 import axios from 'axios'
 import { api } from '../../services'
 import fileDownload from 'js-file-download'
-import generateHash from 'random-hash';
+import generateHash from 'random-hash'
 import { Spin, Icon, List, Tag, Popover, Modal, Select, message } from 'antd'
 import history from '../../history'
 import { findUsersByParams } from '../../services/api/user'
@@ -173,29 +173,47 @@ const SingleDocumentPage = props => {
     }, 1000)
   }
 
-  const downloadArchive = (id, withCert) => {
-    api.document.downloadDocument(id, withCert)
-      .then((response) => {
-        if (response.data) {
-          axios.get(response.data.data, {
-            'responseType': 'arraybuffer',
-            headers: {
-              'Authorization': 'Bearer ' + window.localStorage.getItem('authToken'),
-              'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
-            }
-          })
-          .then(response => {
-            fileDownload(response.data, `${generateHash({ length: 10 })}.zip`);
-            message.success('Архив успешно загружен!')
-          })
-          .catch(error => {
-            message.error(error.message)
-          })
+  const downloadDocumentContent = (item, withCert, isFile = false) => {
+    if (isFile) {
+      axios.get(item.original_path, {
+        'responseType': 'arraybuffer',
+        headers: {
+          'Authorization': 'Bearer ' + window.localStorage.getItem('authToken'),
+          'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
         }
       })
-      .catch(error => {
-        message.error(error.message)
-      })
+        .then(response => {
+          console.log(response)
+          fileDownload(response.data, item.name)
+          message.success('Файл успешно загружен!')
+        })
+        .catch(error => {
+          message.error(error.message)
+        })
+    } else {
+      api.document.downloadDocument(item.id, withCert)
+        .then((response) => {
+          if (response.data) {
+            axios.get(response.data.data, {
+              'responseType': 'arraybuffer',
+              headers: {
+                'Authorization': 'Bearer ' + window.localStorage.getItem('authToken'),
+                'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
+              }
+            })
+              .then(response => {
+                fileDownload(response.data, `${generateHash({ length: 10 })}.zip`)
+                message.success('Архив успешно загружен!')
+              })
+              .catch(error => {
+                message.error(error.message)
+              })
+          }
+        })
+        .catch(error => {
+          message.error(error.message)
+        })
+    }
   }
 
   const { Option } = Select
@@ -233,10 +251,10 @@ const SingleDocumentPage = props => {
                       actions={isIE
                         ? [
                           <Icon type='edit' style={{ color: '#3278fb', fontSize: 18, marginRight: 5 }} onClick={() => verifyFile(item, index)} />,
-                          <a href={item.original_path}><Icon style={{ color: '#3278fb', fontSize: 20 }} type='download' /></a>
+                          <Icon style={{ color: '#3278fb', fontSize: 20 }} onClick={() => downloadDocumentContent(item, false, true)} type='download' />
                         ]
                         : [
-                          <a href={item.original_path}><Icon style={{ color: '#3278fb', fontSize: 20 }} type='download' /></a>
+                          <Icon style={{ color: '#3278fb', fontSize: 20 }} onClick={() => downloadDocumentContent(item, false, true)} type='download' />
                         ]
                       }
                     >
@@ -270,11 +288,11 @@ const SingleDocumentPage = props => {
             </div>
             <div className='document__actions'>
               <div className='document__actions__left'>
-                <Button style={{ marginRight: 15 }} ghost type='primary' onClick={() => downloadArchive(data.id, false)}>
+                <Button style={{ marginRight: 15 }} ghost type='primary' onClick={() => downloadDocumentContent(data, false)}>
                   <Icon type='download' />
               Скачать всё
                 </Button>
-                <Button ghost type='primary' onClick={() => downloadArchive(data.id, true)}>
+                <Button ghost type='primary' onClick={() => downloadDocumentContent(data, true)}>
                   <Icon type='download' />
               Скачать всё с сигнатурами
                 </Button>
