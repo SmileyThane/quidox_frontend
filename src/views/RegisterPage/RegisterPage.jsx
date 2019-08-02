@@ -38,7 +38,7 @@ class RegistrationForm extends React.Component {
   state = {
     confirmDirty: false,
     autoCompleteResult: [],
-    currentStep: 1,
+    currentStep: 0,
     phone: '',
     code: '',
     timer: 60
