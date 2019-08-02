@@ -1,6 +1,7 @@
-
 import React, { Fragment } from 'react'
 import axios from 'axios'
+import MaskedInput from 'antd-mask-input'
+
 import history from '../../history'
 import {
   Steps,
@@ -8,9 +9,14 @@ import {
   Input,
   Select,
   Button,
-  message
+  message,
+  Typography,
+  Progress
 } from 'antd'
 
+import './RegisterPage.scss'
+
+const { Text } = Typography
 const { Option } = Select
 const { Step } = Steps
 
@@ -33,17 +39,23 @@ class RegistrationForm extends React.Component {
   state = {
     confirmDirty: false,
     autoCompleteResult: [],
-    currentStep: 0,
+    currentStep: 2,
     phone: '',
-    code: ''
+    code: '',
+    timer: 60
   };
+
+  inputNode = React.createRef()
+
+  componentDidMount () {
+    this.inputNode.current.focus()
+  }
 
   handleChange = (value, field) => {
     const prefix = this.props.form.getFieldValue('prefix')
-    console.log(prefix)
     if (field === 'phone') {
       this.setState({
-        [field]: '+' + prefix + value
+        [field]: '+' + prefix + value.replace(/-/g, '')
       })
     } else {
       this.setState({
@@ -66,9 +78,14 @@ class RegistrationForm extends React.Component {
         switch (this.state.currentStep) {
           case 0:
             axios.post('https://api.quidox.by/api/sms/send', registerData)
-              .then((response) => {
-                if (response.data.success) {
-                  this.setState({ currentStep: this.state.currentStep + 1 })
+              .then(({ data }) => {
+                if (data.success) {
+                  message.success('Номер телефона успешно отправлен!')
+                  setTimeout(() => {
+                    this.setState({ currentStep: this.state.currentStep + 1 })
+                    this.timer()
+                    this.inputNode.current.focus()
+                  }, 350)
                 }
               })
               .catch(function (error) {
@@ -77,11 +94,15 @@ class RegistrationForm extends React.Component {
             break
           case 1:
             axios.post('https://api.quidox.by/api/sms/confirm', registerData)
-              .then(response => {
-                if (response.data.success) {
-                  this.setState({ currentStep: this.state.currentStep + 1 })
+              .then(({ data }) => {
+                if (data.success) {
+                  message.success('СМС код введен правильно!')
+                  setTimeout(() => {
+                    this.setState({ currentStep: this.state.currentStep + 1 })
+                    this.inputNode.current.focus()
+                  }, 350)
                 } else {
-                  throw new Error(response.data.error)
+                  throw new Error(data.error)
                 }
               })
               .catch(error => {
@@ -90,9 +111,12 @@ class RegistrationForm extends React.Component {
             break
           case 2:
             axios.post('https://api.quidox.by/api/register', registerData)
-              .then(response => {
-                if (response.data.success) {
-                  this.setState({ currentStep: this.state.currentStep + 1 })
+              .then(({ data }) => {
+                if (data.success) {
+                  message.success('Данные отпрвлены успещно')
+                  setTimeout(() => {
+                    this.setState({ currentStep: this.state.currentStep + 1 })
+                  }, 350)
                 }
               })
               .catch(function (error) {
@@ -107,6 +131,27 @@ class RegistrationForm extends React.Component {
       }
     })
   };
+
+  getSmsCode = () => {
+    this.setState({
+      timer: 60
+    })
+    this.timer()
+    const phone = {
+      phone: this.state.phone
+    }
+    axios.post('https://api.quidox.by/api/sms/send', phone)
+      .then(({ data }) => {
+        if (data.success) {
+          message.success('Номер телефона успешно отправлен')
+        } else {
+          throw new Error(data.error)
+        }
+      })
+      .catch(error => {
+        message.error(error.message)
+      })
+  }
 
   handleConfirmBlur = e => {
     const value = e.target.value
@@ -130,8 +175,21 @@ class RegistrationForm extends React.Component {
     callback()
   };
 
+  timer = () => {
+    const timeInterva = setInterval(() => {
+      console.log(this.state.timer)
+      if (this.state.timer > 0) {
+        this.setState(prevState => {
+          return { timer: prevState.timer - 1 }
+        })
+      } else {
+        clearInterval(timeInterva)
+        return null
+      }
+    }, 500)
+  }
   render () {
-    const { currentStep } = this.state
+    const { currentStep, timer } = this.state
     const { getFieldDecorator } = this.props.form
 
     const prefixSelector = getFieldDecorator('prefix', {
@@ -144,7 +202,7 @@ class RegistrationForm extends React.Component {
         <Option value='37544'>+375(44)</Option>
       </Select>
     )
-
+    console.log(this.state.currentStep)
     return (
       <div className='steps'>
         <Steps
@@ -157,10 +215,20 @@ class RegistrationForm extends React.Component {
         </Steps>
         <Form className='form' onSubmit={this.handleSubmit}>
           {currentStep === 0 &&
-            <Form.Item label='Введите номер телефона'>
+            <Form.Item
+              validateStatus={this.state.validateStatus}
+              label='Введите номер мобильного телефона'
+            >
               {getFieldDecorator('phone', {
-                rules: [{ required: true, message: 'Пожалуйста, введите номер телефона' }]
-              })(<Input onChange={e => this.handleChange(e.target.value, 'phone')} addonBefore={prefixSelector} style={{ width: '100%' }} />)}
+                rules: [{ required: true, message: 'Пожалуйста, введите номер мобильного телефона' }]
+              })(<MaskedInput
+                mask='111-11-11'
+                placeholder='XXX-XX-XX'
+                ref={this.inputNode}
+                onChange={e => this.handleChange(e.target.value, 'phone')}
+                addonBefore={prefixSelector}
+                style={{ width: '100%' }}
+              />)}
             </Form.Item>
           }
           {currentStep === 1 &&
@@ -176,7 +244,10 @@ class RegistrationForm extends React.Component {
                     message: 'Пожалуйста, введите полученный код!'
                   }
                 ]
-              })(<Input onChange={e => this.handleChange(e.target.value, 'code')} />)}
+              })(<Input
+                onChange={e => this.handleChange(e.target.value, 'code')}
+                ref={this.inputNode}
+              />)}
             </Form.Item>
           }
           {currentStep === 2 &&
@@ -193,9 +264,9 @@ class RegistrationForm extends React.Component {
                       message: 'Пожалуйста, введите адрес электронной почты!'
                     }
                   ]
-                })(<Input />)}
+                })(<Input ref={this.inputNode} />)}
               </Form.Item>
-              <Form.Item label='Введите ваше имя'>
+              <Form.Item label='Ваше имя'>
                 {getFieldDecorator('name', {
                   rules: [
                     {
@@ -209,13 +280,13 @@ class RegistrationForm extends React.Component {
                   ]
                 })(<Input />)}
               </Form.Item>
-              <Form.Item label='Password' hasFeedback>
+              <Form.Item label='Придумайте пароль' hasFeedback>
                 {getFieldDecorator('password', {
                   rules: [
                     {
                       required: true,
                       message: 'Минимум восемь символов, как минимум одна буква, одна цифра и один специальный символ',
-                      pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
+                      pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,}$/
                     },
                     {
                       validator: this.validateToNextPassword
@@ -223,7 +294,7 @@ class RegistrationForm extends React.Component {
                   ]
                 })(<Input.Password />)}
               </Form.Item>
-              <Form.Item label='Confirm Password' hasFeedback>
+              <Form.Item label='Подтвердите пароль' hasFeedback>
                 {getFieldDecorator('confirm', {
                   rules: [
                     {
@@ -244,10 +315,23 @@ class RegistrationForm extends React.Component {
             </Fragment>
           }
           <Form.Item>
-            <Button type='primary' htmlType='submit'>
-              {currentStep === 3 ? 'Завершить регистрацию' : 'Продолжить'}
-            </Button>
-
+            <div className='steps-form-actions'>
+              <div>
+                { currentStep === 1 &&
+                  <Fragment>
+                    <Text type='secondary'>Не получили код?<br />
+                      {timer > 0
+                        ? <Fragment>Выслать повторно через... {timer}</Fragment>
+                        : <a onClick={() => this.getSmsCode()}>Выслать повторно!</a>
+                      }
+                    </Text>
+                  </Fragment>
+                }
+              </div>
+              <Button type='primary' htmlType='submit'>
+                {currentStep === 3 ? 'Завершить регистрацию' : 'Продолжить'}
+              </Button>
+            </div>
           </Form.Item>
         </Form>
       </div>
