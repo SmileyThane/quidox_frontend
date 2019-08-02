@@ -10,8 +10,7 @@ import {
   Select,
   Button,
   message,
-  Typography,
-  Progress
+  Typography
 } from 'antd'
 
 import './RegisterPage.scss'
@@ -39,7 +38,7 @@ class RegistrationForm extends React.Component {
   state = {
     confirmDirty: false,
     autoCompleteResult: [],
-    currentStep: 2,
+    currentStep: 1,
     phone: '',
     code: '',
     timer: 60
