@@ -72,7 +72,7 @@
           });
       }
 
-      function sign(file) {
+      function sign(file, actionType) {
         try {
           var blob = avcmx.CreateBlob(0);
           blob.SetAsText(document.getElementById('data' + file).value, 0);
@@ -89,7 +89,7 @@
               input.id = "signedData" + file; // set the CSS class
               document.body.appendChild(input);
               document.getElementById('signedData' + file).value = signed.Blob.GetAsBase64(0);
-              verify(file);
+              verify(file, actionType);
 
               // var str = 'file'+file
               // document.getElementById(str).classList.add('verifited')
@@ -102,8 +102,9 @@
         }
     }
 
-      function verify(file) {
+      function verify(file, actionType) {
         var attrOid = document.getElementById('attr').value;
+        var companyNumber;
         if (!attrOid.length) {
             alert("Необходимо выбрать требуемый атрибут");
             return;
@@ -134,22 +135,19 @@
             var contentText = msg.Content.GetAsText(0);
             var name = cert.Subject;
             var resultText = "Подпись верна. Подписано: " + name + "\n";
-
             var attrVal = "";
             try {
                 var ext = conn.OwnCertificate.GetExtensionByOid(attrOid, 0);
-                console.log(ext)
                 attrVal = ext.ValueAsString;
             } catch (e) {
-              console.log(e)
                 if (lastErrorIs(AVCMR_NOT_FOUND)) {
                     needAttrCert = true;
                 } else {
                     throw e;
                 }
             }
-
-            console.log(attrVal, contentText)
+            companyNumber = attrVal
+            // console.log('contentText', contentText)
 
             if (attrVal == contentText) {
                 // resultText += "Сообщение подписано сертификатом открытого ключа с требуемым атрибутом, значение атрибута: " + attrVal;
@@ -159,8 +157,7 @@
             } else {
                 // resultText += "Сертификат открытого ключа подписанта не содержит требуемый атрибут\n" +
                 // "Поиск атрибутных сертификатов в сообщении...\n";
-
-                if (attrCerts.Count) {
+                if (attrCerts.Count) { // c
                     for (var i = 0; i < attrCerts.Count; i++) {
                         var acert = attrCerts.Item(i);
                         resultText += "Найден атрибутный сертификат №" + acert.Serial.GetAsHex(0) + "\n";
@@ -202,6 +199,7 @@
                             var acert = attrCerts.Item(i);
                             resultText += "Найден атрибутный сертификат №" + acert.Serial.GetAsHex(0) + "\n";
                             var attrsText = "";
+                            var attrArray = []
                             var attrFound = false;
                             for (var j = 0; j < acert.AttributesCount; j++) {
                                 var attr = acert.GetAttributeByIndex(j, 0);
@@ -209,10 +207,10 @@
                                     attrFound = true;
                                 }
                                 attrsText += attr.Oid + "(" + attr.OidName + ")" + "=<" + attr.ValueAsString + ">;";
+                                attrArray[attr.Oid] = attr.ValueAsString
                             }
                             attrsText = attrsText.substr(0, attrsText.length - 1);
                             resultText += "Атрибуты: " + attrsText + "\n";
-
                             if (attrFound) {
                                 // resultText += "Этот атрибутный сертификат подходит для удостоверения данной ЭЦП\n";
                                 var res = acert.CheckValidity(0);
@@ -229,11 +227,17 @@
                         }
                     } else {
                         // resultText += "В хранилище не найдено ниодного атрибутного сертификата соответствующего сертификату подписанта\n";
+                        // console.log(cert.Subject.split(',').push(attrVal))
                     }
                 }
             }
-            // alert(resultText);
-            // console.log(resultText);
+            if (!attrVal) {
+              companyNumber = attrArray[attrOid]
+            }
+            if (actionType === 'createNewCompany') {
+              console.log('COMPANY NUMBER:', companyNumber)
+              document.getElementById('companyNumberGlobal').value = companyNumber;
+            }
             var input = document.createElement("input");
             input.type = "hidden";
             input.id = "verifiedData" + file; // set the CSS class

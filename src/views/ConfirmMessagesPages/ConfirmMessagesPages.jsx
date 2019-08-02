@@ -29,6 +29,7 @@ const ConfirmMessagesPages = props => {
         getDocumentsWithParams={getInboxСonfirmedDocumentsByActiveCompanyId}
         activeCompany={data.active_company_id}
         type='confirmed'
+        columnName='Отправитель'
       />
     </div>
   )

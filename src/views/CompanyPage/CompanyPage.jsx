@@ -1,7 +1,8 @@
 import React, { Fragment, useEffect, useState } from 'react'
 
-import axios from '../../services/api/http'
+import moment from 'moment'
 
+import axios from '../../services/api/http'
 import { Button } from '../../components'
 import { Table, Tag, Popconfirm, message, Modal, Typography, Spin } from 'antd'
 
@@ -14,6 +15,7 @@ const defaultCompanyState = {
   newCompanyName: '',
   newCompanyCity: '',
   newCompanyFullName: '',
+  yourPosition: '',
   showModal: false,
   modalFetching: false
 }
@@ -45,11 +47,15 @@ const CopmanyPage = props => {
       modalFetching: true
     })
 
-    window.sign('NewCompany')
+    window.sign('NewCompany', 'createNewCompany')
     setTimeout(function () {
       const companyData = document.getElementById('verifiedDataNewCompany').value
+      const ipData = document.getElementById('companyNumberGlobal').value
       const companyDataArr = companyData.split(';')
       let address = ''
+      let name = ''
+      let position = ''
+      let result = ''
       companyDataArr.forEach(function (element) {
         if (element.indexOf('2.5.4.7') > -1) {
           address = address + ' ' + element.substring(element.indexOf('<') + 1, element.indexOf('>'))
@@ -57,29 +63,45 @@ const CopmanyPage = props => {
         if (element.indexOf('2.5.4.9') > -1) {
           address = address + ' ' + element.substring(element.indexOf('<') + 1, element.indexOf('>'))
         }
+        if (element.indexOf('2.5.4.10') > -1) {
+          name = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
+        }
+        if (element.indexOf('2.5.4.12') > -1) {
+          position = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
+        }
         if (element.indexOf('1.2.112.1.2.1.1.1.1.2') > -1) {
-          const result = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-          console.log('Its a company number:', result)
-          axios.get(`/company/find/data/${result}`)
-            .then(response => {
-              const res = JSON.parse(JSON.stringify(response.data))
-              console.log('Its a parse JSON', res)
-              setCompanyState({
-                ...companyState,
-                showModal: true,
-                newCompanyDate: res.data[0].DC,
-                newCompanyNumber: result,
-                newCompanyName: res.data[0].VFN,
-                newCompanyCity: address,
-                newCompanyFullName: res.data[0].VNM,
-                modalFetching: !res.data[0].VFN
-              })
-            })
-            .catch(error => {
-              message.error(error.message)
-            })
+          result = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
         }
       })
+      if (result) {
+        setCompanyState({
+          ...companyState,
+          showModal: true,
+          newCompanyDate: moment().format('DD/MM/YYYY HH:mm'),
+          newCompanyNumber: result,
+          newCompanyName: name,
+          newCompanyCity: address,
+          yourPosition: position
+        })
+      } else {
+        axios.get(`/company/find/data/${ipData}`)
+          .then(response => {
+            const res = JSON.parse(JSON.stringify(response.data))
+            setCompanyState({
+              ...companyState,
+              showModal: true,
+              newCompanyDate: moment().format('DD/MM/YYYY HH:mm'),
+              newCompanyNumber: ipData,
+              newCompanyName: res.data[0].VFN,
+              newCompanyCity: address,
+              newCompanyFullName: res.data[0].VNM,
+              modalFetching: !res.data[0].VFN
+            })
+          })
+          .catch(error => {
+            message.error(error.message)
+          })
+      }
     }, 1000)
   }
 
@@ -91,26 +113,20 @@ const CopmanyPage = props => {
       changeActiveCompanyById(company.company_data.id)
         .then(() => {
           message.success('Активная компания изменена успешно!')
-          // setCompanyState({
-          //   ...companyState,
-          //   showModal: !companyState.showModal
-          // })
         })
         .catch(error => {
           message.error(error.message)
-          // setCompanyState({
-          //   ...companyState,
-          //   showModal: !companyState.showModal
-          // })
         })
     }
   }
 
   const handleCreateCompany = () => {
     const newCompanyData = {
-      name: companyState.newCompanyFullName,
-      company_number: +companyState.newCompanyNumber,
-      description: companyState.newCompanyCity
+      name: companyState.newCompanyName,
+      company_number: companyState.newCompanyNumber,
+      description: companyState.newCompanyCity,
+      registration_date: companyState.newCompanyDate,
+      your_position: companyState.yourPosition
     }
     createCompany(newCompanyData)
       .then(() => {
@@ -174,6 +190,7 @@ const CopmanyPage = props => {
       }
       <input type='hidden' id='dataNewCompany' value={data.email} />
       <input type='hidden' id='attr' size='80' value='1.2.112.1.2.1.1.1.1.2' />
+      <input type='hidden' id='companyNumberGlobal' />
       <div id='attrCertSelectContainer' style={{ display: 'none' }}>
         <span id='certExtAbsent' />
         <select style={{ visibility: 'hidden' }} id='attrCertSelect' />
@@ -181,7 +198,7 @@ const CopmanyPage = props => {
       <input type='hidden' id='attrValue' size='80' disabled='disabled' />
       <Modal
         visible={companyState.showModal}
-        title='Данные компании'
+        title={companyState.newCompanyNumber ? 'Данные компании' : 'Данные ИП'}
         closable={false}
         footer={null}
         onCancel={() => setCompanyState({ ...companyState, showModal: !companyState.showModal })}
@@ -193,22 +210,30 @@ const CopmanyPage = props => {
                 <div className='info__title'>Дата создания</div>
                 <div className='info__content'>{companyState.newCompanyDate}</div>
               </div>
+              {companyState.newCompanyNumber &&
               <div className='info__item'>
                 <div className='info__title'>УНП</div>
                 <div className='info__content'>{companyState.newCompanyNumber}</div>
               </div>
-              <div className='info__item'>
-                <div className='info__title'>Имя компании</div>
-                <div className='info__content'>{companyState.newCompanyName}</div>
-              </div>
-              <div className='info__item'>
-                <div className='info__title'>Место нахождения компании</div>
-                <div className='info__content'>{companyState.newCompanyCity}</div>
-              </div>
-              <div className='info__item'>
-                <div className='info__title'>Полное имя компании</div>
-                <div className='info__content'>{companyState.newCompanyFullName}</div>
-              </div>
+              }
+              {companyState.newCompanyName &&
+                <div className='info__item'>
+                  <div className='info__title'>Имя компании</div>
+                  <div className='info__content'>{companyState.newCompanyName}</div>
+                </div>
+              }
+              {companyState.newCompanyCity &&
+                <div className='info__item'>
+                  <div className='info__title'>Место нахождения компании</div>
+                  <div className='info__content'>{companyState.newCompanyCity}</div>
+                </div>
+              }
+              {companyState.yourPosition &&
+                <div className='info__item'>
+                  <div className='info__title'>Должность сотруднка</div>
+                  <div className='info__content'>{companyState.yourPosition}</div>
+                </div>
+              }
             </div>
             <Button style={{ margin: '20px 0 0 20px' }} onClick={handleCreateCompany} type='primary'>Создать</Button>
           </Spin>

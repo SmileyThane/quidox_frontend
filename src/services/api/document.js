@@ -14,7 +14,15 @@ const removeDocumentById = (id, type) => {
   })
 }
 
+const downloadDocument = (id, withCert) => {
+  return http({
+    url: `/document/zip/${id}/${withCert}`,
+    method: 'GET'
+  })
+}
+
 export {
   getDocumentById,
-  removeDocumentById
+  removeDocumentById,
+  downloadDocument
 }
