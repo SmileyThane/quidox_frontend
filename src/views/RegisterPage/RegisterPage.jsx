@@ -15,7 +15,7 @@ import {
 
 import './RegisterPage.scss'
 
-const { Text } = Typography
+const { Text, Title } = Typography
 const { Option } = Select
 const { Step } = Steps
 
@@ -41,7 +41,7 @@ class RegistrationForm extends React.Component {
     currentStep: 0,
     phone: '',
     code: '',
-    timer: 60
+    seconds: 60
   };
 
   inputNode = React.createRef()
@@ -53,6 +53,7 @@ class RegistrationForm extends React.Component {
   handleChange = (value, field) => {
     const prefix = this.props.form.getFieldValue('prefix')
     if (field === 'phone') {
+      this.inputNode.current.focus()
       this.setState({
         [field]: '+' + prefix + value.replace(/-/g, '')
       })
@@ -82,7 +83,7 @@ class RegistrationForm extends React.Component {
                   message.success('Номер телефона успешно отправлен!')
                   setTimeout(() => {
                     this.setState({ currentStep: this.state.currentStep + 1 })
-                    this.timer()
+                    this.getOneMinuteTimer()
                     this.inputNode.current.focus()
                   }, 350)
                 }
@@ -133,9 +134,9 @@ class RegistrationForm extends React.Component {
 
   getSmsCode = () => {
     this.setState({
-      timer: 60
+      seconds: 60
     })
-    this.timer()
+    this.getOneMinuteTimer()
     const phone = {
       phone: this.state.phone
     }
@@ -174,166 +175,204 @@ class RegistrationForm extends React.Component {
     callback()
   };
 
-  timer = () => {
-    const timeInterva = setInterval(() => {
-      console.log(this.state.timer)
-      if (this.state.timer > 0) {
+  getOneMinuteTimer = () => {
+    const timeInterval = setInterval(() => {
+      if (this.state.seconds > 0) {
         this.setState(prevState => {
-          return { timer: prevState.timer - 1 }
+          return { seconds: prevState.seconds - 1 }
         })
       } else {
-        clearInterval(timeInterva)
+        clearInterval(timeInterval)
         return null
       }
     }, 500)
   }
   render () {
-    const { currentStep, timer } = this.state
+    const { currentStep, seconds } = this.state
     const { getFieldDecorator } = this.props.form
 
     const prefixSelector = getFieldDecorator('prefix', {
-      initialValue: '37525'
+      initialValue: '37529'
     })(
       <Select style={{ width: 100 }}>
-        <Option value='37525'>+375(25)</Option>
         <Option value='37529'>+375(29)</Option>
         <Option value='37533'>+375(33)</Option>
         <Option value='37544'>+375(44)</Option>
       </Select>
     )
-    console.log(this.state.currentStep)
     return (
-      <div className='steps'>
-        <Steps
-          size='small'
-          current={currentStep}
-        >
-          {steps.map(item => (
-            <Step key={item.title} title={item.title} />
-          ))}
-        </Steps>
-        <Form className='form' onSubmit={this.handleSubmit}>
-          {currentStep === 0 &&
-            <Form.Item
-              validateStatus={this.state.validateStatus}
-              label='Введите номер мобильного телефона'
+      <Fragment>
+        <div className='register-left'>
+          <div className='preview-header'>
+            <Title level={3}>
+              Регистрация в Quidox.by
+            </Title>
+            <Text>Обмен электронными документами с ЭЦП</Text>
+          </div>
+          <div className='steps'>
+            <Steps
+              size='small'
+              current={currentStep}
             >
-              {getFieldDecorator('phone', {
-                rules: [{ required: true, message: 'Пожалуйста, введите номер мобильного телефона' }]
-              })(<MaskedInput
-                mask='111-11-11'
-                placeholder='XXX-XX-XX'
-                ref={this.inputNode}
-                onChange={e => this.handleChange(e.target.value, 'phone')}
-                addonBefore={prefixSelector}
-                style={{ width: '100%' }}
-              />)}
-            </Form.Item>
-          }
-          {currentStep === 1 &&
-            <Form.Item label='Введите полученный код'>
-              {getFieldDecorator('code', {
-                rules: [
-                  {
-                    type: 'string',
-                    message: 'Код введен не правильно!'
-                  },
-                  {
-                    required: true,
-                    message: 'Пожалуйста, введите полученный код!'
-                  }
-                ]
-              })(<Input
-                onChange={e => this.handleChange(e.target.value, 'code')}
-                ref={this.inputNode}
-              />)}
-            </Form.Item>
-          }
-          {currentStep === 2 &&
-            <Fragment>
-              <Form.Item label='Введите адрес электронной почты'>
-                {getFieldDecorator('email', {
-                  rules: [
-                    {
-                      type: 'email',
-                      message: 'Не правильный адрес электронной почты!'
-                    },
-                    {
-                      required: true,
-                      message: 'Пожалуйста, введите адрес электронной почты!'
-                    }
-                  ]
-                })(<Input ref={this.inputNode} />)}
+              {steps.map(item => (
+                <Step key={item.title} title={item.title} />
+              ))}
+            </Steps>
+            <Form className='form form-register' onSubmit={this.handleSubmit}>
+              {currentStep === 0 &&
+              <Form.Item
+                validateStatus={this.state.validateStatus}
+                label='Введите номер мобильного телефона'
+              >
+                {getFieldDecorator('phone', {
+                  rules: [{ required: true, message: 'Пожалуйста, введите номер мобильного телефона' }]
+                })(<MaskedInput
+                  mask='111-11-11'
+                  placeholder='XXX-XX-XX'
+                  ref={this.inputNode}
+                  onChange={e => {
+                    this.handleChange(e.target.value, 'phone')
+                  }}
+                  addonBefore={prefixSelector}
+                  style={{ width: '100%' }}
+                />)}
               </Form.Item>
-              <Form.Item label='Ваше имя'>
-                {getFieldDecorator('name', {
+              }
+              {currentStep === 1 &&
+              <Form.Item label='Введите полученный код'>
+                {getFieldDecorator('code', {
                   rules: [
                     {
                       type: 'string',
-                      message: 'Не правильное имя'
+                      message: 'Код введен не правильно!'
                     },
                     {
                       required: true,
-                      message: 'Пожалуйста, введите ваше имя!'
+                      message: 'Пожалуйста, введите полученный код!'
                     }
                   ]
-                })(<Input />)}
+                })(<Input
+                  onChange={e => this.handleChange(e.target.value, 'code')}
+                  ref={this.inputNode}
+                  placeholder='Код из СМС'
+                />)}
               </Form.Item>
-              <Form.Item label='Придумайте пароль' hasFeedback>
-                {getFieldDecorator('password', {
-                  rules: [
-                    {
-                      required: true,
-                      message: 'Минимум восемь символов, как минимум одна буква, одна цифра и один специальный символ',
-                      pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,}$/
-                    },
-                    {
-                      validator: this.validateToNextPassword
-                    }
-                  ]
-                })(<Input.Password />)}
-              </Form.Item>
-              <Form.Item label='Подтвердите пароль' hasFeedback>
-                {getFieldDecorator('confirm', {
-                  rules: [
-                    {
-                      required: true,
-                      message: 'Пожалуйста, подтвердите ваш пороль!'
-                    },
-                    {
-                      validator: this.compareToFirstPassword
-                    }
-                  ]
-                })(<Input.Password onBlur={this.handleConfirmBlur} />)}
-              </Form.Item>
-            </Fragment>
-          }
-          {currentStep === 3 &&
-            <Fragment>
-              <p>Подтвердите регистрацию, пройдя по ссылке в сообщении, которое вы получите на указанный вами адрес электронной почты</p>
-            </Fragment>
-          }
-          <Form.Item>
-            <div className='steps-form-actions'>
-              <div>
-                { currentStep === 1 &&
-                  <Fragment>
-                    <Text type='secondary'>Не получили код?<br />
-                      {timer > 0
-                        ? <Fragment>Выслать повторно через... {timer}</Fragment>
-                        : <a onClick={() => this.getSmsCode()}>Выслать повторно!</a>
+              }
+              {currentStep === 2 &&
+              <Fragment>
+                <Form.Item label='Введите адрес электронной почты'>
+                  {getFieldDecorator('email', {
+                    rules: [
+                      {
+                        type: 'email',
+                        message: 'Не правильный адрес электронной почты!'
+                      },
+                      {
+                        required: true,
+                        message: 'Пожалуйста, введите адрес электронной почты!'
                       }
-                    </Text>
-                  </Fragment>
-                }
-              </div>
-              <Button type='primary' htmlType='submit'>
-                {currentStep === 3 ? 'Завершить регистрацию' : 'Продолжить'}
-              </Button>
+                    ]
+                  })(<Input ref={this.inputNode} />)}
+                </Form.Item>
+                <Form.Item label='Ваше имя'>
+                  {getFieldDecorator('name', {
+                    rules: [
+                      {
+                        type: 'string',
+                        message: 'Не правильное имя'
+                      },
+                      {
+                        required: true,
+                        message: 'Пожалуйста, введите ваше имя!'
+                      }
+                    ]
+                  })(<Input />)}
+                </Form.Item>
+                <Form.Item label='Придумайте пароль' hasFeedback>
+                  {getFieldDecorator('password', {
+                    rules: [
+                      {
+                        required: true,
+                        message: 'Минимум восемь символов, как минимум одна буква, одна цифра и один специальный символ',
+                        pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,}$/
+                      },
+                      {
+                        validator: this.validateToNextPassword
+                      }
+                    ]
+                  })(<Input.Password />)}
+                </Form.Item>
+                <Form.Item label='Подтвердите пароль' hasFeedback>
+                  {getFieldDecorator('confirm', {
+                    rules: [
+                      {
+                        required: true,
+                        message: 'Пожалуйста, подтвердите ваш пороль!'
+                      },
+                      {
+                        validator: this.compareToFirstPassword
+                      }
+                    ]
+                  })(<Input.Password onBlur={this.handleConfirmBlur} />)}
+                </Form.Item>
+              </Fragment>
+              }
+              {currentStep === 3 &&
+              <Fragment>
+                <p>Подтвердите регистрацию, пройдя по ссылке в сообщении, которое вы получите на указанный вами адрес электронной почты</p>
+              </Fragment>
+              }
+              <Form.Item>
+                <div className='steps-form-actions'>
+                  <div>
+                    { currentStep === 1 &&
+                    <Fragment>
+                      <Text type='secondary'>Не получили код?<br />
+                        {seconds > 0
+                          ? <Fragment>Выслать повторно через... {seconds}</Fragment>
+                          : <a onClick={() => this.getSmsCode()}>Выслать повторно!</a>
+                        }
+                      </Text>
+                    </Fragment>
+                    }
+                  </div>
+                  <Button type='primary' htmlType='submit'>
+                    {currentStep === 3 ? 'Завершить регистрацию' : 'Продолжить'}
+                  </Button>
+                </div>
+              </Form.Item>
+            </Form>
+          </div>
+          <div className='register-footer-help'>
+            <div>
+              <Text type='secondary'>* - обязательное поле</Text>
             </div>
-          </Form.Item>
-        </Form>
-      </div>
+          </div>
+        </div>
+        <div className='register-right'>
+          {currentStep !== 2 &&
+            <div>
+              {currentStep === 0 &&
+              <Fragment>
+                <Text type='secondary'>Благодаря сервису QuiDox.by<br />
+                  Вы сможете с легкостью обмениваться электронными документами с ЭЦП с Вашими контрагентами.
+                </Text>
+                <br /><br />
+                <Text type='secondary'>Доставка происходит мгновенно</Text>
+                <br /><br />
+                <Text type='secondary'>Бесплатно первые 180 дней !</Text>
+              </Fragment>
+              }
+              {currentStep === 1 &&
+              <Text type='secondary'>Мы отправили вам код подтверждения на указанный вами номер.<br />
+                Пожалуйста, проверьте и введите в поле.<br />
+                Нажмите "Продолжить".
+              </Text>
+              }
+            </div>
+          }
+        </div>
+      </Fragment>
     )
   }
 }

@@ -8,13 +8,13 @@ const PublicRoute = ({ component: Component, ...rest }) => {
       window.localStorage.getItem('authToken')
         ? (<Redirect to={{ pathname: '/', state: { from: props.location } }} />)
         : <Fragment>
-          <LayoutBlock top>
+          <LayoutBlock>
             <HeaderBlock />
             <ContentBlock logWrapp>
               <Component {...props} />
+              <FooterBlock />
             </ContentBlock>
           </LayoutBlock>
-          <FooterBlock />
         </Fragment>
     }
   />

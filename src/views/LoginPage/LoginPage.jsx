@@ -3,8 +3,10 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import history from '../../history.js'
-import { Form, Icon, Input, Button, Checkbox, message } from 'antd'
+import { Form, Icon, Input, Button, Checkbox, message, Typography } from 'antd'
 import './LoginPage.scss'
+
+const { Text, Title } = Typography
 
 class LoginPage extends React.Component {
   state = {
@@ -25,6 +27,7 @@ class LoginPage extends React.Component {
             }
           })
           .catch((error) => {
+            console.log(error.message)
             message.error('Пользователь не авторизован или не существует!')
           })
       }
@@ -34,7 +37,7 @@ class LoginPage extends React.Component {
   render () {
     const { getFieldDecorator } = this.props.form
     return (
-      <Form onSubmit={this.handleSubmit} className='form'>
+      <Form onSubmit={this.handleSubmit} className='form' style={{ maxHeight: '40rem', maxWidth: '45rem' }}>
         <Form.Item>
           {getFieldDecorator('email', {
             rules: [{ required: true, message: 'Пожалуйста, введите адрес электронной почты!' }]
@@ -64,10 +67,16 @@ class LoginPage extends React.Component {
           <Link className='login-form-forgot' to={'/password-recovery'}>
             Забыли пароль?
           </Link>
-          <Button type='primary' htmlType='submit' className='login-form-button'>
+          <Button type='primary' htmlType='submit' className='login-form-button' style={{ marginTop: '.5rem' }}>
             Войти
           </Button>
-          или <Link to={'/register'}>зарегистрируйтесь сейчас!</Link>
+          <div style={{ marginTop: '1.5rem' }}>
+            <Title level={4}>Начните обмент документами сейчас!<br />Нет аккаунта?</Title>
+            <Link to={'/register'}>Зарегистрируйтесь! &nbsp;</Link>
+            <Text type='secondary'>
+              Вы сможете <strong>бесплатно</strong> обмениваться электронными документами с вашими контрагентами в течении <strong>90</strong> дней.
+            </Text>
+          </div>
         </Form.Item>
       </Form>
     )

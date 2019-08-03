@@ -2,14 +2,8 @@
 .header {
   background: map-get($colors, white) !important;
   border-bottom: 1px solid map-get($colors, gray);
-  flex: none;
-  margin-bottom: 1.5rem;
+  padding: 1rem 0 !important;
   height: auto !important;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-
   .header__content {
     display: flex;
     align-items: center;
