@@ -9,7 +9,6 @@ import { MenuItem } from './internal'
 import './Menu.scss'
 
 const countMessages = 1
-const { SubMenu } = Menu
 
 const AntMenu = props => {
 
@@ -21,6 +20,7 @@ const AntMenu = props => {
         icon='plus'
         block
         onClick={() => history.push('/new-document')}
+        style={{ maxWidth: '26rem', marginLeft: '2.5rem' }}
       >
         Новый документ
       </Button>
@@ -29,7 +29,7 @@ const AntMenu = props => {
         defaultSelectedKeys={props.location.pathname === 'new-document' ? [''] : [props.location.pathname]}
         defaultOpenKeys={['sub1']}
       >
-        <SubMenu
+        <Menu.ItemGroup
           key='sub1'
           title={
             <span>
@@ -53,7 +53,7 @@ const AntMenu = props => {
             key='/unconfirmed-messages'
             icon='exception'
           />
-        </SubMenu>
+        </Menu.ItemGroup>
         <MenuItem
           heading='Отправленные'
           url='/sent-messages'

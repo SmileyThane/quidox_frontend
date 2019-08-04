@@ -20,41 +20,33 @@ const HeaderBlock = props => {
 
   return (
     <Header className='header'>
-      <div className='container'>
-        <div className='header__content'>
-          <aside className='header__left'>
-            <img className='header__logo' src={logo} alt='Quidox Logo' />
-          </aside>
-          {window.localStorage.getItem('authToken') &&
-            <Fragment>
-              <Input
-                className='header__input'
-                placeholder='Введите УНП, название документа или компании'
-                onSearch={() => console.log('value')}
-                kind='search'
-              />
-              <Skeleton loading={isFetching} active paragraph={false}>
-                <div className='user header__user'>
-                  {data &&
-                  <span onClick={() => history.push('/user-me')}>{data.email}</span>
-                  }
-                  <Popconfirm
-                    placement='bottom'
-                    title='Вы уверены?'
-                    onConfirm={() => handleLogout()}
-                    okText='Выйти'
-                    cancelText='Отмена'
-                  >
-                    <Icon
-                      className='user__logout-btn'
-                      type='logout'
-                    />
-                  </Popconfirm>
-                </div>
-              </Skeleton>
-            </Fragment>
-          }
-        </div>
+      <div className='header__content'>
+        <aside className='header__left'>
+          <img className='header__logo' src={logo} alt='Quidox Logo' />
+        </aside>
+        {window.localStorage.getItem('authToken') &&
+          <Fragment>
+            <Skeleton loading={isFetching} active paragraph={false}>
+              <div className='user header__user'>
+                {data &&
+                <span onClick={() => history.push('/user-me')}>{data.email}</span>
+                }
+                <Popconfirm
+                  placement='bottom'
+                  title='Вы уверены?'
+                  onConfirm={() => handleLogout()}
+                  okText='Выйти'
+                  cancelText='Отмена'
+                >
+                  <Icon
+                    className='user__logout-btn'
+                    type='logout'
+                  />
+                </Popconfirm>
+              </div>
+            </Skeleton>
+          </Fragment>
+        }
       </div>
     </Header>
   )

@@ -1,0 +1,37 @@
+@import "../../styles/variables";
+.sidebar {
+  .ant-menu {
+    margin-top: 1rem;
+  }
+
+  .ant-menu-item-group {
+
+    .ant-menu-item-group-title {
+      font-size: 1.6rem;
+      color: rgba(map_get($colors, black), .65);
+      height: 6rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      & > span {
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+      }
+    }
+    .ant-menu-item-group-list {
+      .ant-menu-item {
+        padding-left: 4.5rem !important;
+      }
+    }
+  }
+  .ant-menu-item {
+    margin: 0 !important;
+    font-size: 1.6rem !important;
+    height: auto !important;
+
+    a {
+      padding: 1rem 0;
+    }
+  }
+}

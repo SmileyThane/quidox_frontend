@@ -27,11 +27,13 @@ const PrivateRoute = ({ component: Component, getUser, ...rest }) => {
             <HeaderBlock />
             <Layout>
               <SiderBlock />
-              <ContentBlock>
-                <Component {...props} />
-              </ContentBlock>
+              <Layout>
+                <ContentBlock>
+                  <Component {...props} />
+                </ContentBlock>
+                <FooterBlock />
+              </Layout>
             </Layout>
-            <FooterBlock />
           </LayoutBlock>
         </Fragment>
         : (<Redirect to={{ pathname: '/login', state: { from: props.location } }} />)

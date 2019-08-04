@@ -2,7 +2,7 @@
 .header {
   background: map-get($colors, white) !important;
   border-bottom: 1px solid map-get($colors, gray);
-  padding: 1rem 0 !important;
+  padding: 0 2rem !important;
   height: auto !important;
   .header__content {
     display: flex;

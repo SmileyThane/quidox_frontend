@@ -12,8 +12,8 @@ const PublicRoute = ({ component: Component, ...rest }) => {
             <HeaderBlock />
             <ContentBlock logWrapp>
               <Component {...props} />
-              <FooterBlock />
             </ContentBlock>
+            <FooterBlock />
           </LayoutBlock>
         </Fragment>
     }

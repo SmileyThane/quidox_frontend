@@ -7,11 +7,9 @@ const hrefLink = '#'
 const FooterBlock = () => {
   return (
     <Footer className='footer'>
-      <div className='container'>
-        <a className='footer__link' href={hrefLink}>Условия пользования</a>
-        <a className='footer__link' href={hrefLink}>Контакты</a>
-        <a className='footer__link' href={hrefLink}>О сервисе</a>
-      </div>
+      <a className='footer__link' href={hrefLink}>Условия пользования</a>
+      <a className='footer__link' href={hrefLink}>Контакты</a>
+      <a className='footer__link' href={hrefLink}>О сервисе</a>
     </Footer>
   )
 }
