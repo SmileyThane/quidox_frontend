@@ -9,6 +9,7 @@ import { PrivateRoute, PublicRoute } from './components'
 import {
   LoginPage,
   RegisterPage,
+  ResetPasswordPage,
   UserInfoPage,
   Home,
   SingleDocumentPage,
@@ -37,6 +38,7 @@ function App () {
 
           <PublicRoute path='/login' component={LoginPage} />
           <PublicRoute path='/register' component={RegisterPage} />
+          <PublicRoute path='/password-recovery' component={ResetPasswordPage} />
 
           <Route path='*' render={() => <div>404</div>} />
         </Switch>

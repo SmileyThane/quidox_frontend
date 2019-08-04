@@ -127,6 +127,8 @@ class RegistrationForm extends React.Component {
                   setTimeout(() => {
                     this.setState({ currentStep: this.state.currentStep + 1 })
                   }, 350)
+                } else {
+                  throw new Error(data.error)
                 }
               })
               .catch(function (error) {
@@ -355,13 +357,15 @@ class RegistrationForm extends React.Component {
             </Form>
           </div>
           <div className='register-footer-help'>
+            {currentStep !== 3 &&
             <div>
               <Text type='secondary'>* - обязательное поле</Text>
             </div>
+            }
           </div>
         </div>
         <div className='register-right'>
-          {currentStep !== 2 &&
+          {(currentStep !== 2 && currentStep !== 3) &&
             <div>
               {currentStep === 0 &&
               <Fragment>

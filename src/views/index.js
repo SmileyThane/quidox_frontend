@@ -9,11 +9,13 @@ import CompanyPage from './CompanyPage'
 import ConfirmMessagesPages from './ConfirmMessagesPages'
 import UnconfirmedMessagesPage from './UnconfirmedMessagesPage'
 import SentMessagesPage from './SentMessagesPage'
+import ResetPasswordPage from './ResetPasswordPage'
 
 export {
   LoginPage,
   RegisterPage,
   UserInfoPage,
+  ResetPasswordPage,
   Home,
   SingleDocumentPage,
   NewDocumentPage,
