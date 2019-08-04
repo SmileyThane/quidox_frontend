@@ -45,15 +45,25 @@ class RegistrationForm extends React.Component {
   };
 
   inputNode = React.createRef()
+  inputPhoneNode = React.createRef()
 
   componentDidMount () {
-    this.inputNode.current.focus()
+    if (this.inputNode.current) {
+      this.inputNode.current.focus()
+    }
+    if (this.inputPhoneNode.current) {
+      this.inputPhoneNode.current.focus()
+    }
   }
+
+   componentDidUpdate() {
+     this.inputPhoneNode.current.focus()
+   }
+
 
   handleChange = (value, field) => {
     const prefix = this.props.form.getFieldValue('prefix')
     if (field === 'phone') {
-      this.inputNode.current.focus()
       this.setState({
         [field]: '+' + prefix + value.replace(/-/g, '')
       })
@@ -185,7 +195,7 @@ class RegistrationForm extends React.Component {
         clearInterval(timeInterval)
         return null
       }
-    }, 500)
+    }, 1000)
   }
   render () {
     const { currentStep, seconds } = this.state
@@ -200,6 +210,7 @@ class RegistrationForm extends React.Component {
         <Option value='37544'>+375(44)</Option>
       </Select>
     )
+    console.log(this.state.phone)
     return (
       <Fragment>
         <div className='register-left'>
@@ -229,7 +240,7 @@ class RegistrationForm extends React.Component {
                 })(<MaskedInput
                   mask='111-11-11'
                   placeholder='XXX-XX-XX'
-                  ref={this.inputNode}
+                  ref={this.inputPhoneNode}
                   onChange={e => {
                     this.handleChange(e.target.value, 'phone')
                   }}
@@ -358,9 +369,9 @@ class RegistrationForm extends React.Component {
                   Вы сможете с легкостью обмениваться электронными документами с ЭЦП с Вашими контрагентами.
                 </Text>
                 <br /><br />
-                <Text type='secondary'>Доставка происходит мгновенно</Text>
+                <Text type='secondary'>Доставка происходит мгновенно.</Text>
                 <br /><br />
-                <Text type='secondary'>Бесплатно первые 180 дней !</Text>
+                <Text type='secondary'>Бесплатно первые 180 дней!</Text>
               </Fragment>
               }
               {currentStep === 1 &&
