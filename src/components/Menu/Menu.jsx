@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect } from 'react'
 
 import { Menu, Icon, Badge } from 'antd'
 
@@ -11,7 +11,6 @@ import './Menu.scss'
 const countMessages = 1
 
 const AntMenu = props => {
-
   return (
     <Fragment>
       <Button
@@ -20,7 +19,7 @@ const AntMenu = props => {
         icon='plus'
         block
         onClick={() => history.push('/new-document')}
-        style={{ maxWidth: '26rem', marginLeft: '2.5rem' }}
+        style={{ maxWidth: '26rem', marginLeft: '1.5rem', padding: '1rem 1.5rem', height: 'auto' }}
       >
         Новый документ
       </Button>
