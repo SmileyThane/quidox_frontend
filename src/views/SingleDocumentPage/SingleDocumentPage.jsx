@@ -11,6 +11,7 @@ import { findUsersByParams } from '../../services/api/user'
 import { Button, PDFViewer } from '../../components'
 import PDFJSBACKEND from '../../backends/pdfjs'
 
+import { close } from './img'
 import 'react-fancybox/lib/fancybox.css'
 import './SingleDocumentPage.scss'
 
@@ -330,7 +331,7 @@ const SingleDocumentPage = props => {
       {documentState.isVisible &&
         <div className='pdf-container'>
           <div className='pdf-container__close'>
-            <Icon style={{ fontSize: 30 }} type='close' onClick={() => hideModal()} />
+            <div className='close' style={{ backgroundImage: `url(${close})` }} onClick={() => hideModal()} />
           </div>
           {['jpg', 'png', 'jpeg'].includes(documentState.fileLink.split('.').pop())
             ? <div className='img-wrapp'>

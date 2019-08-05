@@ -84,6 +84,8 @@
   width: 100%;
   height: 100%;
   z-index: 10;
+  padding: 4rem;
+  background-color: rgba(map-get($colors, black), .6);
 
   .pdf-container__close {
     height: 4rem;
@@ -94,8 +96,19 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    padding: 0 1rem;
-    background-color: map-get($colors, gray);
+  }
+  .close {
+    width: 4rem;
+    height: 4rem;
+    max-width: 4rem;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 80%;
+    cursor: pointer;
+    transition: .3s linear;
+    &:hover {
+      background-color: rgba(map-get($colors, black), .3);
+    }
   }
   .img-wrapp {
     width: 100%;
