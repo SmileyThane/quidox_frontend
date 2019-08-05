@@ -18,6 +18,7 @@ import './SingleDocumentPage.scss'
 const defaultDocumentState = {
   isVisible: false,
   fileLink: '',
+  fileType: '',
   userData: [],
   showModal: false,
   data: [],
@@ -59,11 +60,13 @@ const SingleDocumentPage = props => {
       .then(response => {
         const blob = new window.Blob([response.data], { type: 'application/pdf' })
         const blobURL = window.URL.createObjectURL(blob)
+        const fileType = response.headers['content-type'].split('/').pop()
         
         setDocumentState({
           ...documentState,
           isVisible: true,
-          fileLink: blobURL
+          fileLink: blobURL,
+          fileType: fileType
         })
         console.log(blob)
         console.log(blobURL)
@@ -333,7 +336,7 @@ const SingleDocumentPage = props => {
           <div className='pdf-container__close'>
             <div className='close' style={{ backgroundImage: `url(${close})` }} onClick={() => hideModal()} />
           </div>
-          {['jpg', 'png', 'jpeg'].includes(documentState.fileLink.split('.').pop())
+          {['jpg', 'png', 'jpeg'].includes(documentState.fileType.split('.').pop())
             ? <div className='img-wrapp'>
               <img className='modal-img' src={documentState.fileLink} alt='img' />
             </div>
