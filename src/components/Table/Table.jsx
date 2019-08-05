@@ -27,16 +27,16 @@ const AntdTable = props => {
           {columnName !== 'Отправитель'
             ? <Fragment>
               {record.attached_to_users && record.attached_to_users.map(user => (
-                <Fragment key={user.id}>
-                  <Text>{user.user_company.user_email}</Text><br />
-                  <Text>[{user.user_company.company_name}]</Text>
-                </Fragment>
+                <Link to={`/documents/${record.id}`} key={user.id}>
+                  {user.user_company.user_email}<br />
+                  [{user.user_company.company_name}]
+                </Link>
               ))}
             </Fragment>
-            : <Fragment>
-              <Text>{record.author['user_email']}</Text><br />
-              <Text>[{record.author['company_name']}]</Text>
-            </Fragment>
+            : <Link to={`/documents/${record.id}`}>
+              {record.author['user_email']}<br />
+              [{record.author['company_name']}]
+            </Link>
           }
         </Fragment>
     },
@@ -48,7 +48,7 @@ const AntdTable = props => {
     {
       title: 'Кол-во приложенных документов',
       key: 'attachments',
-      render: record => <p style={{ textAlign: 'center' }} >{record.attachments.length === 0 ? 'Нет вложенных документов' : record.attachments.length }</p>
+      render: record => <Link to={`/documents/${record.id}`} style={{ textAlign: 'center' }} >{record.attachments.length === 0 ? 'Нет вложенных документов' : record.attachments.length }</Link>
     },
     {
       title: 'Дата',
@@ -60,7 +60,7 @@ const AntdTable = props => {
     },
     {
       title: 'Квитанция',
-      render: record => <Text>{record['applied_attachments_count'] === 0 ? 'Нет квитанций' : record['applied_attachments_count']}</Text>
+      render: record => <Link o={`/documents/${record.id}`}>{record['applied_attachments_count'] === 0 ? 'Нет квитанций' : record['applied_attachments_count']}</Link>
     }
   ]
 
