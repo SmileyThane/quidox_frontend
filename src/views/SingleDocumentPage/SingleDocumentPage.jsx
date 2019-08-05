@@ -1,15 +1,17 @@
 import React, { useEffect, useState, Fragment } from 'react'
-
 import axios from 'axios'
-import { api } from '../../services'
-import fileDownload from 'js-file-download'
 import generateHash from 'random-hash'
+import fileDownload from 'js-file-download'
+import _ from 'lodash'
+
+import { api } from '../../services'
 import { Spin, Icon, List, Tag, Popover, Modal, Select, message } from 'antd'
 import history from '../../history'
 import { findUsersByParams } from '../../services/api/user'
-import _ from 'lodash'
 import { Button, PDFViewer } from '../../components'
 import PDFJSBACKEND from '../../backends/pdfjs'
+
+import 'react-fancybox/lib/fancybox.css'
 import './SingleDocumentPage.scss'
 
 const defaultDocumentState = {
@@ -54,14 +56,16 @@ const SingleDocumentPage = props => {
       }
     })
       .then(response => {
-        const blobData = [response]
-        const blob = new window.Blob(blobData)
+        const blob = new window.Blob([response.data], { type: 'application/pdf' })
         const blobURL = window.URL.createObjectURL(blob)
+        
         setDocumentState({
           ...documentState,
           isVisible: true,
           fileLink: blobURL
         })
+        console.log(blob)
+        console.log(blobURL)
       })
       .catch(error => {
         message.error(error.message)
