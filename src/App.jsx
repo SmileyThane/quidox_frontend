@@ -2,7 +2,6 @@ import React, { Fragment } from 'react'
 import { Router, Switch, Route } from 'react-router-dom'
 import history from './history'
 import 'typeface-roboto'
-import 'typeface-nunito-sans'
 
 import { PrivateRoute, PublicRoute } from './components'
 

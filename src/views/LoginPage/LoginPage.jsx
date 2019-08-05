@@ -20,10 +20,13 @@ class LoginPage extends React.Component {
       if (!err) {
         console.log('Received values of form: ', values)
         axios.post('https://api.quidox.by/api/login', values)
-          .then((response) => {
-            if (response.data.success) {
-              window.localStorage.setItem('authToken', response.data.data.token)
+          .then(({ data }) => {
+            if (data.success) {
+              window.localStorage.setItem('authToken', data.data.token)
               history.push('/')
+            }
+            else {
+              message.error(data.error)
             }
           })
           .catch((error) => {

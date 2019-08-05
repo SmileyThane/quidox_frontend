@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, Fragment } from 'react'
 
 import _ from 'lodash'
 import { Link } from 'react-router-dom'
 import { getTimeStamp } from '../../helpers'
-import { Table, Icon, Popconfirm, AutoComplete, message } from 'antd'
+import { Table, Icon, Popconfirm, AutoComplete, message, Typography } from 'antd'
 import './Table.scss'
 
 const defaultTableState = {
@@ -11,22 +11,34 @@ const defaultTableState = {
   searchText: ''
 }
 
-const AntdTable = props => {
+const { Text } = Typography
 
-  const { activeCompany, draft = false, getDocumentsWithParams, children, type, columnName = '', removeDocument, removeDocuments, ...rest } = props
+const AntdTable = props => {
+  const { activeCompany, getDocumentsWithParams, children, type, columnName = '', removeDocument, removeDocuments, ...rest } = props
 
   const [tableState, setTableState] = useState({ ...defaultTableState })
 
   const columns = [
     {
-      title: 'Дата',
-      dataIndex: 'created_at',
-      sorter: (a, b) => getTimeStamp(a.created_at) - getTimeStamp(b.created_at)
-    },
-    {
       title: type !== 'draft' && `${columnName}`,
-      key: type !== 'draft' && 'author',
-      render: record => type !== 'draft' && <p>{record.author.company_name}</p>
+      key: type !== 'draft' ? 'author' : '',
+      render: record => type !== 'draft' &&
+        <Fragment>
+          {columnName !== 'Отправитель'
+            ? <Fragment>
+              {record.attached_to_users && record.attached_to_users.map(user => (
+                <Fragment key={user.id}>
+                  <Text>{user.user_company.user_email}</Text><br />
+                  <Text>[{user.user_company.company_name}]</Text>
+                </Fragment>
+              ))}
+            </Fragment>
+            : <Fragment>
+              <Text>{record.author['user_email']}</Text><br />
+              <Text>[{record.author['company_name']}]</Text>
+            </Fragment>
+          }
+        </Fragment>
     },
     {
       title: 'Тема',
@@ -34,15 +46,21 @@ const AntdTable = props => {
       render: record => <Link to={`/documents/${record.id}`}>{record.name}</Link>
     },
     {
-      title: 'Кол-во вложенных документов',
+      title: 'Кол-во приложенных документов',
       key: 'attachments',
       render: record => <p style={{ textAlign: 'center' }} >{record.attachments.length === 0 ? 'Нет вложенных документов' : record.attachments.length }</p>
+    },
+    {
+      title: 'Дата',
+      dataIndex: 'created_at',
+      sorter: (a, b) => getTimeStamp(a.created_at) - getTimeStamp(b.created_at)
     },
     {
       title: 'Статус'
     },
     {
-      title: 'Квитанция'
+      title: 'Квитанция',
+      render: record => <Text>{record['applied_attachments_count'] === 0 ? 'Нет квитанций' : record['applied_attachments_count']}</Text>
     }
   ]
 
