@@ -12,7 +12,6 @@ import { Button, PDFViewer } from '../../components'
 import PDFJSBACKEND from '../../backends/pdfjs'
 
 import { close } from './img'
-import 'react-fancybox/lib/fancybox.css'
 import './SingleDocumentPage.scss'
 
 const defaultDocumentState = {
@@ -50,7 +49,7 @@ const SingleDocumentPage = props => {
   }, [match, getDocumentById])
 
   const showModal = item => {
-    axios.get(item.preview_path, {
+    axios.get(item['preview_path'], {
       'responseType': 'arraybuffer',
       headers: {
         'Authorization': 'Bearer ' + window.localStorage.getItem('authToken'),
@@ -61,15 +60,13 @@ const SingleDocumentPage = props => {
         const blob = new window.Blob([response.data], { type: 'application/pdf' })
         const blobURL = window.URL.createObjectURL(blob)
         const fileType = response.headers['content-type'].split('/').pop()
-        
+
         setDocumentState({
           ...documentState,
           isVisible: true,
           fileLink: blobURL,
           fileType: fileType
         })
-        console.log(blob)
-        console.log(blobURL)
       })
       .catch(error => {
         message.error(error.message)
