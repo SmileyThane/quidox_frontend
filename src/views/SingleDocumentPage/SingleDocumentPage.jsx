@@ -13,7 +13,7 @@ import PDFJSBACKEND from '../../backends/pdfjs'
 import './SingleDocumentPage.scss'
 
 const defaultDocumentState = {
-  isVasible: false,
+  isVisible: false,
   fileLink: '',
   userData: [],
   showModal: false,
@@ -46,17 +46,32 @@ const SingleDocumentPage = props => {
   }, [match, getDocumentById])
 
   const showModal = item => {
-    setDocumentState({
-      ...documentState,
-      isVasible: true,
-      fileLink: item.preview_path
+    axios.get(item.preview_path, {
+      'responseType': 'arraybuffer',
+      headers: {
+        'Authorization': 'Bearer ' + window.localStorage.getItem('authToken'),
+        'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
+      }
     })
+      .then(response => {
+        const blobData = [response]
+        const blob = new window.Blob(blobData)
+        const blobURL = window.URL.createObjectURL(blob)
+        setDocumentState({
+          ...documentState,
+          isVisible: true,
+          fileLink: blobURL
+        })
+      })
+      .catch(error => {
+        message.error(error.message)
+      })
   }
 
   const hideModal = () => {
     setDocumentState({
       ...documentState,
-      isVasible: false
+      isVisible: false
     })
   }
 
@@ -217,6 +232,7 @@ const SingleDocumentPage = props => {
   }
 
   const { Option } = Select
+  console.log(documentState.isVisible)
   return (
     <Fragment>
       <Spin spinning={isFetching}>
@@ -307,7 +323,7 @@ const SingleDocumentPage = props => {
           </div>
         </div>
       </Spin>
-      {documentState.isVasible &&
+      {documentState.isVisible &&
         <div className='pdf-container'>
           <div className='pdf-container__close'>
             <Icon style={{ fontSize: 30 }} type='close' onClick={() => hideModal()} />

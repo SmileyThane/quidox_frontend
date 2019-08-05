@@ -34,7 +34,7 @@ const AntdTable = props => {
       render: record => <Link to={`/documents/${record.id}`}>{record.name}</Link>
     },
     {
-      title: 'Кол-во вложенных документы',
+      title: 'Кол-во вложенных документов',
       key: 'attachments',
       render: record => <p style={{ textAlign: 'center' }} >{record.attachments.length === 0 ? 'Нет вложенных документов' : record.attachments.length }</p>
     },
