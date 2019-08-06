@@ -24,9 +24,8 @@ class LoginPage extends React.Component {
             if (data.success) {
               window.localStorage.setItem('authToken', data.data.token)
               history.push('/')
-            }
-            else {
-              message.error(data.error)
+            } else {
+              throw new Error(data.error)
             }
           })
           .catch((error) => {

@@ -56,10 +56,9 @@ class RegistrationForm extends React.Component {
     }
   }
 
-   componentDidUpdate() {
-     this.inputPhoneNode.current.focus()
-   }
-
+  componentDidUpdate () {
+    this.inputPhoneNode.current.focus()
+  }
 
   handleChange = (value, field) => {
     const prefix = this.props.form.getFieldValue('prefix')

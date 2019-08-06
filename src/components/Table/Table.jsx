@@ -60,7 +60,7 @@ const AntdTable = props => {
     },
     {
       title: 'Квитанция',
-      render: record => <Link o={`/documents/${record.id}`}>{record['applied_attachments_count'] === 0 ? 'Нет квитанций' : record['applied_attachments_count']}</Link>
+      render: record => <Link to={`/documents/${record.id}`}>{record['applied_attachments_count'] === 0 ? 'Нет квитанций' : record['applied_attachments_count']}</Link>
     }
   ]
 
