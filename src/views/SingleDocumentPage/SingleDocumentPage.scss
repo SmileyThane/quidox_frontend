@@ -123,3 +123,29 @@
     margin: 0 auto;
   }
 }
+
+//cert modal
+
+.cert-modal {
+
+  .cert-modal__item {
+    display: flex;
+    margin-bottom: 1rem;
+  }
+  .cert-modal__item-left {
+    text-align: right;
+    flex-basis: 30%;
+    padding-right: .5rem;
+  }
+  .cert-modal__item-right {
+    text-align: left;
+    flex-basis: 70%;
+    padding-left: .5rem;
+    border-left: .1rem solid map_get($colors, gray);
+    display: flex;
+    flex-direction: column;
+  }
+  .cert-item {
+    margin-bottom: .5rem;
+  }
+}

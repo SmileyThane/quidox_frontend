@@ -5,7 +5,7 @@ import fileDownload from 'js-file-download'
 import _ from 'lodash'
 
 import { api } from '../../services'
-import { Spin, Icon, List, Tag, Popover, Modal, Select, message } from 'antd'
+import { Spin, Icon, List, Tag, Popover, Modal, Select, message, Typography } from 'antd'
 import history from '../../history'
 import { findUsersByParams } from '../../services/api/user'
 import { Button, PDFViewer } from '../../components'
@@ -13,6 +13,8 @@ import PDFJSBACKEND from '../../backends/pdfjs'
 
 import { close } from './img'
 import './SingleDocumentPage.scss'
+
+const { Text } = Typography
 
 const defaultDocumentState = {
   isVisible: false,
@@ -311,11 +313,11 @@ const SingleDocumentPage = props => {
               <div className='document__actions__left'>
                 <Button style={{ marginRight: 15 }} ghost type='primary' onClick={() => downloadDocumentContent(data, false)}>
                   <Icon type='download' />
-              Скачать всё
+                  Скачать всё
                 </Button>
                 <Button ghost type='primary' onClick={() => downloadDocumentContent(data, true)}>
                   <Icon type='download' />
-              Скачать всё с сигнатурами
+                  Скачать всё с сигнатурами
                 </Button>
               </div>
               <div className='document__actions__right'>
@@ -354,9 +356,64 @@ const SingleDocumentPage = props => {
         >
           {documentState.modalType === 'ecp'
             ? <Fragment>
-              {documentState.userData.map((item, index) => (
-                <p key={index}>{item}</p>
-              ))}
+              <div className='cert-modal'>
+                <div className='cert-modal__item'>
+                  <div className='cert-modal__item-left'>
+                    <Text type='secondary'>Данные из сертификата ЭЦП</Text>
+                  </div>
+                  <div className='cert-modal__item-right'>
+                    <div className='cert-item'>
+                      <Text type='secondary'>УНП:</Text>
+                    </div>
+                    <div className='cert-item'>
+                      <Text type='secondary'>Организация:</Text>
+                    </div>
+                    <div className='cert-item'>
+                      <Text type='secondary'>Должность:</Text>
+                    </div>
+                    <div className='cert-item'>
+                      <Text type='secondary'>ФИО:</Text>
+                    </div>
+                    <div className='cert-item'>
+                      <Text type='secondary'>Адресс:</Text>
+                    </div>
+                    <div className='cert-item'>
+                      <Text type='secondary'>OID 2.5.4.10=:</Text>
+                    </div>
+                  </div>
+                </div>
+                <div className='cert-modal__item'>
+                  <div className='cert-modal__item-left'>
+                    <Text type='secondary'>Срок действия сертификата</Text>
+                  </div>
+                  <div className='cert-modal__item-right'>
+                    <div className='cert-item'>
+                      <Text type='secondary'>с</Text>
+                    </div>
+                    <div className='cert-item'>
+                      <Text type='secondary'>по</Text>
+                    </div>
+                  </div>
+                </div>
+                <div className='cert-modal__item'>
+                  <div className='cert-modal__item-left'>
+                    <Text type='secondary'>Дата создания ЭЦП</Text>
+                  </div>
+                  <div className='cert-modal__item-right'>
+                    <div className='cert-item'>
+                      <Text type='secondary'>с</Text>
+                    </div>
+                  </div>
+                </div>
+                <div className='cert-modal-footer'>
+                  <Text>
+                    <strong>&#10003; Проверка Сертификата, СОС:</strong>
+                  </Text><br />
+                  <Text>
+                    <strong>&#10003; Проверка Сигнатуры:</strong>
+                  </Text>
+                </div>
+              </div>
               <Button style={{ marginTop: 20 }} onClick={() => setDocumentState({ ...documentState, showModal: !documentState.showModal })} type='primary'>Закрыть</Button>
             </Fragment>
             : <Fragment>
@@ -390,3 +447,7 @@ const SingleDocumentPage = props => {
 }
 
 export default SingleDocumentPage
+
+// {documentState.userData.map((item, index) => (
+//   <p key={index}>{item}</p>
+// ))}
