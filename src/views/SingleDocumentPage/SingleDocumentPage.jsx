@@ -373,8 +373,12 @@ const SingleDocumentPage = props => {
             ? <Fragment>
               <div className='modal-title'>
                 <Text strong>Просмотр ЭЦП, № {documentState.activeFileCert} из {documentState.fileCerts.length} </Text>
-                <Icon type='left' style={{ marginRight: '1rem', cursor: 'pointer' }} onClick={prevCert} />
-                <Icon type='right' style={{ cursor: 'pointer' }} onClick={nextCert} />
+                <div className='arr-wrapp' onClick={prevCert}>
+                  <Icon type='left' />
+                </div>
+                <div className='arr-wrapp'  onClick={nextCert}>
+                  <Icon type='right'/>
+                </div>
               </div>
               <div className='cert-modal'>
                 <div className='cert-modal__item'>

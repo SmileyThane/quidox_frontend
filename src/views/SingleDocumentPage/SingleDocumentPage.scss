@@ -146,6 +146,9 @@
   padding-bottom: 2rem;
   border-bottom: .1rem solid map-get($colors, gray);
   margin-bottom: 2rem;
+  display: flex;
+  align-content: center;
+  justify-content: flex-start;
 }
 .cert-modal {
 
@@ -168,5 +171,25 @@
   }
   .cert-item {
     margin-bottom: .5rem;
+  }
+}
+.arr-wrapp {
+  display: inline-block;
+  text-align: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: .4rem;
+  transition: .3s linear;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  &:first-of-type {
+    margin-left: 1rem;
+    margin-right: .5rem;
+  }
+  &:hover {
+    background: rgba(map-get($colors, blue), 0.2);
   }
 }
