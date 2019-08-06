@@ -125,7 +125,11 @@
 }
 
 //cert modal
-
+.modal-title {
+  padding-bottom: 2rem;
+  border-bottom: .1rem solid map-get($colors, gray);
+  margin-bottom: 2rem;
+}
 .cert-modal {
 
   .cert-modal__item {

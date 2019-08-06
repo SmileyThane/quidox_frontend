@@ -29,7 +29,9 @@ const defaultDocumentState = {
   base64files: '',
   certs: '',
   fileHashes: '',
-  fileData: ''
+  fileData: '',
+  fileCerts: [],
+  activeFileCert: 1
 }
 // eslint-disable-next-line spaced-comment
 const isIE = /*@cc_on!@*/false || !!document.documentMode
@@ -93,12 +95,15 @@ const SingleDocumentPage = props => {
     return arr
   }
 
-  const showUserData = (type, data = {}) => {
+  const showUserData = (type, dataArray = []) => {
+    console.log(dataArray)
+
     setDocumentState({
       ...documentState,
       showModal: !documentState.showModal,
       userData: data,
-      modalType: type
+      modalType: type,
+      fileCerts: dataArray
     })
   }
 
@@ -238,8 +243,27 @@ const SingleDocumentPage = props => {
     }
   }
 
+  const nextCert = () => {
+    if (documentState.activeFileCert >= documentState.fileCerts.length) {
+      return null
+    }
+    setDocumentState({
+      ...documentState,
+      activeFileCert: documentState.activeFileCert + 1
+    })
+  }
+  const prevCert = () => {
+    if (documentState.activeFileCert <= 1) {
+      return null
+    }
+    setDocumentState({
+      ...documentState,
+      activeFileCert: documentState.activeFileCert - 1
+    })
+  }
+
   const { Option } = Select
-  console.log(documentState.isVisible)
+  console.log(documentState.activeFileCert)
   return (
     <Fragment>
       <Spin spinning={isFetching}>
@@ -284,6 +308,7 @@ const SingleDocumentPage = props => {
                       <div className='single-document'>
                         <Icon style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }} type='eye' onClick={() => showModal(item)} />
                         <p style={{ marginRight: 10 }} className='single-document__name'>{item.name}</p>
+                        <Tag onClick={() => showUserData('ecp', item.users_companies)} style={{ cursor: 'pointer' }} color='#3278fb'>ЭЦП {item.users_companies.length}</Tag>
                         {item.users_companies.length ? item.users_companies.map((item, index) => (
                           <Fragment key={index}>
                             {item.is_verified
@@ -349,13 +374,18 @@ const SingleDocumentPage = props => {
       }
       {documentState.showModal &&
         <Modal
-          title={documentState.modalType === 'ecp' ? 'Данные ЭЦП' : 'Получатели'}
+          title={null}
           visible
           closable={false}
           footer={null}
         >
           {documentState.modalType === 'ecp'
             ? <Fragment>
+              <div className='modal-title'>
+                <Text strong>Просмотр ЭЦП, № {documentState.activeFileCert} из {documentState.fileCerts.length} </Text>
+                <Icon type='left' style={{ marginRight: '1rem', cursor: 'pointer' }} onClick={prevCert} />
+                <Icon type='right' style={{ cursor: 'pointer' }} onClick={nextCert} />
+              </div>
               <div className='cert-modal'>
                 <div className='cert-modal__item'>
                   <div className='cert-modal__item-left'>
