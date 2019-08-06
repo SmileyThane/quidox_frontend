@@ -28,14 +28,18 @@ const AntdTable = props => {
             ? <Fragment>
               {record.attached_to_users && record.attached_to_users.map(user => (
                 <Link to={`/documents/${record.id}`} key={user.id}>
-                  {user.user_company.user_email}<br />
-                  [{user.user_company.company_name}]
+                  <div>
+                    {user.user_company.user_email}<br />
+                    [{user.user_company.company_name}]
+                  </div>
                 </Link>
               ))}
             </Fragment>
             : <Link to={`/documents/${record.id}`}>
-              {record.author['user_email']}<br />
-              [{record.author['company_name']}]
+              <div>
+                {record.author['user_email']}<br />
+                [{record.author['company_name']}]
+              </div>
             </Link>
           }
         </Fragment>
@@ -43,12 +47,12 @@ const AntdTable = props => {
     {
       title: 'Тема',
       key: 'name',
-      render: record => <Link to={`/documents/${record.id}`}>{record.name}</Link>
+      render: record => <Link style={{ textTransform: 'uppercase' }} to={`/documents/${record.id}`}>{record.name}</Link>
     },
     {
       title: 'Кол-во приложенных документов',
       key: 'attachments',
-      render: record => <Link to={`/documents/${record.id}`} style={{ textAlign: 'center' }} >{record.attachments.length === 0 ? 'Нет вложенных документов' : record.attachments.length }</Link>
+      render: record => <Link to={`/documents/${record.id}`} style={{ textAlign: 'center' }} >{record.attachments.length === 0 ? 'Нет приложенных документов' : record.attachments.length }</Link>
     },
     {
       title: 'Дата',
