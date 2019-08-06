@@ -7,10 +7,12 @@
   margin: 0 auto;
 }
 .content {
-  border-radius: .2rem;
-  margin-bottom: 10rem;
   background-color: map-get($colors, white);
   border: .1rem solid map-get($colors, gray);
+
+  &.content_user {
+    padding: 2rem;
+  }
 
   &.content_padding {
     padding: 2rem 0;

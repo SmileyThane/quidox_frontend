@@ -92,7 +92,7 @@
 
   .ant-select-selection {
     height: auto;
-    padding-bottom: .7rem;
+    padding-bottom: .3rem;
   }
 }
 .ant-select-selection {
@@ -156,4 +156,7 @@ table {
 }
 .ant-table-thead > tr > th {
   text-align: center !important;
+}
+.ant-col {
+  margin-bottom: 1.5rem;
 }

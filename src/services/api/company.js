@@ -22,8 +22,17 @@ const createCompany = data => {
   })
 }
 
+const attachUnregisteredUserToCompany = data => {
+  return http({
+    url: '/user/attach',
+    method: 'POST',
+    data
+  })
+}
+
 export {
   getCompany,
   changeActiveCompanyById,
-  createCompany
+  createCompany,
+  attachUnregisteredUserToCompany
 }

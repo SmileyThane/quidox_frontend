@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react'
 
-import { Select, Spin, message, Row, Col } from 'antd'
+import { api } from '../../services'
+import { Select, Spin, message, Row, Col, Icon } from 'antd'
 import { Input, Button } from '../../components'
 import './UserInfoPage.scss'
 
@@ -10,6 +11,8 @@ const defaultUserState = {
   name: '',
   email: '',
   phone: '',
+  newUserEmail: '',
+  showInput: false,
   isEditMode: false
 }
 
@@ -68,10 +71,25 @@ const UserInfoPage = props => {
       })
     }
   }
-  console.log(data)
+
+  const sendInvite = () => {
+    api.company.attachUnregisteredUserToCompany({ email: userState.newUserEmail })
+      .then(({ data }) => {
+        if (data.success) {
+          message.success('Приглашение отправлено')
+          userState({ ...defaultUserState })
+        } else {
+          throw new Error(data.error)
+        }
+      })
+      .catch(error => {
+        message.error(error.message)
+      })
+  }
+  console.log(userState.newUserEmail)
   return (
     <Fragment>
-      <div className='content'>
+      <div className='content content_user'>
         <Spin spinning={isFetching} style={{ maxWidth: '50rem', margin: '0 auto' }}>
           <Row gutter={30}>
             <Col span={12}>
@@ -93,17 +111,35 @@ const UserInfoPage = props => {
                 value={!isNaN(userState.active_company_id) ? userState.active_company_id : ''}
                 disabled={!userState.isEditMode}
                 onChange={v => {
-                  console.log(v)
                   setUserState({ ...userState, active_company_id: v })
                 }}
               >
                 {companies && companies.map(i => <Option key={i.company_id} value={i.company_id}>{i.company_name}</Option>)}
               </Select>
             </Col>
+            {userState.showInput &&
+              <Col span={12}>
+                <p className='user-info-name'>Электронный адрес пользователя: </p>
+                <Input kind='text' onChange={e => updateField('newUserEmail', e.target.value)} />
+                <Button type='primary' style={{ marginTop: '1rem' }} onClick={() => sendInvite()}>
+                  <Icon type='plus' />
+                  Отправить приглашение
+                </Button>
+              </Col>
+            }
           </Row>
         </Spin>
       </div>
-      <Button style={{ marginTop: '5rem' }} type='primary' onClick={() => handleButtonClick()}>{userState.isEditMode ? 'Сохранить изменения' : 'Изменить данные'}</Button>
+      <div>
+        <Button style={{ marginTop: '2rem' }} type='primary' onClick={() => handleButtonClick()}>
+          <Icon type='edit' />
+          {userState.isEditMode ? 'Сохранить изменения' : 'Изменить данные'}
+        </Button>
+        <Button type='primary' style={{ marginLeft: '1rem' }} onClick={() => setUserState({ ...useState, showInput: true })}>
+          <Icon type='usergroup-add' />
+          Добавить пользователя в компанию
+        </Button>
+      </div>
     </Fragment>
   )
 }
