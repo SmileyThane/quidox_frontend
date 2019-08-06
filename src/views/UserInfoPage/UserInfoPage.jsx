@@ -125,6 +125,7 @@ const UserInfoPage = props => {
                   <Icon type='plus' />
                   Отправить приглашение
                 </Button>
+                <Button style={{ marginLeft: '1rem' }} ghost type='primary' onClick={() => setUserState({ ...userState, showInput: false })}>Отмена</Button>
               </Col>
             }
           </Row>
@@ -135,7 +136,7 @@ const UserInfoPage = props => {
           <Icon type='edit' />
           {userState.isEditMode ? 'Сохранить изменения' : 'Изменить данные'}
         </Button>
-        <Button type='primary' style={{ marginLeft: '1rem' }} onClick={() => setUserState({ ...useState, showInput: true })}>
+        <Button type='primary' style={{ marginLeft: '1rem' }} onClick={() => setUserState({ ...userState, showInput: true })}>
           <Icon type='usergroup-add' />
           Добавить пользователя в компанию
         </Button>
