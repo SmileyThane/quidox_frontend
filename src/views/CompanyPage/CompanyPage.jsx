@@ -129,9 +129,14 @@ const CopmanyPage = props => {
       your_position: companyState.yourPosition
     }
     createCompany(newCompanyData)
-      .then(() => {
-        setCompanyState({ ...defaultCompanyState })
-        message.success('Компания создана успешно!!')
+      .then(({ data }) => {
+        if (data.success) {
+          setCompanyState({ ...defaultCompanyState })
+          message.success('Компания создана успешно!!')
+        } else {
+          throw new Error(data.error)
+        }
+
       })
       .catch(error => {
         message.error(error.message)

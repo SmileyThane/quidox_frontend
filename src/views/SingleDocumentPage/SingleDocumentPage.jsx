@@ -61,6 +61,7 @@ const SingleDocumentPage = props => {
       }
     })
       .then(response => {
+        console.log(response)
         const blob = new window.Blob([response.data], { type: 'application/pdf' })
         const blobURL = window.URL.createObjectURL(blob)
         const fileType = response.headers['content-type'].split('/').pop()
@@ -190,7 +191,7 @@ const SingleDocumentPage = props => {
           'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
         }
       })
-        .then(() => {
+        .then((response) => {
           message.success('файл успешно подписан!')
           setDocumentState({ ...defaultDocumentState })
         })
@@ -209,28 +210,31 @@ const SingleDocumentPage = props => {
           'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
         }
       })
-        .then(response => {
-          console.log(response)
-          fileDownload(response.data, item.name)
-          message.success('Файл успешно загружен!')
+        .then(({ data }) => {
+          if (data) {
+            fileDownload(data, item.name)
+            message.success('Файл успешно загружен!')
+          }
         })
         .catch(error => {
           message.error(error.message)
         })
     } else {
       api.document.downloadDocument(item.id, withCert)
-        .then((response) => {
-          if (response.data) {
-            axios.get(response.data.data, {
+        .then(({ data }) => {
+          if (data) {
+            axios.get(data.data, {
               'responseType': 'arraybuffer',
               headers: {
                 'Authorization': 'Bearer ' + window.localStorage.getItem('authToken'),
                 'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
               }
             })
-              .then(response => {
-                fileDownload(response.data, `${generateHash({ length: 10 })}.zip`)
-                message.success('Архив успешно загружен!')
+              .then(({ data }) => {
+                if (data) {
+                  fileDownload(data, `${generateHash({ length: 10 })}.zip`)
+                  message.success('Архив успешно загружен!')
+                }
               })
               .catch(error => {
                 message.error(error.message)
@@ -271,7 +275,9 @@ const SingleDocumentPage = props => {
           <div className='document'>
             <div className='document__header'>
               <div className='document__header_left'>
-                <Icon className='document__icon' type='left-square' onClick={() => history.goBack()} />
+                <div className='back' onClick={() => history.goBack()} >
+                  <Icon type='left' />
+                </div>
                 <h2 className='document__title'>{data.name}</h2>
               </div>
               <div className='document__header_right'>
@@ -308,25 +314,9 @@ const SingleDocumentPage = props => {
                       <div className='single-document'>
                         <Icon style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }} type='eye' onClick={() => showModal(item)} />
                         <p style={{ marginRight: 10 }} className='single-document__name'>{item.name}</p>
-                        <Tag onClick={() => showUserData('ecp', item.users_companies)} style={{ cursor: 'pointer' }} color='#3278fb'>ЭЦП {item.users_companies.length}</Tag>
-                        {item.users_companies.length ? item.users_companies.map((item, index) => (
-                          <Fragment key={index}>
-                            {item.is_verified
-                              ? <Popover
-                                content={
-                                  <div>
-                                    <p style={{ fontSize: 10 }}>Дата подписи: {item.verification_date}</p>
-                                    <p style={{ fontSize: 10 }}>{splitting(item.verification_info)[0]}</p>
-                                  </div>
-                                }
-                              >
-                                <Tag onClick={() => showUserData('ecp', splitting(item.verification_info))} style={{ cursor: 'pointer' }} color='#3278fb'>ЭЦП</Tag>
-                              </Popover>
-                              : null
-                            }
-                          </Fragment>
-                        ))
-                          : null
+                        {item.users_companies.length
+                        ? <Tag onClick={() => showUserData('ecp', item.users_companies)} style={{ cursor: 'pointer' }} color='#3278fb'>ЭЦП {item.users_companies.length}</Tag>
+                        : ''
                         }
                       </div>
                     </List.Item>
@@ -478,6 +468,3 @@ const SingleDocumentPage = props => {
 
 export default SingleDocumentPage
 
-// {documentState.userData.map((item, index) => (
-//   <p key={index}>{item}</p>
-// ))}

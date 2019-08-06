@@ -3,15 +3,13 @@ import React, { useState, Fragment } from 'react'
 import _ from 'lodash'
 import { Link } from 'react-router-dom'
 import { getTimeStamp } from '../../helpers'
-import { Table, Icon, Popconfirm, AutoComplete, message, Typography } from 'antd'
+import { Table, Icon, Popconfirm, AutoComplete, message } from 'antd'
 import './Table.scss'
 
 const defaultTableState = {
   selectedRowKeys: [],
   searchText: ''
 }
-
-const { Text } = Typography
 
 const AntdTable = props => {
   const { activeCompany, getDocumentsWithParams, children, type, columnName = '', removeDocument, removeDocuments, ...rest } = props
@@ -85,13 +83,15 @@ const AntdTable = props => {
         ids: tableState.selectedRowKeys
       }
       removeDocuments(obj, type)
-        .then(() => {
+        .then(response => {
+          console.log(response)
           message.success('Документы удалены')
           setTableState({ ...defaultTableState })
         })
     } else {
       removeDocument(tableState.selectedRowKeys[0], type)
-        .then(() => {
+        .then(response => {
+          console.log(response)
           message.success('Документ удален')
           setTableState({ ...defaultTableState })
         })

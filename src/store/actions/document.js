@@ -31,27 +31,32 @@ const removeDocumentById = (id, type) => dispatch => {
   return api.document.removeDocumentById(id, type)
     .then(({ data }) => {
       if (data) {
+        console.log(type)
         switch (type) {
           case 'draft':
             dispatch({
               type: t.REMOVE_DRAFT_DOCUMENT_BY_ID_SUCCESS,
               payload: id
             })
+            break
           case 'out':
             dispatch({
               type: t.REMOVE_OUT_DOCUMENT_BY_ID_SUCCESS,
               payload: id
             })
+            break
           case 'unconfirmed':
             dispatch({
               type: t.REMOVE_INBOX_UNCONFIRMED_DOCUMENT_BY_ID_SUCCESS,
               payload: id
             })
+            break
           case 'confirmed':
             dispatch({
               type: t.REMOVE_INBOX_CONFIRMED_DOCUMENT_BY_ID_SUCCESS,
               payload: id
             })
+            break
           default:
         }
       }

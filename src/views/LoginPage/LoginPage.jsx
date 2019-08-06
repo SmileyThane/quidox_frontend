@@ -29,7 +29,6 @@ class LoginPage extends React.Component {
             }
           })
           .catch((error) => {
-            console.log(error.message)
             message.error('Пользователь не авторизован или не существует!')
           })
       }

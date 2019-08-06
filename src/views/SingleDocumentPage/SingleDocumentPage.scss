@@ -123,6 +123,23 @@
     margin: 0 auto;
   }
 }
+.back {
+  width: 4rem;
+  height: 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: .1rem solid map-get($colors, blue);
+  font-size: 2rem;
+  color: map-get($colors, blue);
+  transition: .3s linear;
+  cursor: pointer;
+  margin-right: 2rem;
+  &:hover {
+    background-color: rgba(map-get($colors, blue), .2);
+  }
+}
 
 //cert modal
 .modal-title {

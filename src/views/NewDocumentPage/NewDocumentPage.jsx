@@ -49,13 +49,8 @@ const NewDocumentPage = props => {
   }
 
   const removeFile = (index) => {
-    console.log(index)
-    console.log('ref input', inputNode.current.files)
     let arr = Array.from(inputNode.current.files)
-    console.log('before remove:', arr)
     delete inputNode.current.files[index]
-    console.log('after remove', arr)
-    console.log('mode after remove', inputNode.current.files)
     setDocumentState({
       ...documentState,
       files: documentState.files.filter((e, i) => i !== index),
@@ -91,42 +86,44 @@ const NewDocumentPage = props => {
       }
     })
       .then(({ data }) => {
-        message.success(`Документ ${documentState.name} успешно сохранен!`)
-        setDocumentState({
-          ...documentState,
-          fetching: false
-        })
-        if (documentState.fileHashes.filter(i => !!i).length) {
+        if (data.success) {
+          message.success(`Документ ${documentState.name} успешно сохранен!`)
           setDocumentState({
             ...documentState,
-            fetching: true
+            fetching: false
           })
-          const newData = {
-            documents: [
-              {
-                id: data.data.id,
-                attachments: documentState.fileHashes
-                  .map((item, i) => ({
-                    id: data.data.attachments[i].id,
-                    hash: item,
-                    data: documentState.fileData[i]
-                  }))
-              }
-            ]
-          }
-
-          return axios.post('https://api.quidox.by/api/documents/confirm', newData, {
-            headers: {
-              'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
-            }
-          })
-            .then(() => {
-              message.success(`файлы успешно подписаны!`)
-              setDocumentState({ ...defaultDocumentData })
-              return data
+          if (documentState.fileHashes.filter(i => !!i).length) {
+            setDocumentState({
+              ...documentState,
+              fetching: true
             })
+            const newData = {
+              documents: [
+                {
+                  id: data.data.id,
+                  attachments: documentState.fileHashes
+                    .map((item, i) => ({
+                      id: data.data.attachments[i].id,
+                      hash: item,
+                      data: documentState.fileData[i]
+                    }))
+                }
+              ]
+            }
+  
+            return axios.post('https://api.quidox.by/api/documents/confirm', newData, {
+              headers: {
+                'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
+              }
+            })
+              .then(() => {
+                message.success(`файлы успешно подписаны!`)
+                setDocumentState({ ...defaultDocumentData })
+                return data
+              })
+          }
+          return data
         }
-        return data
       })
       .catch(error => {
         message.error(error.message)
@@ -144,15 +141,15 @@ const NewDocumentPage = props => {
       return null
     }
     handleSendToDraft()
-      .then(({ data }) => {
-        console.log(data)
-        if (data) {
+      .then(response => {
+        if (response.success) {
           const docDataToUser = {
-            document_ids: [data.id],
+            document_ids: [response.data.id],
             user_company_id: documentState.value.map(i => i.key)
           }
           sendDocumentToUser(docDataToUser)
-            .then(() => {
+            .then(response => {
+              console.log(response)
               message.success('Сообщение успешно отправлено!')
               setDocumentState({ ...defaultDocumentData })
             })
@@ -160,6 +157,8 @@ const NewDocumentPage = props => {
               message.error(error.message)
               setDocumentState({ ...defaultDocumentData })
             })
+        } else {
+          throw new Error(response.error)
         }
       })
       .catch(error => {
@@ -175,18 +174,22 @@ const NewDocumentPage = props => {
       })
       findUsersByParams(v)
         .then(({ data }) => {
-          const dataIds = documentState.data.map(i => i.key)
-          const dataArray = data.data
-            .map(user => ({
-              label: `${user.user_data.email} (УНП:${user.company_data.company_number}; Компания:${user.company_data.name})`,
-              key: `${user.id}`
-            }))
-            .filter(i => !dataIds.includes(i.key))
-          setDocumentState({
-            ...documentState,
-            data: [...documentState.data, ...dataArray],
-            fetching: false
-          })
+          if (data.success) {
+            const dataIds = documentState.data.map(i => i.key)
+            const dataArray = data.data
+              .map(user => ({
+                label: `${user.user_data.email} (УНП:${user.company_data.company_number}; Компания:${user.company_data.name})`,
+                key: `${user.id}`
+              }))
+              .filter(i => !dataIds.includes(i.key))
+            setDocumentState({
+              ...documentState,
+              data: [...documentState.data, ...dataArray],
+              fetching: false
+            })
+          } else {
+            throw new Error(data.error)
+          }
         })
         .catch(error => {
           message.error(error.message)

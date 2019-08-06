@@ -58,8 +58,12 @@ const UserInfoPage = props => {
         isEditMode: !userState.isEditMode
       })
       updateUser(userState)
-        .then(() => {
-          message.success('Данные успешно обновлены')
+        .then(({ data }) => {
+          if (data.success) {
+            message.success('Данные успешно обновлены')
+          } else {
+            throw new Error(data.error)
+          }
         })
         .catch(error => {
           message.error(error.message)
@@ -86,7 +90,6 @@ const UserInfoPage = props => {
         message.error(error.message)
       })
   }
-  console.log(userState.newUserEmail)
   return (
     <Fragment>
       <div className='content content_user'>

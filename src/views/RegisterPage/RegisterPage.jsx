@@ -95,6 +95,8 @@ class RegistrationForm extends React.Component {
                     this.getOneMinuteTimer()
                     this.inputNode.current.focus()
                   }, 350)
+                } else {
+                  throw new Error(data.error)
                 }
               })
               .catch(function (error) {
@@ -130,7 +132,7 @@ class RegistrationForm extends React.Component {
                   throw new Error(data.error)
                 }
               })
-              .catch(function (error) {
+              .catch(error => {
                 message.error(error.message)
               })
             break
