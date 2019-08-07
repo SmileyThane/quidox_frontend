@@ -146,7 +146,7 @@ const UserInfoPage = props => {
                   })(
                     <Input
                       prefix={<Icon type='user' style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      placeholder='Электронный адрес пользвоателя'
+                      placeholder='Электронный адрес пользователя'
                       onChange={e => updateField('newUserEmail', e.target.value)}
                     />
                   )}
