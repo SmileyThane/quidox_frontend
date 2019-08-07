@@ -63,14 +63,14 @@ const AntMenu = props => {
         >
           <MenuItem
             heading='Подписанные'
-            url='/sent-messages'
-            key='/sent-messages'
+            url='/out-confirmed-documents'
+            key='/out-confirmed-documents'
             icon='file-protect'
           />
           <MenuItem
             heading='Не подписанные'
-            url=''
-            key=''
+            url='/out-unconfirmed-documents'
+            key='/out-unconfirmed-documents'
             icon='exception'
           />
         </Menu.ItemGroup>

@@ -84,21 +84,41 @@ const getInboxСonfirmedDocumentsByActiveCompanyId = (id, params) => dipsatch =>
     })
 }
 
-const getOutDocumentsByActiveCompanyId = (id, params) => dispatch => {
-  dispatch({
-    type: t.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+const getOutСonfirmedDocumentsByActiveCompanyId = (id, params) => dipsatch => {
+  dipsatch({
+    type: t.GET_OUT_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
     payload: true
   })
-  return api.documents.getOutDocumentsByActiveCompanyId(id, params)
+  return api.documents.getOutConfirmedDocumentsByActiveCompanyId(id, params)
     .then(({ data }) => {
       if (data) {
-        dispatch({
-          type: t.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
+        dipsatch({
+          type: t.GET_OUT_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
           payload: data
         })
       }
-      dispatch({
-        type: t.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+      dipsatch({
+        type: t.GET_OUT_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+        payload: false
+      })
+    })
+}
+
+const getOutUnconfirmedDocumentsByActiveCompanyId = (id, params) => dipsatch => {
+  dipsatch({
+    type: t.GET_OUT_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+    payload: true
+  })
+  return api.documents.getOutUnconfirmedDocumentsByActiveCompanyId(id, params)
+    .then(({ data }) => {
+      if (data) {
+        dipsatch({
+          type: t.GET_OUT_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
+          payload: data
+        })
+      }
+      dipsatch({
+        type: t.GET_OUT_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
         payload: false
       })
     })
@@ -139,9 +159,15 @@ const removeDocumentsByIds = (ids, type) => dispatch => {
               payload: ids
             })
             break
-          case 'out':
+          case 'out-confirmed':
             dispatch({
-              type: t.REMOVE_OUT_DOCUMENTS_BY_IDS_SUCCESS,
+              type: t.REMOVE_OUT_CONFIRMED_DOCUMENTS_BY_IDS_SUCCESS,
+              payload: ids
+            })
+            break
+            case 'out-unconfirmed':
+            dispatch({
+              type: t.REMOVE_OUT_UNCONFIRMED_DOCUMENTS_BY_IDS_SUCCESS,
               payload: ids
             })
             break
@@ -172,7 +198,8 @@ export {
   sendDocumentToUser,
   getInboxUnconfirmedDocumentsByActiveCompanyId,
   getInboxСonfirmedDocumentsByActiveCompanyId,
-  getOutDocumentsByActiveCompanyId,
+  getOutСonfirmedDocumentsByActiveCompanyId,
+  getOutUnconfirmedDocumentsByActiveCompanyId,
   getDraftDocumentsByActiveCompany,
   removeDocumentsByIds
 }

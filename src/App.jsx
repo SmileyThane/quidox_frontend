@@ -17,7 +17,8 @@ import {
   CompanyPage,
   ConfirmMessagesPages,
   UnconfirmedMessagesPage,
-  SentMessagesPage
+  OutConfirmedDocumentsPage,
+  OutUnconfirmedDocumentsPage
 } from './views'
 
 function App () {
@@ -31,7 +32,8 @@ function App () {
           <PrivateRoute path='/company' component={CompanyPage} />
           <PrivateRoute path='/confirm-messages' component={ConfirmMessagesPages} />
           <PrivateRoute path='/unconfirmed-messages' component={UnconfirmedMessagesPage} />
-          <PrivateRoute path='/sent-messages' component={SentMessagesPage} />
+          <PrivateRoute path='/out-confirmed-documents' component={OutConfirmedDocumentsPage} />
+          <PrivateRoute path='/out-unconfirmed-documents' component={OutUnconfirmedDocumentsPage} />
           <PrivateRoute path='/drafts' component={DraftsPage} />
           <PrivateRoute path='/user-me' component={UserInfoPage} />
 

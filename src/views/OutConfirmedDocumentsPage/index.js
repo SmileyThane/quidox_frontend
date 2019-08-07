@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import actions from '../../store/actions'
-import SentMessagesPage from './SentMessagesPage'
+import OutConfirmedDocumentsPage from './OutConfirmedDocumentsPage'
 
 const mapStateToProps = state => ({
   user: state.user,
@@ -8,7 +8,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getOutDocumentsByActiveCompanyId: (id, params) => dispatch(actions.documents.getOutDocumentsByActiveCompanyId(id, params)),
+  getOutСonfirmedDocumentsByActiveCompanyId: (id, params) => dispatch(actions.documents.getOutСonfirmedDocumentsByActiveCompanyId(id, params)),
   removeDocumentById: (id, type) => dispatch(actions.document.removeDocumentById(id, type)),
   removeDocumentsByIds: (ids, type) => dispatch(actions.documents.removeDocumentsByIds(ids, type))
 })
@@ -16,4 +16,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SentMessagesPage)
+)(OutConfirmedDocumentsPage)

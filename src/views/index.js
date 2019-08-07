@@ -8,7 +8,8 @@ import DraftsPage from './DraftsPage'
 import CompanyPage from './CompanyPage'
 import ConfirmMessagesPages from './ConfirmMessagesPages'
 import UnconfirmedMessagesPage from './UnconfirmedMessagesPage'
-import SentMessagesPage from './SentMessagesPage'
+import OutConfirmedDocumentsPage from './OutConfirmedDocumentsPage'
+import OutUnconfirmedDocumentsPage from './OutUnconfirmedDocumentsPage'
 import ResetPasswordPage from './ResetPasswordPage'
 
 export {
@@ -23,5 +24,6 @@ export {
   CompanyPage,
   ConfirmMessagesPages,
   UnconfirmedMessagesPage,
-  SentMessagesPage
+  OutConfirmedDocumentsPage,
+  OutUnconfirmedDocumentsPage
 }

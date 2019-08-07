@@ -2,37 +2,37 @@ import React, { useEffect } from 'react'
 
 import { Table } from '../../components'
 
-const SentMessagesPage = props => {
+const OutUnconfirmedDocumentsPage = props => {
   const {
     user: { data },
     documents: { isFetching, outDocumentsList },
-    getOutDocumentsByActiveCompanyId,
+    getOutUnconfirmedDocumentsByActiveCompanyId,
     removeDocumentById,
     removeDocumentsByIds
   } = props
 
   useEffect(() => {
     if (data) {
-      getOutDocumentsByActiveCompanyId(data.active_company_id)
+      getOutUnconfirmedDocumentsByActiveCompanyId(data.active_company_id)
     }
-  }, [data, getOutDocumentsByActiveCompanyId])
+  }, [data, getOutUnconfirmedDocumentsByActiveCompanyId])
 
   return (
     <div className='content'>
       <Table
         rowKey='id'
-        dataSource={outDocumentsList && outDocumentsList}
+        dataSource={outDocumentsList && outDocumentsList.outUnconfirmedDocuments}
         loading={isFetching}
         className='document-table'
         removeDocument={removeDocumentById}
         removeDocuments={removeDocumentsByIds}
-        getDocumentsWithParams={getOutDocumentsByActiveCompanyId}
+        getDocumentsWithParams={getOutUnconfirmedDocumentsByActiveCompanyId}
         activeCompany={data.active_company_id}
-        type='out'
+        type='out-unconfirmed'
         columnName='Получатель'
       />
     </div>
   )
 }
 
-export default SentMessagesPage
+export default OutUnconfirmedDocumentsPage

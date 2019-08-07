@@ -1,17 +1,22 @@
 import * as t from '../types'
 
 const initialState = {
-  outDocumentsList: [],
   draftDocumentsList: [],
   inboxDocuments: {
     inboxConfirmedDocuments: [],
     inboxUnconfirmedDocuments: []
+  },
+  outDocumentsList: {
+    outConfirmedDocuments: [],
+    outUnconfirmedDocuments: []
   },
   isFetching: false
 }
 
 export default (state = initialState, action) => {
   switch (action.type) {
+
+    // Create document
     case t.CREATE_DOCUMENT_FETHCING:
       return {
         ...state,
@@ -22,6 +27,8 @@ export default (state = initialState, action) => {
         ...state,
         isFetching: action.payload
       }
+
+    // Inbox unconfirmed documents
     case t.GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:
       return {
         ...state,
@@ -35,6 +42,8 @@ export default (state = initialState, action) => {
           inboxUnconfirmedDocuments: action.payload.data
         }
       }
+
+    // Inbox confirmed documents
     case t.GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:
       return {
         ...state,
@@ -48,16 +57,38 @@ export default (state = initialState, action) => {
           inboxConfirmedDocuments: action.payload.data
         }
       }
-    case t.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:
+
+    // Out confirmed documents
+    case t.GET_OUT_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:
       return {
         ...state,
         isFetching: action.payload
       }
-    case t.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
+    case t.GET_OUT_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
       return {
         ...state,
-        outDocumentsList: action.payload.data
+        outDocumentsList: {
+          ...state.outDocumentsList,
+          outConfirmedDocuments: action.payload.data
+        }
       }
+    
+    // Out unconfirmed documents
+    case t.GET_OUT_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:
+      return {
+        ...state,
+        isFetching: action.payload
+      }
+    case t.GET_OUT_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
+      return {
+        ...state,
+        outDocumentsList: {
+          ...state.outDocumentsList,
+          outUnconfirmedDocuments: action.payload.data
+        }
+      }
+
+    // draft documents
     case t.GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:
       return {
         ...state,
@@ -68,6 +99,8 @@ export default (state = initialState, action) => {
         ...state,
         draftDocumentsList: action.payload.data
       }
+
+    // remove documents
     case t.REMOVE_DOCUMENT_BY_ID_FETCHING:
       return {
         ...state,
@@ -95,11 +128,24 @@ export default (state = initialState, action) => {
         }
       }
     }
-    case t.REMOVE_OUT_DOCUMENT_BY_ID_SUCCESS:
+    case t.REMOVE_OUT_CONFIRMED_DOCUMENT_BY_ID_SUCCESS: {
       return {
         ...state,
-        outDocumentsList: state.outDocumentsList.filter(i => i.id !== action.payload)
+        outDocumentsList: {
+          ...state.outDocumentsList,
+          outConfirmedDocuments: state.outDocumentsList.outConfirmedDocuments.filter(i => i.id !== action.payload)
+        }
       }
+    }
+    case t.REMOVE_OUT_UNCONFIRMED_DOCUMENT_BY_ID_SUCCESS: {
+      return {
+        ...state,
+        outDocumentsList: {
+          ...state.outDocumentsList,
+          outUnconfirmedDocuments: state.outDocumentsList.outUnconfirmedDocuments.filter(i => i.id !== action.payload)
+        }
+      }
+    }
     case t.REMOVE_DOCUMENTS_BY_IDS_FETCHING:
       return {
         ...state,
@@ -109,12 +155,6 @@ export default (state = initialState, action) => {
       return {
         ...state,
         draftDocumentsList: state.draftDocumentsList.filter(i => action.payload.ids.indexOf(i.id) === -1)
-      }
-    case t.REMOVE_OUT_DOCUMENTS_BY_IDS_SUCCESS:
-      return {
-        ...state,
-        outDocumentsList: state.outDocumentsList.filter(i => action.payload.ids.indexOf(i.id) === -1)
-
       }
     case t.REMOVE_INBOX_UNCONFIRMED_DOCUMENTS_BY_IDS_SUCCESS: {
       return {
@@ -131,6 +171,24 @@ export default (state = initialState, action) => {
         inboxDocuments: {
           ...state.inboxDocuments,
           inboxConfirmedDocuments: state.inboxDocuments.inboxConfirmedDocuments.filter(i => action.payload.ids.indexOf(i.id) === -1)
+        }
+      }
+    }
+    case t.REMOVE_OUT_CONFIRMED_DOCUMENTS_BY_IDS_SUCCESS: {
+      return {
+        ...state,
+        outDocumentsList: {
+          ...state.outDocumentsList,
+          outConfirmedDocuments: state.outDocumentsList.outConfirmedDocuments.filter(i => action.payload.ids.indexOf(i.id) === -1)
+        }
+      }
+    }
+    case t.REMOVE_OUT_UNCONFIRMED_DOCUMENTS_BY_IDS_SUCCESS: {
+      return {
+        ...state,
+        outDocumentsList: {
+          ...state.outDocumentsList,
+          outUnconfirmedDocuments: state.outDocumentsList.outUnconfirmedDocuments.filter(i => action.payload.ids.indexOf(i.id) === -1)
         }
       }
     }

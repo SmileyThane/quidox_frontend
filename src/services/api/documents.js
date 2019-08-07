@@ -32,9 +32,17 @@ const getInboxСonfirmedDocumentsByActiveCompanyId = (id, params) => {
   })
 }
 
-const getOutDocumentsByActiveCompanyId = (id, params) => {
+const getOutConfirmedDocumentsByActiveCompanyId = (id, params) => {
   return http({
-    url: `/documents/out/${id}`,
+    url: `documents/out/1/${id}`,
+    method: 'GET',
+    params
+  })
+}
+
+const getOutUnconfirmedDocumentsByActiveCompanyId = (id, params) => {
+  return http({
+    url: `documents/out/0/${id}`,
     method: 'GET',
     params
   })
@@ -61,7 +69,8 @@ export {
   sendDocumentToUser,
   getInboxUnconfirmedDocumentsByActiveCompanyId,
   getInboxСonfirmedDocumentsByActiveCompanyId,
-  getOutDocumentsByActiveCompanyId,
+  getOutConfirmedDocumentsByActiveCompanyId,
+  getOutUnconfirmedDocumentsByActiveCompanyId,
   getDraftDocumentsByActiveCompany,
   removeDocumentsByIds
 }
