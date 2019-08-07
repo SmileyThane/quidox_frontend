@@ -2038,6 +2038,11 @@ async-limiter@~1.0.0:
   resolved "https://registry.yarnpkg.com/async-limiter/-/async-limiter-1.0.0.tgz#78faed8c3d074ab81f22b4e985d79e8738f720f8"
   integrity sha512-jp/uFnooOiO+L211eZOoSyzpOITMXx1rBITauYykG3BRYPu8h0UcxsPNB04RR5vo4Tyz3+ay17tR6JVf9qzYWg==
 
+async-validator@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/async-validator/-/async-validator-2.0.1.tgz#2ab03b1062b5bc727de9229aeeba4dc43f36de24"
+  integrity sha512-sQkJ7Vjgvu9pGCRtDw9CIPuMFstOPtMiMoHqDI3m5xUQhHnHrn/YPBp583IYUaLZi9jW8icGjLlodH0BHSkzeg==
+
 async-validator@~1.8.5:
   version "1.8.5"
   resolved "https://registry.yarnpkg.com/async-validator/-/async-validator-1.8.5.tgz#dc3e08ec1fd0dddb67e60842f02c0cd1cec6d7f0"
@@ -9277,6 +9282,13 @@ rc-editor-mention@^1.1.7:
     prop-types "^15.5.8"
     rc-animate "^2.3.0"
     rc-editor-core "~0.8.3"
+
+rc-form-hooks@^0.0.1-alpha.14:
+  version "0.0.1-alpha.14"
+  resolved "https://registry.yarnpkg.com/rc-form-hooks/-/rc-form-hooks-0.0.1-alpha.14.tgz#cfa0125dfba8acfa0458327bededaee38d216802"
+  integrity sha512-UctsrM6jcYxNTErYgue1SwHWKEPAYRUn2LC2bxIMrbIZuRoeLQBv+FKZbeNTkZDKNSYu0dQ1tDpcldytEezd6Q==
+  dependencies:
+    async-validator "^2.0.1"
 
 rc-form@^2.4.0:
   version "2.4.5"

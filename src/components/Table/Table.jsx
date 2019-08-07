@@ -82,13 +82,14 @@ const AntdTable = props => {
       const obj = {
         ids: tableState.selectedRowKeys
       }
+      console.log('documents')
       removeDocuments(obj, type)
-        .then(response => {
-          console.log(response)
+        .then(() => {
           message.success('Документы удалены')
           setTableState({ ...defaultTableState })
         })
     } else {
+      console.log('document')
       removeDocument(tableState.selectedRowKeys[0], type)
         .then(response => {
           console.log(response)

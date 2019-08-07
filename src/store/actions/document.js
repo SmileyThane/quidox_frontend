@@ -31,7 +31,6 @@ const removeDocumentById = (id, type) => dispatch => {
   return api.document.removeDocumentById(id, type)
     .then(({ data }) => {
       if (data) {
-        console.log(type)
         switch (type) {
           case 'draft':
             dispatch({
