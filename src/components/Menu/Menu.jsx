@@ -8,7 +8,7 @@ import { Button } from '../'
 import { MenuItem } from './internal'
 import './Menu.scss'
 
-const countMessages = 1
+const countMessages = 0
 
 const AntMenu = props => {
   return (
@@ -34,7 +34,7 @@ const AntMenu = props => {
             <span>
               {countMessages && countMessages > 0
                 ? <Badge className='badge' count={countMessages} />
-                : <Icon type='inbox' />
+                : <Icon type='export' />
               }
               <span>Входящие</span>
             </span>
@@ -53,12 +53,27 @@ const AntMenu = props => {
             icon='exception'
           />
         </Menu.ItemGroup>
-        <MenuItem
-          heading='Отправленные'
-          url='/sent-messages'
-          key='/sent-messages'
-          icon='file-done'
-        />
+        <Menu.ItemGroup
+          title={
+            <span>
+              <Icon type='import' />
+              Отправленные
+            </span>
+          }
+        >
+          <MenuItem
+            heading='Подписанные'
+            url='/sent-messages'
+            key='/sent-messages'
+            icon='file-protect'
+          />
+          <MenuItem
+            heading='Не подписанные'
+            url=''
+            key=''
+            icon='exception'
+          />
+        </Menu.ItemGroup>
         <MenuItem
           heading=' Черновики'
           url='/drafts'
@@ -70,6 +85,12 @@ const AntMenu = props => {
           url='/company'
           key='/company'
           icon='desktop'
+        />
+        <MenuItem
+          heading='Панель администратора'
+          url=''
+          key=''
+          icon='setting'
         />
       </Menu>
     </Fragment>

@@ -160,3 +160,12 @@ table {
 .ant-col {
   margin-bottom: 1.5rem;
 }
+
+.ant-menu-item-group-title > span {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center !important;
+  i {
+    margin-right: 1rem;
+  }
+}

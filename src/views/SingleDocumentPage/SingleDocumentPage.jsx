@@ -326,12 +326,12 @@ const SingleDocumentPage = props => {
             </div>
             <div className='document__actions'>
               <div className='document__actions__left'>
-                <Button style={{ marginRight: 15 }} ghost type='primary' onClick={() => downloadDocumentContent(data, false)}>
-                  <Icon type='download' />
+                <Button style={{ marginRight: 15 }} type='primary' onClick={() => downloadDocumentContent(data, false)}>
+                  <Icon type='file-zip' />
                   Скачать всё
                 </Button>
-                <Button ghost type='primary' onClick={() => downloadDocumentContent(data, true)}>
-                  <Icon type='download' />
+                <Button type='primary' onClick={() => downloadDocumentContent(data, true)}>
+                  <Icon type='file-zip' />
                   Скачать всё с сигнатурами
                 </Button>
               </div>
