@@ -11,7 +11,6 @@ import './Menu.scss'
 const countMessages = 0
 
 const AntMenu = props => {
-  console.log(props.location.pathname);
   return (
     <Fragment>
       <Button
@@ -55,6 +54,7 @@ const AntMenu = props => {
           />
         </Menu.ItemGroup>
         <Menu.ItemGroup
+          key='sub2'
           title={
             <span>
               <Icon type='folder' />
@@ -90,35 +90,35 @@ const AntMenu = props => {
         <MenuItem
           heading='Панель администратора'
           url=''
-          key='disabled-1'
+          key={1}
           icon='setting'
           disabled
         />
         <MenuItem
           heading='Корзина'
           url=''
-          key='disabled-2'
+          key={2}
           icon='delete'
           disabled
         />
         <MenuItem
           heading='Защищенный архив'
           url=''
-          key='disabled-3'
+          key={3}
           icon='file-zip'
           disabled
         />
         <MenuItem
           heading='Интеграция (1С, CRM...)'
           url=''
-          key='disabled-4'
+          key={4}
           icon='code'
           disabled
         />
         <MenuItem
           heading='Папки пользователя'
           url=''
-          key='disabled-5'
+          key={5}
           icon='folder'
           disabled
         />

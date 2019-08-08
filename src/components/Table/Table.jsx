@@ -3,13 +3,15 @@ import React, { useState, Fragment } from 'react'
 import _ from 'lodash'
 import { Link } from 'react-router-dom'
 import { getTimeStamp } from '../../helpers'
-import { Table, Icon, Popconfirm, AutoComplete, message } from 'antd'
+import { Table, Icon, Popconfirm, AutoComplete, message, Typography } from 'antd'
 import './Table.scss'
 
 const defaultTableState = {
   selectedRowKeys: [],
   searchText: ''
 }
+
+const { Text } = Typography
 
 const AntdTable = props => {
   const { activeCompany, getDocumentsWithParams, children, type, columnName = '', removeDocument, removeDocuments, ...rest } = props
@@ -26,7 +28,7 @@ const AntdTable = props => {
             ? <Fragment>
               {record.attached_to_users && record.attached_to_users.map(user => (
                 <Link to={`/documents/${record.id}`} key={user.id}>
-                  <div>
+                  <div style={{ padding: '.5rem 0' }}>
                     {user.user_company.user_email}<br />
                     [{user.user_company.company_name}]
                   </div>
@@ -48,7 +50,7 @@ const AntdTable = props => {
       render: record => <Link style={{ textTransform: 'uppercase' }} to={`/documents/${record.id}`}>{record.name}</Link>
     },
     {
-      title: 'Кол-во приложенных документов',
+      title: 'Кол-во документов',
       key: 'attachments',
       render: record => <Link to={`/documents/${record.id}`} style={{ textAlign: 'center' }} >{record.attachments.length === 0 ? 'Нет приложенных документов' : record.attachments.length }</Link>
     },
@@ -136,6 +138,17 @@ const AntdTable = props => {
             </div>
             <div className='table-header__search'>
               <AutoComplete onSearch={_.debounce(handleSearch, 500)} placeholder='Введите дату, отправителя, тему...' />
+            </div>
+          </div>
+        )}
+      footer={() =>
+        (
+          <div className='table__footer table-footer'>
+            <div className='table-footer__item'>
+              <Text>Отмечено: {tableState.selectedRowKeys.length}</Text>
+            </div>
+            <div className='table-footer__item'>
+              <Text>Всего: {tableState.selectedRowKeys.length}</Text>
             </div>
           </div>
         )}

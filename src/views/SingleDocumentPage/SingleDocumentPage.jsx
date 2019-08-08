@@ -36,6 +36,8 @@ const defaultDocumentState = {
 // eslint-disable-next-line spaced-comment
 const isIE = /*@cc_on!@*/false || !!document.documentMode
 
+const { Option } = Select
+
 const SingleDocumentPage = props => {
   const {
     document: { isFetching, data },
@@ -85,9 +87,7 @@ const SingleDocumentPage = props => {
     })
   }
 
-
   const showUserData = (type, dataArray = []) => {
-
     setDocumentState({
       ...documentState,
       showModal: !documentState.showModal,
@@ -200,6 +200,7 @@ const SingleDocumentPage = props => {
         }
       })
         .then(({ data }) => {
+          console.log(data)
           if (data) {
             fileDownload(data, item.name)
             message.success('Файл успешно загружен!')
@@ -211,7 +212,8 @@ const SingleDocumentPage = props => {
     } else {
       api.document.downloadDocument(item.id, withCert)
         .then(({ data }) => {
-          if (data) {
+          console.log(data)
+          if (data.success) {
             axios.get(data.data, {
               'responseType': 'arraybuffer',
               headers: {
@@ -228,6 +230,8 @@ const SingleDocumentPage = props => {
               .catch(error => {
                 message.error(error.message)
               })
+          } else {
+            throw new Error(data.error)
           }
         })
         .catch(error => {
@@ -254,9 +258,7 @@ const SingleDocumentPage = props => {
       activeFileCert: documentState.activeFileCert - 1
     })
   }
-
-  const { Option } = Select
-  console.log(documentState.activeFileCert)
+  console.log(data)
   return (
     <Fragment>
       <Spin spinning={isFetching}>
@@ -275,6 +277,10 @@ const SingleDocumentPage = props => {
             </div>
             <div className='document__content'>
               <div className='document__info info'>
+                <div className='info__item'>
+                  <div className='info__title'>Получатели</div>
+                  <div className='info__content'>{data.author && data.author.company_name}</div>
+                </div>
                 <div className='info__item'>
                   <div className='info__title'>Отправители</div>
                   <div className='info__content'>{data.author && data.author.company_name}</div>
@@ -313,24 +319,33 @@ const SingleDocumentPage = props => {
                 />
               </div>
             </div>
-            <div className='document__actions'>
-              <div className='document__actions__left'>
-                <Button style={{ marginRight: 15 }} type='primary' onClick={() => downloadDocumentContent(data, false)}>
-                  <Icon type='file-zip' />
-                  Скачать всё
-                </Button>
-                <Button type='primary' onClick={() => downloadDocumentContent(data, true)}>
-                  <Icon type='file-zip' />
-                  Скачать всё с сигнатурами
-                </Button>
-              </div>
-              <div className='document__actions__right'>
-                <Button onClick={() => showUserData('send')} type='primary'>
-                  <Icon type='redo' />
-                  Перенаправить
-                </Button>
-              </div>
-            </div>
+            { (data && data.attachments) &&
+              <Fragment>
+                <div className='document__actions'>
+                  <div className='document__actions__left'>
+                    {data.attachments.length
+                      ? <Fragment>
+                        <Button style={{ marginRight: 15 }} type='primary' onClick={() => downloadDocumentContent(data, false)}>
+                          <Icon type='file-zip' />
+                            Скачать всё
+                        </Button>
+                        <Button type='primary' onClick={() => downloadDocumentContent(data, true)}>
+                          <Icon type='file-zip' />
+                            Скачать всё с сигнатурами
+                        </Button>
+                      </Fragment>
+                      : ''
+                    }
+                  </div>
+                  <div className='document__actions__right'>
+                    <Button onClick={() => showUserData('send')} type='primary'>
+                      <Icon type='redo' />
+                        Перенаправить
+                    </Button>
+                  </div>
+                </div>
+              </Fragment>
+            }
           </div>
         </div>
       </Spin>

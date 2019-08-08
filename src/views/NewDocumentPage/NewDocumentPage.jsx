@@ -1,9 +1,17 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, Fragment } from 'react'
 
 import axios from 'axios'
 import _ from 'lodash'
 import { findUsersByParams } from '../../services/api/user'
-import { message, Icon, Select, Spin, Tag, Upload } from 'antd'
+import {
+  message,
+  Icon,
+  Select,
+  Spin,
+  Tag,
+  Typography,
+  Checkbox
+} from 'antd'
 import { Input, Button } from '../../components'
 import './NewDocumentPage.scss'
 
@@ -23,6 +31,10 @@ const defaultDocumentData = {
 }
 // eslint-disable-next-line spaced-comment
 const isIE = /*@cc_on!@*/false || !!document.documentMode
+
+const { Option } = Select
+const { Text } = Typography
+
 const NewDocumentPage = props => {
   const inputNode = useRef(null)
   const {
@@ -110,7 +122,7 @@ const NewDocumentPage = props => {
                 }
               ]
             }
-  
+
             return axios.post('https://api.quidox.by/api/documents/confirm', newData, {
               headers: {
                 'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
@@ -205,7 +217,6 @@ const NewDocumentPage = props => {
     })
   }
 
-  const { Option } = Select
   const verifyFile = index => {
     const reader = new window.FileReader()
     reader.readAsDataURL(documentState.files[index])
@@ -244,87 +255,97 @@ const NewDocumentPage = props => {
       message.error(error.message)
     }
   }
-  
+
   return (
-    <div className='content content_padding'>
-      <Spin spinning={!!documentState.fetching}>
-        <div className='input-group'>
-          <label className='label'>Получатели</label>
-          <Select
-            mode='tags'
-            labelInValue
-            tokenSeparators={[',']}
-            value={documentState.value}
-            filterOption={false}
-            notFoundContent={documentState.fetching ? <Spin size='small' /> : null}
-            onSearch={fetchUser}
-            onChange={handleSelect}
-            style={{ width: '100%' }}
-          >
-            {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
-          </Select>
-        </div>
-        <div className='input-group'>
-          <label className='label'>Тема</label>
-          <Input kind='text' type='text' value={documentState.name} onChange={e => updateField('name', e.target.value)} />
-        </div>
-        <div className='input-group'>
-          <label className='label'>Комментарий</label>
-          <Input kind='textarea' type='text' value={documentState.description} onChange={e => updateField('description', e.target.value)} />
-        </div>
-        <div className='buttons-group'>
-          <input type='file' id='upload' hidden multiple onChange={event => getFiles(event)} ref={inputNode} />
-          <label className='label-btn' htmlFor='upload'>
-            <Icon type='upload' style={{ marginRight: 10 }} />
+    <Fragment>
+      <div className='content content_padding' style={{ marginBottom: '2rem' }}>
+        <Spin spinning={!!documentState.fetching}>
+          <div className='input-group'>
+            <label className='label'>Получатели</label>
+            <Select
+              mode='tags'
+              labelInValue
+              tokenSeparators={[',']}
+              value={documentState.value}
+              filterOption={false}
+              notFoundContent={documentState.fetching ? <Spin size='small' /> : null}
+              onSearch={fetchUser}
+              onChange={handleSelect}
+              style={{ width: '100%' }}
+            >
+              {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
+            </Select>
+          </div>
+          <div className='input-group'>
+            <label className='label'>Тема</label>
+            <Input kind='text' type='text' value={documentState.name} onChange={e => updateField('name', e.target.value)} />
+          </div>
+          <div className='input-group'>
+            <label className='label'>Комментарий</label>
+            <Input kind='textarea' type='text' value={documentState.description} onChange={e => updateField('description', e.target.value)} />
+          </div>
+          <div className='buttons-group'>
+            <input type='file' id='upload' hidden multiple onChange={event => getFiles(event)} ref={inputNode} />
+            <label className='label-btn' htmlFor='upload'>
+              <Icon type='upload' style={{ marginRight: 10 }} />
             Прикрепить файл(ы)
-          </label>
-        </div>
-        <div className='files-group'>
-          <ul className='attached-files'>
-            {documentState.files && documentState.files.map((e, i) => (
-              <li className='attached-file' key={e.name}>
-                <span className='attached-file__count'>{i + 1}</span>
-                <p className='attached-file__name'>{e.name}</p>
-                { documentState.fileHashes[i] && <Tag color='#3278fb'>ЭЦП</Tag> }
-                <div className='attached-file__actions'>
-                  {isIE &&
-                  <Icon onClick={() => verifyFile(i)} style={{ color: '#3278fb' }} type='edit' />
-                  }
-                  <Icon
-                    onClick={() => removeFile(i)}
-                    style={{ color: '#FF7D1D' }}
-                    type='close'
-                  />
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className='buttons-group'>
-          <Button
-            ghost
-            type='primary'
-            onClick={handleSendToDraft}
-          >
-            <Icon type='file-text' />
+            </label>
+          </div>
+          <div className='files-group'>
+            <ul className='attached-files'>
+              {documentState.files && documentState.files.map((e, i) => (
+                <li className='attached-file' key={e.name}>
+                  <Text type='secondary' style={{ marginRight: '1rem' }}>{i + 1}</Text>
+                  <Text strong>{e.name}</Text>
+                  { documentState.fileHashes[i] && <Tag color='#3278fb'>ЭЦП</Tag> }
+                  <div className='attached-file__actions'>
+                    <div className='actions-left'>
+                      <Checkbox>Требуется подпись</Checkbox>
+                    </div>
+                    <div className='actions-right'>
+                      {isIE &&
+                      <Icon onClick={() => verifyFile(i)} style={{ color: '#3278fb' }} type='edit' />
+                      }
+                      <Icon
+                        onClick={() => removeFile(i)}
+                        style={{ color: '#FF7D1D' }}
+                        type='close'
+                      />
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className='buttons-group'>
+            <Button
+              ghost
+              type='primary'
+              onClick={handleSendToDraft}
+            >
+              <Icon type='file-text' />
         Сохранить в черновиках
-          </Button>
-          <Button
-            type='primary'
-            onClick={handleSendToUser}
-          >
-            <Icon type='cloud-upload' />
+            </Button>
+            <Button
+              type='primary'
+              onClick={handleSendToUser}
+            >
+              <Icon type='cloud-upload' />
         Отправить
-          </Button>
+            </Button>
+          </div>
+        </Spin>
+        <input type='hidden' id='attr' size='80' value='1.2.112.1.2.1.1.1.1.2' />
+        <div id='attrCertSelectContainer' style={{ display: 'none' }}>
+          <span id='certExtAbsent' />
+          <select style={{ visibility: 'hidden' }} id='attrCertSelect' />
         </div>
-      </Spin>
-      <input type='hidden' id='attr' size='80' value='1.2.112.1.2.1.1.1.1.2' />
-      <div id='attrCertSelectContainer' style={{ display: 'none' }}>
-        <span id='certExtAbsent' />
-        <select style={{ visibility: 'hidden' }} id='attrCertSelect' />
+        <input type='hidden' id='attrValue' size='80' disabled='disabled' />
       </div>
-      <input type='hidden' id='attrValue' size='80' disabled='disabled' />
-    </div>
+      <Text type='secondary'>
+        Подпись файлов возможна только в браузере Internet Explorer
+      </Text>
+    </Fragment>
   )
 }
 

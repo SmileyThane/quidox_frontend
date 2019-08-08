@@ -56,13 +56,13 @@
     }
     .attached-file__name {
       font-weight: 500;
-      width: 100%;
     }
     .attached-file__actions {
-      width: 10rem;
-      max-width: 10rem;
+      width: 100%;
+      max-width: 50%;
+      margin-left: auto;
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
       align-items: center;
 
       i:first-of-type {

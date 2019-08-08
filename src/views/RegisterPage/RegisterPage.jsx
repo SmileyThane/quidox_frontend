@@ -208,8 +208,8 @@ class RegistrationForm extends React.Component {
       initialValue: '37529'
     })(
       <Select style={{ width: 100 }}>
-        <Option value='37529'>+375(25)</Option>
         <Option value='37529'>+375(29)</Option>
+        <Option value='37525'>+375(25)</Option>
         <Option value='37533'>+375(33)</Option>
         <Option value='37544'>+375(44)</Option>
       </Select>

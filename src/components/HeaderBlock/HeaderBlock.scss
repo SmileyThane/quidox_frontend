@@ -2,7 +2,7 @@
 .header {
   background: map-get($colors, white) !important;
   border-bottom: 1px solid map-get($colors, gray);
-  padding: 0 2rem !important;
+  padding: 0 2rem 0 0 !important;
   height: auto !important;
   .header__content {
     display: flex;
@@ -12,6 +12,7 @@
   .header__left {
     min-width: 28rem;
     width: 28rem;
+    text-align: center;
   }
   .header__logo {
     max-width: 20rem;
