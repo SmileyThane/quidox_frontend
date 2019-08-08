@@ -207,7 +207,7 @@ const NewDocumentPage = props => {
           message.error(error.message)
         })
     }
-  }, 200)
+  }, 800)
 
   const handleSelect = v => {
     setDocumentState({

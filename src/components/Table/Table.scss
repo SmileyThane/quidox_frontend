@@ -30,8 +30,14 @@
 }
 .table-footer {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
+
+  .table-footer-left {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
 
   .table-footer__item {
     &:first-of-type {

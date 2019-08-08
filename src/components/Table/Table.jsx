@@ -3,7 +3,15 @@ import React, { useState, Fragment } from 'react'
 import _ from 'lodash'
 import { Link } from 'react-router-dom'
 import { getTimeStamp } from '../../helpers'
-import { Table, Icon, Popconfirm, AutoComplete, message, Typography } from 'antd'
+import {
+  Table,
+  Icon,
+  Popconfirm,
+  AutoComplete,
+  message,
+  Typography,
+  Select
+} from 'antd'
 import './Table.scss'
 
 const defaultTableState = {
@@ -12,6 +20,7 @@ const defaultTableState = {
 }
 
 const { Text } = Typography
+const { Option } = Select
 
 const AntdTable = props => {
   const { activeCompany, getDocumentsWithParams, children, type, columnName = '', removeDocument, removeDocuments, ...rest } = props
@@ -116,7 +125,6 @@ const AntdTable = props => {
     selectedRowKeys: tableState.selectedRowKeys,
     onChange: onSelectChange
   }
-
   return (
     <Table
       className='table'
@@ -144,11 +152,21 @@ const AntdTable = props => {
       footer={() =>
         (
           <div className='table__footer table-footer'>
-            <div className='table-footer__item'>
-              <Text>Отмечено: {tableState.selectedRowKeys.length}</Text>
+            <div className='table-footer-left'>
+              <div className='table-footer__item'>
+                <Text>Отмечено: {tableState.selectedRowKeys.length}</Text>
+              </div>
+              <div className='table-footer__item'>
+                <Text>Всего: {props.dataSource.length}</Text>
+              </div>
             </div>
-            <div className='table-footer__item'>
-              <Text>Всего: {tableState.selectedRowKeys.length}</Text>
+            <div>
+              <Text>На странице:</Text>
+              <Select defaultValue={5} style={{ width: 120, marginLeft: '1rem' }}>
+                <Option value={5}>5</Option>
+                <Option value={10}>10</Option>
+                <Option value={15}>15</Option>
+              </Select>
             </div>
           </div>
         )}
