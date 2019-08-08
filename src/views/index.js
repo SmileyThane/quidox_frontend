@@ -6,8 +6,8 @@ import SingleDocumentPage from './SingleDocumentPage'
 import NewDocumentPage from './NewDocumentPage'
 import DraftsPage from './DraftsPage'
 import CompanyPage from './CompanyPage'
-import ConfirmMessagesPages from './ConfirmMessagesPages'
-import UnconfirmedMessagesPage from './UnconfirmedMessagesPage'
+import InboxConfirmedDocumentsPage from './InboxConfirmedDocumentsPage'
+import InboxUnconfirmedDocumentsPage from './InboxUnconfirmedDocumentsPage'
 import OutConfirmedDocumentsPage from './OutConfirmedDocumentsPage'
 import OutUnconfirmedDocumentsPage from './OutUnconfirmedDocumentsPage'
 import ResetPasswordPage from './ResetPasswordPage'
@@ -22,8 +22,8 @@ export {
   NewDocumentPage,
   DraftsPage,
   CompanyPage,
-  ConfirmMessagesPages,
-  UnconfirmedMessagesPage,
+  InboxConfirmedDocumentsPage,
+  InboxUnconfirmedDocumentsPage,
   OutConfirmedDocumentsPage,
   OutUnconfirmedDocumentsPage
 }

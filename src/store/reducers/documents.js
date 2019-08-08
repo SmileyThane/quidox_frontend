@@ -72,7 +72,7 @@ export default (state = initialState, action) => {
           outConfirmedDocuments: action.payload.data
         }
       }
-    
+
     // Out unconfirmed documents
     case t.GET_OUT_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:
       return {

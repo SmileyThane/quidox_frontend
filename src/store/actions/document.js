@@ -45,11 +45,11 @@ const removeDocumentById = (id, type) => dispatch => {
             })
             break
           case 'out-unconfirmed':
-          dispatch({
-            type: t.REMOVE_OUT_UNCONFIRMED_DOCUMENT_BY_ID_SUCCESS,
-            payload: id
-          })
-          break
+            dispatch({
+              type: t.REMOVE_OUT_UNCONFIRMED_DOCUMENT_BY_ID_SUCCESS,
+              payload: id
+            })
+            break
           case 'unconfirmed':
             dispatch({
               type: t.REMOVE_INBOX_UNCONFIRMED_DOCUMENT_BY_ID_SUCCESS,

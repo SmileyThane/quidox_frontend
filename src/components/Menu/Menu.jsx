@@ -42,14 +42,14 @@ const AntMenu = props => {
         >
           <MenuItem
             heading='Подписанные'
-            url='/confirm-messages'
-            key='/confirm-messages'
+            url='/inbox-confirmed-documents'
+            key='/inbox-confirmed-documents'
             icon='file-protect'
           />
           <MenuItem
             heading='Не подписанные'
-            url='/unconfirmed-messages'
-            key='/unconfirmed-messages'
+            url='/inbox-unconfirmed-documents'
+            key='/inbox-unconfirmed-documents'
             icon='exception'
           />
         </Menu.ItemGroup>
@@ -82,8 +82,8 @@ const AntMenu = props => {
         />
         <MenuItem
           heading='Компании'
-          url='/company'
-          key='/company'
+          url='/companies'
+          key='/companies'
           icon='desktop'
         />
         <MenuItem

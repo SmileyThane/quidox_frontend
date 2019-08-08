@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import actions from '../../store/actions'
-import ConfirmMessagesPages from './ConfirmMessagesPages'
+import InboxConfirmedDocumentsPage from './InboxConfirmedDocumentsPage'
 
 const mapStateToProps = state => ({
   user: state.user,
@@ -16,4 +16,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ConfirmMessagesPages)
+)(InboxConfirmedDocumentsPage)

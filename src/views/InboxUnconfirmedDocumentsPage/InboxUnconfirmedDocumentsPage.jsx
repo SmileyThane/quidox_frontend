@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 
 import { Table } from '../../components'
 
-const UnconfirmedMessagesPage = props => {
+const InboxUnconfirmedDocumentsPage = props => {
   const {
     user: { data },
     documents: { isFetching, inboxDocuments },
@@ -35,4 +35,4 @@ const UnconfirmedMessagesPage = props => {
   )
 }
 
-export default UnconfirmedMessagesPage
+export default InboxUnconfirmedDocumentsPage

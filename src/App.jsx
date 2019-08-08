@@ -15,8 +15,8 @@ import {
   NewDocumentPage,
   DraftsPage,
   CompanyPage,
-  ConfirmMessagesPages,
-  UnconfirmedMessagesPage,
+  InboxConfirmedDocumentsPage,
+  InboxUnconfirmedDocumentsPage,
   OutConfirmedDocumentsPage,
   OutUnconfirmedDocumentsPage
 } from './views'
@@ -27,14 +27,20 @@ function App () {
       <Router history={history}>
         <Switch>
           <PrivateRoute exact path='/' component={Home} />
-          <PrivateRoute path='/documents/:id' component={SingleDocumentPage} />
+
           <PrivateRoute path='/new-document' component={NewDocumentPage} />
-          <PrivateRoute path='/company' component={CompanyPage} />
-          <PrivateRoute path='/confirm-messages' component={ConfirmMessagesPages} />
-          <PrivateRoute path='/unconfirmed-messages' component={UnconfirmedMessagesPage} />
+
+          <PrivateRoute path='/inbox-confirmed-documents' component={InboxConfirmedDocumentsPage} />
+          <PrivateRoute path='/inbox-unconfirmed-documents' component={InboxUnconfirmedDocumentsPage} />
+
           <PrivateRoute path='/out-confirmed-documents' component={OutConfirmedDocumentsPage} />
           <PrivateRoute path='/out-unconfirmed-documents' component={OutUnconfirmedDocumentsPage} />
+
           <PrivateRoute path='/drafts' component={DraftsPage} />
+
+          <PrivateRoute path='/companies' component={CompanyPage} />
+
+          <PrivateRoute path='/documents/:id' component={SingleDocumentPage} />
           <PrivateRoute path='/user-me' component={UserInfoPage} />
 
           <PublicRoute path='/login' component={LoginPage} />
