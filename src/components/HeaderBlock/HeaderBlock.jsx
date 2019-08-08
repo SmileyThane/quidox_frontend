@@ -45,7 +45,7 @@ const HeaderBlock = props => {
                 <span onClick={() => history.push('/user-me')}>{data.email}</span>
                 }
                 <Popconfirm
-                  placement='bottom'
+                  placement='bottomLeft'
                   title='Вы уверены?'
                   onConfirm={() => handleLogout()}
                   okText='Выйти'

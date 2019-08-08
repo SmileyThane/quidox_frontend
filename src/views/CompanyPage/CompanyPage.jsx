@@ -204,6 +204,7 @@ const CopmanyPage = props => {
       <Fragment>
         {data.active_company_id &&
           <Popconfirm
+            placement='bottomLeft'
             title='Сделать компанию активной?'
             onConfirm={() => changeActiveCompany(record)}
             okText='Сделать активной'

@@ -17,6 +17,9 @@
   .header__logo {
     max-width: 20rem;
   }
+  .header__user {
+    flex-wrap: nowrap;
+  }
   .header__input {
     margin-right: 3rem;
     max-width: 46rem;;
