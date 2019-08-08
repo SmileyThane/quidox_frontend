@@ -258,7 +258,6 @@ const SingleDocumentPage = props => {
       activeFileCert: documentState.activeFileCert - 1
     })
   }
-  console.log(data)
   return (
     <Fragment>
       <Spin spinning={isFetching}>
@@ -279,11 +278,27 @@ const SingleDocumentPage = props => {
               <div className='document__info info'>
                 <div className='info__item'>
                   <div className='info__title'>Получатели</div>
-                  <div className='info__content'>{data.author && data.author.company_name}</div>
+                  <div className='info__content'>
+                    {data.attached_to_users &&
+                      data.attached_to_users.map(user => (
+                        <div key={user.id} style={{ padding: '.5rem 0' }}>
+                          <Text>{user.user_company.user_email}</Text><br />
+                          <Text>[{user.user_company.company_name}]</Text>
+                        </div>
+                      ))
+                    }
+                  </div>
                 </div>
                 <div className='info__item'>
                   <div className='info__title'>Отправители</div>
-                  <div className='info__content'>{data.author && data.author.company_name}</div>
+                  <div className='info__content'>
+                    {data.author &&
+                    <div>
+                      <Text>{data.author.user_email}</Text><br />
+                      <Text>[{data.author.company_name}]</Text>
+                    </div>
+                    }
+                  </div>
                 </div>
                 <div className='info__item'>
                   <div className='info__title'>Комментарий</div>
