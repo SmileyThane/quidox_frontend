@@ -1,8 +1,6 @@
-import React, { useState, useEffect, Fragment, useRef } from 'react'
-import useForm from 'rc-form-hooks'
+import React, { useState, useEffect, Fragment } from 'react'
 
-import { api } from '../../services'
-import { Select, Spin, message, Row, Col, Icon, Form, Input } from 'antd'
+import { Select, Spin, message, Row, Col, Icon, Input } from 'antd'
 import { Button } from '../../components'
 import './UserInfoPage.scss'
 
@@ -30,8 +28,6 @@ const UserInfoPage = props => {
   } = props
 
   const [userState, setUserState] = useState({ ...defaultUserState })
-
-  const { getFieldDecorator, validateFields } = useForm()
 
   useEffect(() => {
     if (data) {
@@ -79,25 +75,6 @@ const UserInfoPage = props => {
     }
   }
 
-  const sendInvite = e => {
-    e.preventDefault()
-    validateFields()
-      .then(() => {
-        api.company.attachUnregisteredUserToCompany({ email: userState.newUserEmail })
-          .then(({ data }) => {
-            if (data.success) {
-              message.success('Приглашение отправлено')
-              setUserState({ ...defaultUserState })
-            } else {
-              throw new Error(data.error)
-            }
-          })
-          .catch(error => {
-            message.error(error.message)
-          })
-      })
-  }
-
   return (
     <Fragment>
       <div className='content content_user'>
@@ -128,37 +105,6 @@ const UserInfoPage = props => {
                 {companies && companies.map(i => <Option key={i.company_id} value={i.company_id}>{i.company_name}</Option>)}
               </Select>
             </Col>
-            {userState.showInput &&
-            <Col span={12}>
-              <Form onSubmit={sendInvite} style={{ marginTop: '3rem' }}>
-                <Form.Item style={{ marginBottom: 0 }}>
-                  {getFieldDecorator('email', {
-                    rules: [
-                      {
-                        type: 'email',
-                        message: 'Не правильный адрес электронной почты!'
-                      },
-                      {
-                        required: true,
-                        message: 'Введите адрес электроной почты'
-                      }
-                    ]
-                  })(
-                    <Input
-                      prefix={<Icon type='user' style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      placeholder='Электронный адрес пользователя'
-                      onChange={e => updateField('newUserEmail', e.target.value)}
-                    />
-                  )}
-                </Form.Item>
-                <Button type='primary' style={{ marginTop: '1rem' }} htmlType='submit'>
-                  <Icon type='plus' />
-              Отправить приглашение
-                </Button>
-                <Button style={{ marginLeft: '1rem' }} ghost type='primary' onClick={() => setUserState({ ...userState, showInput: false })}>Отмена</Button>
-              </Form>
-            </Col>
-            }
           </Row>
         </Spin>
       </div>

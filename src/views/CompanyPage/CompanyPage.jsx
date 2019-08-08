@@ -1,10 +1,24 @@
 import React, { Fragment, useEffect, useState } from 'react'
-
 import moment from 'moment'
+import axios from 'axios'
+import useForm from 'rc-form-hooks'
 
-import axios from '../../services/api/http'
+import { api } from '../../services'
 import { Button } from '../../components'
-import { Table, Tag, Popconfirm, message, Modal, Typography, Spin } from 'antd'
+import {
+  Table,
+  Tag,
+  Popconfirm,
+  Form,
+  message,
+  Modal,
+  Typography,
+  Spin,
+  Icon,
+  Row,
+  Col,
+  Input
+} from 'antd'
 
 import './CompanyPage.scss'
 
@@ -15,7 +29,9 @@ const defaultCompanyState = {
   newCompanyName: '',
   newCompanyCity: '',
   newCompanyFullName: '',
+  newUserEmail: '',
   yourPosition: '',
+  showInput: false,
   showModal: false,
   modalFetching: false
 }
@@ -33,6 +49,8 @@ const CopmanyPage = props => {
     companies: { isFetching, list },
     user: { data }
   } = props
+
+  const { getFieldDecorator, validateFields } = useForm()
 
   useEffect(() => {
     getCompany()
@@ -120,6 +138,32 @@ const CopmanyPage = props => {
     }
   }
 
+  const updateField = (field, value) => {
+    setCompanyState({
+      ...companyState,
+      [field]: value
+    })
+  }
+
+  const sendInvite = e => {
+    e.preventDefault()
+    validateFields()
+      .then(() => {
+        api.company.attachUnregisteredUserToCompany({ email: companyState.newUserEmail })
+          .then(({ data }) => {
+            if (data.success) {
+              message.success('Приглашение отправлено')
+              setCompanyState({ ...defaultCompanyState })
+            } else {
+              throw new Error(data.error)
+            }
+          })
+          .catch(error => {
+            message.error(error.message)
+          })
+      })
+  }
+
   const handleCreateCompany = () => {
     const newCompanyData = {
       name: companyState.newCompanyName,
@@ -136,7 +180,6 @@ const CopmanyPage = props => {
         } else {
           throw new Error(data.error)
         }
-
       })
       .catch(error => {
         message.error(error.message)
@@ -187,12 +230,52 @@ const CopmanyPage = props => {
           locale={{ emptyText: 'Нет созданных компаний' }}
         />
       </div>
+      {companyState.showInput &&
+        <div className='invite-block'>
+          <Row>
+            <Col span={12}>
+              <Form onSubmit={sendInvite} style={{ marginTop: '3rem' }}>
+                <Form.Item style={{ marginBottom: 0 }} label='Добавление нового пользователя в текущую компанию'>
+                  {getFieldDecorator('email', {
+                    rules: [
+                      {
+                        type: 'email',
+                        message: 'Не правильный адрес электронной почты!'
+                      },
+                      {
+                        required: true,
+                        message: 'Введите адрес электроной почты'
+                      }
+                    ]
+                  })(
+                    <Input
+                      prefix={<Icon type='user' style={{ color: 'rgba(0,0,0,.25)' }} />}
+                      placeholder='Электронный адрес пользователя'
+                      onChange={e => updateField('newUserEmail', e.target.value)}
+                      type='email'
+                    />
+                  )}
+                </Form.Item>
+                <Button type='primary' style={{ marginTop: '1rem' }} htmlType='submit'>
+                  <Icon type='plus' />
+                  Отправить приглашение
+                </Button>
+                <Button style={{ marginLeft: '1rem' }} ghost type='primary' onClick={() => setCompanyState({ ...companyState, newUserEmail: '', showInput: false })}>Отмена</Button>
+              </Form>
+            </Col>
+          </Row>
+        </div>
+      }
       {!isIE &&
         <Text type='secondary'>Создание компании возможно только в браузере Internet Explorer</Text>
       }
       {isIE &&
         <Button type='primary' onClick={onClick}>Создать компанию</Button>
       }
+      <Button type='primary' style={{ marginLeft: '1rem' }} onClick={() => setCompanyState({ ...companyState, showInput: true })}>
+        <Icon type='usergroup-add' />
+        Добавить пользователя в компанию
+      </Button>
       <input type='hidden' id='dataNewCompany' value={data.email} />
       <input type='hidden' id='attr' size='80' value='1.2.112.1.2.1.1.1.1.2' />
       <input type='hidden' id='companyNumberGlobal' />

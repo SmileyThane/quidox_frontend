@@ -1,13 +1,14 @@
 import React, { Fragment } from 'react'
 
-import { Layout, Icon, Popconfirm, Skeleton } from 'antd'
+import { Layout, Icon, Popconfirm, Skeleton, Tag, Typography } from 'antd'
 
 import history from '../../history.js'
-import { Input } from '../'
 import { logo } from './img'
 import './HeaderBlock.scss'
 
 const { Header } = Layout
+const { Text } = Typography
+
 const HeaderBlock = props => {
   const {
     user: { isFetching, data }
@@ -17,7 +18,7 @@ const HeaderBlock = props => {
     window.localStorage.clear()
     history.push('/login')
   }
-
+  console.log(data)
   return (
     <Header className='header'>
       <div className='header__content'>
@@ -27,6 +28,18 @@ const HeaderBlock = props => {
         {window.localStorage.getItem('authToken') &&
           <Fragment>
             <Skeleton loading={isFetching} active paragraph={false}>
+              <div className='header__setting'>
+                <Text>
+                  Активная компания:
+                  {(data && data.companies) && data.companies.map(i => {
+                    if (i.company_id === data.active_company_id) {
+                      return <Tag color='#87d068' style={{ marginLeft: '.5rem' }}>{i.company_name}</Tag>
+                    } else {
+                      return null
+                    }
+                  })}
+                </Text>
+              </div>
               <div className='user header__user'>
                 {data &&
                 <span onClick={() => history.push('/user-me')}>{data.email}</span>

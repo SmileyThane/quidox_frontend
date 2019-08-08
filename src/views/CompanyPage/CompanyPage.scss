@@ -1,0 +1,10 @@
+@import "../../styles/variables";
+.invite-block {
+  padding: 2rem;
+  background: map_get($colors, white);
+  border: .1rem solid map_get($colors, gray);
+  margin-bottom: 2rem;
+  .ant-col {
+    margin-bottom: 0;
+  }
+}

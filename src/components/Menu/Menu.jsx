@@ -11,6 +11,7 @@ import './Menu.scss'
 const countMessages = 0
 
 const AntMenu = props => {
+  console.log(props.location.pathname);
   return (
     <Fragment>
       <Button
@@ -25,7 +26,7 @@ const AntMenu = props => {
       </Button>
       <Menu
         mode='inline'
-        defaultSelectedKeys={props.location.pathname === 'new-document' ? [''] : [props.location.pathname]}
+        selectedKeys={[props.location.pathname]}
         defaultOpenKeys={['sub1']}
       >
         <Menu.ItemGroup
@@ -34,7 +35,7 @@ const AntMenu = props => {
             <span>
               {countMessages && countMessages > 0
                 ? <Badge className='badge' count={countMessages} />
-                : <Icon type='export' />
+                : <Icon type='folder' />
               }
               <span>Входящие</span>
             </span>
@@ -56,7 +57,7 @@ const AntMenu = props => {
         <Menu.ItemGroup
           title={
             <span>
-              <Icon type='import' />
+              <Icon type='folder' />
               Отправленные
             </span>
           }
@@ -89,8 +90,37 @@ const AntMenu = props => {
         <MenuItem
           heading='Панель администратора'
           url=''
-          key=''
+          key='disabled-1'
           icon='setting'
+          disabled
+        />
+        <MenuItem
+          heading='Корзина'
+          url=''
+          key='disabled-2'
+          icon='delete'
+          disabled
+        />
+        <MenuItem
+          heading='Защищенный архив'
+          url=''
+          key='disabled-3'
+          icon='file-zip'
+          disabled
+        />
+        <MenuItem
+          heading='Интеграция (1С, CRM...)'
+          url=''
+          key='disabled-4'
+          icon='code'
+          disabled
+        />
+        <MenuItem
+          heading='Папки пользователя'
+          url=''
+          key='disabled-5'
+          icon='folder'
+          disabled
         />
       </Menu>
     </Fragment>

@@ -5,11 +5,7 @@ const mapStateToProps = state => ({
   user: state.user
 })
 
-const mapDispatchToProps = dispatch => ({
-
-})
-
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  null
 )(HeaderBlock)

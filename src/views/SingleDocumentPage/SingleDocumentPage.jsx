@@ -5,7 +5,7 @@ import fileDownload from 'js-file-download'
 import _ from 'lodash'
 
 import { api } from '../../services'
-import { Spin, Icon, List, Tag, Popover, Modal, Select, message, Typography } from 'antd'
+import { Spin, Icon, List, Tag, Modal, Select, message, Typography } from 'antd'
 import history from '../../history'
 import { findUsersByParams } from '../../services/api/user'
 import { Button, PDFViewer } from '../../components'
@@ -85,19 +85,8 @@ const SingleDocumentPage = props => {
     })
   }
 
-  const splitting = (str) => {
-    const arr = []
-    if (!str) {
-      return null
-    }
-    str.split(';').forEach(element => {
-      arr.push(element.replace(/[-+()><=\s]/g, ' '))
-    })
-    return arr
-  }
 
   const showUserData = (type, dataArray = []) => {
-    console.log(dataArray)
 
     setDocumentState({
       ...documentState,
@@ -315,8 +304,8 @@ const SingleDocumentPage = props => {
                         <Icon style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }} type='eye' onClick={() => showModal(item)} />
                         <p style={{ marginRight: 10 }} className='single-document__name'>{item.name}</p>
                         {item.users_companies.length
-                        ? <Tag onClick={() => showUserData('ecp', item.users_companies)} style={{ cursor: 'pointer' }} color='#3278fb'>ЭЦП {item.users_companies.length}</Tag>
-                        : ''
+                          ? <Tag onClick={() => showUserData('ecp', item.users_companies)} style={{ cursor: 'pointer' }} color='#3278fb'>ЭЦП {item.users_companies.length}</Tag>
+                          : ''
                         }
                       </div>
                     </List.Item>
@@ -376,8 +365,8 @@ const SingleDocumentPage = props => {
                 <div className='arr-wrapp' onClick={prevCert}>
                   <Icon type='left' />
                 </div>
-                <div className='arr-wrapp'  onClick={nextCert}>
-                  <Icon type='right'/>
+                <div className='arr-wrapp' onClick={nextCert}>
+                  <Icon type='right' />
                 </div>
               </div>
               <div className='cert-modal'>
@@ -471,4 +460,3 @@ const SingleDocumentPage = props => {
 }
 
 export default SingleDocumentPage
-
