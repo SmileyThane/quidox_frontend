@@ -134,7 +134,8 @@
 
             var contentText = msg.Content.GetAsText(0);
             var name = cert.Subject;
-            var resultText = "{\n \"cert_member_name\" : \"" + name + "\",\n";
+            // var resultText = "{\n \"cert_member_name\" : \"" + name + "\",\n";
+            var resultText = "Подпись верна. Подписано: " + name + ";\n";
             var attrVal = "";
             try {
                 var ext = conn.OwnCertificate.GetExtensionByOid(attrOid, 0);
@@ -160,19 +161,22 @@
                 if (attrCerts.Count) { // c
                     for (var i = 0; i < attrCerts.Count; i++) {
                         var acert = attrCerts.Item(i);
-                        resultText += "\"attr_cert_no\" : \"" + acert.Serial.GetAsHex(0) + "\", \n";
-                        var attrsText = "\"attributes\" : [";
+                        // resultText += "\"attr_cert_no\" : \"" + acert.Serial.GetAsHex(0) + "\", \n";
+                        resultText += "Найден атрибутный сертификат №" + acert.Serial.GetAsHex(0) + "\n";
+                        var attrsText = "";
+                        // var attrsText = "\"attributes\" : [";
                         var attrFound = false;
                         for (var j = 0; j < acert.AttributesCount; j++) {
                             var attr = acert.GetAttributeByIndex(j, 0);
                             if (attr.Oid == attrOid && attr.ValueAsString == contentText) {
                                 attrFound = true;
                             }
-                            attrsText += " \""+attr.Oid + "\" : [ \"name\" : \"" + attr.OidName + "\", \"value\" : \"" + attr.ValueAsString + "\"],";
+                            // attrsText += " \""+attr.Oid + "\" : [ \"name\" : \"" + attr.OidName + "\", \"value\" : \"" + attr.ValueAsString + "\"],";
+                            attrsText += attr.Oid + "(" + attr.OidName + ")" + "=<" + attr.ValueAsString + ">;";
                         }
-                        attrsText += " ]";
+                        // attrsText += " ]";
                         attrsText = attrsText.substr(0, attrsText.length - 1);
-                        resultText += attrsText + "\n";
+                        resultText += "Атрибуты: " + attrsText + "\n";
 
                         if (attrFound) {
                             // resultText += "Этот атрибутный сертификат подходит для удостоверения данной ЭЦП\n";
@@ -198,19 +202,24 @@
                     if (attrCerts.Count) {
                         for (var i = 0; i < attrCerts.Count; i++) {
                             var acert = attrCerts.Item(i);
-                            resultText += "\"attr_cert_no\" : \"" + acert.Serial.GetAsHex(0) + "\", \n";
-                        var attrsText = "\"attributes\" : [";
+                            // resultText += "\"attr_cert_no\" : \"" + acert.Serial.GetAsHex(0) + "\", \n";
+                            resultText += "Найден атрибутный сертификат №" + acert.Serial.GetAsHex(0) + ";\n";
+                        // var attrsText = "\"attributes\" : [";
+                        var attrsText = ''
+                        var attrArray = []
                         var attrFound = false;
                         for (var j = 0; j < acert.AttributesCount; j++) {
                             var attr = acert.GetAttributeByIndex(j, 0);
                             if (attr.Oid == attrOid && attr.ValueAsString == contentText) {
                                 attrFound = true;
                             }
-                            attrsText += " \""+attr.Oid + "\" : [ \"name\" : \"" + attr.OidName + "\", \"value\" : \"" + attr.ValueAsString + "\"],";
+                            // attrsText += " \""+attr.Oid + "\" : [ \"name\" : \"" + attr.OidName + "\", \"value\" : \"" + attr.ValueAsString + "\"],";
+                            attrsText += attr.Oid + "(" + attr.OidName + ")" + "=<" + attr.ValueAsString + ">;";
+                            attrArray[attr.Oid] = attr.ValueAsString
                         }
-                        attrsText += " ]";
+                        // attrsText += " ]";
                         attrsText = attrsText.substr(0, attrsText.length - 1);
-                        resultText += attrsText + "\n";
+                        resultText += "Атрибуты: " + attrsText + "\n";
 
                             if (attrFound) {
                                 // resultText += "Этот атрибутный сертификат подходит для удостоверения данной ЭЦП\n";
@@ -232,7 +241,7 @@
                     }
                 }
             }
-            resultText += "\n}";
+            // resultText += "\n}";
             if (!attrVal) {
               companyNumber = attrArray[attrOid]
             }

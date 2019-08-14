@@ -30,8 +30,9 @@ const defaultDocumentState = {
   certs: '',
   fileHashes: '',
   fileData: '',
-  fileCerts: [],
-  activeFileCert: 1
+  fileCert: {},
+  activeFileCert: 1,
+  ecpInfo: null
 }
 // eslint-disable-next-line spaced-comment
 const isIE = /*@cc_on!@*/false || !!document.documentMode
@@ -87,13 +88,59 @@ const SingleDocumentPage = props => {
     })
   }
 
-  const showUserData = (type, dataArray = []) => {
+  const showUserData = (type, dataArray = [], index) => {
+    const ecpData = dataArray[index].verification_info
+    const ecpDataArr = ecpData.split(';')
+
+    let address = ''
+    let org = ''
+    let name = ''
+    let position = ''
+    let unp = ''
+
+    ecpDataArr.forEach(function (element) {
+      if (element.indexOf('2.5.4.4') > -1) {
+        const newElem = element
+          .substring(element.indexOf('2.5.4.4'))
+        name = name + newElem.substring(newElem.indexOf('=') + 1, newElem.indexOf(','))
+      }
+      if (element.indexOf('2.5.4.41') > -1) {
+        const newElem = element
+          .substring(element.indexOf('2.5.4.41'))
+        name = name + ' ' + newElem.substring(newElem.indexOf('=') + 1, newElem.indexOf(','))
+      }
+      if (element.indexOf('2.5.4.42') > -1) {
+        const newElem = element
+          .substring(element.indexOf('2.5.4.42'))
+        name = name + ' ' + newElem.substring(newElem.indexOf('=') + 1, newElem.indexOf(','))
+      }
+      if (element.indexOf('2.5.4.7') > -1) {
+        address = address + ' ' + element.substring(element.indexOf('<') + 1, element.indexOf('>'))
+      }
+      if (element.indexOf('2.5.4.9') > -1) {
+        address = address + ' ' + element.substring(element.indexOf('<') + 1, element.indexOf('>'))
+      }
+      if (element.indexOf('2.5.4.10') > -1) {
+        org = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
+      }
+      if (element.indexOf('2.5.4.12') > -1) {
+        position = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
+      }
+      if (element.indexOf('1.2.112.1.2.1.1.1.1.2') > -1) {
+        unp = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
+      }
+    })
+
+    const ecpInfo = { address, name, org, position, unp }
+
     setDocumentState({
       ...documentState,
       showModal: !documentState.showModal,
       userData: data,
       modalType: type,
-      fileCerts: dataArray
+      fileCerts: dataArray,
+      activeFileCert: index,
+      ecpInfo
     })
   }
 
@@ -241,7 +288,7 @@ const SingleDocumentPage = props => {
   }
 
   const nextCert = () => {
-    if (documentState.activeFileCert >= documentState.fileCerts.length) {
+    if (documentState.activeFileCert + 1 === documentState.fileCerts.length) {
       return null
     }
     setDocumentState({
@@ -258,6 +305,7 @@ const SingleDocumentPage = props => {
       activeFileCert: documentState.activeFileCert - 1
     })
   }
+
   return (
     <Fragment>
       <Spin spinning={isFetching}>
@@ -325,7 +373,14 @@ const SingleDocumentPage = props => {
                         <Icon style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }} type='eye' onClick={() => showModal(item)} />
                         <p style={{ marginRight: 10 }} className='single-document__name'>{item.name}</p>
                         {item.users_companies.length
-                          ? <Tag onClick={() => showUserData('ecp', item.users_companies)} style={{ cursor: 'pointer' }} color='#3278fb'>ЭЦП {item.users_companies.length}</Tag>
+                          ? (item.users_companies || []).map((company, ind) =>
+                            <Tag
+                              key={company.id}
+                              onClick={() => showUserData('ecp', item.users_companies, ind)}
+                              style={{ cursor: 'pointer' }} color='#3278fb'>
+                              ЭЦП {ind + 1}
+                            </Tag>
+                          )
                           : ''
                         }
                       </div>
@@ -391,7 +446,7 @@ const SingleDocumentPage = props => {
           {documentState.modalType === 'ecp'
             ? <Fragment>
               <div className='modal-title'>
-                <Text strong>Просмотр ЭЦП, № {documentState.activeFileCert} из {documentState.fileCerts.length} </Text>
+                <Text strong>Просмотр ЭЦП, № {documentState.activeFileCert + 1} из {documentState.fileCerts.length} </Text>
                 <div className='arr-wrapp' onClick={prevCert}>
                   <Icon type='left' />
                 </div>
@@ -406,23 +461,24 @@ const SingleDocumentPage = props => {
                   </div>
                   <div className='cert-modal__item-right'>
                     <div className='cert-item'>
-                      <Text type='secondary'>УНП:</Text>
+                      <Text type='secondary'>УНП: {documentState.ecpInfo.unp}</Text>
                     </div>
                     <div className='cert-item'>
-                      <Text type='secondary'>Организация:</Text>
+                      <Text type='secondary'>Организация: {documentState.ecpInfo.org}</Text>
                     </div>
                     <div className='cert-item'>
-                      <Text type='secondary'>Должность:</Text>
+                      <Text type='secondary'>Должность: {documentState.ecpInfo.position}</Text>
                     </div>
                     <div className='cert-item'>
-                      <Text type='secondary'>ФИО:</Text>
+                      <Text type='secondary'>ФИО: {documentState.ecpInfo.name}</Text>
                     </div>
                     <div className='cert-item'>
-                      <Text type='secondary'>Адресс:</Text>
+                      <Text type='secondary'>Адресс: {documentState.ecpInfo.address}</Text>
                     </div>
-                    <div className='cert-item'>
+                    { false && <div className='cert-item'>
                       <Text type='secondary'>OID 2.5.4.10=:</Text>
                     </div>
+                    }
                   </div>
                 </div>
                 <div className='cert-modal__item'>
@@ -444,7 +500,7 @@ const SingleDocumentPage = props => {
                   </div>
                   <div className='cert-modal__item-right'>
                     <div className='cert-item'>
-                      <Text type='secondary'>с</Text>
+                      <Text type='secondary'>{documentState.fileCerts[documentState.activeFileCert].created_at}</Text>
                     </div>
                   </div>
                 </div>
