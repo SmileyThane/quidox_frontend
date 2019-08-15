@@ -14,6 +14,7 @@ import {
   SingleDocumentPage,
   NewDocumentPage,
   DraftsPage,
+  ExternalsPage,
   CompanyPage,
   InboxConfirmedDocumentsPage,
   InboxUnconfirmedDocumentsPage,
@@ -37,6 +38,7 @@ function App () {
           <PrivateRoute path='/out-unconfirmed-documents' component={OutUnconfirmedDocumentsPage} />
 
           <PrivateRoute path='/drafts' component={DraftsPage} />
+          <PrivateRoute path='/externals' component={ExternalsPage} />
 
           <PrivateRoute path='/companies' component={CompanyPage} />
 

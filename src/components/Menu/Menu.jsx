@@ -76,9 +76,15 @@ const AntMenu = props => {
           />
         </Menu.ItemGroup>
         <MenuItem
-          heading=' Черновики'
+          heading='Черновики'
           url='/drafts'
           key='/drafts'
+          icon='file-text'
+        />
+        <MenuItem
+          heading='Сторонние источники'
+          url='/externals'
+          key='/externals'
           icon='file-text'
         />
         <MenuItem

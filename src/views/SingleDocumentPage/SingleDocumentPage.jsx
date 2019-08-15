@@ -89,49 +89,53 @@ const SingleDocumentPage = props => {
   }
 
   const showUserData = (type, dataArray = [], index) => {
-    const ecpData = dataArray[index].verification_info
-    const ecpDataArr = ecpData.split(';')
+    let ecpInfo = {}
 
-    let address = ''
-    let org = ''
-    let name = ''
-    let position = ''
-    let unp = ''
+    if (type === 'ecp') {
+      const ecpData = dataArray[index].verification_info
+      const ecpDataArr = ecpData.split(';')
 
-    ecpDataArr.forEach(function (element) {
-      if (element.indexOf('2.5.4.4') > -1) {
-        const newElem = element
-          .substring(element.indexOf('2.5.4.4'))
-        name = name + newElem.substring(newElem.indexOf('=') + 1, newElem.indexOf(','))
-      }
-      if (element.indexOf('2.5.4.41') > -1) {
-        const newElem = element
-          .substring(element.indexOf('2.5.4.41'))
-        name = name + ' ' + newElem.substring(newElem.indexOf('=') + 1, newElem.indexOf(','))
-      }
-      if (element.indexOf('2.5.4.42') > -1) {
-        const newElem = element
-          .substring(element.indexOf('2.5.4.42'))
-        name = name + ' ' + newElem.substring(newElem.indexOf('=') + 1, newElem.indexOf(','))
-      }
-      if (element.indexOf('2.5.4.7') > -1) {
-        address = address + ' ' + element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-      }
-      if (element.indexOf('2.5.4.9') > -1) {
-        address = address + ' ' + element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-      }
-      if (element.indexOf('2.5.4.10') > -1) {
-        org = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-      }
-      if (element.indexOf('2.5.4.12') > -1) {
-        position = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-      }
-      if (element.indexOf('1.2.112.1.2.1.1.1.1.2') > -1) {
-        unp = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-      }
-    })
+      let address = ''
+      let org = ''
+      let name = ''
+      let position = ''
+      let unp = ''
 
-    const ecpInfo = { address, name, org, position, unp }
+      ecpDataArr.forEach(function (element) {
+        if (element.indexOf('2.5.4.4') > -1) {
+          const newElem = element
+            .substring(element.indexOf('2.5.4.4'))
+          name = name + newElem.substring(newElem.indexOf('=') + 1, newElem.indexOf(','))
+        }
+        if (element.indexOf('2.5.4.41') > -1) {
+          const newElem = element
+            .substring(element.indexOf('2.5.4.41'))
+          name = name + ' ' + newElem.substring(newElem.indexOf('=') + 1, newElem.indexOf(','))
+        }
+        if (element.indexOf('2.5.4.42') > -1) {
+          const newElem = element
+            .substring(element.indexOf('2.5.4.42'))
+          name = name + ' ' + newElem.substring(newElem.indexOf('=') + 1, newElem.indexOf(','))
+        }
+        if (element.indexOf('2.5.4.7') > -1) {
+          address = address + ' ' + element.substring(element.indexOf('<') + 1, element.indexOf('>'))
+        }
+        if (element.indexOf('2.5.4.9') > -1) {
+          address = address + ' ' + element.substring(element.indexOf('<') + 1, element.indexOf('>'))
+        }
+        if (element.indexOf('2.5.4.10') > -1) {
+          org = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
+        }
+        if (element.indexOf('2.5.4.12') > -1) {
+          position = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
+        }
+        if (element.indexOf('1.2.112.1.2.1.1.1.1.2') > -1) {
+          unp = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
+        }
+      })
+
+      ecpInfo = { address, name, org, position, unp }
+    }
 
     setDocumentState({
       ...documentState,

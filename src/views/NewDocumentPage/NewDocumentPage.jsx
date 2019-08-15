@@ -342,9 +342,10 @@ const NewDocumentPage = props => {
         </div>
         <input type='hidden' id='attrValue' size='80' disabled='disabled' />
       </div>
-      <Text type='secondary'>
+      {!isIE && <Text type='secondary'>
         Подпись файлов возможна только в браузере Internet Explorer
       </Text>
+      }
     </Fragment>
   )
 }

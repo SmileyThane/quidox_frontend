@@ -113,10 +113,11 @@ const UserInfoPage = props => {
           <Icon type='edit' />
           {userState.isEditMode ? 'Сохранить изменения' : 'Изменить данные'}
         </Button>
-        <Button type='primary' style={{ marginLeft: '1rem' }} onClick={() => setUserState({ ...userState, showInput: true })}>
+        {false && <Button type='primary' style={{ marginLeft: '1rem' }} onClick={() => setUserState({ ...userState, showInput: true })}>
           <Icon type='usergroup-add' />
           Добавить пользователя в компанию
         </Button>
+        }
       </div>
     </Fragment>
   )

@@ -10,20 +10,40 @@ import {
   AutoComplete,
   message,
   Typography,
-  Select
+  Select,
+  Modal,
+  Button,
+  Spin
 } from 'antd'
+
 import './Table.scss'
+import { findUsersByParams } from '../../services/api/user'
 
 const defaultTableState = {
   selectedRowKeys: [],
-  searchText: ''
+  searchText: '',
+  value: [],
+  fetching: false,
+  data: [],
+  showModal: false
 }
 
 const { Text } = Typography
 const { Option } = Select
 
 const AntdTable = props => {
-  const { activeCompany, getDocumentsWithParams, children, type, columnName = '', removeDocument, removeDocuments, ...rest } = props
+  const {
+    activeCompany,
+    getDocumentsWithParams,
+    children,
+    type,
+    columnName = '',
+    removeDocument,
+    removeDocuments,
+    dataSource,
+    sendDocumentToUser,
+    ...rest
+  } = props
 
   const [tableState, setTableState] = useState({ ...defaultTableState })
 
@@ -125,55 +145,158 @@ const AntdTable = props => {
     selectedRowKeys: tableState.selectedRowKeys,
     onChange: onSelectChange
   }
+
+  const fetchUser = _.debounce(v => {
+    if (v.length > 2) {
+      setTableState({
+        ...tableState,
+        fetching: true
+      })
+      findUsersByParams(v)
+        .then(({ data }) => {
+          const dataIds = tableState.data.map(i => i.key)
+          const dataArray = data.data
+            .map(user => ({
+              label: `${user.user_data.email} (УНП:${user.company_data.company_number}; Компания:${user.company_data.name})`,
+              key: `${user.id}`
+            }))
+            .filter(i => !dataIds.includes(i.key))
+
+          setTableState({
+            ...tableState,
+            data: [...tableState.data, ...dataArray],
+            fetching: false
+          })
+        })
+        .catch(error => {
+          message.error(error.message)
+        })
+    }
+  }, 200)
+
+  const handleSelect = v => {
+    setTableState({
+      ...tableState,
+      data: v,
+      value: v
+    })
+  }
+
+  const openModal = () => {
+    if (tableState.selectedRowKeys.length === 0) {
+      message.error('Нет выбраных документов!')
+      return null
+    }
+    setTableState({
+      ...tableState,
+      showModal: true
+    })
+  }
+
+  const sendToUser = () => {
+    const docsDataToUser = {
+      document_ids: dataSource
+        .filter(i => tableState.selectedRowKeys.includes(i.id))
+        .map(i => i.id),
+      user_company_id: tableState.value.map(i => i.key)
+    }
+    sendDocumentToUser(docsDataToUser)
+      .then(getDocumentsWithParams(activeCompany))
+      .then(() => {
+        message.success('Сообщение успешно отправлено!')
+        setTableState({
+          ...tableState,
+          fetching: false,
+          showModal: false
+        })
+      })
+      .catch(error => {
+        message.error(error.message)
+        setTableState({ ...defaultTableState })
+      })
+  }
+
   return (
-    <Table
-      className='table'
-      columns={columns}
-      rowSelection={rowSelection}
-      locale={{ emptyText: 'Нет данных' }}
-      title={() =>
-        (
-          <div className='table__header table-header'>
-            <div className='table-header__actions'>
-              <Popconfirm
-                title='Вы уверены?'
-                onConfirm={() => handleRemove(type)}
-                okText='Удалить'
-                cancelText='Отмена'
-              >
-                <Icon type='delete' style={{ color: '#FF7D1D' }} />
-              </Popconfirm>
-            </div>
-            <div className='table-header__search'>
-              <AutoComplete onSearch={_.debounce(handleSearch, 500)} placeholder='Введите дату, отправителя, тему...' />
-            </div>
-          </div>
-        )}
-      footer={() =>
-        (
-          <div className='table__footer table-footer'>
-            <div className='table-footer-left'>
-              <div className='table-footer__item'>
-                <Text>Отмечено: {tableState.selectedRowKeys.length}</Text>
+    <Fragment>
+      {tableState.showModal && <Modal
+        title={null}
+        visible
+        closable={false}
+        footer={null}
+      >
+        <Select
+          mode='tags'
+          labelInValue
+          tokenSeparators={[',']}
+          value={tableState.value}
+          filterOption={false}
+          notFoundContent={tableState.fetching ? <Spin size='small' /> : null}
+          onSearch={fetchUser}
+          onChange={handleSelect}
+          style={{ width: '100%' }}
+        >
+          {tableState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
+        </Select>
+        <Button style={{ marginTop: 20 }} type='primary' onClick={sendToUser}>Отправить</Button>
+        <Button
+          style={{ marginLeft: 20 }}
+          type='primary'
+          ghost
+          onClick={() => setTableState({ ...tableState, showModal: false })}
+        >Отмена</Button>
+      </Modal>
+      }
+      <Table
+        className='table'
+        columns={columns}
+        dataSource={dataSource}
+        rowSelection={rowSelection}
+        locale={{ emptyText: 'Нет данных' }}
+        title={() =>
+          (
+            <div className='table__header table-header'>
+              <div className='table-header__actions'>
+                <Icon type='cloud-upload' onClick={() => openModal()} />
+                <Popconfirm
+                  title='Вы уверены?'
+                  onConfirm={() => handleRemove(type)}
+                  okText='Удалить'
+                  cancelText='Отмена'
+                >
+                  <Icon type='delete' style={{ color: '#FF7D1D' }} />
+                </Popconfirm>
               </div>
-              <div className='table-footer__item'>
-                <Text>Всего: {props.dataSource.length}</Text>
+              <div className='table-header__search'>
+                <AutoComplete onSearch={_.debounce(handleSearch, 500)} placeholder='Введите дату, отправителя, тему...' />
               </div>
             </div>
-            <div>
-              <Text>На странице:</Text>
-              <Select defaultValue={5} style={{ width: 120, marginLeft: '1rem' }}>
-                <Option value={5}>5</Option>
-                <Option value={10}>10</Option>
-                <Option value={15}>15</Option>
-              </Select>
+          )}
+        footer={() =>
+          (
+            <div className='table__footer table-footer'>
+              <div className='table-footer-left'>
+                <div className='table-footer__item'>
+                  <Text>Отмечено: {tableState.selectedRowKeys.length}</Text>
+                </div>
+                <div className='table-footer__item'>
+                  <Text>Всего: {props.dataSource.length}</Text>
+                </div>
+              </div>
+              <div>
+                <Text>На странице:</Text>
+                <Select defaultValue={5} style={{ width: 120, marginLeft: '1rem' }}>
+                  <Option value={5}>5</Option>
+                  <Option value={10}>10</Option>
+                  <Option value={15}>15</Option>
+                </Select>
+              </div>
             </div>
-          </div>
-        )}
-      {...rest}
-    >
-      {children}
-    </Table>
+          )}
+        {...rest}
+      >
+        {children}
+      </Table>
+    </Fragment>
   )
 }
 

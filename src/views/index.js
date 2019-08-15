@@ -6,6 +6,7 @@ import SingleDocumentPage from './SingleDocumentPage'
 import NewDocumentPage from './NewDocumentPage'
 import DraftsPage from './DraftsPage'
 import CompanyPage from './CompanyPage'
+import ExternalsPage from './ExternalsPage'
 import InboxConfirmedDocumentsPage from './InboxConfirmedDocumentsPage'
 import InboxUnconfirmedDocumentsPage from './InboxUnconfirmedDocumentsPage'
 import OutConfirmedDocumentsPage from './OutConfirmedDocumentsPage'
@@ -21,6 +22,7 @@ export {
   SingleDocumentPage,
   NewDocumentPage,
   DraftsPage,
+  ExternalsPage,
   CompanyPage,
   InboxConfirmedDocumentsPage,
   InboxUnconfirmedDocumentsPage,
