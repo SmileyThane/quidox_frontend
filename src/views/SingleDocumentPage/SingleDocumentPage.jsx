@@ -101,6 +101,9 @@ const SingleDocumentPage = props => {
       let position = ''
       let unp = ''
 
+      console.log(ecpData)
+      console.log(ecpDataArr)
+
       ecpDataArr.forEach(function (element) {
         if (element.indexOf('2.5.4.4') > -1) {
           const newElem = element

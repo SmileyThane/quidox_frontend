@@ -74,6 +74,10 @@ const CopmanyPage = props => {
       let name = ''
       let position = ''
       let result = ''
+
+      console.log(companyData)
+      console.log(companyDataArr)
+
       companyDataArr.forEach(function (element) {
         if (element.indexOf('2.5.4.7') > -1) {
           address = address + ' ' + element.substring(element.indexOf('<') + 1, element.indexOf('>'))
