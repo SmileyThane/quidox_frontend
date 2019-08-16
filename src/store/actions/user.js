@@ -40,6 +40,7 @@ const updateUser = data => dispatch => {
         type: t.UPDATE_USER_FETCHING,
         payload: false
       })
+      return data
     })
 }
 

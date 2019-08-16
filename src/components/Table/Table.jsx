@@ -18,6 +18,7 @@ import {
 
 import './Table.scss'
 import { findUsersByParams } from '../../services/api/user'
+import history from '../../history'
 
 const defaultTableState = {
   selectedRowKeys: [],
@@ -56,7 +57,7 @@ const AntdTable = props => {
           {columnName !== 'Отправитель'
             ? <Fragment>
               {record.attached_to_users && record.attached_to_users.map(user => (
-                <Link to={`/documents/${record.id}`} key={user.id}>
+                <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }} key={user.id}>
                   <div style={{ padding: '.5rem 0' }}>
                     {user.user_company.user_email}<br />
                     [{user.user_company.company_name}]
@@ -64,7 +65,7 @@ const AntdTable = props => {
                 </Link>
               ))}
             </Fragment>
-            : <Link to={`/documents/${record.id}`}>
+            : <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }}>
               <div>
                 {record.author['user_email']}<br />
                 [{record.author['company_name']}]
@@ -76,12 +77,12 @@ const AntdTable = props => {
     {
       title: 'Тема',
       key: 'name',
-      render: record => <Link style={{ textTransform: 'uppercase' }} to={`/documents/${record.id}`}>{record.name}</Link>
+      render: record => <Link style={{ textTransform: 'uppercase' }} to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }}>{record.name}</Link>
     },
     {
       title: 'Кол-во документов',
       key: 'attachments',
-      render: record => <Link to={`/documents/${record.id}`} style={{ textAlign: 'center' }} >{record.attachments.length === 0 ? 'Нет приложенных документов' : record.attachments.length }</Link>
+      render: record => <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }} style={{ textAlign: 'center' }} >{record.attachments.length === 0 ? 'Нет приложенных документов' : record.attachments.length }</Link>
     },
     {
       title: 'Дата',
@@ -93,7 +94,7 @@ const AntdTable = props => {
     },
     {
       title: 'Квитанция',
-      render: record => <Link to={`/documents/${record.id}`}>{record['applied_attachments_count'] === 0 ? 'Нет квитанций' : record['applied_attachments_count']}</Link>
+      render: record => <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }}>{record['applied_attachments_count'] === 0 ? 'Нет квитанций' : record['applied_attachments_count']}</Link>
     }
   ]
 

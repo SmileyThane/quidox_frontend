@@ -25,7 +25,7 @@ const AntMenu = props => {
       </Button>
       <Menu
         mode='inline'
-        selectedKeys={[props.location.pathname]}
+        selectedKeys={[props.match.path, (props.location.state || {}).from]}
         defaultOpenKeys={['sub1']}
       >
         <Menu.ItemGroup

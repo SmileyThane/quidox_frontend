@@ -12,7 +12,8 @@ const defaultUserState = {
   phone: '',
   newUserEmail: '',
   showInput: false,
-  isEditMode: false
+  isEditMode: false,
+  password: ''
 }
 
 const UserInfoPage = props => {
@@ -36,6 +37,7 @@ const UserInfoPage = props => {
         name: data.name,
         email: data.email,
         phone: data.phone,
+        password: data.password,
         active_company_id: data.active_company_id
       })
     }
@@ -57,7 +59,7 @@ const UserInfoPage = props => {
         isEditMode: !userState.isEditMode
       })
       updateUser(userState)
-        .then(({ data }) => {
+        .then(data => {
           if (data.success) {
             message.success('Данные успешно обновлены')
           } else {
@@ -104,6 +106,10 @@ const UserInfoPage = props => {
               >
                 {companies && companies.map(i => <Option key={i.company_id} value={i.company_id}>{i.company_name}</Option>)}
               </Select>
+            </Col>
+            <Col span={12}>
+              <p className='user-info-password'>Пароль:</p>
+              <Input.Password onChange={e => updateField('password', e.target.value)} value={userState.password} disabled={!userState.isEditMode} />
             </Col>
           </Row>
         </Spin>

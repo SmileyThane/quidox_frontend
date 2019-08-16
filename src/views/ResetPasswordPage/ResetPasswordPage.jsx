@@ -39,7 +39,7 @@ class LoginPage extends React.Component {
     console.log(this.state.email)
     return (
       <Form onSubmit={this.sendEmail} className='form' style={{ maxHeight: '20rem', maxWidth: '45rem' }}>
-        <Form.Item label='Введите адресс электронной почты'>
+        <Form.Item label='Введите адрес электронной почты'>
           {getFieldDecorator('email', {
             rules: [
               {
