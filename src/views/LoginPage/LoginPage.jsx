@@ -20,11 +20,11 @@ class LoginPage extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         values.secret_key = "vBQ1ubVpR9X56EvVOWmDrgrN6NdvZkaObaa7IeIc";
-        values.auth_data = btoa(Math.random().toString(20).substring(5, 15) + JSON.stringify(values)+Math.random().toString(20).substring(10, 15));
+        values.auth_data = Math.random().toString(20).substring(5, 15) + btoa( JSON.stringify(values))+ Math.random().toString(20).substring(10, 15);
         delete values.email;
         delete values.password;
         delete values.secret_key;
-        // console.log('Received values of form: ', values)
+        console.log('Received values of form: ', Math.random().toString(20).substring(5, 15))
         axios.post('https://api.quidox.by/api/login', values)
           .then(({ data }) => {
             if (data.success) {
