@@ -5,6 +5,7 @@ import axios from 'axios'
 import history from '../../history.js'
 import { Form, Icon, Input, Button, Checkbox, message, Typography } from 'antd'
 import './LoginPage.scss'
+import { Hash } from 'crypto';
 
 const { Text, Title } = Typography
 
@@ -18,7 +19,12 @@ class LoginPage extends React.Component {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values)
+        values.secret_key = "vBQ1ubVpR9X56EvVOWmDrgrN6NdvZkaObaa7IeIc";
+        values.auth_data = btoa(Math.random().toString(20).substring(5, 15) + JSON.stringify(values)+Math.random().toString(20).substring(10, 15));
+        delete values.email;
+        delete values.password;
+        delete values.secret_key;
+        // console.log('Received values of form: ', values)
         axios.post('https://api.quidox.by/api/login', values)
           .then(({ data }) => {
             if (data.success) {
