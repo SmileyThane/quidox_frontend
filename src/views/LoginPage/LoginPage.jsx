@@ -24,7 +24,7 @@ class LoginPage extends React.Component {
         delete values.email;
         delete values.password;
         delete values.secret_key;
-        console.log('Received values of form: ', Math.random().toString(20).substring(5, 15))
+        // console.log('Received values of form: ', Math.random().toString(20).substring(5, 15))
         axios.post('https://api.quidox.by/api/login', values)
           .then(({ data }) => {
             if (data.success) {
