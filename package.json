@@ -5,11 +5,11 @@
   "dependencies": {
     "antd": "^3.19.1",
     "antd-mask-input": "^0.1.10",
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "babel-eslint": "^10.0.1",
     "classnames": "^2.2.6",
     "js-file-download": "^0.4.7",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "node-sass": "^4.12.0",
     "random-hash": "^4.0.1",

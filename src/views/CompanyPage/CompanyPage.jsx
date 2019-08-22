@@ -66,65 +66,65 @@ const CopmanyPage = props => {
     })
 
     window.sign('NewCompany', 'createNewCompany')
-    setTimeout(function () {
-      const companyData = document.getElementById('verifiedDataNewCompany').value
-      const ipData = document.getElementById('companyNumberGlobal').value
-      const companyDataArr = companyData.split(';')
-      let address = ''
-      let name = ''
-      let position = ''
-      let result = ''
+    // setTimeout(function () {
+    //   const companyData = document.getElementById('verified_data_NewCompany').value
+    //   const ipData = document.getElementById('companyNumberGlobal').value
+    //   const companyDataArr = companyData.split(';')
+    //   let address = ''
+    //   let name = ''
+    //   let position = ''
+    //   let result = ''
 
-      console.log(companyData)
-      console.log(companyDataArr)
+    //   console.log(companyData)
+    //   console.log(companyDataArr)
 
-      companyDataArr.forEach(function (element) {
-        if (element.indexOf('2.5.4.7') > -1) {
-          address = address + ' ' + element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-        }
-        if (element.indexOf('2.5.4.9') > -1) {
-          address = address + ' ' + element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-        }
-        if (element.indexOf('2.5.4.10') > -1) {
-          name = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-        }
-        if (element.indexOf('2.5.4.12') > -1) {
-          position = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-        }
-        if (element.indexOf('1.2.112.1.2.1.1.1.1.2') > -1) {
-          result = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-        }
-      })
-      if (result) {
-        setCompanyState({
-          ...companyState,
-          showModal: true,
-          newCompanyDate: moment().format('DD/MM/YYYY HH:mm'),
-          newCompanyNumber: result,
-          newCompanyName: name,
-          newCompanyCity: address,
-          yourPosition: position
-        })
-      } else {
-        axios.get(`/company/find/data/${ipData}`)
-          .then(response => {
-            const res = JSON.parse(JSON.stringify(response.data))
-            setCompanyState({
-              ...companyState,
-              showModal: true,
-              newCompanyDate: moment().format('DD/MM/YYYY HH:mm'),
-              newCompanyNumber: ipData,
-              newCompanyName: res.data[0].VFN,
-              newCompanyCity: address,
-              newCompanyFullName: res.data[0].VNM,
-              modalFetching: !res.data[0].VFN
-            })
-          })
-          .catch(error => {
-            message.error(error.message)
-          })
-      }
-    }, 1000)
+    //   companyDataArr.forEach(function (element) {
+    //     if (element.indexOf('2.5.4.7') > -1) {
+    //       address = address + ' ' + element.substring(element.indexOf('<') + 1, element.indexOf('>'))
+    //     }
+    //     if (element.indexOf('2.5.4.9') > -1) {
+    //       address = address + ' ' + element.substring(element.indexOf('<') + 1, element.indexOf('>'))
+    //     }
+    //     if (element.indexOf('2.5.4.10') > -1) {
+    //       name = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
+    //     }
+    //     if (element.indexOf('2.5.4.12') > -1) {
+    //       position = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
+    //     }
+    //     if (element.indexOf('1.2.112.1.2.1.1.1.1.2') > -1) {
+    //       result = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
+    //     }
+    //   })
+    //   if (result) {
+    //     setCompanyState({
+    //       ...companyState,
+    //       showModal: true,
+    //       newCompanyDate: moment().format('DD/MM/YYYY HH:mm'),
+    //       newCompanyNumber: result,
+    //       newCompanyName: name,
+    //       newCompanyCity: address,
+    //       yourPosition: position
+    //     })
+    //   } else {
+    //     axios.get(`/company/find/data/${ipData}`)
+    //       .then(response => {
+    //         const res = JSON.parse(JSON.stringify(response.data))
+    //         setCompanyState({
+    //           ...companyState,
+    //           showModal: true,
+    //           newCompanyDate: moment().format('DD/MM/YYYY HH:mm'),
+    //           newCompanyNumber: ipData,
+    //           newCompanyName: res.data[0].VFN,
+    //           newCompanyCity: address,
+    //           newCompanyFullName: res.data[0].VNM,
+    //           modalFetching: !res.data[0].VFN
+    //         })
+    //       })
+    //       .catch(error => {
+    //         message.error(error.message)
+    //       })
+    //   }
+    // }, 1000)
   }
 
   const changeActiveCompany = company => {
@@ -281,8 +281,7 @@ const CopmanyPage = props => {
         <Icon type='usergroup-add' />
         Добавить пользователя в компанию
       </Button>
-      <input type='hidden' id='dataNewCompany' value={data.email} />
-      <input type='hidden' id='attr' size='80' value='1.2.112.1.2.1.1.1.1.2' />
+      <input type='hidden' id='data_NewCompany' value={window.btoa(data.email)} />
       <input type='hidden' id='companyNumberGlobal' />
       <div id='attrCertSelectContainer' style={{ display: 'none' }}>
         <span id='certExtAbsent' />
