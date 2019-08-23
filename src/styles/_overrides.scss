@@ -1,6 +1,10 @@
 @import './variables.scss';
 .ant-layout-header {
   padding: 0;
+  line-height: 0;
+}
+.ant-layout.ant-layout-has-sider {
+  height: calc(100vh - 7.1rem);
 }
 
 .badge.ant-badge { 

@@ -70,7 +70,10 @@
               input.id = "signed_data_" + file;
               document.body.appendChild(input);
               document.getElementById("signed_data_" + file).value = signed.Blob.GetAsBase64(0);
-              verify(file, actionType);
+              if (document.getElementById("signed_data_" + file).value.length) {
+                verify(file, actionType);
+              }
+
             } catch (e) {
               handleError(e);
             }
@@ -89,7 +92,6 @@
         try {
           var blob = avcmx.CreateBlob(0);
           blob.SetAsBase64(document.getElementById("signed_data_" + file).value, 0);
-
           msg = conn.CreateMessage(blob, 0);
           if (!msg.IsSigned()) {
             alert("Сообщение не является подписанным сообщением");
@@ -106,58 +108,61 @@
               throw e;
             }
           }
-          var result = {};
-          var sign = msg.Signs(0);
-          cert = sign.SignerCertificate;
-          result.cert = cert;
-          console.log(cert);
-          console.log('subject:' + cert.Subject);
-          result.subject = cert.Subject;
-          result.avest = cert.Issuer;
-          console.log('avest:' + cert.Issuer);
-          var key = cert.AuthorityKeyIdentifier;
-          result.key = key;
-          console.log('key:' + key);
-          issuerCert = cert.IssuerCertificate;
-          var ext = conn.OwnCertificate.GetExtensionByOid('1.2.112.1.2.1.1.1.1.2', 0).ValueAsString;
-          result.unp = ext;
-          console.log('unp:' + ext);
-          var ok = conn.OwnCertificate.GetExtensionByOid('2.5.29.14', 0).ValueAsString;
-          result.ok = ok;
-          console.log('ok:' + ok);
-          var passport = conn.OwnCertificate.GetExtensionByOid('1.2.112.1.2.1.1.1.1.1', 0).ValueAsString;
-          result.passport = passport;
-          console.log('passport:' + passport);
-          var position = conn.OwnCertificate.GetExtensionByOid('1.2.112.1.2.1.1.5.1', 0).ValueAsString;
-          result.position = position;
-          console.log('position:' + position);
-          var pk = cert.PublicKey.GetAsHex(0);
-          result.pk = pk;
-          console.log('pk:' + pk);
-          var date = new Date(sign.SignDateTimeSec * 1000).toString();
-          result.date = date;
-          console.log('date:' + date);
+            var sign = msg.Signs(0);
+            cert = sign.SignerCertificate;
+            if (cert && conn) {
+            console.log(cert);
+            console.log(conn);
+            var result = {};
+            result.cert = cert;
+            var ext = conn.OwnCertificate.GetExtensionByOid.Show();
+            result.unp = ext;
+            console.log('unp:' + ext);
+          }
+            console.log('subject:' + cert.Subject);
+            result.subject = cert.Subject;
+            result.avest = cert.Issuer;
+            console.log('avest:' + cert.Issuer);
+            var key = cert.AuthorityKeyIdentifier;
+            result.key = key;
+            console.log('key:' + key);
+            issuerCert = cert.IssuerCertificate;
+            var ok = conn.OwnCertificate.GetExtensionByOid('2.5.29.14', 0).ValueAsString;
+            result.ok = ok;
+            console.log('ok:' + ok);
+            // var passport = conn.OwnCertificate.GetExtensionByOid('1.2.112.1.2.1.1.1.1.1', 0).ValueAsString;
+            // result.passport = passport;
+            // console.log('passport:' + passport);
+            // var position = conn.OwnCertificate.GetExtensionByOid('1.2.112.1.2.1.1.5.1', 0).ValueAsString;
+            // result.position = position;
+            // console.log('position:' + position);
+            var pk = cert.PublicKey.GetAsHex(0);
+            result.pk = pk;
+            console.log('pk:' + pk);
+            var date = new Date(sign.SignDateTimeSec * 1000).toString();
+            result.date = date;
+            console.log('date:' + date);
+
 
         } catch (e) {
           handleError(e);
         }
 
         if (actionType === 'createNewCompany') {
-          // document.getElementById('companyNumberGlobal').value = result['unp'];
-          document.getElementById('companyData').value = encodeURIComponent(JSON.stringify(result));
+          document.getElementById('companyNumberGlobal').value = result['unp'];
         }
 
-        if (result) {
+        // if (result) {
 
-          for (prop in result) {
-            var input = document.createElement("input");
-            input.type = "hidden";
-            input.id = "verified_data_" + file + "_" + prop;
-            document.body.appendChild(input);
-            document.getElementById("verified_data_" + file + "_" + prop).value = result[prop];
-            console.log("verified_data_" + file + "_" + prop + "=" + result[prop]);
-          }
-        }
+        //   for (prop in result) {
+        //     var input = document.createElement("input");
+        //     input.type = "hidden";
+        //     input.id = "verified_data_" + file + "_" + prop;
+        //     document.body.appendChild(input);
+        //     document.getElementById("verified_data_" + file + "_" + prop).value = result[prop];
+        //     console.log("verified_data_" + file + "_" + prop + "=" + result[prop]);
+        //   }
+        // }
 
       }
     </script>
@@ -180,7 +185,7 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
-  <script type="text/javascript">
+  <!-- <script type="text/javascript">
     !function(){function t(t,e){return function(){window.carrotquestasync.push(t,arguments)}}if("undefined"==typeof carrotquest){var e=document.createElement("script");e.type="text/javascript",e.async=!0,e.src="//cdn.carrotquest.io/api.min.js",document.getElementsByTagName("head")[0].appendChild(e),window.carrotquest={},window.carrotquestasync=[],carrotquest.settings={};for(var n=["connect","track","identify","auth","oth","onReady","addCallback","removeCallback","trackMessageInteraction"],a=0;a<n.length;a++)carrotquest[n[a]]=t(n[a])}}(),carrotquest.connect("27800-05d8494222c541d21fbadd0777");
-    </script>
+    </script> -->
 </html>

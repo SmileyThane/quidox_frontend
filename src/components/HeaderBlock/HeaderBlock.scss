@@ -2,12 +2,11 @@
 .header {
   background: map-get($colors, white) !important;
   border-bottom: 1px solid map-get($colors, gray);
-  padding: 0 2rem 0 0 !important;
-  height: auto !important;
+  height: 70px !important;
+  padding: 1rem !important;
   .header__content {
     display: flex;
     align-items: center;
-    height: 7rem;
   }
   .header__left {
     min-width: 28rem;

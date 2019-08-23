@@ -60,35 +60,6 @@ const CopmanyPage = props => {
 
   const onClick = () => {
     window.sign('NewCompany', 'createNewCompany')
-    setCompanyState({
-      ...companyState,
-      showModal: true,
-      modalFetching: true
-    })
-    let name = ''
-    let address = ''
-    const companyData = JSON.parse(decodeURIComponent(document.getElementById('companyData').value))
-    const arr = companyData.split('=')
-    arr.forEach(e => {
-      if (e.indexOf('STREET') > -1) {
-        name = e.split(',').slice(0, -1).join().slice(1, -1)
-      }
-      if (e.indexOf('L') > -1) {
-        address = e.split(',').slice(0, -1).join().slice(1, -1)
-      }
-    })
-    if (companyData) {
-      setCompanyState({
-        ...companyState,
-        modalFetching: false,
-        newCompanyDate: moment().format('DD/MM/YYYY HH:mm'),
-        newCompanyNumber: +companyData.unp,
-        newCompanyName: name,
-        newCompanyCity: address,
-        yourPosition: companyData.position
-      })
-    }
-
     // setTimeout(function () {
     //   const companyData = document.getElementById('verified_data_NewCompany').value
     //   const ipData = document.getElementById('companyNumberGlobal').value
@@ -305,7 +276,7 @@ const CopmanyPage = props => {
         Добавить пользователя в компанию
       </Button>
       <input type='hidden' id='data_NewCompany' value={window.btoa(data.email)} />
-      <input type='hidden' id='companyData' />
+      <input type='hidden' id='companyNumberGlobal' />
       <div id='attrCertSelectContainer' style={{ display: 'none' }}>
         <span id='certExtAbsent' />
         <select style={{ visibility: 'hidden' }} id='attrCertSelect' />
