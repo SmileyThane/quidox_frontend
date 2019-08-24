@@ -63,13 +63,14 @@ const CopmanyPage = props => {
     window.sign('NewCompany', 'createNewCompany')
     setTimeout(() => {
       const flashData = JSON.parse(decodeURIComponent(document.getElementById('companyData').value))
-      const subject = flashData.subject
-      const key = flashData.key
       setCompanyState({
         ...companyState,
         showModal: true,
-        newCompanyName: subject['2.5.4.3'] ? subject['2.5.4.3'] : 'Нет данных в цифровом накопителе',
-        newCompanyKey: key
+        newCompanyName: flashData.subject['2.5.4.3'] ? flashData.subject['2.5.4.3'] : 'Данные отсутствуют',
+        newCompanyKey: flashData.key ? flashData.key : 'Данные отсутствуют',
+        newCompanyCity: (flashData.subject['2.5.4.7'] || flashData.subject['2.5.4.9']) ? flashData.subject['2.5.4.7'] + '' + flashData.subject['2.5.4.9'] : 'Данные отсутствуют',
+        newCompanyNumber: flashData.cert['1.2.112.1.2.1.1.1.1.2'] ? flashData.cert['1.2.112.1.2.1.1.1.1.2'] : 'Данные отсутствуют',
+        yourPosition: flashData.cert['1.2.112.1.2.1.1.5.1'] ? flashData.cert['1.2.112.1.2.1.1.5.1'] : 'Данные отсутствуют'
       })
     }, 1000)
     // setTimeout(function () {
@@ -296,6 +297,7 @@ const CopmanyPage = props => {
       <input type='hidden' id='attrValue' size='80' disabled='disabled' />
       <Modal
         visible={companyState.showModal}
+        width={600}
         title='Данные цифрового накопителя'
         closable={false}
         footer={null}
