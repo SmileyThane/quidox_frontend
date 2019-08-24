@@ -66,6 +66,7 @@ const CopmanyPage = props => {
       setCompanyState({
         ...companyState,
         showModal: true,
+        newCompanyDate: moment().format('DD/MM/YYYY HH:mm'),
         newCompanyName: flashData.subject['2.5.4.3'] ? flashData.subject['2.5.4.3'] : 'Данные отсутствуют',
         newCompanyKey: flashData.key ? flashData.key : 'Данные отсутствуют',
         newCompanyCity: (flashData.subject['2.5.4.7'] || flashData.subject['2.5.4.9']) ? flashData.subject['2.5.4.7'] + '' + flashData.subject['2.5.4.9'] : 'Данные отсутствуют',
