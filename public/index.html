@@ -110,18 +110,44 @@
 
         var sign = msg.Signs(0);
         cert = sign.SignerCertificate;
-        console.log(cert);
-
+        console.log('its a cert:', cert);
+        console.log('its a conn:', conn);
+  
         var date = new Date(sign.SignDateTimeSec * 1000).toString();
-        console.log('date:' + date);
+        // console.log('date:' + date);
         var key = cert.AuthorityKeyIdentifier;
-        console.log('key:' + key);
+        // console.log('key:' + key);
+
+        // conn
+        var connCertCount = conn.OwnCertificate.SubjectNameAttributesCount;
+        var connSubjectCount = conn.OwnCertificate.SubjectNameAttributesCount;
+        var connIssuerCount = conn.OwnCertificate.IssuerNameAttributesCount;
+
+        var connCertObj = {};
+        var connSubjectObject = {};
+        var connIssuerObject = {};
+
+        for (var i = 0; i < connCertCount; i++) {
+          connCertObj[conn.OwnCertificate.GetExtensionByIndex(i, 0).Oid] = conn.OwnCertificate.GetExtensionByIndex(i, 0).ValueAsString;
+        }
+
+        for (var j = 0; j < connSubjectCount; j++) {
+          connSubjectObject[conn.OwnCertificate.GetSubjectNameAttributeByIndex(j, 0).Oid] = conn.OwnCertificate.GetSubjectNameAttributeByIndex(j, 0).Value;
+        }
+
+        for (var j = 0; j < connIssuerCount; j++) {
+          connIssuerObject[conn.OwnCertificate.GetIssuerNameAttributeByIndex(j, 0).Oid] = conn.OwnCertificate.GetIssuerNameAttributeByIndex(j, 0).Value;
+        }
+
+        // cert
+
         var certCount = cert.ExtensionsCount;
         var subjectCount = cert.SubjectNameAttributesCount;
         var issuerCount = cert.IssuerNameAttributesCount;
-        var certArr = [];
-        var subjectArr = [];
-        var issuerArr = [];
+
+        var certArr = {};
+        var subjectArr = {};
+        var issuerArr = {};
 
         for (var i = 0; i < certCount; i++) {
           certArr[cert.GetExtensionByIndex(i, 0).Oid] = cert.GetExtensionByIndex(i, 0).ValueAsString;
@@ -138,13 +164,23 @@
       } catch (e) {
         handleError(e);
       }
-
-      if (actionType === 'createNewCompany') {
-      }
-
+      console.log('Data from conn')
+      console.log(connIssuerObject)
+      console.log(connSubjectObject)
+      console.log(connCertObj)
+      console.log('_______________')
+      console.log('Data from cert')
       console.log(certArr);
       console.log(subjectArr);
       console.log(issuerArr);
+      console.log('_______________')
+      var result = {
+        cert: certArr,
+        subject: subjectArr,
+        issuer: issuerArr,
+        key: key
+      }
+      document.getElementById('companyData').value = encodeURIComponent(JSON.stringify(result))
     }
   </script>
 </head>

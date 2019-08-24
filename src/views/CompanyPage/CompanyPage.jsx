@@ -24,16 +24,17 @@ import './CompanyPage.scss'
 
 const defaultCompanyState = {
   selectedCompanyId: null,
-  newCompanyDate: '',
-  newCompanyNumber: '',
-  newCompanyName: '',
-  newCompanyCity: '',
-  newCompanyFullName: '',
   newUserEmail: '',
   yourPosition: '',
   showInput: false,
   showModal: false,
-  modalFetching: false
+  modalFetching: false,
+  newCompanyDate: '', // Дата создания
+  newCompanyNumber: null, // УНП компании
+  newCompanyName: '', // Полное имя компании
+  newCompanyCity: '', // Место регистрации компании
+  newCompanyFullName: '', // Полное имя компании?
+  newCompanyKey: null // Ключ компании
 }
 
 const { Text } = Typography
@@ -60,6 +61,17 @@ const CopmanyPage = props => {
 
   const onClick = () => {
     window.sign('NewCompany', 'createNewCompany')
+    setTimeout(() => {
+      const flashData = JSON.parse(decodeURIComponent(document.getElementById('companyData').value))
+      const subject = flashData.subject
+      const key = flashData.key
+      setCompanyState({
+        ...companyState,
+        showModal: true,
+        newCompanyName: subject['2.5.4.3'] ? subject['2.5.4.3'] : 'Нет данных в цифровом накопителе',
+        newCompanyKey: key
+      })
+    }, 1000)
     // setTimeout(function () {
     //   const companyData = document.getElementById('verified_data_NewCompany').value
     //   const ipData = document.getElementById('companyNumberGlobal').value
@@ -276,7 +288,7 @@ const CopmanyPage = props => {
         Добавить пользователя в компанию
       </Button>
       <input type='hidden' id='data_NewCompany' value={window.btoa(data.email)} />
-      <input type='hidden' id='companyNumberGlobal' />
+      <input type='hidden' id='companyData' />
       <div id='attrCertSelectContainer' style={{ display: 'none' }}>
         <span id='certExtAbsent' />
         <select style={{ visibility: 'hidden' }} id='attrCertSelect' />
@@ -284,7 +296,7 @@ const CopmanyPage = props => {
       <input type='hidden' id='attrValue' size='80' disabled='disabled' />
       <Modal
         visible={companyState.showModal}
-        title={companyState.newCompanyNumber ? 'Данные компании' : 'Данные ИП'}
+        title='Данные цифрового накопителя'
         closable={false}
         footer={null}
         onCancel={() => setCompanyState({ ...companyState, showModal: !companyState.showModal })}
@@ -318,6 +330,12 @@ const CopmanyPage = props => {
                 <div className='info__item'>
                   <div className='info__title'>Должность сотруднка</div>
                   <div className='info__content'>{companyState.yourPosition}</div>
+                </div>
+              }
+              {companyState.newCompanyKey &&
+                <div className='info__item'>
+                  <div className='info__title'>Цифровой ключ</div>
+                  <div className='info__content'>{companyState.newCompanyKey}</div>
                 </div>
               }
             </div>
