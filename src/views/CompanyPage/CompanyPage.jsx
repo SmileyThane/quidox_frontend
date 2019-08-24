@@ -182,7 +182,8 @@ const CopmanyPage = props => {
       company_number: companyState.newCompanyNumber,
       description: companyState.newCompanyCity,
       registration_date: companyState.newCompanyDate,
-      your_position: companyState.yourPosition
+      your_position: companyState.yourPosition,
+      key: companyState.newCompanyKey
     }
     createCompany(newCompanyData)
       .then(({ data }) => {
