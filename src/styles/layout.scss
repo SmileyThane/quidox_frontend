@@ -21,3 +21,8 @@
     margin-bottom: 2rem;
   }
 }
+.main-content {
+  &.main-content__public {
+    min-height: calc(100vh - 14rem);
+  }
+}

@@ -68,8 +68,8 @@ const CopmanyPage = props => {
         showModal: true,
         newCompanyDate: moment().format('DD/MM/YYYY HH:mm'),
         newCompanyName: flashData.subject['2.5.4.3'] ? flashData.subject['2.5.4.3'] : 'Данные отсутствуют',
-        newCompanyKey: flashData.key ? flashData.key : 'Данные отсутствуют',
-        newCompanyCity: (flashData.subject['2.5.4.7'] || flashData.subject['2.5.4.9']) ? flashData.subject['2.5.4.7'] + '' + flashData.subject['2.5.4.9'] : 'Данные отсутствуют',
+        newCompanyKey: (flashData.subject['2.5.4.5'] && flashData.cert['1.2.112.1.2.1.1.1.1.2']) ? flashData.cert['1.2.112.1.2.1.1.1.1.2'] + flashData.subject['2.5.4.5'] : 'Невозможно создать цифровой ключ',
+        newCompanyCity: (flashData.subject['2.5.4.7'] || flashData.subject['2.5.4.9']) ? flashData.subject['2.5.4.7'] + ', ' + flashData.subject['2.5.4.9'] : 'Данные отсутствуют',
         newCompanyNumber: flashData.cert['1.2.112.1.2.1.1.1.1.2'] ? flashData.cert['1.2.112.1.2.1.1.1.1.2'] : 'Данные отсутствуют',
         yourPosition: flashData.cert['1.2.112.1.2.1.1.5.1'] ? flashData.cert['1.2.112.1.2.1.1.5.1'] : 'Данные отсутствуют'
       })
