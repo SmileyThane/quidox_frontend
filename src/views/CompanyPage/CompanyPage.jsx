@@ -185,7 +185,24 @@ const CopmanyPage = props => {
       your_position: companyState.yourPosition,
       key: companyState.newCompanyKey
     }
-    createCompany(newCompanyData)
+    // createCompany(newCompanyData)
+    //   .then(({ data }) => {
+    //     if (data.success) {
+    //       setCompanyState({ ...defaultCompanyState })
+    //       message.success('Компания создана успешно!!')
+    //     } else {
+    //       throw new Error(data.error)
+    //     }
+    //   })
+    //   .catch(error => {
+    //     message.error(error.message)
+    //   })
+    // console.log(data  )
+    axios.post('https://api.quidox.by/api/company/store', newCompanyData, {
+      headers: {
+        'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
+      }
+    })
       .then(({ data }) => {
         if (data.success) {
           setCompanyState({ ...defaultCompanyState })
@@ -194,7 +211,7 @@ const CopmanyPage = props => {
           throw new Error(data.error)
         }
       })
-      .catch(error => {
+      .catch(function (error) {
         message.error(error.message)
       })
   }
@@ -313,10 +330,10 @@ const CopmanyPage = props => {
                 <div className='info__content'>{companyState.newCompanyDate}</div>
               </div>
               {companyState.newCompanyNumber &&
-              <div className='info__item'>
-                <div className='info__title'>УНП</div>
-                <div className='info__content'>{companyState.newCompanyNumber}</div>
-              </div>
+                <div className='info__item'>
+                  <div className='info__title'>УНП</div>
+                  <div className='info__content'>{companyState.newCompanyNumber}</div>
+                </div>
               }
               {companyState.newCompanyName &&
                 <div className='info__item'>
