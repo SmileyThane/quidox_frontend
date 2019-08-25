@@ -185,33 +185,13 @@ const CopmanyPage = props => {
       your_position: companyState.yourPosition,
       key: companyState.newCompanyKey
     }
-    // createCompany(newCompanyData)
-    //   .then(({ data }) => {
-    //     if (data.success) {
-    //       setCompanyState({ ...defaultCompanyState })
-    //       message.success('Компания создана успешно!!')
-    //     } else {
-    //       throw new Error(data.error)
-    //     }
-    //   })
-    //   .catch(error => {
-    //     message.error(error.message)
-    //   })
-    // console.log(data  )
-    axios.post('https://api.quidox.by/api/company/store', newCompanyData, {
-      headers: {
-        'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
-      }
-    })
-      .then(({ data }) => {
-        if (data.success) {
+    createCompany(newCompanyData)
+      .then(response => {
+        console.log(response)
           setCompanyState({ ...defaultCompanyState })
           message.success('Компания создана успешно!!')
-        } else {
-          throw new Error(data.error)
-        }
       })
-      .catch(function (error) {
+      .catch(error => {
         message.error(error.message)
       })
   }
@@ -300,9 +280,11 @@ const CopmanyPage = props => {
       {!isIE &&
         <Text type='secondary'>Создание компании возможно только в браузере Internet Explorer</Text>
       }
+
       {isIE &&
         <Button type='primary' onClick={onClick}>Создать компанию</Button>
       }
+      
       <Button type='primary' style={{ marginLeft: '1rem' }} onClick={() => setCompanyState({ ...companyState, showInput: true })}>
         <Icon type='usergroup-add' />
         Добавить пользователя в компанию

@@ -23,7 +23,7 @@ export default (state = initalState, action) => {
         isFetching: action.payload
       }
     case t.CREATE_COMPANY_SUCCESS:
-      const res = JSON.parse(JSON.stringify(action.payload.data))
+      const res = action.payload.data
       console.log('data:', res)
       return {
         ...state,

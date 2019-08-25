@@ -43,8 +43,7 @@ const changeActiveCompanyById = id => dispatch => {
     })
 }
 
-const createCompany = data => (dispatch, getState) => {
-  const state = getState()
+const createCompany = data => dispatch => {
   dispatch({
     type: t.CREATE_COMPANY_FETCHING,
     payload: true
@@ -56,18 +55,12 @@ const createCompany = data => (dispatch, getState) => {
           type: t.CREATE_COMPANY_SUCCESS,
           payload: data
         })
-
-        if (!state.company.list.length) {
-          dispatch({
-            type: t.CHANGE_ACTIVE_COMPANY_BY_ID_SUCCESS,
-            payload: data.data.id
-          })
-        }
       }
       dispatch({
         type: t.CREATE_COMPANY_FETCHING,
         payload: false
       })
+      return data
     })
 }
 
