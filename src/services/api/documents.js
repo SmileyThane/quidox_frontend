@@ -64,6 +64,14 @@ const removeDocumentsByIds = data => {
   })
 }
 
+const checkFlashKey = data => {
+  return http({
+    url: 'documents/sign/confirm',
+    method: 'POST',
+    data
+  })
+}
+
 export {
   createDocument,
   sendDocumentToUser,
@@ -72,5 +80,6 @@ export {
   getOutConfirmedDocumentsByActiveCompanyId,
   getOutUnconfirmedDocumentsByActiveCompanyId,
   getDraftDocumentsByActiveCompany,
-  removeDocumentsByIds
+  removeDocumentsByIds,
+  checkFlashKey
 }

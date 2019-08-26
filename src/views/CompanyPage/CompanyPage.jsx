@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import moment from 'moment'
-import axios from 'axios'
 import useForm from 'rc-form-hooks'
 
 import { api } from '../../services'
@@ -114,6 +113,13 @@ const CopmanyPage = props => {
           .catch(error => {
             message.error(error.message)
           })
+      })
+  }
+
+  const check = () => {
+    api.documents.checkFlashKey({ key: companyState.key })
+      .then(response => {
+        console.log(response)
       })
   }
 
@@ -284,6 +290,7 @@ const CopmanyPage = props => {
               }
             </div>
             <Button style={{ margin: '20px 0 0 20px' }} onClick={handleCreateCompany} type='primary'>Создать</Button>
+            <Button onClick={check}>check</Button>
           </Spin>
         </div>
 
