@@ -18,7 +18,6 @@ const HeaderBlock = props => {
     window.localStorage.clear()
     history.push('/login')
   }
-  console.log(data)
   return (
     <Header className='header'>
       <div className='header__content'>
@@ -33,7 +32,7 @@ const HeaderBlock = props => {
                   Активная компания:
                   {(data && data.companies) && data.companies.map(i => {
                     if (i.company_id === data.active_company_id) {
-                      return <Tag color='#87d068' style={{ marginLeft: '.5rem' }}>{i.company_name}</Tag>
+                      return <Tag key={i.company_id} color='#87d068' style={{ marginLeft: '.5rem' }}>{i.company_name}</Tag>
                     } else {
                       return null
                     }
