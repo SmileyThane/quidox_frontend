@@ -59,9 +59,9 @@ const CopmanyPage = props => {
   const [companyState, setCompanyState] = useState({ ...defaultCompanyState })
 
   const onClick = () => {
-    window.sign('NewCompany', 'createNewCompany')
+    window.sign('NewCompany')
     setTimeout(() => {
-      const flashData = JSON.parse(decodeURIComponent(document.getElementById('companyData').value))
+      const flashData = JSON.parse(decodeURIComponent(document.getElementById('verifiedDataNewCompany').value))
       setCompanyState({
         ...companyState,
         showModal: true,
@@ -113,13 +113,6 @@ const CopmanyPage = props => {
           .catch(error => {
             message.error(error.message)
           })
-      })
-  }
-
-  const check = () => {
-    api.documents.checkFlashKey({ key: companyState.key })
-      .then(response => {
-        console.log(response)
       })
   }
 
@@ -236,7 +229,7 @@ const CopmanyPage = props => {
         <Icon type='usergroup-add' />
         Добавить пользователя в компанию
       </Button>
-      <input type='hidden' id='data_NewCompany' value={window.btoa(data.email)} />
+      <input type='hidden' id='dataNewCompany' value={window.btoa(data.email)} />
       <input type='hidden' id='companyData' />
       <div id='attrCertSelectContainer' style={{ display: 'none' }}>
         <span id='certExtAbsent' />
@@ -290,7 +283,6 @@ const CopmanyPage = props => {
               }
             </div>
             <Button style={{ margin: '20px 0 0 20px' }} onClick={handleCreateCompany} type='primary'>Создать</Button>
-            <Button onClick={check}>check</Button>
           </Spin>
         </div>
 

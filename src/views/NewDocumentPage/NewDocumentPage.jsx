@@ -225,11 +225,19 @@ const NewDocumentPage = props => {
       input.type = 'hidden'
       input.id = 'dataFile-' + index
       document.body.appendChild(input)
+      console.log(input);
       document.getElementById('dataFile-' + index).value = reader.result
-      window.sign('File-' + index)
+      const res = window.sign('File-' + index)
+
+      console.log('res', res);
+
+
+      console.log(1);
 
       setTimeout(() => {
+        console.log(3333);
         const value = document.getElementById('verifiedData' + 'File-' + index).value
+        console.log(44444);
         const signedValue = document.getElementById('signedData' + 'File-' + index).value
         setDocumentState({
           ...documentState,

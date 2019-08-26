@@ -30,8 +30,8 @@ const defaultDocumentState = {
   certs: '',
   fileHashes: '',
   fileData: '',
-  fileCert: {},
-  activeFileCert: 1,
+  fileCerts: [],
+  activeFileCert: 0,
   ecpInfo: null
 }
 // eslint-disable-next-line spaced-comment
@@ -54,6 +54,12 @@ const SingleDocumentPage = props => {
       getDocumentById(match.params.id)
     }
   }, [match, getDocumentById])
+
+  useEffect(() => {
+    if (documentState.fileCerts[documentState.activeFileCert]) {
+      showUserData('ecp', documentState.fileCerts, documentState.activeFileCert)
+    }
+  }, [documentState.activeFileCert])
 
   const showModal = item => {
     axios.get(item['preview_path'], {
@@ -88,65 +94,29 @@ const SingleDocumentPage = props => {
     })
   }
 
-  const showUserData = (type, dataArray = [], index) => {
+  const showUserData = (type, dataArray = []) => {
     let ecpInfo = {}
 
     if (type === 'ecp') {
-      const ecpData = dataArray[index].verification_info
-      const ecpDataArr = ecpData.split(';')
-
-      let address = ''
-      let org = ''
-      let name = ''
-      let position = ''
-      let unp = ''
-
+      const ecpData = JSON.parse(decodeURIComponent(dataArray[documentState.activeFileCert].verification_info))
+      console.log(dataArray);
       console.log(ecpData)
-      console.log(ecpDataArr)
 
-      ecpDataArr.forEach(function (element) {
-        if (element.indexOf('2.5.4.4') > -1) {
-          const newElem = element
-            .substring(element.indexOf('2.5.4.4'))
-          name = name + newElem.substring(newElem.indexOf('=') + 1, newElem.indexOf(','))
-        }
-        if (element.indexOf('2.5.4.41') > -1) {
-          const newElem = element
-            .substring(element.indexOf('2.5.4.41'))
-          name = name + ' ' + newElem.substring(newElem.indexOf('=') + 1, newElem.indexOf(','))
-        }
-        if (element.indexOf('2.5.4.42') > -1) {
-          const newElem = element
-            .substring(element.indexOf('2.5.4.42'))
-          name = name + ' ' + newElem.substring(newElem.indexOf('=') + 1, newElem.indexOf(','))
-        }
-        if (element.indexOf('2.5.4.7') > -1) {
-          address = address + ' ' + element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-        }
-        if (element.indexOf('2.5.4.9') > -1) {
-          address = address + ' ' + element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-        }
-        if (element.indexOf('2.5.4.10') > -1) {
-          org = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-        }
-        if (element.indexOf('2.5.4.12') > -1) {
-          position = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-        }
-        if (element.indexOf('1.2.112.1.2.1.1.1.1.2') > -1) {
-          unp = element.substring(element.indexOf('<') + 1, element.indexOf('>'))
-        }
-      })
-
-      ecpInfo = { address, name, org, position, unp }
+      ecpInfo = {
+        unp: ecpData.cert['1.2.112.1.2.1.1.1.1.2'],
+          org: ecpData.subject['2.5.4.3'],
+          position: ecpData.cert['1.2.112.1.2.1.1.5.1'],
+          address: ecpData.subject['2.5.4.7'] + ' ' + ecpData.subject['2.5.4.9'],
+          name: ecpData.subject['2.5.4.4'] + ' ' + ecpData.subject['2.5.4.41']
+      }
     }
 
     setDocumentState({
       ...documentState,
-      showModal: !documentState.showModal,
+      showModal: true,
       userData: data,
       modalType: type,
       fileCerts: dataArray,
-      activeFileCert: index,
       ecpInfo
     })
   }
@@ -254,7 +224,6 @@ const SingleDocumentPage = props => {
         }
       })
         .then(({ data }) => {
-          console.log(data)
           if (data) {
             fileDownload(data, item.name)
             message.success('Файл успешно загружен!')
@@ -295,18 +264,20 @@ const SingleDocumentPage = props => {
   }
 
   const nextCert = () => {
-    if (documentState.activeFileCert + 1 === documentState.fileCerts.length) {
-      return null
+    if (documentState.activeFileCert === documentState.fileCerts.length - 1) {
+      return
     }
+
     setDocumentState({
       ...documentState,
       activeFileCert: documentState.activeFileCert + 1
     })
   }
   const prevCert = () => {
-    if (documentState.activeFileCert <= 1) {
-      return null
+    if (documentState.activeFileCert === 0) {
+      return
     }
+
     setDocumentState({
       ...documentState,
       activeFileCert: documentState.activeFileCert - 1
@@ -379,16 +350,12 @@ const SingleDocumentPage = props => {
                       <div className='single-document'>
                         <Icon style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }} type='eye' onClick={() => showModal(item)} />
                         <p style={{ marginRight: 10 }} className='single-document__name'>{item.name}</p>
-                        {item.users_companies.length
-                          ? (item.users_companies || []).map((company, ind) =>
+                        {item.users_companies.length &&
                             <Tag
-                              key={company.id}
-                              onClick={() => showUserData('ecp', item.users_companies, ind)}
+                              onClick={() => showUserData('ecp', item.users_companies)}
                               style={{ cursor: 'pointer' }} color='#3278fb'>
-                              ЭЦП {ind + 1}
+                              ЭЦП {item.users_companies.length}
                             </Tag>
-                          )
-                          : ''
                         }
                       </div>
                     </List.Item>
@@ -543,6 +510,7 @@ const SingleDocumentPage = props => {
         </Modal>
       }
       <input type='hidden' id='attr' size='80' value='1.2.112.1.2.1.1.1.1.2' />
+      <input type="hidden" id='companyData'/>
       <div id='attrCertSelectContainer' style={{ display: 'none' }}>
         <span id='certExtAbsent' />
         <select style={{ visibility: 'hidden' }} id='attrCertSelect' />
@@ -553,3 +521,8 @@ const SingleDocumentPage = props => {
 }
 
 export default SingleDocumentPage
+
+// api.documents.checkFlashKey({ key: companyState.newCompanyKey })
+//     .then(({ data }) => {
+//       console.log(data.success)
+//     })
