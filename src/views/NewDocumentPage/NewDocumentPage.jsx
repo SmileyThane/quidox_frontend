@@ -1,5 +1,6 @@
 import React, { useRef, useState, Fragment } from 'react'
 
+import { api } from '../../services'
 import axios from 'axios'
 import _ from 'lodash'
 import { findUsersByParams } from '../../services/api/user'
@@ -27,7 +28,8 @@ const defaultDocumentData = {
   data: [],
   value: [],
   fetching: false,
-  ids: []
+  ids: [],
+  verifyFetching: false
 }
 // eslint-disable-next-line spaced-comment
 const isIE = /*@cc_on!@*/false || !!document.documentMode
@@ -218,6 +220,10 @@ const NewDocumentPage = props => {
   }
 
   const verifyFile = index => {
+    setDocumentState({
+      ...documentState,
+      verifyFetching: true
+    })
     const reader = new window.FileReader()
     reader.readAsDataURL(documentState.files[index])
     reader.onload = function () {
@@ -225,38 +231,44 @@ const NewDocumentPage = props => {
       input.type = 'hidden'
       input.id = 'dataFile-' + index
       document.body.appendChild(input)
-      console.log(input);
       document.getElementById('dataFile-' + index).value = reader.result
       const res = window.sign('File-' + index)
-
-      console.log('res', res);
-
-
-      console.log(1);
 
       setTimeout(() => {
         console.log(3333);
         const value = document.getElementById('verifiedData' + 'File-' + index).value
-        console.log(44444);
         const signedValue = document.getElementById('signedData' + 'File-' + index).value
-        setDocumentState({
-          ...documentState,
-          base64files: [
-            ...documentState.base64files.slice(0, index),
-            reader.result,
-            ...documentState.base64files.slice(index + 1)
-          ],
-          fileHashes: [
-            ...documentState.fileHashes.slice(0, index),
-            signedValue,
-            ...documentState.fileHashes.slice(index + 1)
-          ],
-          fileData: [
-            ...documentState.fileData.slice(0, index),
-            value,
-            ...documentState.fileData.slice(index + 1)
-          ]
-        })
+        const flashData = JSON.parse(decodeURIComponent(value))
+        const key = flashData.cert['1.2.112.1.2.1.1.1.1.2'] + flashData.cert['1.2.112.1.2.1.1.1.1.1']
+        api.documents.checkFlashKey({ key: key })
+          .then(({ data }) => {
+            if (data.success) {
+              setDocumentState({
+                ...documentState,
+                verifyFetching: false,
+                base64files: [
+                  ...documentState.base64files.slice(0, index),
+                  reader.result,
+                  ...documentState.base64files.slice(index + 1)
+                ],
+                fileHashes: [
+                  ...documentState.fileHashes.slice(0, index),
+                  signedValue,
+                  ...documentState.fileHashes.slice(index + 1)
+                ],
+                fileData: [
+                  ...documentState.fileData.slice(0, index),
+                  value,
+                  ...documentState.fileData.slice(index + 1)
+                ]
+              })
+            } else {
+              throw new Error(data.error)
+            }
+          })
+          .catch(error => {
+            message.error(error.message)
+          })
       }, 1000)
     }
     reader.onerror = function (error) {
@@ -312,7 +324,7 @@ const NewDocumentPage = props => {
                     </div>
                     <div className='actions-right'>
                       {isIE &&
-                      <Icon onClick={() => verifyFile(i)} style={{ color: '#3278fb' }} type='edit' />
+                      <Icon onClick={() => verifyFile(i)} style={{ color: '#3278fb' }} type={documentState.verifyFetching ? 'loading' : 'edit'} />
                       }
                       <Icon
                         onClick={() => removeFile(i)}

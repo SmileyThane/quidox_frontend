@@ -102,12 +102,17 @@ const SingleDocumentPage = props => {
       console.log(dataArray);
       console.log(ecpData)
 
+      const validity = ecpData.cert['1.2.112.1.2.1.1.5.4'].split('-')
+      console.log(validity)
+
       ecpInfo = {
         unp: ecpData.cert['1.2.112.1.2.1.1.1.1.2'],
           org: ecpData.subject['2.5.4.3'],
           position: ecpData.cert['1.2.112.1.2.1.1.5.1'],
           address: ecpData.subject['2.5.4.7'] + ' ' + ecpData.subject['2.5.4.9'],
-          name: ecpData.subject['2.5.4.4'] + ' ' + ecpData.subject['2.5.4.41']
+          name: ecpData.subject['2.5.4.4'] + ' ' + ecpData.subject['2.5.4.41'],
+          validity_from: validity[0],
+          validity_to: validity[validity.length - 1]
       }
     }
 
@@ -177,6 +182,7 @@ const SingleDocumentPage = props => {
   }
 
   const verifyFile = (item, index) => {
+    console.log('item', item)
     const base64 = item.encoded_file
     var input = document.createElement('input')
     input.type = 'hidden'
@@ -187,6 +193,8 @@ const SingleDocumentPage = props => {
     setTimeout(() => {
       const value = document.getElementById('verifiedData' + 'File-' + index).value
       const signedValue = document.getElementById('signedData' + 'File-' + index).value
+      const flashData = JSON.parse(decodeURIComponent(value))
+      const key = flashData.cert['1.2.112.1.2.1.1.1.1.2'] + flashData.cert['1.2.112.1.2.1.1.1.1.1']
       const newData = {
         documents: [{
           id: data.id,
@@ -199,14 +207,24 @@ const SingleDocumentPage = props => {
           ]
         }]
       }
-      return axios.post('https://api.quidox.by/api/documents/confirm', newData, {
-        headers: {
-          'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
-        }
-      })
-        .then((response) => {
-          message.success('файл успешно подписан!')
-          setDocumentState({ ...defaultDocumentState })
+      api.documents.checkFlashKey({ key: key,  attachment_id: item.id })
+        .then(({ data }) => {
+          if (data.success) {
+            axios.post('https://api.quidox.by/api/documents/confirm', newData, {
+              headers: {
+                'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
+              }
+            })
+              .then((response) => {
+                message.success('файл успешно подписан!')
+                setDocumentState({ ...defaultDocumentState })
+              })
+              .catch(error => {
+                message.error(error.message)
+              })
+          } else {
+            throw new Error(data.error)
+          }
         })
         .catch(error => {
           message.error(error.message)
@@ -350,12 +368,14 @@ const SingleDocumentPage = props => {
                       <div className='single-document'>
                         <Icon style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }} type='eye' onClick={() => showModal(item)} />
                         <p style={{ marginRight: 10 }} className='single-document__name'>{item.name}</p>
-                        {item.users_companies.length &&
+                        {item.users_companies.length
+                          ?
                             <Tag
                               onClick={() => showUserData('ecp', item.users_companies)}
                               style={{ cursor: 'pointer' }} color='#3278fb'>
                               ЭЦП {item.users_companies.length}
                             </Tag>
+                          : ''
                         }
                       </div>
                     </List.Item>
@@ -461,10 +481,10 @@ const SingleDocumentPage = props => {
                   </div>
                   <div className='cert-modal__item-right'>
                     <div className='cert-item'>
-                      <Text type='secondary'>с</Text>
+                      <Text type='secondary'>с {documentState.ecpInfo.validity_from}</Text>
                     </div>
                     <div className='cert-item'>
-                      <Text type='secondary'>по</Text>
+                      <Text type='secondary'>по {documentState.ecpInfo.validity_to}</Text>
                     </div>
                   </div>
                 </div>
@@ -480,10 +500,10 @@ const SingleDocumentPage = props => {
                 </div>
                 <div className='cert-modal-footer'>
                   <Text>
-                    <strong>&#10003; Проверка Сертификата, СОС:</strong>
+                    <strong>&#10003; Проверка Сертификата, СОС: Пройдена</strong>
                   </Text><br />
                   <Text>
-                    <strong>&#10003; Проверка Сигнатуры:</strong>
+                    <strong>&#10003; Проверка Сигнатуры: Пройдена</strong>
                   </Text>
                 </div>
               </div>
