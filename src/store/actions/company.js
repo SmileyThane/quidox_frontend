@@ -71,6 +71,10 @@ const createCompany = body => (dispatch, getState) => {
         })
         throw Error(data.error)
       }
+      dispatch({
+        type: t.CREATE_COMPANY_FETCHING,
+        payload: false
+      })
       return data
     })
 }
