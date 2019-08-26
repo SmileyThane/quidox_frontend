@@ -65,13 +65,12 @@ const createCompany = body => (dispatch, getState) => {
           })
         }
       } else {
+        dispatch({
+          type: t.CREATE_COMPANY_FETCHING,
+          payload: false
+        })
         throw Error(data.error)
       }
-
-      dispatch({
-        type: t.CREATE_COMPANY_FETCHING,
-        payload: false
-      })
       return data
     })
 }
