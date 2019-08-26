@@ -69,7 +69,7 @@ const CopmanyPage = props => {
         newCompanyName: flashData.subject['2.5.4.3'] ? flashData.subject['2.5.4.3'] : 'Данные отсутствуют',
         newCompanyKey: (flashData.cert['1.2.112.1.2.1.1.1.1.1'] && flashData.cert['1.2.112.1.2.1.1.1.1.2']) ? flashData.cert['1.2.112.1.2.1.1.1.1.2'] + flashData.cert['1.2.112.1.2.1.1.1.1.1'] : 'Невозможно создать цифровой ключ',
         newCompanyCity: (flashData.subject['2.5.4.7'] || flashData.subject['2.5.4.9']) ? flashData.subject['2.5.4.7'] + ', ' + flashData.subject['2.5.4.9'] : 'Данные отсутствуют',
-        newCompanyNumber: flashData.cert['1.2.112.1.2.1.1.1.1.2'] ? flashData.cert['1.2.112.1.2.1.1.1.1.2'] : 'Данные отсутствуют',
+        newCompanyNumber: +flashData.cert['1.2.112.1.2.1.1.1.1.2'] ? flashData.cert['1.2.112.1.2.1.1.1.1.2'] : 'Данные отсутствуют',
         yourPosition: flashData.cert['1.2.112.1.2.1.1.5.1'] ? flashData.cert['1.2.112.1.2.1.1.5.1'] : 'Данные отсутствуют'
       })
     }, 1000)
