@@ -16,7 +16,7 @@ const InboxUnconfirmedDocumentsPage = props => {
       getInboxUnconfirmedDocumentsByActiveCompanyId(data.active_company_id)
     }
   }, [data, getInboxUnconfirmedDocumentsByActiveCompanyId])
-
+  console.log('active id:', data.active_company_id)
   return (
     <div className='content'>
       <Table

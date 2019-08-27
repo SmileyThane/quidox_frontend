@@ -67,8 +67,8 @@ const AntdTable = props => {
             </Fragment>
             : <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }}>
               <div>
-                {record.author['user_email']}<br />
-                [{record.author['company_name']}]
+                {record.author ? record.author['user_email'] : ''}<br />
+                {record.author ? [record.author['company_name']] : ''}
               </div>
             </Link>
           }
