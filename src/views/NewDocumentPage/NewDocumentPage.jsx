@@ -1,9 +1,8 @@
 import React, { useRef, useState, Fragment } from 'react'
-
-import { api } from '../../services'
 import axios from 'axios'
 import _ from 'lodash'
-import { findUsersByParams } from '../../services/api/user'
+
+import { api } from '../../services'
 import {
   message,
   Icon,
@@ -63,7 +62,6 @@ const NewDocumentPage = props => {
   }
 
   const removeFile = (index) => {
-    let arr = Array.from(inputNode.current.files)
     delete inputNode.current.files[index]
     setDocumentState({
       ...documentState,
@@ -85,9 +83,15 @@ const NewDocumentPage = props => {
       'name',
       documentState.name
     )
+
     formData.append(
       'description',
       documentState.description
+    )
+
+    formData.append(
+      'user_company_id',
+      documentState.value.length ? documentState.value.map(i => i.key) : []
     )
 
     documentState.files.forEach((file, index) => {
@@ -186,7 +190,7 @@ const NewDocumentPage = props => {
         ...documentState,
         fetching: true
       })
-      findUsersByParams(v)
+      api.user.findUsersByParams(v)
         .then(({ data }) => {
           if (data.success) {
             const dataIds = documentState.data.map(i => i.key)

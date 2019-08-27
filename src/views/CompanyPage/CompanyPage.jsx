@@ -127,12 +127,16 @@ const CopmanyPage = props => {
     }
     createCompany(newCompanyData)
       .then(response => {
-        console.log(response)
-        setCompanyState({ ...defaultCompanyState })
-        message.success('Компания создана успешно!!')
+        if (response.success) {
+          setCompanyState({ ...defaultCompanyState })
+          message.success('Компания создана успешно!!')
+        } else {
+          throw new Error(response.error)
+        }
       })
       .catch(error => {
         message.error(error.message)
+        setCompanyState({ ...defaultCompanyState })
       })
   }
 
@@ -217,14 +221,10 @@ const CopmanyPage = props => {
           </Row>
         </div>
       }
-      {!isIE &&
-        <Text type='secondary'>Создание компании возможно только в браузере Internet Explorer</Text>
+      {isIE
+        ? <Button type='primary' onClick={onClick}>Создать компанию</Button>
+        : <Text type='secondary'>Создание компании возможно только в браузере Internet Explorer</Text>
       }
-
-      {isIE &&
-        <Button type='primary' onClick={onClick}>Создать компанию</Button>
-      }
-      
       <Button type='primary' style={{ marginLeft: '1rem' }} onClick={() => setCompanyState({ ...companyState, showInput: true })}>
         <Icon type='usergroup-add' />
         Добавить пользователя в компанию
