@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, Fragment } from 'react'
+import React, { useRef, useState, Fragment } from 'react'
 import axios from 'axios'
 import _ from 'lodash'
 
@@ -98,7 +98,7 @@ const NewDocumentPage = props => {
 
     formData.append(
       'user_company_id',
-      documentState.value.length ? documentState.value.map(i => i.key) : []
+      documentState.value.length ? JSON.stringify(documentState.value.map(i => i.key)) : JSON.stringify([])
     )
 
     documentState.files.forEach((file, index) => {
@@ -238,7 +238,7 @@ const NewDocumentPage = props => {
     const reader = new window.FileReader()
     reader.readAsDataURL(documentState.files[index])
     reader.onload = function () {
-      var input = document.createElement('input')
+      const input = document.createElement('input')
       input.type = 'hidden'
       input.id = 'dataFile-' + index
       document.body.appendChild(input)

@@ -207,7 +207,7 @@ const SingleDocumentPage = props => {
           ]
         }]
       }
-      api.documents.checkFlashKey({ key: key,  attachment_id: item.id })
+      api.documents.checkFlashKey({ key: key, attachment_id: item.id })
         .then(({ data }) => {
           if (data.success) {
             axios.post('https://api.quidox.by/api/documents/confirm', newData, {
@@ -326,8 +326,8 @@ const SingleDocumentPage = props => {
                     {data.attached_to_users &&
                       data.attached_to_users.map(user => (
                         <div key={user.id} style={{ padding: '.5rem 0' }}>
-                          <Text>{user.user_company.user_email}</Text><br />
-                          <Text>[{user.user_company.company_name}]</Text>
+                          <Text>{user.user_company && user.user_company.user_email}</Text><br />
+                          <Text>{[user.user_company && user.user_company.company_name]}</Text>
                         </div>
                       ))
                     }

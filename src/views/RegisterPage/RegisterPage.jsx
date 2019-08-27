@@ -377,7 +377,7 @@ class RegistrationForm extends React.Component {
                 <br /><br />
                 <Text type='secondary'>Доставка происходит мгновенно.</Text>
                 <br /><br />
-                <Text type='secondary'>Бесплатно первые 180 дней!</Text>
+                <Text type='secondary'>Бесплатно первые 90 дней!</Text>
               </Fragment>
               }
               {currentStep === 1 &&
