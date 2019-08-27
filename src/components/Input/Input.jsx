@@ -5,7 +5,7 @@ import { Input } from 'antd'
 
 const Search = Input.Search
 const TextArea = Input.TextArea
-const AntdInput = ({ kind, ...rest }) => {
+const AntdInput = ({ kind, ...rest }, ref) => {
 
   return (
     <Fragment>
@@ -16,4 +16,4 @@ const AntdInput = ({ kind, ...rest }) => {
   )
 }
 
-export default AntdInput
+export default React.forwardRef(AntdInput)

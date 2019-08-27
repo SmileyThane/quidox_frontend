@@ -1,4 +1,4 @@
-import React, { useRef, useState, Fragment } from 'react'
+import React, { useRef, useState, useEffect, Fragment } from 'react'
 import axios from 'axios'
 import _ from 'lodash'
 
@@ -10,9 +10,10 @@ import {
   Spin,
   Tag,
   Typography,
-  Checkbox
+  Checkbox,
+  Input
 } from 'antd'
-import { Input, Button } from '../../components'
+import { Button } from '../../components'
 import './NewDocumentPage.scss'
 
 const defaultDocumentData = {
@@ -37,12 +38,17 @@ const { Option } = Select
 const { Text } = Typography
 
 const NewDocumentPage = props => {
+  const inputRef = useRef(null)
   const inputNode = useRef(null)
   const {
     sendDocumentToUser
   } = props
 
   const [documentState, setDocumentState] = useState({ ...defaultDocumentData })
+
+  const focusInput = () => {
+    inputRef.current.focus()
+  }
 
   const updateField = (field, v) => {
     setDocumentState({
@@ -236,10 +242,8 @@ const NewDocumentPage = props => {
       input.id = 'dataFile-' + index
       document.body.appendChild(input)
       document.getElementById('dataFile-' + index).value = reader.result
-      const res = window.sign('File-' + index)
 
       setTimeout(() => {
-        console.log(3333);
         const value = document.getElementById('verifiedData' + 'File-' + index).value
         const signedValue = document.getElementById('signedData' + 'File-' + index).value
         const flashData = JSON.parse(decodeURIComponent(value))
@@ -279,7 +283,7 @@ const NewDocumentPage = props => {
       message.error(error.message)
     }
   }
-
+  console.log(documentState)
   return (
     <Fragment>
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>
@@ -295,6 +299,7 @@ const NewDocumentPage = props => {
               notFoundContent={documentState.fetching ? <Spin size='small' /> : null}
               onSearch={fetchUser}
               onChange={handleSelect}
+              onSelect={focusInput}
               style={{ width: '100%' }}
             >
               {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
@@ -302,7 +307,7 @@ const NewDocumentPage = props => {
           </div>
           <div className='input-group'>
             <label className='label'>Тема</label>
-            <Input kind='text' type='text' value={documentState.name} onChange={e => updateField('name', e.target.value)} />
+            <Input ref={inputRef} kind='text' type='text' value={documentState.name} onChange={e => updateField('name', e.target.value)} />
           </div>
           <div className='input-group'>
             <label className='label'>Комментарий</label>
@@ -348,14 +353,14 @@ const NewDocumentPage = props => {
               onClick={handleSendToDraft}
             >
               <Icon type='file-text' />
-        Сохранить в черновиках
+              Сохранить в черновиках
             </Button>
             <Button
               type='primary'
               onClick={handleSendToUser}
             >
               <Icon type='cloud-upload' />
-        Отправить
+              Отправить
             </Button>
           </div>
         </Spin>
