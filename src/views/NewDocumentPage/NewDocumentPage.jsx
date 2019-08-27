@@ -35,6 +35,7 @@ const defaultDocumentData = {
 const isIE = /*@cc_on!@*/false || !!document.documentMode
 
 const { Option } = Select
+const { TextArea } = Input
 const { Text } = Typography
 
 const NewDocumentPage = props => {
@@ -283,7 +284,6 @@ const NewDocumentPage = props => {
       message.error(error.message)
     }
   }
-  console.log(documentState)
   return (
     <Fragment>
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>
@@ -311,7 +311,7 @@ const NewDocumentPage = props => {
           </div>
           <div className='input-group'>
             <label className='label'>Комментарий</label>
-            <Input kind='textarea' type='text' value={documentState.description} onChange={e => updateField('description', e.target.value)} />
+            <TextArea autosize={{ minRows: 1, maxRows: 6 }} value={documentState.description} onChange={e => updateField('description', e.target.value)} />
           </div>
           <div className='buttons-group'>
             <input type='file' id='upload' hidden multiple onChange={event => getFiles(event)} ref={inputNode} />
