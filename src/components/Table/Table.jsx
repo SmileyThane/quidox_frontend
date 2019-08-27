@@ -59,8 +59,8 @@ const AntdTable = props => {
               {record.attached_to_users && record.attached_to_users.map(user => (
                 <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }} key={user.id}>
                   <div style={{ padding: '.5rem 0' }}>
-                    {user.user_company.user_email}<br />
-                    [{user.user_company.company_name}]
+                    {user.user_company && user.user_company.user_email}<br />
+                    {user.user_company && [user.user_company.company_name]}
                   </div>
                 </Link>
               ))}
