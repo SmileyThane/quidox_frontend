@@ -79,7 +79,7 @@ const NewDocumentPage = props => {
     })
   }
 
-  const handleSendToDraft = () => {
+  const handleSendToDraft = (condition) => {
     setDocumentState({
       ...documentState,
       fetching: true
@@ -88,18 +88,19 @@ const NewDocumentPage = props => {
 
     formData.append(
       'name',
-      documentState.name
+      documentState.name.length ? documentState.name : '[Без темы]'
     )
 
     formData.append(
       'description',
       documentState.description
     )
-
-    formData.append(
-      'user_company_id',
-      documentState.value.length ? JSON.stringify(documentState.value.map(i => i.key)) : JSON.stringify([])
-    )
+    if (!condition.length) {
+      formData.append(
+        'user_company_id',
+        documentState.value.length ? JSON.stringify(documentState.value.map(i => i.key)) : JSON.stringify([])
+      )
+    }
 
     documentState.files.forEach((file, index) => {
       formData.append(`second_documents[${index}]`, file)
@@ -156,7 +157,8 @@ const NewDocumentPage = props => {
       })
   }
 
-  const handleSendToUser = () => {
+  const handleSendToUser = (type) => {
+    const typeCondition = type
     if (!documentState.value.length > 0) {
       message.error('Введите получателя!')
       setDocumentState({
@@ -165,12 +167,12 @@ const NewDocumentPage = props => {
       })
       return null
     }
-    handleSendToDraft()
+    handleSendToDraft(typeCondition)
       .then(response => {
         if (response.success) {
           const docDataToUser = {
             document_ids: [response.data.id],
-            user_company_id: documentState.value.map(i => i.key)
+            user_company_id: JSON.stringify(documentState.value.map(i => i.key))
           }
           sendDocumentToUser(docDataToUser)
             .then(response => {
@@ -357,7 +359,7 @@ const NewDocumentPage = props => {
             </Button>
             <Button
               type='primary'
-              onClick={handleSendToUser}
+              onClick={() => handleSendToUser('toUser')}
             >
               <Icon type='cloud-upload' />
               Отправить
