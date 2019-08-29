@@ -25,7 +25,7 @@
     max-width: 46rem;;
   }
   .header__setting {
-    width: 100%;
+    max-width: 100%;
     display: flex;
     justify-content: center;
   }
@@ -37,5 +37,10 @@
       margin-left: 1rem;
       color: map-get($colors, orange);
     }
+  }
+  .header-data {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
   }
 }

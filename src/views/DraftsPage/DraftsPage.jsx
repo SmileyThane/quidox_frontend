@@ -28,7 +28,8 @@ const DraftsPage = props => {
         removeDocuments={removeDocumentsByIds}
         getDocumentsWithParams={getDraftDocumentsByActiveCompany}
         activeCompany={data.active_company_id}
-        type='draft'
+        type='out-unconfirmed'
+        columnName='Получатель'
       />
     </div>
   )

@@ -10,7 +10,8 @@ import {
   Select,
   Button,
   message,
-  Typography
+  Typography,
+  Checkbox
 } from 'antd'
 
 import './RegisterPage.scss'
@@ -37,6 +38,7 @@ const steps = [
 class RegistrationForm extends React.Component {
   state = {
     confirmDirty: false,
+    isChecked: false,
     autoCompleteResult: [],
     currentStep: 0,
     phone: '',
@@ -57,7 +59,15 @@ class RegistrationForm extends React.Component {
   }
 
   componentDidUpdate () {
-    this.inputPhoneNode.current.focus()
+    if (this.state.currentStep !== 2) {
+      this.inputPhoneNode.current.focus()
+    }
+  }
+
+  handleCheck = () => {
+    this.setState({
+      isChecked: !this.state.isChecked
+    })
   }
 
   handleChange = (value, field) => {
@@ -330,6 +340,7 @@ class RegistrationForm extends React.Component {
                     ]
                   })(<Input.Password onBlur={this.handleConfirmBlur} />)}
                 </Form.Item>
+                <Checkbox onClick={this.handleCheck}>Я ознакомился и принимаю условия Публичного договора и Политику конфиденцальности.</Checkbox>
               </Fragment>
               }
               {currentStep === 3 &&
@@ -351,7 +362,7 @@ class RegistrationForm extends React.Component {
                     </Fragment>
                     }
                   </div>
-                  <Button type='primary' htmlType='submit'>
+                  <Button type='primary' htmlType='submit' disabled={currentStep === 2 && !this.state.isChecked}>
                     {currentStep === 3 ? 'Завершить регистрацию' : 'Продолжить'}
                   </Button>
                 </div>

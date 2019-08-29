@@ -27,34 +27,37 @@ const HeaderBlock = props => {
         {window.localStorage.getItem('authToken') &&
           <Fragment>
             <Skeleton loading={isFetching} active paragraph={false}>
-              <div className='header__setting'>
-                <Text>
-                  Активная компания:
-                  {(data && data.companies) && data.companies.map(i => {
-                    if (i.company_id === data.active_company_id) {
-                      return <Tag key={i.company_id} color='#87d068' style={{ marginLeft: '.5rem' }}>{i.company_name}</Tag>
-                    } else {
-                      return null
-                    }
-                  })}
-                </Text>
-              </div>
-              <div className='user header__user'>
-                {data &&
-                <span onClick={() => history.push('/user-me')}>{data.email}</span>
-                }
-                <Popconfirm
-                  placement='bottomLeft'
-                  title='Вы уверены?'
-                  onConfirm={() => handleLogout()}
-                  okText='Выйти'
-                  cancelText='Отмена'
-                >
-                  <Icon
-                    className='user__logout-btn'
-                    type='logout'
-                  />
-                </Popconfirm>
+              <div className='header-data'>
+                <div />
+                <div className='header__setting'>
+                  <Text>
+                    Активная компания:
+                    {(data && data.companies) && data.companies.map(i => {
+                      if (i.company_id === data.active_company_id) {
+                        return <Tag key={i.company_id} color='#87d068' style={{ marginLeft: '.5rem' }}>{i.company_name}</Tag>
+                      } else {
+                        return null
+                      }
+                    })}
+                  </Text>
+                </div>
+                <div className='user header__user'>
+                  {data &&
+                  <span onClick={() => history.push('/user-me')}>{data.email}</span>
+                  }
+                  <Popconfirm
+                    placement='bottomLeft'
+                    title='Вы уверены?'
+                    onConfirm={() => handleLogout()}
+                    okText='Выйти'
+                    cancelText='Отмена'
+                  >
+                    <Icon
+                      className='user__logout-btn'
+                      type='logout'
+                    />
+                  </Popconfirm>
+                </div>
               </div>
             </Skeleton>
           </Fragment>
