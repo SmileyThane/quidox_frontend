@@ -17,6 +17,16 @@ export default (state = initialState, action) => {
         ...state,
         data: action.payload.data
       }
+    case t.VERIFY_DOCUMENT_FETCHING:
+      return {
+        ...state,
+        isFetching: action.payload
+      }
+    case t.VERIFY_DOCUMENT_SUCCESS:
+      console.log('payload:', action.payload)
+      return {
+        ...state
+      }
     default:
       return state
   }

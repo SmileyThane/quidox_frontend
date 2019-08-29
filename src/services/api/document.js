@@ -21,8 +21,17 @@ const downloadDocument = (id, withCert) => {
   })
 }
 
+const verifyDocument = data => {
+  return http({
+    url: 'documents/confirm',
+    method: 'POST',
+    data
+  })
+}
+
 export {
   getDocumentById,
   removeDocumentById,
-  downloadDocument
+  downloadDocument,
+  verifyDocument
 }

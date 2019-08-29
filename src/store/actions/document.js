@@ -23,6 +23,28 @@ const getDocumentById = id => dispatch => {
     })
 }
 
+const verifyDocument = data => dispatch => {
+  dispatch({
+    type: t.VERIFY_DOCUMENT_FETCHING,
+    payload: true
+  })
+  return api.document.verifyDocument(data)
+      .then(({ data }) => {
+        if (data) {
+          console.log('data form action:', data)
+          dispatch({
+            type: t.VERIFY_DOCUMENT_SUCCESS,
+            payload: data
+          })
+        }
+        dispatch({
+          type: t.VERIFY_DOCUMENT_FETCHING,
+          payload: false
+        })
+      return data
+      })
+}
+
 const removeDocumentById = (id, type) => dispatch => {
   dispatch({
     type: t.REMOVE_DOCUMENT_BY_ID_FETCHING,
@@ -74,5 +96,6 @@ const removeDocumentById = (id, type) => dispatch => {
 
 export {
   getDocumentById,
-  removeDocumentById
+  removeDocumentById,
+  verifyDocument
 }

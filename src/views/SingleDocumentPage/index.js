@@ -8,7 +8,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   getDocumentById: id => dispatch(actions.document.getDocumentById(id)),
-  sendDocumentToUser: data => dispatch(actions.documents.sendDocumentToUser(data))
+  sendDocumentToUser: data => dispatch(actions.documents.sendDocumentToUser(data)),
+  verifyDocument: data => dispatch(actions.document.verifyDocument(data))
 })
 
 export default connect(

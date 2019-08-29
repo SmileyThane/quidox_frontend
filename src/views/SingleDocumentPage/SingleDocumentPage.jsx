@@ -44,7 +44,8 @@ const SingleDocumentPage = props => {
     document: { isFetching, data },
     match,
     getDocumentById,
-    sendDocumentToUser
+    sendDocumentToUser,
+    verifyDocument
   } = props
 
   const [documentState, setDocumentState] = useState({ ...defaultDocumentState })
@@ -210,14 +211,16 @@ const SingleDocumentPage = props => {
       api.documents.checkFlashKey({ key: key, attachment_id: item.id })
         .then(({ data }) => {
           if (data.success) {
-            axios.post('https://api.quidox.by/api/documents/confirm', newData, {
-              headers: {
-                'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
-              }
-            })
+            verifyDocument(newData)
               .then((response) => {
-                message.success('файл успешно подписан!')
-                setDocumentState({ ...defaultDocumentState })
+                console.log('response', response)
+                if (response.success) {
+                  message.success('Файл успешно подписан!')
+                  setDocumentState({ ...defaultDocumentState })
+                  getDocumentById(match.params.id)
+                } else {
+                  throw new Error(response.error)
+                }
               })
               .catch(error => {
                 message.error(error.message)
