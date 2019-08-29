@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Link } from 'react-router-dom'
+import generateHash from 'random-hash'
 import axios from 'axios'
 import history from '../../history.js'
 import { Form, Icon, Input, Button, Checkbox, message, Typography } from 'antd'
@@ -20,7 +21,7 @@ class LoginPage extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         values.secret_key = "vBQ1ubVpR9X56EvVOWmDrgrN6NdvZkaObaa7IeIc";
-        values.auth_data = Math.random().toString(20).substring(5, 15) + btoa( JSON.stringify(values))+ Math.random().toString(20).substring(10, 15);
+        values.auth_data = generateHash({ length: 10 }) + btoa( JSON.stringify(values)) + generateHash({ length: 5 });
         delete values.email;
         delete values.password;
         delete values.secret_key;

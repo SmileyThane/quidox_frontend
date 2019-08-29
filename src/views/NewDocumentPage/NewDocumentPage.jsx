@@ -246,6 +246,8 @@ const NewDocumentPage = props => {
       document.body.appendChild(input)
       document.getElementById('dataFile-' + index).value = reader.result
 
+      window.sign('File-' + index)
+
       setTimeout(() => {
         const value = document.getElementById('verifiedData' + 'File-' + index).value
         const signedValue = document.getElementById('signedData' + 'File-' + index).value
