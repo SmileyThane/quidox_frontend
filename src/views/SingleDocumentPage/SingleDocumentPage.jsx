@@ -161,16 +161,20 @@ const SingleDocumentPage = props => {
   const sendToUser = () => {
     const docDataToUser = {
       document_ids: data.attachments.map(i => i.document_id),
-      user_company_id: documentState.value.map(i => i.key)
+      user_company_id: JSON.stringify(documentState.value.map(i => i.key))
     }
     sendDocumentToUser(docDataToUser)
-      .then(() => {
-        message.success('Сообщение успешно отправлено!')
-        setDocumentState({
-          ...documentState,
-          fetching: false,
-          showModal: false
-        })
+      .then(response => {
+        if (response.success) {
+          message.success('Сообщение успешно отправлено!')
+          setDocumentState({
+            ...documentState,
+            fetching: false,
+            showModal: false
+          })
+        } else {
+          throw new Error(response.error)
+        }
       })
       .catch(error => {
         message.error(error.message)
@@ -365,12 +369,11 @@ const SingleDocumentPage = props => {
                         <Icon style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }} type='eye' onClick={() => showModal(item)} />
                         <p style={{ marginRight: 10 }} className='single-document__name'>{item.name}</p>
                         {item.users_companies.length
-                          ?
-                            <Tag
-                              onClick={() => showUserData('ecp', item.users_companies)}
-                              style={{ cursor: 'pointer' }} color='#3278fb'>
+                          ? <Tag
+                            onClick={() => showUserData('ecp', item.users_companies)}
+                            style={{ cursor: 'pointer' }} color='#3278fb'>
                               ЭЦП {item.users_companies.length}
-                            </Tag>
+                          </Tag>
                           : ''
                         }
                       </div>
@@ -526,7 +529,7 @@ const SingleDocumentPage = props => {
         </Modal>
       }
       <input type='hidden' id='attr' size='80' value='1.2.112.1.2.1.1.1.1.2' />
-      <input type="hidden" id='companyData'/>
+      <input type='hidden' id='companyData' />
       <div id='attrCertSelectContainer' style={{ display: 'none' }}>
         <span id='certExtAbsent' />
         <select style={{ visibility: 'hidden' }} id='attrCertSelect' />

@@ -41,6 +41,7 @@ const sendDocumentToUser = data => dispatch => {
         type: t.CREATE_DOCUMENT_FETHCING,
         payload: false
       })
+      return data
     })
 }
 

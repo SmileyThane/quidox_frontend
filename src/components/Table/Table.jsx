@@ -204,17 +204,22 @@ const AntdTable = props => {
       document_ids: dataSource
         .filter(i => tableState.selectedRowKeys.includes(i.id))
         .map(i => i.id),
-      user_company_id: tableState.value.map(i => i.key)
+      user_company_id: JSON.stringify(tableState.value.map(i => i.key))
     }
+    console.log('sended data', docsDataToUser)
     sendDocumentToUser(docsDataToUser)
       .then(getDocumentsWithParams(activeCompany))
-      .then(() => {
-        message.success('Сообщение успешно отправлено!')
-        setTableState({
-          ...tableState,
-          fetching: false,
-          showModal: false
-        })
+      .then(response => {
+        if (response.success) {
+          message.success('Сообщение успешно отправлено!')
+          setTableState({
+            ...tableState,
+            fetching: false,
+            showModal: false
+          })
+        } else {
+          throw new Error(response.error)
+        }
       })
       .catch(error => {
         message.error(error.message)
