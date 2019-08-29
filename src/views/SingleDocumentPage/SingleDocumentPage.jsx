@@ -326,8 +326,9 @@ const SingleDocumentPage = props => {
                     {data.attached_to_users &&
                       data.attached_to_users.map(user => (
                         <div key={user.id} style={{ padding: '.5rem 0' }}>
-                          <Text>{user.user_company && user.user_company.user_email}</Text><br />
-                          <Text>{[user.user_company && user.user_company.company_name]}</Text>
+                          <Text>{user.user_company && user.user_company.user_email}</Text>
+                          <br />
+                          <Text>{user.user_company && '[ ' + user.user_company.company_name + ' ]'}</Text>
                         </div>
                       ))
                     }
@@ -338,8 +339,9 @@ const SingleDocumentPage = props => {
                   <div className='info__content'>
                     {data.author &&
                     <div>
-                      <Text>{data.author.user_email}</Text><br />
-                      <Text>[{data.author.company_name}]</Text>
+                      <Text>{ data.author && data.author.user_email}</Text>
+                      <br />
+                      <Text>{data.author && '[ ' + data.author.company_name + ' ]'}</Text>
                     </div>
                     }
                   </div>
