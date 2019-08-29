@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react'
+import React, { useState, Fragment, useRef } from 'react'
 
 import _ from 'lodash'
 import { Link } from 'react-router-dom'
@@ -46,6 +46,8 @@ const AntdTable = props => {
     sendDocumentToUser,
     ...rest
   } = props
+
+  const input = useRef(null)
 
   const [tableState, setTableState] = useState({ ...defaultTableState })
 
@@ -122,10 +124,8 @@ const AntdTable = props => {
           setTableState({ ...defaultTableState })
         })
     } else {
-      console.log('document')
       removeDocument(tableState.selectedRowKeys[0], type)
         .then(response => {
-          console.log(response)
           message.success('Документ удален')
           setTableState({ ...defaultTableState })
         })
@@ -184,6 +184,10 @@ const AntdTable = props => {
     })
   }
 
+  const hideOptions = () => {
+    input.current.focus()
+  }
+
   const openModal = () => {
     if (tableState.selectedRowKeys.length === 0) {
       message.error('Нет выбраных документов!')
@@ -226,6 +230,8 @@ const AntdTable = props => {
         closable={false}
         footer={null}
       >
+        <Text>Получатели:</Text>
+        <input type='text' ref={input} style={{ opacity: 0, width: '100%', height: 0 }} />
         <Select
           mode='tags'
           labelInValue
@@ -235,6 +241,7 @@ const AntdTable = props => {
           notFoundContent={tableState.fetching ? <Spin size='small' /> : null}
           onSearch={fetchUser}
           onChange={handleSelect}
+          onSelect={hideOptions}
           style={{ width: '100%' }}
         >
           {tableState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
@@ -274,7 +281,7 @@ const AntdTable = props => {
               </div>
               <Pagination
                 simple
-                defaultCurrent={2}
+                defaultCurrent={1}
                 total={50}
                 onChange={page => console.log(page)}
               />

@@ -99,20 +99,17 @@ const SingleDocumentPage = props => {
 
     if (type === 'ecp') {
       const ecpData = JSON.parse(decodeURIComponent(dataArray[documentState.activeFileCert].verification_info))
-      console.log(dataArray);
-      console.log(ecpData)
 
       const validity = ecpData.cert['1.2.112.1.2.1.1.5.4'].split('-')
-      console.log(validity)
 
       ecpInfo = {
         unp: ecpData.cert['1.2.112.1.2.1.1.1.1.2'],
-          org: ecpData.subject['2.5.4.3'],
-          position: ecpData.cert['1.2.112.1.2.1.1.5.1'],
-          address: ecpData.subject['2.5.4.7'] + ' ' + ecpData.subject['2.5.4.9'],
-          name: ecpData.subject['2.5.4.4'] + ' ' + ecpData.subject['2.5.4.41'],
-          validity_from: validity[0],
-          validity_to: validity[validity.length - 1]
+        org: ecpData.subject['2.5.4.3'],
+        position: ecpData.cert['1.2.112.1.2.1.1.5.1'],
+        address: ecpData.subject['2.5.4.7'] + ' ' + ecpData.subject['2.5.4.9'],
+        name: ecpData.subject['2.5.4.4'] + ' ' + ecpData.subject['2.5.4.41'],
+        validity_from: validity[0],
+        validity_to: validity[validity.length - 1]
       }
     }
 
@@ -182,7 +179,6 @@ const SingleDocumentPage = props => {
   }
 
   const verifyFile = (item, index) => {
-    console.log('item', item)
     const base64 = item.encoded_file
     var input = document.createElement('input')
     input.type = 'hidden'
