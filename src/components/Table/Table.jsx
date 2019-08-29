@@ -13,7 +13,8 @@ import {
   Select,
   Modal,
   Button,
-  Spin
+  Spin,
+  Pagination
 } from 'antd'
 
 import './Table.scss'
@@ -253,6 +254,7 @@ const AntdTable = props => {
         dataSource={dataSource}
         rowSelection={rowSelection}
         locale={{ emptyText: 'Нет данных' }}
+        pagination={false}
         title={() =>
           (
             <div className='table__header table-header'>
@@ -270,6 +272,12 @@ const AntdTable = props => {
               <div className='table-header__search'>
                 <AutoComplete onSearch={_.debounce(handleSearch, 500)} placeholder='Введите дату, отправителя, тему...' />
               </div>
+              <Pagination
+                simple
+                defaultCurrent={2}
+                total={50}
+                onChange={page => console.log(page)}
+              />
             </div>
           )}
         footer={() =>
