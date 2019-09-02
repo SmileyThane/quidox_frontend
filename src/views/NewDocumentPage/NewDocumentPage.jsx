@@ -1,6 +1,7 @@
 import React, { useRef, useState, Fragment } from 'react'
 import axios from 'axios'
 import _ from 'lodash'
+import useForm from 'rc-form-hooks'
 
 import { api } from '../../services'
 import {
@@ -11,7 +12,7 @@ import {
   Tag,
   Typography,
   Checkbox,
-  Input
+  Input, Form
 } from 'antd'
 import { Button } from '../../components'
 import './NewDocumentPage.scss'
@@ -39,11 +40,14 @@ const { TextArea } = Input
 const { Text } = Typography
 
 const NewDocumentPage = props => {
+
   const inputRef = useRef(null)
   const inputNode = useRef(null)
   const {
     sendDocumentToUser
   } = props
+
+  const { getFieldDecorator, validateFields } = useForm()
 
   const [documentState, setDocumentState] = useState({ ...defaultDocumentData })
 
@@ -293,21 +297,38 @@ const NewDocumentPage = props => {
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>
         <Spin spinning={!!documentState.fetching}>
           <div className='input-group'>
+            <Form>
+              <Form.Item style={{ marginBottom: 0 }} label='Добавление нового пользователя в текущую компанию'>
+                {getFieldDecorator('email', {
+                  rules: [
+                    {
+                      type: 'email',
+                      message: 'Не правильный адрес электронной почты!'
+                    },
+                    {
+                      required: true,
+                      message: 'Введите адрес электроной почты'
+                    }
+                  ]
+                })(
+                  <Select
+                    mode='tags'
+                    labelInValue
+                    tokenSeparators={[',']}
+                    value={documentState.value}
+                    filterOption={false}
+                    notFoundContent={documentState.fetching ? <Spin size='small' /> : null}
+                    onSearch={fetchUser}
+                    onChange={handleSelect}
+                    onSelect={focusInput}
+                    style={{ width: '100%' }}
+                  >
+                    {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
+                  </Select>
+                )}
+              </Form.Item>
+            </Form>
             <label className='label'>Получатели</label>
-            <Select
-              mode='tags'
-              labelInValue
-              tokenSeparators={[',']}
-              value={documentState.value}
-              filterOption={false}
-              notFoundContent={documentState.fetching ? <Spin size='small' /> : null}
-              onSearch={fetchUser}
-              onChange={handleSelect}
-              onSelect={focusInput}
-              style={{ width: '100%' }}
-            >
-              {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
-            </Select>
           </div>
           <div className='input-group'>
             <label className='label'>Тема</label>
