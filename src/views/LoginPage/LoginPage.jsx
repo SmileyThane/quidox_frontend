@@ -20,7 +20,7 @@ class LoginPage extends React.Component {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        values.secret_key = "vBQ1ubVpR9X56EvVOWmDrgrN6NdvZkaObaa7IeIc";
+        values.secret_key = "xUAmAfcUIw35BJhohIprBrcVuDZKPg8Epac5hvkL";
         values.auth_data = generateHash({ length: 10 }) + btoa( JSON.stringify(values)) + generateHash({ length: 5 });
         delete values.email;
         delete values.password;
