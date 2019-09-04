@@ -90,7 +90,7 @@ const AntdTable = props => {
     {
       title: 'Тема',
       key: 'name',
-      render: record => <Link style={{ textTransform: 'uppercase' }} to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }}>{record.name}</Link>
+      render: record => <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }}>{record.name}</Link>
     },
     {
       title: 'Кол-во документов',
