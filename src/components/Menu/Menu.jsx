@@ -43,7 +43,7 @@ const AntMenu = props => {
         <MenuItem
           heading='Черновики'
           url='/drafts-documents'
-          key='/drafts'
+          key='/drafts-documents'
           icon='file-text'
         />
         <MenuItem
