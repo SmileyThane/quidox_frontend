@@ -28,56 +28,21 @@ const AntMenu = props => {
         selectedKeys={[props.match.path, (props.location.state || {}).from]}
         defaultOpenKeys={['sub1']}
       >
-        <Menu.ItemGroup
-          key='sub1'
-          title={
-            <span>
-              {countMessages && countMessages > 0
-                ? <Badge className='badge' count={countMessages} />
-                : <Icon type='folder' />
-              }
-              <span>Входящие</span>
-            </span>
-          }
-        >
-          <MenuItem
-            heading='Подписанные'
-            url='/inbox-confirmed-documents'
-            key='/inbox-confirmed-documents'
-            icon='file-protect'
-          />
-          <MenuItem
-            heading='Не подписанные'
-            url='/inbox-unconfirmed-documents'
-            key='/inbox-unconfirmed-documents'
-            icon='exception'
-          />
-        </Menu.ItemGroup>
-        <Menu.ItemGroup
-          key='sub2'
-          title={
-            <span>
-              <Icon type='folder' />
-              Отправленные
-            </span>
-          }
-        >
-          <MenuItem
-            heading='Подписанные'
-            url='/out-confirmed-documents'
-            key='/out-confirmed-documents'
-            icon='file-protect'
-          />
-          <MenuItem
-            heading='Не подписанные'
-            url='/out-unconfirmed-documents'
-            key='/out-unconfirmed-documents'
-            icon='exception'
-          />
-        </Menu.ItemGroup>
+        <MenuItem
+          heading='Входящие'
+          url='/inbox-documents'
+          key='/inbox-documents'
+          icon='export'
+        />
+        <MenuItem
+          heading='Отправленные'
+          url='/out-documents'
+          key='/out-documents'
+          icon='import'
+        />
         <MenuItem
           heading='Черновики'
-          url='/drafts'
+          url='/drafts-documents'
           key='/drafts'
           icon='file-text'
         />

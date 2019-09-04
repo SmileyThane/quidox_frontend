@@ -1,6 +1,7 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import axios from 'axios'
 import generateHash from 'random-hash'
+import moment from 'moment'
 import fileDownload from 'js-file-download'
 import _ from 'lodash'
 
@@ -318,7 +319,7 @@ const SingleDocumentPage = props => {
                 <h2 className='document__title'>{data.name}</h2>
               </div>
               <div className='document__header_right'>
-                <p className='document__date'>{data.created_at}</p>
+                <p className='document__date'>{moment.utc(data.created_at, 'YYYY-MM-DD HH:mm').local().format('DD/MM/YYYY h:mm')}</p>
               </div>
             </div>
             <div className='document__content'>

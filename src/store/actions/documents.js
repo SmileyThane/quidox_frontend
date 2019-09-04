@@ -45,81 +45,41 @@ const sendDocumentToUser = data => dispatch => {
     })
 }
 
-const getInboxUnconfirmedDocumentsByActiveCompanyId = (id, params) => dispatch => {
+const getInboxDocumentsByActiveCompanyId = (id, params) => dispatch => {
   dispatch({
-    type: t.GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+    type: t.GET_INBOX_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
     payload: true
   })
-  return api.documents.getInboxUnconfirmedDocumentsByActiveCompanyId(id, params)
+  return api.documents.getInboxDocumentsByActiveCompanyId(id, params)
     .then(({ data }) => {
       if (data) {
         dispatch({
-          type: t.GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
+          type: t.GET_INBOX_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
           payload: data
         })
       }
       dispatch({
-        type: t.GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+        type: t.GET_INBOX_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
         payload: false
       })
     })
 }
 
-const getInboxСonfirmedDocumentsByActiveCompanyId = (id, params) => dipsatch => {
+const getOutDocumentsByActiveCompanyId = (id, params) => dipsatch => {
   dipsatch({
-    type: t.GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+    type: t.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
     payload: true
   })
-  return api.documents.getInboxСonfirmedDocumentsByActiveCompanyId(id, params)
+  return api.documents.getOutDocumentsByActiveCompanyId(id, params)
     .then(({ data }) => {
       if (data) {
         dipsatch({
-          type: t.GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
+          type: t.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
           payload: data
         })
       }
       dipsatch({
-        type: t.GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
-        payload: false
-      })
-    })
-}
-
-const getOutСonfirmedDocumentsByActiveCompanyId = (id, params) => dipsatch => {
-  dipsatch({
-    type: t.GET_OUT_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
-    payload: true
-  })
-  return api.documents.getOutConfirmedDocumentsByActiveCompanyId(id, params)
-    .then(({ data }) => {
-      if (data) {
-        dipsatch({
-          type: t.GET_OUT_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
-          payload: data
-        })
-      }
-      dipsatch({
-        type: t.GET_OUT_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
-        payload: false
-      })
-    })
-}
-
-const getOutUnconfirmedDocumentsByActiveCompanyId = (id, params) => dipsatch => {
-  dipsatch({
-    type: t.GET_OUT_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
-    payload: true
-  })
-  return api.documents.getOutUnconfirmedDocumentsByActiveCompanyId(id, params)
-    .then(({ data }) => {
-      if (data) {
-        dipsatch({
-          type: t.GET_OUT_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
-          payload: data
-        })
-      }
-      dipsatch({
-        type: t.GET_OUT_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+        type: t.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
         payload: false
       })
     })
@@ -197,10 +157,8 @@ const removeDocumentsByIds = (ids, type) => dispatch => {
 export {
   createDocument,
   sendDocumentToUser,
-  getInboxUnconfirmedDocumentsByActiveCompanyId,
-  getInboxСonfirmedDocumentsByActiveCompanyId,
-  getOutСonfirmedDocumentsByActiveCompanyId,
-  getOutUnconfirmedDocumentsByActiveCompanyId,
+  getInboxDocumentsByActiveCompanyId,
+  getOutDocumentsByActiveCompanyId,
   getDraftDocumentsByActiveCompany,
   removeDocumentsByIds
 }

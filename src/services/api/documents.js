@@ -16,7 +16,7 @@ const sendDocumentToUser = data => {
   })
 }
 
-const getInboxUnconfirmedDocumentsByActiveCompanyId = (id, params) => {
+const getInboxDocumentsByActiveCompanyId = (id, params) => {
   return http({
     url: `documents/in/0/${id}`,
     method: 'GET',
@@ -24,23 +24,7 @@ const getInboxUnconfirmedDocumentsByActiveCompanyId = (id, params) => {
   })
 }
 
-const getInboxСonfirmedDocumentsByActiveCompanyId = (id, params) => {
-  return http({
-    url: `documents/in/1/${id}`,
-    method: 'GET',
-    params
-  })
-}
-
-const getOutConfirmedDocumentsByActiveCompanyId = (id, params) => {
-  return http({
-    url: `documents/out/1/${id}`,
-    method: 'GET',
-    params
-  })
-}
-
-const getOutUnconfirmedDocumentsByActiveCompanyId = (id, params) => {
+const getOutDocumentsByActiveCompanyId = (id, params) => {
   return http({
     url: `documents/out/0/${id}`,
     method: 'GET',
@@ -75,10 +59,8 @@ const checkFlashKey = data => {
 export {
   createDocument,
   sendDocumentToUser,
-  getInboxUnconfirmedDocumentsByActiveCompanyId,
-  getInboxСonfirmedDocumentsByActiveCompanyId,
-  getOutConfirmedDocumentsByActiveCompanyId,
-  getOutUnconfirmedDocumentsByActiveCompanyId,
+  getInboxDocumentsByActiveCompanyId,
+  getOutDocumentsByActiveCompanyId,
   getDraftDocumentsByActiveCompany,
   removeDocumentsByIds,
   checkFlashKey

@@ -16,10 +16,8 @@ import {
   DraftsPage,
   ExternalsPage,
   CompanyPage,
-  InboxConfirmedDocumentsPage,
-  InboxUnconfirmedDocumentsPage,
-  OutConfirmedDocumentsPage,
-  OutUnconfirmedDocumentsPage
+  InboxDocumentsPage,
+  OutDocumentsPage
 } from './views'
 
 function App () {
@@ -31,13 +29,10 @@ function App () {
 
           <PrivateRoute path='/new-document' component={NewDocumentPage} />
 
-          <PrivateRoute path='/inbox-confirmed-documents' component={InboxConfirmedDocumentsPage} />
-          <PrivateRoute path='/inbox-unconfirmed-documents' component={InboxUnconfirmedDocumentsPage} />
+          <PrivateRoute path='/inbox-documents' component={InboxDocumentsPage} />
+          <PrivateRoute path='/out-documents' component={OutDocumentsPage} />
 
-          <PrivateRoute path='/out-confirmed-documents' component={OutConfirmedDocumentsPage} />
-          <PrivateRoute path='/out-unconfirmed-documents' component={OutUnconfirmedDocumentsPage} />
-
-          <PrivateRoute path='/drafts' component={DraftsPage} />
+          <PrivateRoute path='/drafts-documents' component={DraftsPage} />
           <PrivateRoute path='/externals' component={ExternalsPage} />
 
           <PrivateRoute path='/companies' component={CompanyPage} />

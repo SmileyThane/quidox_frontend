@@ -2,31 +2,31 @@ import React, { useEffect } from 'react'
 
 import { Table } from '../../components'
 
-const InboxUnconfirmedDocumentsPage = props => {
+const InboxDocumentsPage = props => {
   const {
     user: { data },
-    documents: { isFetching, inboxDocuments },
-    getInboxUnconfirmedDocumentsByActiveCompanyId,
+    documents: { isFetching, inboxDocumentsList },
+    getInboxDocumentsByActiveCompanyId,
     removeDocumentById,
     removeDocumentsByIds
   } = props
 
   useEffect(() => {
     if (data) {
-      getInboxUnconfirmedDocumentsByActiveCompanyId(data.active_company_id)
+      getInboxDocumentsByActiveCompanyId(data.active_company_id)
     }
-  }, [data, getInboxUnconfirmedDocumentsByActiveCompanyId])
+  }, [data, getInboxDocumentsByActiveCompanyId])
 
   return (
     <div className='content'>
       <Table
         rowKey='id'
-        dataSource={inboxDocuments && inboxDocuments.inboxUnconfirmedDocuments}
+        dataSource={inboxDocumentsList && inboxDocumentsList}
         loading={isFetching}
         className='document-table'
         removeDocument={removeDocumentById}
         removeDocuments={removeDocumentsByIds}
-        getDocumentsWithParams={getInboxUnconfirmedDocumentsByActiveCompanyId}
+        getDocumentsWithParams={getInboxDocumentsByActiveCompanyId}
         activeCompany={data.active_company_id}
         type='unconfirmed'
         columnName='Отправитель'
@@ -35,4 +35,4 @@ const InboxUnconfirmedDocumentsPage = props => {
   )
 }
 
-export default InboxUnconfirmedDocumentsPage
+export default InboxDocumentsPage

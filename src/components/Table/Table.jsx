@@ -20,6 +20,7 @@ import {
 import './Table.scss'
 import { findUsersByParams } from '../../services/api/user'
 import history from '../../history'
+import moment from "moment";
 
 const defaultTableState = {
   selectedRowKeys: [],
@@ -99,7 +100,7 @@ const AntdTable = props => {
     },
     {
       title: 'Дата',
-      dataIndex: 'created_at',
+      render: record => <Text>{moment.utc(record.created_at, 'YYYY-MM-DD HH:mm').local().format('DD/MM/YYYY h:mm')}</Text>,
       sorter: (a, b) => getTimeStamp(a.created_at) - getTimeStamp(b.created_at)
     },
     {
@@ -127,7 +128,6 @@ const AntdTable = props => {
       const obj = {
         ids: tableState.selectedRowKeys
       }
-      console.log('documents')
       removeDocuments(obj, type)
         .then(() => {
           message.success('Документы удалены')
@@ -216,7 +216,6 @@ const AntdTable = props => {
         .map(i => i.id),
       user_company_id: JSON.stringify(tableState.value.map(i => i.key))
     }
-    console.log('sended data', docsDataToUser)
     sendDocumentToUser(docsDataToUser)
       .then(getDocumentsWithParams(activeCompany))
       .then(response => {

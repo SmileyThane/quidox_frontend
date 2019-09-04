@@ -2,21 +2,13 @@ import * as t from '../types'
 
 const initialState = {
   draftDocumentsList: [],
-  inboxDocuments: {
-    inboxConfirmedDocuments: [],
-    inboxUnconfirmedDocuments: []
-  },
-  outDocumentsList: {
-    outConfirmedDocuments: [],
-    outUnconfirmedDocuments: []
-  },
+  inboxDocumentsList: [],
+  outDocumentsList: [],
   isFetching: false
 }
 
 export default (state = initialState, action) => {
   switch (action.type) {
-
-    // Create document
     case t.CREATE_DOCUMENT_FETHCING:
       return {
         ...state,
@@ -28,64 +20,27 @@ export default (state = initialState, action) => {
         isFetching: action.payload
       }
 
-    // Inbox unconfirmed documents
-    case t.GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:
+    case t.GET_INBOX_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:
       return {
         ...state,
         isFetching: action.payload
       }
-    case t.GET_INBOX_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
+    case t.GET_INBOX_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
+      console.log('reducer:', action.payload)
       return {
         ...state,
-        inboxDocuments: {
-          ...state.inboxDocuments,
-          inboxUnconfirmedDocuments: action.payload.data
-        }
+        inboxDocumentsList: action.payload.data
       }
 
-    // Inbox confirmed documents
-    case t.GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:
+    case t.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:
       return {
         ...state,
         isFetching: action.payload
       }
-    case t.GET_INBOX_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
+    case t.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
       return {
         ...state,
-        inboxDocuments: {
-          ...state.inboxDocuments,
-          inboxConfirmedDocuments: action.payload.data
-        }
-      }
-
-    // Out confirmed documents
-    case t.GET_OUT_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:
-      return {
-        ...state,
-        isFetching: action.payload
-      }
-    case t.GET_OUT_CONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
-      return {
-        ...state,
-        outDocumentsList: {
-          ...state.outDocumentsList,
-          outConfirmedDocuments: action.payload.data
-        }
-      }
-
-    // Out unconfirmed documents
-    case t.GET_OUT_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:
-      return {
-        ...state,
-        isFetching: action.payload
-      }
-    case t.GET_OUT_UNCONFIRMED_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
-      return {
-        ...state,
-        outDocumentsList: {
-          ...state.outDocumentsList,
-          outUnconfirmedDocuments: action.payload.data
-        }
+        outDocumentsList: action.payload.data
       }
 
     // draft documents

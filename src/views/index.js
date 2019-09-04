@@ -7,10 +7,8 @@ import NewDocumentPage from './NewDocumentPage'
 import DraftsPage from './DraftsPage'
 import CompanyPage from './CompanyPage'
 import ExternalsPage from './ExternalsPage'
-import InboxConfirmedDocumentsPage from './InboxConfirmedDocumentsPage'
-import InboxUnconfirmedDocumentsPage from './InboxUnconfirmedDocumentsPage'
-import OutConfirmedDocumentsPage from './OutConfirmedDocumentsPage'
-import OutUnconfirmedDocumentsPage from './OutUnconfirmedDocumentsPage'
+import InboxDocumentsPage from './InboxDocumentsPage'
+import OutDocumentsPage from './OutDocumentsPage'
 import ResetPasswordPage from './ResetPasswordPage'
 
 export {
@@ -24,8 +22,6 @@ export {
   DraftsPage,
   ExternalsPage,
   CompanyPage,
-  InboxConfirmedDocumentsPage,
-  InboxUnconfirmedDocumentsPage,
-  OutConfirmedDocumentsPage,
-  OutUnconfirmedDocumentsPage
+  InboxDocumentsPage,
+  OutDocumentsPage
 }
