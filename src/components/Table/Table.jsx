@@ -104,7 +104,9 @@ const AntdTable = props => {
       sorter: (a, b) => getTimeStamp(a.created_at) - getTimeStamp(b.created_at)
     },
     {
-      title: 'Статус'
+      title: 'Статус',
+      key: 'status',
+      render: record => <Text>{record.status}</Text>
     },
     {
       title: 'Квитанция',

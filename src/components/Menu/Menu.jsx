@@ -47,16 +47,17 @@ const AntMenu = props => {
           icon='file-text'
         />
         <MenuItem
-          heading='Сторонние источники'
-          url='/externals'
-          key='/externals'
-          icon='file-text'
-        />
-        <MenuItem
           heading='Компании'
           url='/companies'
           key='/companies'
           icon='desktop'
+        />
+        <MenuItem
+          heading='Сторонние источники'
+          url='/externals'
+          key='/externals'
+          icon='file-text'
+          disabled
         />
         <MenuItem
           heading='Панель администратора'
