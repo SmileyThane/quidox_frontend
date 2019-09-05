@@ -2,8 +2,8 @@ import * as t from '../types'
 
 const initialState = {
   draftDocuments: {},
-  inboxDocumentsList: [],
-  outDocumentsList: [],
+  inboxDocuments: [],
+  outDocuments: [],
   isFetching: false
 }
 
@@ -29,7 +29,7 @@ export default (state = initialState, action) => {
       console.log('reducer:', action.payload)
       return {
         ...state,
-        inboxDocumentsList: action.payload.data.data
+        inboxDocuments: action.payload.data
       }
 
     case t.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:
@@ -40,7 +40,7 @@ export default (state = initialState, action) => {
     case t.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
       return {
         ...state,
-        outDocumentsList: action.payload.data.data
+        outDocument: action.payload.data
       }
 
     // draft documents
@@ -50,7 +50,6 @@ export default (state = initialState, action) => {
         isFetching: action.payload
       }
     case t.GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
-      console.log(action.payload.data)
       return {
         ...state,
         draftDocuments: action.payload.data

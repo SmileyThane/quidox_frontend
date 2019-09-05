@@ -249,7 +249,7 @@ const AntdTable = props => {
     window.localStorage.setItem('perPage', value)
     getDocumentsWithParams(activeCompany, { per_page: +window.localStorage.getItem('perPage') })
   }
-  console.log(tableData)
+  console.log(tableData.total / +tableData.per_page)
   return (
     <Fragment>
       {tableState.showModal && <Modal
@@ -310,7 +310,7 @@ const AntdTable = props => {
               <Pagination
                 simple
                 defaultCurrent={1}
-                total={tableData.total}
+                total={Math.ceil(tableData.total / +tableData.per_page) * 10}
                 onChange={page => getDocumentsWithParams(activeCompany, { per_page: +window.localStorage.getItem('perPage'), page: page })}
               />
             </div>

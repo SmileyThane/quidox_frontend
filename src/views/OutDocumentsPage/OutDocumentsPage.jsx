@@ -1,27 +1,21 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import { Table } from '../../components'
 
 const OutDocumentsPage = props => {
   const {
     user: { data },
-    documents: { isFetching, outDocumentsList },
+    documents: { isFetching, outDocuments },
     getOutDocumentsByActiveCompanyId,
     removeDocumentById,
     removeDocumentsByIds
   } = props
 
-  useEffect(() => {
-    if (data) {
-      getOutDocumentsByActiveCompanyId(data.active_company_id)
-    }
-  }, [data, getOutDocumentsByActiveCompanyId])
-
   return (
     <div className='content'>
       <Table
         rowKey='id'
-        dataSource={outDocumentsList && outDocumentsList}
+        tableData={outDocuments}
         loading={isFetching}
         className='document-table'
         removeDocument={removeDocumentById}
