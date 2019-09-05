@@ -55,7 +55,7 @@ const AntdTable = props => {
 
   useEffect(() => {
     if (activeCompany) {
-      getDocumentsWithParams(activeCompany, { per_page: window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 5 })
+      getDocumentsWithParams(activeCompany, { per_page: window.localStorage.getItem('perPage') ? +window.localStorage.getItem('perPage') : 5 })
     }
   }, [activeCompany, getDocumentsWithParams])
 
@@ -247,7 +247,7 @@ const AntdTable = props => {
 
   const handleChangePerPage = value => {
     window.localStorage.setItem('perPage', value)
-    getDocumentsWithParams(activeCompany, { per_page: window.localStorage.getItem('perPage') })
+    getDocumentsWithParams(activeCompany, { per_page: +window.localStorage.getItem('perPage') })
   }
   console.log(tableData)
   return (
@@ -311,7 +311,7 @@ const AntdTable = props => {
                 simple
                 defaultCurrent={1}
                 total={tableData.total}
-                onChange={page => console.log(page)}
+                onChange={page => getDocumentsWithParams(activeCompany, { per_page: +window.localStorage.getItem('perPage'), page: page })}
               />
             </div>
           )}
