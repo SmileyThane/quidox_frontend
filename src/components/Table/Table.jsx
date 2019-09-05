@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useRef } from 'react'
+import React, { useState, useEffect, Fragment, useRef } from 'react'
 
 import _ from 'lodash'
 import { Link } from 'react-router-dom'
@@ -20,7 +20,7 @@ import {
 import './Table.scss'
 import { findUsersByParams } from '../../services/api/user'
 import history from '../../history'
-import moment from "moment";
+import moment from 'moment'
 
 const defaultTableState = {
   selectedRowKeys: [],
@@ -43,14 +43,21 @@ const AntdTable = props => {
     columnName = '',
     removeDocument,
     removeDocuments,
-    dataSource,
+    documents,
     sendDocumentToUser,
+    tableData,
     ...rest
   } = props
 
   const input = useRef(null)
 
   const [tableState, setTableState] = useState({ ...defaultTableState })
+
+  useEffect(() => {
+    if (activeCompany) {
+      getDocumentsWithParams(activeCompany, { per_page: window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 5 })
+    }
+  }, [activeCompany, getDocumentsWithParams])
 
   const columns = [
     {
@@ -213,7 +220,7 @@ const AntdTable = props => {
 
   const sendToUser = () => {
     const docsDataToUser = {
-      document_ids: dataSource
+      document_ids: tableData.data
         .filter(i => tableState.selectedRowKeys.includes(i.id))
         .map(i => i.id),
       user_company_id: JSON.stringify(tableState.value.map(i => i.key))
@@ -238,6 +245,11 @@ const AntdTable = props => {
       })
   }
 
+  const handleChangePerPage = value => {
+    window.localStorage.setItem('perPage', value)
+    getDocumentsWithParams(activeCompany, { per_page: window.localStorage.getItem('perPage') })
+  }
+  console.log(tableData)
   return (
     <Fragment>
       {tableState.showModal && <Modal
@@ -274,8 +286,8 @@ const AntdTable = props => {
       <Table
         className='table'
         columns={columns}
-        dataSource={dataSource}
         rowSelection={rowSelection}
+        dataSource={tableData.hasOwnProperty('data') && tableData.data}
         locale={{ emptyText: 'Нет данных' }}
         pagination={false}
         title={() =>
@@ -298,7 +310,7 @@ const AntdTable = props => {
               <Pagination
                 simple
                 defaultCurrent={1}
-                total={50}
+                total={tableData.total}
                 onChange={page => console.log(page)}
               />
             </div>
@@ -311,12 +323,12 @@ const AntdTable = props => {
                   <Text>Отмечено: {tableState.selectedRowKeys.length}</Text>
                 </div>
                 <div className='table-footer__item'>
-                  <Text>Всего: {props.dataSource.length}</Text>
+                  <Text>Всего: {tableData.hasOwnProperty('data') && tableData.data.length}</Text>
                 </div>
               </div>
               <div>
                 <Text>На странице:</Text>
-                <Select defaultValue={5} style={{ width: 120, marginLeft: '1rem' }}>
+                <Select onChange={handleChangePerPage} defaultValue={window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 5} style={{ width: 120, marginLeft: '1rem' }}>
                   <Option value={5}>5</Option>
                   <Option value={10}>10</Option>
                   <Option value={15}>15</Option>

@@ -296,7 +296,7 @@ const NewDocumentPage = props => {
       message.error(error.message)
     }
   }
-
+  console.log(documentState)
   return (
     <Fragment>
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>

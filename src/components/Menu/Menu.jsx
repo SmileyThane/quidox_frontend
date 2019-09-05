@@ -1,14 +1,12 @@
 import React, { Fragment } from 'react'
 
-import { Menu, Icon, Badge } from 'antd'
+import { Menu } from 'antd'
 
 import history from '../../history.js'
 
 import { Button } from '../'
 import { MenuItem } from './internal'
 import './Menu.scss'
-
-const countMessages = 0
 
 const AntMenu = props => {
   return (

@@ -5,23 +5,16 @@ import { Table } from '../../components'
 const DraftsPage = props => {
   const {
     user: { data },
-    documents: { draftDocumentsList, isFetching },
+    documents: { draftDocuments, isFetching },
     getDraftDocumentsByActiveCompany,
     removeDocumentById,
     removeDocumentsByIds
   } = props
-
-  useEffect(() => {
-    if (data) {
-      getDraftDocumentsByActiveCompany(data.active_company_id)
-    }
-  }, [data, getDraftDocumentsByActiveCompany])
-
   return (
     <div className='content'>
       <Table
         rowKey='id'
-        dataSource={draftDocumentsList && draftDocumentsList}
+        tableData={draftDocuments}
         loading={isFetching}
         className='document-table'
         removeDocument={removeDocumentById}

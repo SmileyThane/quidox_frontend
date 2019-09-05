@@ -171,7 +171,8 @@ table {
   }
 }
 .ant-pagination.ant-pagination-simple {
-  min-width: 17rem;
+  min-width: 20rem;
+  text-align: right;
 }
 .ant-btn-disabled, .ant-btn.disabled, .ant-btn[disabled], .ant-btn-disabled:hover, .ant-btn.disabled:hover, .ant-btn[disabled]:hover, .ant-btn-disabled:focus, .ant-btn.disabled:focus, .ant-btn[disabled]:focus, .ant-btn-disabled:active, .ant-btn.disabled:active, .ant-btn[disabled]:active, .ant-btn-disabled.active, .ant-btn.disabled.active, .ant-btn[disabled].active {
   color: map-get($colors , white);
