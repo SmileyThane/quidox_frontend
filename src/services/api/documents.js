@@ -18,7 +18,7 @@ const sendDocumentToUser = data => {
 
 const getInboxDocumentsByActiveCompanyId = (id, params) => {
   return http({
-    url: `documents/in/0/${id}`,
+    url: `documents/in/${id}`,
     method: 'GET',
     params
   })
@@ -26,7 +26,7 @@ const getInboxDocumentsByActiveCompanyId = (id, params) => {
 
 const getOutDocumentsByActiveCompanyId = (id, params) => {
   return http({
-    url: `documents/out/0/${id}`,
+    url: `documents/out/${id}`,
     method: 'GET',
     params
   })
