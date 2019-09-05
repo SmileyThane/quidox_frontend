@@ -249,7 +249,6 @@ const AntdTable = props => {
     window.localStorage.setItem('perPage', value)
     getDocumentsWithParams(activeCompany, { per_page: +window.localStorage.getItem('perPage') })
   }
-  console.log(tableData.total / +tableData.per_page)
   return (
     <Fragment>
       {tableState.showModal && <Modal
@@ -287,7 +286,7 @@ const AntdTable = props => {
         className='table'
         columns={columns}
         rowSelection={rowSelection}
-        dataSource={tableData.hasOwnProperty('data') && tableData.data}
+        dataSource={tableData.hasOwnProperty('data') ? tableData.data : []}
         locale={{ emptyText: 'Нет данных' }}
         pagination={false}
         title={() =>
