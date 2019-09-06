@@ -11,6 +11,7 @@ const OutDocumentsPage = props => {
     removeDocumentsByIds
   } = props
 
+  console.log('outDocuments:', outDocuments)
   return (
     <div className='content'>
       <Table
