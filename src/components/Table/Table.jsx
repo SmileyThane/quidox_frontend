@@ -249,6 +249,7 @@ const AntdTable = props => {
     window.localStorage.setItem('perPage', value)
     getDocumentsWithParams(activeCompany, { per_page: +window.localStorage.getItem('perPage') })
   }
+  console.log(tableData.data)
   return (
     <Fragment>
       {tableState.showModal && <Modal
