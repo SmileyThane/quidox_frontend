@@ -107,7 +107,7 @@ const AntdTable = props => {
     },
     {
       title: 'Дата',
-      render: record => <Text>{moment.utc(record.created_at, 'YYYY-MM-DD HH:mm').local().format('DD/MM/YYYY h:mm')}</Text>,
+      render: record => <Text>{moment.utc(record.created_at, 'YYYY-MM-DD HH:mm').local().format('DD/MM/YYYY HH:mm:ss')}</Text>,
       sorter: (a, b) => getTimeStamp(a.created_at) - getTimeStamp(b.created_at)
     },
     {

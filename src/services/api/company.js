@@ -7,6 +7,13 @@ const getCompany = () => {
   })
 }
 
+const getCompanyById = id => {
+  return http({
+    url: `api/company/${id}`,
+    method: 'GET'
+  })
+}
+
 const changeActiveCompanyById = id => {
   return http({
     url: `/user/company/set/${id}`,
@@ -32,6 +39,7 @@ const attachUnregisteredUserToCompany = data => {
 
 export {
   getCompany,
+  getCompanyById,
   changeActiveCompanyById,
   createCompany,
   attachUnregisteredUserToCompany

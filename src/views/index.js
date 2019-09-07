@@ -3,6 +3,7 @@ import RegisterPage from './RegisterPage'
 import UserInfoPage from './UserInfoPage'
 import Home from './Home'
 import SingleDocumentPage from './SingleDocumentPage'
+import SingleCompanyPage from './SingleCompanyPage'
 import NewDocumentPage from './NewDocumentPage'
 import DraftsPage from './DraftsPage'
 import CompanyPage from './CompanyPage'
@@ -18,6 +19,7 @@ export {
   ResetPasswordPage,
   Home,
   SingleDocumentPage,
+  SingleCompanyPage,
   NewDocumentPage,
   DraftsPage,
   ExternalsPage,

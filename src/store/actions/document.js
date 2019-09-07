@@ -1,4 +1,3 @@
-/* eslint-disable no-fallthrough */
 import * as t from '../types'
 
 import { api } from '../../services'

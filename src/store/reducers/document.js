@@ -23,7 +23,6 @@ export default (state = initialState, action) => {
         isFetching: action.payload
       }
     case t.VERIFY_DOCUMENT_SUCCESS:
-      console.log('payload:', action.payload)
       return {
         ...state
       }

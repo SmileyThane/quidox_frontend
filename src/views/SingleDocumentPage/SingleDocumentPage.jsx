@@ -15,7 +15,7 @@ import PDFJSBACKEND from '../../backends/pdfjs'
 import { close } from './img'
 import './SingleDocumentPage.scss'
 
-const { Text } = Typography
+const { Text, Paragraph } = Typography
 
 const defaultDocumentState = {
   isVisible: false,
@@ -315,10 +315,13 @@ const SingleDocumentPage = props => {
                 <div className='back' onClick={() => history.goBack()} >
                   <Icon type='left' />
                 </div>
-                <h2 className='document__title'>{data.name}</h2>
+                {(data.status && data.status === 1)
+                  ? <Paragraph className='document-title' editable>{data.name}</Paragraph>
+                  : <h2 className='document__title'>{data.name}</h2>
+                }
               </div>
               <div className='document__header_right'>
-                <p className='document__date'>{moment.utc(data.created_at, 'YYYY-MM-DD HH:mm').local().format('DD/MM/YYYY h:mm')}</p>
+                <p className='document__date'>{moment.utc(data.created_at, 'YYYY-MM-DD HH:mm').local().format('DD/MM/YYYY HH:mm:ss')}</p>
               </div>
             </div>
             <div className='document__content'>
@@ -351,7 +354,10 @@ const SingleDocumentPage = props => {
                 </div>
                 <div className='info__item'>
                   <div className='info__title'>Комментарий</div>
-                  <div className='info__content'>{data.description}</div>
+                  {(data.status && data.status === 1)
+                    ? <Paragraph editable className='info__content'>{data.description}</Paragraph>
+                    : <div className='info__content'>{data.description}</div>
+                  }
                 </div>
               </div>
               <div className='document__attached-doc attached-doc'>

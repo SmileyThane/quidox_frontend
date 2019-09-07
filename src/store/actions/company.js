@@ -23,6 +23,26 @@ const getCompany = () => dispatch => {
     })
 }
 
+const getCompanyById = id => dispatch => {
+  dispatch({
+    type: t.GET_COMPANY_BY_ID_FETCHING,
+    payload: true
+  })
+  return api.company.getCompanyById(id)
+    .then(({ data }) => {
+      if (data) {
+        dispatch({
+          type: t.GET_COMPANY_BY_ID_SUCCESS,
+          payload: data
+        })
+      }
+      dispatch({
+        type: t.GET_COMPANY_BY_ID_FETCHING,
+        payload: false
+      })
+    })
+}
+
 const changeActiveCompanyById = id => dispatch => {
   dispatch({
     type: t.CHANGE_ACTIVE_COMPANY_BY_ID_FETCHING,
@@ -81,6 +101,7 @@ const createCompany = body => (dispatch, getState) => {
 
 export {
   getCompany,
+  getCompanyById,
   createCompany,
   changeActiveCompanyById
 }

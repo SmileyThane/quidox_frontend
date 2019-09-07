@@ -64,7 +64,7 @@ const HeaderBlock = props => {
                   </div>
                 </div>
                 <div className='user header__user' ref={nodeRef}>
-                  <span onClick={() => setVisible(true)}>{data.email}</span>
+                  <span onClick={() => setVisible(!isVisible)}>{data.email}</span>
                   {isVisible &&
                   <ul className='user__dropdown'>
                     <li className='user__dropdown__item' style={{ textAlign: 'center' }}>

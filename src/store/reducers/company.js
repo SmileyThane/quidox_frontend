@@ -2,6 +2,7 @@ import * as t from '../types'
 
 const initalState = {
   list: [],
+  singleCompany: {},
   isFetching: false
 }
 
@@ -16,6 +17,16 @@ export default (state = initalState, action) => {
       return {
         ...state,
         list: action.payload.data
+      }
+    case t.GET_COMPANY_BY_ID_FETCHING:
+      return {
+        ...state,
+        isFetching: action.payload
+      }
+    case t.GET_COMPANY_BY_ID_SUCCESS:
+      return {
+        ...state,
+        singleCompany: action.payload
       }
     case t.CREATE_COMPANY_FETCHING:
       return {

@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import moment from 'moment'
 import useForm from 'rc-form-hooks'
 
+import history from '../../history';
 import { api } from '../../services'
 import { Button } from '../../components'
 import {
@@ -183,6 +184,11 @@ const CopmanyPage = props => {
           dataSource={list}
           loading={isFetching}
           locale={{ emptyText: 'Нет созданных компаний' }}
+          onRow={record => {
+            return {
+              onClick: () => history.push(`/companies/${+record.company_number}`)
+            }
+          }}
         />
       </div>
       {companyState.showInput &&
