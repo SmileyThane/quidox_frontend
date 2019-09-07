@@ -1,0 +1,6 @@
+@import "../../styles/variables";
+.page-description {
+  padding: 2rem;
+  margin-top: 5rem;
+  background-color: map_get($colors, white);
+}
