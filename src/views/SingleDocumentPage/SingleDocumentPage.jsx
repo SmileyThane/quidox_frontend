@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import axios from 'axios'
 import generateHash from 'random-hash'
-import moment, {months} from 'moment'
+import moment from 'moment'
 import fileDownload from 'js-file-download'
 import _ from 'lodash'
 
