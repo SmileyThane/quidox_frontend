@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 
-import { Menu } from 'antd'
+import { Menu, Icon } from 'antd'
 
 import history from '../../history.js'
 
@@ -9,6 +9,7 @@ import { MenuItem } from './internal'
 import './Menu.scss'
 
 const AntMenu = props => {
+  const { SubMenu } = Menu
   return (
     <Fragment>
       <Button
@@ -19,12 +20,11 @@ const AntMenu = props => {
         onClick={() => history.push('/new-document')}
         style={{ maxWidth: '26rem', marginLeft: '1.5rem', padding: '1rem 1.5rem', height: 'auto' }}
       >
-        Новый документ
+        Новое сообщение
       </Button>
       <Menu
         mode='inline'
         selectedKeys={[props.match.path, (props.location.state || {}).from]}
-        defaultOpenKeys={['sub1']}
       >
         <MenuItem
           heading='Входящие'
@@ -39,6 +39,13 @@ const AntMenu = props => {
           icon='import'
         />
         <MenuItem
+          heading='Внутренние'
+          url='/'
+          key='/'
+          icon='import'
+          disabled
+        />
+        <MenuItem
           heading='Черновики'
           url='/drafts-documents'
           key='/drafts-documents'
@@ -50,6 +57,34 @@ const AntMenu = props => {
           key='/companies'
           icon='desktop'
         />
+        <SubMenu
+          key='sub1'
+          title={
+            <span>
+              <Icon type='mail' />
+              <span>Navigation One</span>
+            </span>
+          }
+        >
+          <MenuItem icon='file-text' key='5' url='/out-documents' heading='Option 1' />
+          <MenuItem icon='file-text' key='6' url='/' heading='Option 2' />
+          <MenuItem icon='file-text' key='7' url='/' heading='Option 3' />
+          <MenuItem icon='file-text' key='8' url='/' heading='Option 4' />
+        </SubMenu>
+        <SubMenu
+          key='sub2'
+          title={
+            <span>
+              <Icon type='mail' />
+              <span>Navigation Two</span>
+            </span>
+          }
+        >
+          <MenuItem icon='file-text' key='5' url='/out-documents' heading='Option 1' />
+          <MenuItem icon='file-text' key='6' url='/' heading='Option 2' />
+          <MenuItem icon='file-text' key='7' url='/' heading='Option 3' />
+          <MenuItem icon='file-text' key='8' url='/' heading='Option 4' />
+        </SubMenu>
         <MenuItem
           heading='Сторонние источники'
           url='/externals'
@@ -65,7 +100,7 @@ const AntMenu = props => {
           disabled
         />
         <MenuItem
-          heading='Корзина'
+          heading='Архив'
           url=''
           key={2}
           icon='delete'

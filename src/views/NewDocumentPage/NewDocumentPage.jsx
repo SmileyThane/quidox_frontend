@@ -10,7 +10,8 @@ import {
   Spin,
   Tag,
   Typography,
-  Input
+  Input,
+  Checkbox
 } from 'antd'
 import { Button } from '../../components'
 import './NewDocumentPage.scss'
@@ -29,7 +30,8 @@ const defaultDocumentData = {
   fetching: false,
   ids: [],
   status: 1,
-  verifyFetching: false
+  verifyFetching: false,
+  isVisibleRecipients: false
 }
 // eslint-disable-next-line spaced-comment
 const isIE = /*@cc_on!@*/false || !!document.documentMode
@@ -102,6 +104,12 @@ const NewDocumentPage = props => {
       'description',
       documentState.description
     )
+    const recipientsInt = documentState.isVisibleRecipients ? 1 : 0
+    formData.append(
+      'is_visible_recipients',
+      recipientsInt
+    )
+
     if (!condition.length) {
       formData.append(
         'user_company_id',
@@ -328,7 +336,7 @@ const NewDocumentPage = props => {
           </div>
           <div className='buttons-group'>
             <input type='file' id='upload' hidden multiple onChange={event => getFiles(event)} ref={inputNode} />
-            <label className='label-btn' htmlFor='upload'>
+            <label style={{ minWidth: 216 }} className='ant-btn ant-btn-primary ant-btn-background-ghost label-btn' htmlFor='upload'>
               <Icon type='upload' style={{ marginRight: 10 }} />
             Прикрепить файл(ы)
             </label>
@@ -366,10 +374,14 @@ const NewDocumentPage = props => {
             </ul>
           </div>
           <div className='buttons-group'>
+            <Checkbox onChange={e => setDocumentState({ ...documentState, isVisibleRecipients: e.target.checked })}>Разрешить получателям видеть всех адресатов сообщения</Checkbox>
+          </div>
+          <div className='buttons-group'>
             <Button
               ghost
               type='primary'
               onClick={handleSendToDraft}
+              style={{ minWidth: 216 }}
             >
               <Icon type='file-text' />
               Сохранить в черновиках

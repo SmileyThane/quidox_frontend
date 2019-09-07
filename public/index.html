@@ -182,7 +182,8 @@
         cert: certArr,
         subject: subjectArr,
         issuer: issuerArr,
-        key: key
+        key: key,
+        date: [cert.ValidityNotBeforeSec, cert.ValidityNotAfterSec]
       }
 
       var input = document.createElement('input')

@@ -193,3 +193,6 @@
     background: rgba(map-get($colors, blue), 0.2);
   }
 }
+.edit-disabled {
+  cursor: not-allowed !important;
+}

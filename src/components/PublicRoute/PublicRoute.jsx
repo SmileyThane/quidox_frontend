@@ -9,7 +9,6 @@ const PublicRoute = ({ component: Component, ...rest }) => {
         ? (<Redirect to={{ pathname: '/', state: { from: props.location } }} />)
         : <Fragment>
           <LayoutBlock>
-            <HeaderBlock />
             <ContentBlock logWrapp>
               <Component {...props} />
             </ContentBlock>

@@ -11,6 +11,7 @@ import Button from './Button'
 import FormGroup from './FormGroup'
 import Table from './Table'
 import PDFViewer from './PDFViewer'
+import PageDescription from './PageDescription'
 
 export {
   PrivateRoute,
@@ -25,5 +26,6 @@ export {
   Button,
   FormGroup,
   Table,
-  PDFViewer
+  PDFViewer,
+  PageDescription
 }

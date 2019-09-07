@@ -1,6 +1,11 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 
-import { Table } from '../../components'
+import { Typography } from 'antd'
+import { Table, PageDescription } from '../../components'
+
+import './InboxDocumentsPage.scss'
+
+const { Text, Title } = Typography
 
 const InboxDocumentsPage = props => {
   const {
@@ -11,21 +16,33 @@ const InboxDocumentsPage = props => {
     removeDocumentsByIds
   } = props
 
+  console.log(inboxDocuments)
   return (
-    <div className='content'>
-      <Table
-        rowKey='id'
-        tableData={inboxDocuments}
-        loading={isFetching}
-        className='document-table'
-        removeDocument={removeDocumentById}
-        removeDocuments={removeDocumentsByIds}
-        getDocumentsWithParams={getInboxDocumentsByActiveCompanyId}
-        activeCompany={data.active_company_id}
-        type='unconfirmed'
-        columnName='Отправитель'
+    <Fragment>
+      <div className='content'>
+        <Table
+          rowKey='id'
+          tableData={inboxDocuments}
+          loading={isFetching}
+          className='document-table'
+          removeDocument={removeDocumentById}
+          removeDocuments={removeDocumentsByIds}
+          getDocumentsWithParams={getInboxDocumentsByActiveCompanyId}
+          activeCompany={data.active_company_id}
+          type='unconfirmed'
+          columnName='Отправитель'
+        />
+      </div>
+
+      <PageDescription
+        isVisible={(inboxDocuments.data && !inboxDocuments.data.length)}
+        title='В этой папке будут находиться все полученные Вами сообщения.'
+        text={[
+          'Вы сможете просматривать и пересылать входящие сообщения, подписывать и сохранять полученные документы.',
+          'Работа только с входящими сообщениями и документами - бесплатно в течение 36 месяцев с момента создания учетной записи. Далее будет взиматься минимальная плата за используемое для хранения дисковое пространство.'
+        ]}
       />
-    </div>
+    </Fragment>
   )
 }
 

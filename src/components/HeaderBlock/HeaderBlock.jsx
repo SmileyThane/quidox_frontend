@@ -1,6 +1,6 @@
-import React, { Fragment } from 'react'
+import React, { useState, useEffect, useRef, Fragment } from 'react'
 
-import { Layout, Icon, Popconfirm, Skeleton, Tag, Typography } from 'antd'
+import { Layout, Icon, Skeleton, Tag, Typography, Button } from 'antd'
 
 import history from '../../history.js'
 import { logo } from './img'
@@ -13,6 +13,24 @@ const HeaderBlock = props => {
   const {
     user: { isFetching, data }
   } = props
+
+  const [isVisible, setVisible] = useState(false)
+
+  const nodeRef = useRef(null)
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClick)
+    return () => {
+      document.removeEventListener('mousedown', handleClick)
+    }
+  }, [])
+
+  const handleClick = (event) => {
+    if (nodeRef.current.contains(event.target)) {
+      return
+    }
+    setVisible(false)
+  }
 
   const handleLogout = () => {
     window.localStorage.clear()
@@ -28,35 +46,46 @@ const HeaderBlock = props => {
           <Fragment>
             <Skeleton loading={isFetching} active paragraph={false}>
               <div className='header-data'>
-                <div />
                 <div className='header__setting'>
-                  <Text>
-                    Активная компания:
-                    {(data && data.companies) && data.companies.map(i => {
-                      if (i.company_id === data.active_company_id) {
-                        return <Tag key={i.company_id} color='#87d068' style={{ marginLeft: '.5rem' }}>{i.company_name}</Tag>
-                      } else {
-                        return null
-                      }
-                    })}
-                  </Text>
+                  <Button type='primary' ghost>Верификация ЭЦП</Button>
+                  <div className='header-setting-item'>
+                    <Text>Баланс (BY): </Text>
+                    <Tag color='#108ee9' style={{ marginLeft: '1rem' }}>0.00</Tag>
+                  </div>
+
+                  <div className='header-setting-item'>
+                    <Text>Доступно действий: </Text>
+                    <Tag color='#108ee9' style={{ marginLeft: '1rem' }}>0</Tag>
+                  </div>
+
+                  <div className='header-setting-item'>
+                    <Text>Тариф: </Text>
+                    <Tag color='#108ee9' style={{ marginLeft: '1rem' }}>0</Tag>
+                  </div>
                 </div>
-                <div className='user header__user'>
-                  {data &&
-                  <span onClick={() => history.push('/user-me')}>{data.email}</span>
+                <div className='user header__user' ref={nodeRef}>
+                  <span onClick={() => setVisible(true)}>{data.email}</span>
+                  {isVisible &&
+                  <ul className='user__dropdown'>
+                    <li className='user__dropdown__item' style={{ textAlign: 'center' }}>
+                      {(data && data.companies) && data.companies.map(i => {
+                        if (i.company_id === data.active_company_id) {
+                          return <Tag key={i.company_id} color='#87d068' style={{ width: '100%' }}>{+i.company_number === 0 ? i.company_name : (`УНП: ${i.company_number}`)}</Tag>
+                        } else {
+                          return null
+                        }
+                      })}
+                    </li>
+                    <li className='user__dropdown__item' onClick={() => history.push('/user-me')}>
+                      <Icon type='profile' style={{ marginRight: 10 }} />
+                      <span>Профиль</span>
+                    </li>
+                    <li className='user__dropdown__item' onClick={() => handleLogout()}>
+                      <Icon type='logout' style={{ marginRight: 10 }} />
+                      <span>Выйти</span>
+                    </li>
+                  </ul>
                   }
-                  <Popconfirm
-                    placement='bottomLeft'
-                    title='Вы уверены?'
-                    onConfirm={() => handleLogout()}
-                    okText='Выйти'
-                    cancelText='Отмена'
-                  >
-                    <Icon
-                      className='user__logout-btn'
-                      type='logout'
-                    />
-                  </Popconfirm>
                 </div>
               </div>
             </Skeleton>
@@ -68,3 +97,19 @@ const HeaderBlock = props => {
 }
 
 export default HeaderBlock
+
+// {data &&
+// }
+//
+// <Popconfirm
+//   placement='bottomLeft'
+//   title='Вы уверены?'
+//   onConfirm={() => handleLogout()}
+//   okText='Выйти'
+//   cancelText='Отмена'
+// >
+//   <Icon
+//     className='user__logout-btn'
+//     type='logout'
+//   />
+// </Popconfirm>

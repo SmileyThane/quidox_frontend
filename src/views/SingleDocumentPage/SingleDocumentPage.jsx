@@ -1,12 +1,12 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import axios from 'axios'
 import generateHash from 'random-hash'
-import moment from 'moment'
+import moment, {months} from 'moment'
 import fileDownload from 'js-file-download'
 import _ from 'lodash'
 
 import { api } from '../../services'
-import { Spin, Icon, List, Tag, Modal, Select, message, Typography } from 'antd'
+import { Spin, Icon, List, Tag, Modal, Select, message, Typography, Popover } from 'antd'
 import history from '../../history'
 import { findUsersByParams } from '../../services/api/user'
 import { Button, PDFViewer } from '../../components'
@@ -101,17 +101,15 @@ const SingleDocumentPage = props => {
 
     if (type === 'ecp') {
       const ecpData = JSON.parse(decodeURIComponent(dataArray[documentState.activeFileCert].verification_info))
-
-      const validity = ecpData.cert['1.2.112.1.2.1.1.5.4'].split('-')
-
+      console.log(ecpData.cert)
       ecpInfo = {
         unp: ecpData.cert['1.2.112.1.2.1.1.1.1.2'],
         org: ecpData.subject['2.5.4.3'],
         position: ecpData.cert['1.2.112.1.2.1.1.5.1'],
         address: ecpData.subject['2.5.4.7'] + ' ' + ecpData.subject['2.5.4.9'],
         name: ecpData.subject['2.5.4.4'] + ' ' + ecpData.subject['2.5.4.41'],
-        validity_from: validity[0],
-        validity_to: validity[validity.length - 1]
+        validity_from: ecpData.date[0],
+        validity_to: ecpData.date[1]
       }
     }
 
@@ -367,6 +365,19 @@ const SingleDocumentPage = props => {
                           <Icon style={{ color: '#3278fb', fontSize: 20 }} onClick={() => downloadDocumentContent(item, false, true)} type='download' />
                         ]
                         : [
+                          <Popover
+                            placement='topRight'
+                            content={
+                              <Fragment>
+                                <Text>Подпись файла возможна только в браузере Internet Explorer верифицированным пользователем</Text>
+                                <Button type='link'>
+                                  Подробнее
+                                </Button>
+                              </Fragment>
+                            }
+                          >
+                            <Icon type='edit' style={{ color: '#E0E0E0', fontSize: 18, marginRight: 5, cursor: 'not-allowed'}}/>
+                          </Popover>,
                           <Icon style={{ color: '#3278fb', fontSize: 20 }} onClick={() => downloadDocumentContent(item, false, true)} type='download' />
                         ]
                       }

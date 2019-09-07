@@ -9,8 +9,8 @@
     align-items: center;
   }
   .header__left {
-    min-width: 28rem;
-    width: 28rem;
+    min-width: 29rem;
+    width: 29rem;
     text-align: center;
   }
   .header__logo {
@@ -19,6 +19,48 @@
   .header__user {
     min-width: 20rem;
     flex-wrap: nowrap;
+    position: relative;
+  }
+  .user__dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    margin: 2rem 0 0 0;
+    padding: 0;
+    list-style: none;
+    border: .1rem solid map_get($colors, gray);
+    background-color: #fff;
+    z-index: 5;
+    box-shadow: -9px 9px 5px -5px rgba(0, 0, 0, 0.1);
+  }
+  .user__dropdown__item {
+    height: 5rem;
+    padding: 1rem 1rem 1rem 2rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    transition: .3s ease-in;
+    position: relative;
+    &:hover {
+      background-color: rgba(map_get($colors, gray), .3);
+    }
+    &:after {
+      display: block;
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 80%;
+      transform: translateX(-50%);
+      height: .2rem;
+      background-color: map_get($colors, gray);
+    }
+    &:last-of-type {
+      &:after {
+        display: none;
+      }
+    }
   }
   .header__input {
     margin-right: 3rem;
@@ -27,7 +69,15 @@
   .header__setting {
     max-width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 2rem;
+  }
+  .header-setting-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-left: 1rem;
   }
   .user {
     font-size: 1.5rem;
@@ -41,6 +91,7 @@
   .header-data {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     width: 100%;
   }
 }

@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 
-import { Table } from '../../components'
+import { Table, PageDescription } from '../../components'
 
 const DraftsPage = props => {
   const {
@@ -11,20 +11,27 @@ const DraftsPage = props => {
     removeDocumentsByIds
   } = props
   return (
-    <div className='content'>
-      <Table
-        rowKey='id'
-        tableData={draftDocuments}
-        loading={isFetching}
-        className='document-table'
-        removeDocument={removeDocumentById}
-        removeDocuments={removeDocumentsByIds}
-        getDocumentsWithParams={getDraftDocumentsByActiveCompany}
-        activeCompany={data.active_company_id}
-        type='out-unconfirmed'
-        columnName='Получатель'
+    <Fragment>
+      <div className='content'>
+        <Table
+          rowKey='id'
+          tableData={draftDocuments}
+          loading={isFetching}
+          className='document-table'
+          removeDocument={removeDocumentById}
+          removeDocuments={removeDocumentsByIds}
+          getDocumentsWithParams={getDraftDocumentsByActiveCompany}
+          activeCompany={data.active_company_id}
+          type='out-unconfirmed'
+          columnName='Получатель'
+        />
+      </div>
+
+      <PageDescription
+        title='В эту папку Вы сможете сохранить черновик любого сообщения.'
+        text={['Вы сможете в любой момент продолжить редактирование сообщения и отправить его адресату.']}
       />
-    </div>
+    </Fragment>
   )
 }
 
