@@ -108,8 +108,8 @@ const SingleDocumentPage = props => {
         position: ecpData.cert['1.2.112.1.2.1.1.5.1'],
         address: ecpData.subject['2.5.4.7'] + ' ' + ecpData.subject['2.5.4.9'],
         name: ecpData.subject['2.5.4.4'] + ' ' + ecpData.subject['2.5.4.41'],
-        validity_from: ecpData.date[0],
-        validity_to: ecpData.date[1]
+        validity_from: moment(+ecpData.date[0] * 1000).format('DD/MM/YYYY, hh:mm:ss'),
+        validity_to: moment(+ecpData.date[1] * 1000).format('DD/MM/YYYY, hh:mm:ss')
       }
       console.log(ecpInfo)
     }
@@ -511,7 +511,7 @@ const SingleDocumentPage = props => {
                   </div>
                   <div className='cert-modal__item-right'>
                     <div className='cert-item'>
-                      <Text type='secondary'>{moment.utc(documentState.fileCerts[documentState.activeFileCert].created_at, 'YYYY-MM-DD HH:mm').local().format('DD/MM/YYYY h:mm')}</Text>
+                      <Text type='secondary'>{moment.utc(documentState.fileCerts[documentState.activeFileCert].created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD/MM/YYYY hh:mm:ss')}</Text>
                     </div>
                   </div>
                 </div>
@@ -559,7 +559,3 @@ const SingleDocumentPage = props => {
 
 export default SingleDocumentPage
 
-// api.documents.checkFlashKey({ key: companyState.newCompanyKey })
-//     .then(({ data }) => {
-//       console.log(data.success)
-//     })
