@@ -111,6 +111,7 @@ const SingleDocumentPage = props => {
         validity_from: ecpData.date[0],
         validity_to: ecpData.date[1]
       }
+      console.log(ecpInfo)
     }
 
     setDocumentState({
@@ -510,7 +511,7 @@ const SingleDocumentPage = props => {
                   </div>
                   <div className='cert-modal__item-right'>
                     <div className='cert-item'>
-                      <Text type='secondary'>{documentState.fileCerts[documentState.activeFileCert].created_at}</Text>
+                      <Text type='secondary'>{moment.utc(documentState.fileCerts[documentState.activeFileCert].created_at, 'YYYY-MM-DD HH:mm').local().format('DD/MM/YYYY h:mm')}</Text>
                     </div>
                   </div>
                 </div>

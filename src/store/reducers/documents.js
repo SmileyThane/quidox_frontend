@@ -26,7 +26,6 @@ export default (state = initialState, action) => {
         isFetching: action.payload
       }
     case t.GET_INBOX_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
-      console.log('reducer:', action.payload)
       return {
         ...state,
         inboxDocuments: action.payload.data
@@ -44,7 +43,6 @@ export default (state = initialState, action) => {
         outDocuments: action.payload.data
       }
 
-    // draft documents
     case t.GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:
       return {
         ...state,
