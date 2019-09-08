@@ -61,29 +61,49 @@ const AntMenu = props => {
           key='sub1'
           title={
             <span>
-              <Icon type='mail' />
-              <span>Navigation One</span>
+              <Icon type='filter'/>
+              <span>Статусы сообщений</span>
             </span>
           }
         >
-          <MenuItem icon='file-text' key='5' url='/out-documents' heading='Option 1' />
-          <MenuItem icon='file-text' key='6' url='/' heading='Option 2' />
-          <MenuItem icon='file-text' key='7' url='/' heading='Option 3' />
-          <MenuItem icon='file-text' key='8' url='/' heading='Option 4' />
+          <Menu.Item key='5' url='/out-documents'>
+            <Icon type='file-text' theme="twoTone" twoToneColor='#52c41a' />
+            Доставлено, завершено
+          </Menu.Item>
+          <Menu.Item key='6' url='/'>
+            <Icon type='file-text' theme="twoTone" twoToneColor='#1890ff' />
+            Доставлено, в работе
+          </Menu.Item>
+          <Menu.Item key='7' url='/'>
+            <Icon type='file-text' theme="twoTone" twoToneColor='#fa8c16' />
+            Требует реакции
+          </Menu.Item>
+          <Menu.Item key='8' url='/'>
+            <Icon type='file-text' theme="twoTone" twoToneColor='#f5222d' />
+            Отклонено
+          </Menu.Item>
         </SubMenu>
         <SubMenu
           key='sub2'
           title={
             <span>
-              <Icon type='mail' />
-              <span>Navigation Two</span>
+              <Icon type='filter' />
+              <span>Статусы документов</span>
             </span>
           }
         >
-          <MenuItem icon='file-text' key='5' url='/out-documents' heading='Option 1' />
-          <MenuItem icon='file-text' key='6' url='/' heading='Option 2' />
-          <MenuItem icon='file-text' key='7' url='/' heading='Option 3' />
-          <MenuItem icon='file-text' key='8' url='/' heading='Option 4' />
+          <Menu.Item key='5' url='/out-documents'>
+            <Icon type='file-text' theme="twoTone" twoToneColor='#1890ff' />
+            Требуется подпись
+          </Menu.Item>
+          <Menu.Item key='6' url='/'>
+            <Icon type='file-text' theme="twoTone" twoToneColor='#52c41a' />
+            Завершено
+          </Menu.Item>
+          <Menu.Item key='7' url='/'>
+            <Icon type='file-text' theme="twoTone" twoToneColor='#f5222d' />
+            Отклонен
+          </Menu.Item>
         </SubMenu>
         <MenuItem
           heading='Сторонние источники'

@@ -321,7 +321,7 @@ const SingleDocumentPage = props => {
                 }
               </div>
               <div className='document__header_right'>
-                <p className='document__date'>{moment.utc(data.created_at, 'YYYY-MM-DD HH:mm').local().format('DD/MM/YYYY HH:mm:ss')}</p>
+                <p className='document__date'>{moment.utc(data.created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD/MM/YYYY HH:mm:ss')}</p>
               </div>
             </div>
             <div className='document__content'>
@@ -517,7 +517,7 @@ const SingleDocumentPage = props => {
                   </div>
                   <div className='cert-modal__item-right'>
                     <div className='cert-item'>
-                      <Text type='secondary'>{moment.utc(documentState.fileCerts[documentState.activeFileCert].created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD/MM/YYYY hh:mm:ss')}</Text>
+                      <Text type='secondary'>{moment.utc(documentState.fileCerts[documentState.activeFileCert].created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD/MM/YYYY HH:mm:ss')}</Text>
                     </div>
                   </div>
                 </div>

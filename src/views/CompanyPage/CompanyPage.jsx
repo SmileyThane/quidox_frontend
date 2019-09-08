@@ -142,7 +142,7 @@ const CopmanyPage = props => {
   }
 
   const columns = [{
-    title: 'Имя',
+    title: 'Наименование',
     dataIndex: 'company_data.name'
   },
   {
@@ -186,7 +186,7 @@ const CopmanyPage = props => {
           locale={{ emptyText: 'Нет созданных компаний' }}
           onRow={record => {
             return {
-              onClick: () => history.push(`/companies/${+record.company_number}`)
+              onClick: () => history.push(`/companies/${+record.company_id}`)
             }
           }}
         />

@@ -26,7 +26,7 @@ export default (state = initalState, action) => {
     case t.GET_COMPANY_BY_ID_SUCCESS:
       return {
         ...state,
-        singleCompany: action.payload
+        singleCompany: action.payload.data
       }
     case t.CREATE_COMPANY_FETCHING:
       return {

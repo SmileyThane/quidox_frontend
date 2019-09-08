@@ -9,7 +9,7 @@ const getCompany = () => {
 
 const getCompanyById = id => {
   return http({
-    url: `api/company/${id}`,
+    url: `company/get/${id}`,
     method: 'GET'
   })
 }

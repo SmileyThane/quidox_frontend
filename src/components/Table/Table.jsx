@@ -101,18 +101,20 @@ const AntdTable = props => {
       render: record => <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }}>{record.name}</Link>
     },
     {
-      title: 'Кол-во документов',
+      title: () => <Icon type="paper-clip" />,
       key: 'attachments',
       render: record => <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }} style={{ textAlign: 'center' }} >{record.attachments.length === 0 ? 'Нет приложенных документов' : record.attachments.length }</Link>
     },
     {
       title: 'Дата',
+      className: 'date-column',
       render: record => <Text>{moment.utc(record.created_at, 'YYYY-MM-DD HH:mm').local().format('DD/MM/YYYY HH:mm:ss')}</Text>,
       sorter: (a, b) => getTimeStamp(a.created_at) - getTimeStamp(b.created_at)
     },
     {
       title: 'Статус',
       key: 'status',
+      className: 'status-column',
       render: record => <Text>{record.status}</Text>
     },
     {
