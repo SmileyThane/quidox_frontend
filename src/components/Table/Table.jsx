@@ -15,7 +15,7 @@ import {
   Button,
   Spin,
   Pagination,
-  Tag
+  Tooltip
 } from 'antd'
 
 import './Table.scss'
@@ -121,8 +121,13 @@ const AntdTable = props => {
     {
       title: 'Квитанция',
       render: record => <Fragment>
+        <Tooltip title='Скачать квитанцию в формате pdf'>
         <Icon type='file-pdf' />
-        <Icon type='file-text' />
+        </Tooltip>
+
+        <Tooltip title='Скачать квитанцию в формате xml'>
+          <Icon type='file-text' />
+        </Tooltip>
       </Fragment>
     }
   ]

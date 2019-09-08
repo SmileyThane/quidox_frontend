@@ -20,12 +20,11 @@ class LoginPage extends React.Component {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        values.secret_key = "xUAmAfcUIw35BJhohIprBrcVuDZKPg8Epac5hvkL";
+        values.secret_key = "aRA8yGzFWz9crhYD5ZD0KcfPy36VxE6knnIpZ8LD";
         values.auth_data = generateHash({ length: 10 }) + btoa( JSON.stringify(values)) + generateHash({ length: 5 });
         delete values.email;
         delete values.password;
         delete values.secret_key;
-        // console.log('Received values of form: ', Math.random().toString(20).substring(5, 15))
         axios.post('https://api.quidox.by/api/login', values)
           .then(({ data }) => {
             if (data.success) {
@@ -36,7 +35,6 @@ class LoginPage extends React.Component {
             }
           })
           .catch((error) => {
-            console.log(error)
             message.error('Пользователь не авторизован или не существует!')
           })
       }
