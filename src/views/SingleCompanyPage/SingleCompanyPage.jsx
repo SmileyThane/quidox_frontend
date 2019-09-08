@@ -62,7 +62,18 @@ const SingleCompanyPage = props => {
               tab={
                 <Fragment>
                   <Icon type="wallet" />
-                  Billing
+                   Баланс
+                </Fragment>
+              }
+              disabled
+            />
+
+            <TabPane
+              key='3'
+              tab={
+                <Fragment>
+                  <Icon type="wallet" />
+                  Документы
                 </Fragment>
               }
               disabled

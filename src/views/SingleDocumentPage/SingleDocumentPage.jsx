@@ -6,7 +6,7 @@ import fileDownload from 'js-file-download'
 import _ from 'lodash'
 
 import { api } from '../../services'
-import { Spin, Icon, List, Tag, Modal, Select, message, Typography, Popover } from 'antd'
+import { Spin, Icon, List, Tag, Modal, Select, message, Typography, Popover, Tooltip } from 'antd'
 import history from '../../history'
 import { findUsersByParams } from '../../services/api/user'
 import { Button, PDFViewer } from '../../components'
@@ -368,10 +368,19 @@ const SingleDocumentPage = props => {
                     <List.Item key={index}
                       actions={isIE
                         ? [
+                          <Tooltip title='Отказать в подписании'>
+                            <Icon type='stop' style={{ color: '#3278fb', fontSize: 18, marginRight: 5, }} />
+                          </Tooltip>,
+                          <Tooltip title='Отказать в подписании'>
+                            <Icon type='stop' />
+                          </Tooltip>,
                           <Icon type='edit' style={{ color: '#3278fb', fontSize: 18, marginRight: 5 }} onClick={() => verifyFile(item, index)} />,
                           <Icon style={{ color: '#3278fb', fontSize: 20 }} onClick={() => downloadDocumentContent(item, false, true)} type='download' />
                         ]
                         : [
+                          <Tooltip title='Отказать в подписании'>
+                            <Icon type='stop' style={{ color: '#3278fb', fontSize: 18, marginRight: 5, }} />
+                          </Tooltip>,
                           <Popover
                             placement='topRight'
                             content={

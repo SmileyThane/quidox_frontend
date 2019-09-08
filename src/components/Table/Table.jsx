@@ -14,7 +14,8 @@ import {
   Modal,
   Button,
   Spin,
-  Pagination
+  Pagination,
+  Tag
 } from 'antd'
 
 import './Table.scss'
@@ -119,7 +120,10 @@ const AntdTable = props => {
     },
     {
       title: 'Квитанция',
-      render: record => <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }}>{record['applied_attachments_count'] === 0 ? 'Нет квитанций' : record['applied_attachments_count']}</Link>
+      render: record => <Fragment>
+        <Icon type='file-pdf' />
+        <Icon type='file-text' />
+      </Fragment>
     }
   ]
 

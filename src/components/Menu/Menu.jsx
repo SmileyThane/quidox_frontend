@@ -55,7 +55,7 @@ const AntMenu = props => {
           heading='Компании'
           url='/companies'
           key='/companies'
-          icon='desktop'
+          icon='cluster'
         />
         <SubMenu
           key='sub1'

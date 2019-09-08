@@ -21,7 +21,7 @@ import {
 } from 'antd'
 
 import './CompanyPage.scss'
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const defaultCompanyState = {
   selectedCompanyId: null,

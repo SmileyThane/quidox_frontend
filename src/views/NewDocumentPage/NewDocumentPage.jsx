@@ -350,12 +350,11 @@ const NewDocumentPage = props => {
                   { documentState.fileHashes[i] && <Tag color='#3278fb'>ЭЦП</Tag> }
                   <div className='attached-file__actions'>
                     <div className='actions-left'>
-                      <Text>Статус:</Text>
+                      <Text>Требуется:</Text>
                       <Select defaultValue={1} style={{ marginLeft: 10, minWidth: '20rem' }} onChange={changeStatus}>
-                        <Option value={1}>Необходима подпись автора</Option>
-                        <Option value={2}>Необходима подпись получателся</Option>
-                        <Option value={3}>Необходима двойная подпись</Option>
-                        <Option value={4}>Без подписи</Option>
+                        <Option value={1}>Подпись получателя</Option>
+                        <Option value={2}>Согласование</Option>
+                        <Option value={3}>Простая доставка</Option>
                       </Select>
                     </div>
                     <div className='actions-right'>
