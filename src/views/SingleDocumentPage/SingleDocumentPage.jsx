@@ -376,10 +376,10 @@ const SingleDocumentPage = props => {
                             placement='topRight'
                             content={
                               <Fragment>
-                                <Text>Подпись файла возможна только в браузере Internet Explorer верифицированным пользователем</Text>
-                                <Button type='link'>
+                                <Text>Подпись файла возможна только в браузере Internet Explorer верифицированным пользователем {' '}</Text>
+                                <a href='https://quidox.by/settings_download/' target='_blank'>
                                   Подробнее
-                                </Button>
+                                </a>
                               </Fragment>
                             }
                           >

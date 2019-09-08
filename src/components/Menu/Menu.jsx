@@ -61,7 +61,7 @@ const AntMenu = props => {
           key='sub1'
           title={
             <span>
-              <Icon type='filter'/>
+              <Icon type='funnel-plot' />
               <span>Статусы сообщений</span>
             </span>
           }
@@ -87,18 +87,18 @@ const AntMenu = props => {
           key='sub2'
           title={
             <span>
-              <Icon type='filter' />
+              <Icon type='funnel-plot' />
               <span>Статусы документов</span>
             </span>
           }
         >
-          <Menu.Item key='5' url='/out-documents'>
-            <Icon type='file-text' theme="twoTone" twoToneColor='#1890ff' />
-            Требуется подпись
-          </Menu.Item>
           <Menu.Item key='6' url='/'>
             <Icon type='file-text' theme="twoTone" twoToneColor='#52c41a' />
             Завершено
+          </Menu.Item>
+          <Menu.Item key='5' url='/out-documents'>
+            <Icon type='file-text' theme="twoTone" twoToneColor='#1890ff' />
+            Требуется подпись
           </Menu.Item>
           <Menu.Item key='7' url='/'>
             <Icon type='file-text' theme="twoTone" twoToneColor='#f5222d' />

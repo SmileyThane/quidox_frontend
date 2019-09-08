@@ -32,7 +32,7 @@ const SingleCompanyPage = props => {
     <Fragment>
       <Spin spinning={isFetching}>
         <div className='content content_user'>
-          <Tabs type="card" defaultActiveKey='1'>
+          <Tabs defaultActiveKey='1'>
             <TabPane
               key='1'
               tab={
@@ -42,7 +42,7 @@ const SingleCompanyPage = props => {
                 </Fragment>
               }
             >
-              <CompanyDescription />
+              <CompanyDescription data={singleCompany} />
             </TabPane>
 
             <TabPane
@@ -56,6 +56,17 @@ const SingleCompanyPage = props => {
             >
               <CompanyUsers users={singleCompany.users}/>
             </TabPane>
+
+            <TabPane
+              key='3'
+              tab={
+                <Fragment>
+                  <Icon type="wallet" />
+                  Billing
+                </Fragment>
+              }
+              disabled
+            />
           </Tabs>
         </div>
       </Spin>

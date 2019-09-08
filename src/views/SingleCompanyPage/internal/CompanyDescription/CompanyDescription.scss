@@ -1,0 +1,11 @@
+@import "../../../../styles/variables";
+.company-data {
+  .company-data-group {
+    margin-bottom: 1rem;
+  }
+
+  .company-data-content {
+    padding: 1rem;
+    background: map_get($colors, gray);
+  }
+}

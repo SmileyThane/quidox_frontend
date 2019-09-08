@@ -24,7 +24,7 @@ const columns = [
   },
   {
     title: 'ЭЦП',
-    render: record => <Text>{record.user_data.with_verified_companies ? 1 : 0}</Text>
+    render: record => <Text>{record.user_data.with_verified_companies ? 'Верифицирован' : 'Не верифицирован'}</Text>
   }
 ]
 

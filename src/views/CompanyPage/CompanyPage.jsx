@@ -21,6 +21,7 @@ import {
 } from 'antd'
 
 import './CompanyPage.scss'
+import {Link} from "react-router-dom";
 
 const defaultCompanyState = {
   selectedCompanyId: null,
@@ -143,7 +144,7 @@ const CopmanyPage = props => {
 
   const columns = [{
     title: 'Наименование',
-    dataIndex: 'company_data.name'
+    render: record => <Link to={{ pathname: `/companies/${+record.company_id}`, state: { from: history.location.pathname } }}>{record.company_data.name}</Link>
   },
   {
     title: 'УНП',
@@ -184,11 +185,6 @@ const CopmanyPage = props => {
           dataSource={list}
           loading={isFetching}
           locale={{ emptyText: 'Нет созданных компаний' }}
-          onRow={record => {
-            return {
-              onClick: () => history.push(`/companies/${+record.company_id}`)
-            }
-          }}
         />
       </div>
       {companyState.showInput &&
