@@ -30,7 +30,7 @@ const updateUser = data => dispatch => {
   })
   return api.user.updateUser(data)
     .then(({ data }) => {
-      if (data) {
+      if (data.success) {
         dispatch({
           type: t.UPDATE_USER_SUCCESS,
           payload: data

@@ -188,7 +188,7 @@ class UserInfoPage extends React.Component {
                         message: 'Пожалуйста, введите номер мобильного телефона'
                       }
                     ]
-                  })(<MaskedInput disabled={!isEditMode} mask='+111(11)111-11-11' />)}
+                  })(<MaskedInput disabled={!isEditMode} mask='+111111111111' />)}
                 </Form.Item>
               </Col>
               <Col span={12}>

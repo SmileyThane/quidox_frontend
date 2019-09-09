@@ -64,7 +64,7 @@ const HeaderBlock = props => {
                   </div>
                 </div>
                 <div className='user header__user' ref={nodeRef}>
-                  <span onClick={() => setVisible(!isVisible)}>{data.email}</span>
+                  <span onClick={() => setVisible(!isVisible)}>{data.email && data.email}</span>
                   {isVisible &&
                   <ul className='user__dropdown'>
                     <li className='user__dropdown__item' style={{ textAlign: 'center' }}>
@@ -98,18 +98,3 @@ const HeaderBlock = props => {
 
 export default HeaderBlock
 
-// {data &&
-// }
-//
-// <Popconfirm
-//   placement='bottomLeft'
-//   title='Вы уверены?'
-//   onConfirm={() => handleLogout()}
-//   okText='Выйти'
-//   cancelText='Отмена'
-// >
-//   <Icon
-//     className='user__logout-btn'
-//     type='logout'
-//   />
-// </Popconfirm>
