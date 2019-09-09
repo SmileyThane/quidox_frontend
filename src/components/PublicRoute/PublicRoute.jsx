@@ -1,6 +1,11 @@
 import React, { Fragment } from 'react'
 import { Redirect, Route } from 'react-router-dom'
-import { LayoutBlock, HeaderBlock, FooterBlock, ContentBlock } from '../'
+
+import { LayoutBlock, FooterBlock, ContentBlock } from '../'
+import { logo } from '../../resources/img'
+
+import './PublicRoute.scss'
+
 const PublicRoute = ({ component: Component, ...rest }) => {
 
   return <Route {...rest}
@@ -10,9 +15,12 @@ const PublicRoute = ({ component: Component, ...rest }) => {
         : <Fragment>
           <LayoutBlock>
             <ContentBlock logWrapp>
+              <header className='public-header'>
+                <img className='logo' src={logo} alt="Logo"/>
+              </header>
               <Component {...props} />
             </ContentBlock>
-            <FooterBlock />
+            <FooterBlock className='footer public-footer' />
           </LayoutBlock>
         </Fragment>
     }

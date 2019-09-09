@@ -6,16 +6,12 @@
   background-color: map-get($colors, white);
   padding: 3rem !important;
   width: 100%;
-  max-width: 40rem;
   margin: 5rem auto 0 auto !important;
 
   &.form-register {
     margin: 5rem 0 0 auto !important;
   }
 
-  .login-form {
-    max-width: 300px;
-  }
   .login-form-forgot {
     float: right;
   }

@@ -227,7 +227,7 @@ class RegistrationForm extends React.Component {
     console.log(this.state.phone)
     return (
       <Fragment>
-        <div className='register-left'>
+        <div className='register'>
           <div className='preview-header'>
             <Title level={3}>
               Регистрация в Quidox.by
@@ -245,23 +245,31 @@ class RegistrationForm extends React.Component {
             </Steps>
             <Form className='form form-register' onSubmit={this.handleSubmit}>
               {currentStep === 0 &&
-              <Form.Item
-                validateStatus={this.state.validateStatus}
-                label='Введите номер мобильного телефона'
-              >
-                {getFieldDecorator('phone', {
-                  rules: [{ required: true, message: 'Пожалуйста, введите номер мобильного телефона' }]
-                })(<MaskedInput
-                  mask='111-11-11'
-                  placeholder='XXX-XX-XX'
-                  ref={this.inputPhoneNode}
-                  onChange={e => {
-                    this.handleChange(e.target.value, 'phone')
-                  }}
-                  addonBefore={prefixSelector}
-                  style={{ width: '100%' }}
-                />)}
-              </Form.Item>
+              <Fragment>
+                <Form.Item
+                  validateStatus={this.state.validateStatus}
+                  label='Введите номер мобильного телефона'
+                >
+                  {getFieldDecorator('phone', {
+                    rules: [{ required: true, message: 'Пожалуйста, введите номер мобильного телефона' }]
+                  })(<MaskedInput
+                    mask='111-11-11'
+                    placeholder='XXX-XX-XX'
+                    ref={this.inputPhoneNode}
+                    onChange={e => {
+                      this.handleChange(e.target.value, 'phone')
+                    }}
+                    addonBefore={prefixSelector}
+                    style={{ width: '100%' }}
+                  />)}
+                </Form.Item>
+                <div>
+                  <Text>
+                    Для начала регистрации и обеспечения безопасной двухфакторной аутентификации, пожалуйста введите номер
+                    Вашего мобильного телефона
+                  </Text>
+                </div>
+              </Fragment>
               }
               {currentStep === 1 &&
               <Form.Item label='Введите полученный код'>
@@ -349,10 +357,14 @@ class RegistrationForm extends React.Component {
               </Fragment>
               }
               <Form.Item>
-                <div className='steps-form-actions'>
+                <div>
                   <div>
                     { currentStep === 1 &&
                     <Fragment>
+                      <Text type='secondary'>Мы отправили вам код подтверждения на указанный вами номер.<br />
+                        Пожалуйста, проверьте и введите в поле.<br />
+                        Нажмите "Продолжить".
+                      </Text><br /><br />
                       <Text type='secondary'>Не получили код?<br />
                         {seconds > 0
                           ? <Fragment>Выслать повторно через... {seconds}</Fragment>
@@ -362,9 +374,22 @@ class RegistrationForm extends React.Component {
                     </Fragment>
                     }
                   </div>
-                  <Button type='primary' htmlType='submit' disabled={currentStep === 2 && !this.state.isChecked}>
-                    {currentStep === 3 ? 'Завершить регистрацию' : 'Продолжить'}
-                  </Button>
+                  {currentStep === 0 &&
+                    <Fragment>
+                      <Text type='secondary'>Благодаря сервису QuiDox.by<br />
+                        Вы сможете с легкостью обмениваться электронными документами с ЭЦП с Вашими контрагентами.
+                      </Text>
+                      <br />
+                      <Text type='secondary'>Доставка происходит мгновенно.</Text>
+                      <br />
+                      <Text type='secondary'>Бесплатно первые 90 дней!</Text>
+                    </Fragment>
+                    }
+                  <div style={{ marginTop: '2rem' }}>
+                    <Button type='primary' htmlType='submit' disabled={currentStep === 2 && !this.state.isChecked}>
+                      {currentStep === 3 ? 'Завершить регистрацию' : 'Продолжить'}
+                    </Button>
+                  </div>
                 </div>
               </Form.Item>
             </Form>
@@ -376,29 +401,6 @@ class RegistrationForm extends React.Component {
             </div>
             }
           </div>
-        </div>
-        <div className='register-right'>
-          {(currentStep !== 2 && currentStep !== 3) &&
-            <div>
-              {currentStep === 0 &&
-              <Fragment>
-                <Text type='secondary'>Благодаря сервису QuiDox.by<br />
-                  Вы сможете с легкостью обмениваться электронными документами с ЭЦП с Вашими контрагентами.
-                </Text>
-                <br /><br />
-                <Text type='secondary'>Доставка происходит мгновенно.</Text>
-                <br /><br />
-                <Text type='secondary'>Бесплатно первые 90 дней!</Text>
-              </Fragment>
-              }
-              {currentStep === 1 &&
-              <Text type='secondary'>Мы отправили вам код подтверждения на указанный вами номер.<br />
-                Пожалуйста, проверьте и введите в поле.<br />
-                Нажмите "Продолжить".
-              </Text>
-              }
-            </div>
-          }
         </div>
       </Fragment>
     )

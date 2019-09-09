@@ -29,7 +29,7 @@ const defaultDocumentData = {
   value: [],
   fetching: false,
   ids: [],
-  status: 1,
+  status: 3,
   verifyFetching: false,
   isVisibleRecipients: false
 }
@@ -192,7 +192,6 @@ const NewDocumentPage = props => {
           }
           sendDocumentToUser(docDataToUser)
             .then(response => {
-              console.log(response)
               message.success('Сообщение успешно отправлено!')
               setDocumentState({ ...defaultDocumentData })
             })
@@ -351,7 +350,7 @@ const NewDocumentPage = props => {
                   <div className='attached-file__actions'>
                     <div className='actions-left'>
                       <Text>Требуется:</Text>
-                      <Select defaultValue={1} style={{ marginLeft: 10, minWidth: '20rem' }} onChange={changeStatus}>
+                      <Select defaultValue={1} style={{ marginLeft: 10, minWidth: '20rem' }}>
                         <Option value={1}>Подпись получателя</Option>
                         <Option value={2}>Согласование</Option>
                         <Option value={3}>Простая доставка</Option>

@@ -3,8 +3,6 @@
 
   .ant-steps {
     width: 100%;
-    max-width: 40rem;
-    margin: 0 0 0 auto;
   }
 
   .steps__action {
@@ -15,7 +13,6 @@
 }
 .preview-header {
   width: 100%;
-  max-width: 40rem;
   margin-left:auto;
   text-align: center;
   padding: 2rem 0;
@@ -33,7 +30,6 @@
 }
 .register-footer-help {
   width: 100%;
-  max-width: 40rem;
   margin-left:auto;
   display: flex;
   align-items: flex-end;
@@ -47,8 +43,10 @@
     border: .1rem solid map-get($colors, gray);
   }
 }
-.register-left {
-  flex-basis: 66%
+.register {
+  width: 100%;
+  max-width: 60rem;
+  margin: 0 auto;
 }
 .register-right {
   flex-basis: 34%;

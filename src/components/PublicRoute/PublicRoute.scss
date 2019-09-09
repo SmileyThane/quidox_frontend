@@ -1,0 +1,13 @@
+@import "../../styles/variables";
+.public-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: map_get($colors, white);
+  border-bottom: .1rem solid map_get($colors, gray);
+  padding: 2rem;
+  .logo {
+    max-width: 25rem;
+  }
+}

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef, Fragment } from 'react'
 import { Layout, Icon, Skeleton, Tag, Typography, Button } from 'antd'
 
 import history from '../../history.js'
-import { logo } from './img'
+import { logo } from '../../resources/img'
 import './HeaderBlock.scss'
 
 const { Header } = Layout
