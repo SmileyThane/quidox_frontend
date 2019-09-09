@@ -121,6 +121,7 @@ const AntdTable = props => {
     },
     {
       title: 'Квитанция',
+      className: 'table-download',
       render: record => <Fragment>
         <Tooltip title='Скачать квитанцию в формате pdf'>
           <Icon type='file-pdf' />

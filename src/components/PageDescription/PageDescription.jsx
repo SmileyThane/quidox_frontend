@@ -11,7 +11,7 @@ const PageDescription = ({ isVisible = false, title = '', text = [] }) => {
       {isVisible &&
       <div className='page-description'>
         <Title level={3}>{title}</Title>
-        {text.map(i => <Text>{i}<br /></Text>)}
+        {text.map(i => <Text key={i}>{i}<br /></Text>)}
       </div>
       }
     </Fragment>

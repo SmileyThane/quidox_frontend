@@ -6,7 +6,7 @@ const OutDocumentsPage = props => {
   const {
     user: { data },
     documents: { isFetching, outDocuments },
-    getOutDocumentsByActiveCompanyId,
+    getDocumentsByActiveCompanyId,
     removeDocumentById,
     removeDocumentsByIds
   } = props
@@ -20,10 +20,11 @@ const OutDocumentsPage = props => {
           className='document-table'
           removeDocument={removeDocumentById}
           removeDocuments={removeDocumentsByIds}
-          getDocumentsWithParams={getOutDocumentsByActiveCompanyId}
+          getDocumentsWithParams={getDocumentsByActiveCompanyId}
           activeCompany={data.active_company_id}
           type='out-unconfirmed'
           columnName='Получатель'
+          status={3}
         />
       </div>
 

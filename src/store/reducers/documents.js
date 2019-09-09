@@ -20,7 +20,7 @@ export default (state = initialState, action) => {
         isFetching: action.payload
       }
 
-    case t.GET_INBOX_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:
+    case t.GET_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:
       return {
         ...state,
         isFetching: action.payload
@@ -31,11 +31,6 @@ export default (state = initialState, action) => {
         inboxDocuments: action.payload.data
       }
 
-    case t.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:
-      return {
-        ...state,
-        isFetching: action.payload
-      }
     case t.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
       console.log(action.payload.data)
       return {
@@ -43,11 +38,6 @@ export default (state = initialState, action) => {
         outDocuments: action.payload.data
       }
 
-    case t.GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:
-      return {
-        ...state,
-        isFetching: action.payload
-      }
     case t.GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
       return {
         ...state,

@@ -1,17 +1,14 @@
 import React, { Fragment } from 'react'
 
-import { Typography } from 'antd'
 import { Table, PageDescription } from '../../components'
 
 import './InboxDocumentsPage.scss'
-
-const { Text, Title } = Typography
 
 const InboxDocumentsPage = props => {
   const {
     user: { data },
     documents: { isFetching, inboxDocuments },
-    getInboxDocumentsByActiveCompanyId,
+    getDocumentsByActiveCompanyId,
     removeDocumentById,
     removeDocumentsByIds
   } = props
@@ -27,10 +24,11 @@ const InboxDocumentsPage = props => {
           className='document-table'
           removeDocument={removeDocumentById}
           removeDocuments={removeDocumentsByIds}
-          getDocumentsWithParams={getInboxDocumentsByActiveCompanyId}
+          getDocumentsWithParams={getDocumentsByActiveCompanyId}
           activeCompany={data.active_company_id}
           type='unconfirmed'
           columnName='Отправитель'
+          status={2}
         />
       </div>
 
