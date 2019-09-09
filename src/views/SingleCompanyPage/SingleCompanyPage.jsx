@@ -11,6 +11,7 @@ import {
   CompanyUsers,
   CompanyDescription
 } from './internal'
+import history from  '../../history';
 
 const { Title, Text } = Typography
 const { TabPane } = Tabs
@@ -32,6 +33,9 @@ const SingleCompanyPage = props => {
     <Fragment>
       <Spin spinning={isFetching}>
         <div className='content content_user'>
+          <div style={{ marginBottom: '2rem' }} className='back' onClick={() => history.goBack()} >
+            <Icon type='left' />
+          </div>
           <Tabs defaultActiveKey='1'>
             <TabPane
               key='1'
@@ -69,7 +73,7 @@ const SingleCompanyPage = props => {
             />
 
             <TabPane
-              key='3'
+              key='4'
               tab={
                 <Fragment>
                   <Icon type="wallet" />

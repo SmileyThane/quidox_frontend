@@ -69,8 +69,8 @@ const AntdTable = props => {
         <Fragment>
           {columnName !== 'Отправитель'
             ? <Fragment>
-              {record.attached_to_users && record.attached_to_users.map(user => (
-                <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }} key={user.id}>
+              {record.document.attached_to_users && record.document.attached_to_users.map(user => (
+                <Link to={{ pathname: `/documents/${user.document_id}`, state: { from: history.location.pathname } }} key={user.id}>
                   <div style={{ padding: '.5rem 0' }}>
                     {user.user_company &&
                       user.user_company.user_email
@@ -99,28 +99,30 @@ const AntdTable = props => {
     },
     {
       title: 'Тема',
-      key: 'name',
-      render: record => <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }}>{record.name}</Link>
+      key: 'descr',
+      render: record => <Link to={{ pathname: `/documents/${record.document.id}`, state: { from: history.location.pathname } }}>{record.document.name}</Link>
     },
     {
       title: () => <Icon type="paper-clip" />,
       key: 'attachments',
-      render: record => <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }} style={{ textAlign: 'center' }} >{record.attachments.length === 0 ? 'Нет приложенных документов' : record.attachments.length }</Link>
+      render: record => <Link to={{ pathname: `/documents/${record.document.id}`, state: { from: history.location.pathname } }} style={{ textAlign: 'center' }} >{record.document.attachments.length === 0 ? 'Нет приложенных документов' : record.document.attachments.length }</Link>
     },
     {
       title: 'Дата',
+      key: 'date',
       className: 'date-column',
-      render: record => <Text>{moment.utc(record.created_at, 'YYYY-MM-DD HH:mm').local().format('DD/MM/YYYY HH:mm:ss')}</Text>,
-      sorter: (a, b) => getTimeStamp(a.created_at) - getTimeStamp(b.created_at)
+      render: record => <Text>{moment.utc(record.document.created_at, 'YYYY-MM-DD HH:mm').local().format('DD/MM/YYYY HH:mm:ss')}</Text>,
+      sorter: (a, b) => getTimeStamp(a.document.created_at) - getTimeStamp(b.document.created_at)
     },
     {
       title: 'Статус',
       key: 'status',
       className: 'status-column',
-      render: record => <Text>{record.status}</Text>
+      render: record => <Text>{record.document.status}</Text>
     },
     {
       title: 'Квитанция',
+      key: 'receipt',
       className: 'table-download',
       render: record => <Fragment>
         <Tooltip title='Скачать квитанцию в формате pdf'>
@@ -301,6 +303,7 @@ const AntdTable = props => {
         columns={columns}
         rowSelection={rowSelection}
         dataSource={tableData.hasOwnProperty('data') ? tableData.data : []}
+        rowKey='document_id'
         locale={{ emptyText: 'Нет данных' }}
         pagination={false}
         title={() =>

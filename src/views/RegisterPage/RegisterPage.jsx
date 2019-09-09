@@ -99,7 +99,8 @@ class RegistrationForm extends React.Component {
             axios.post('https://api.quidox.by/api/sms/send', registerData)
               .then(({ data }) => {
                 if (data.success) {
-                  message.success('Номер телефона успешно отправлен!')
+                  message.success('На указанный Вами номер отправлено SMS с кодом. Введите его в окно ниже для ' +
+                    'продолжения процесса регистрации')
                   setTimeout(() => {
                     this.setState({ currentStep: this.state.currentStep + 1 })
                     this.getOneMinuteTimer()
@@ -263,7 +264,8 @@ class RegistrationForm extends React.Component {
                     style={{ width: '100%' }}
                   />)}
                 </Form.Item>
-                <div>
+                <Checkbox style={{ marginBottom: '1rem' }} onClick={this.handleCheck}>Я ознакомился и принимаю условия Публичного договора и Политику конфиденцальности.</Checkbox>
+                <div style={{ marginBottom: '1rem' }}>
                   <Text>
                     Для начала регистрации и обеспечения безопасной двухфакторной аутентификации, пожалуйста введите номер
                     Вашего мобильного телефона
@@ -348,7 +350,6 @@ class RegistrationForm extends React.Component {
                     ]
                   })(<Input.Password onBlur={this.handleConfirmBlur} />)}
                 </Form.Item>
-                <Checkbox onClick={this.handleCheck}>Я ознакомился и принимаю условия Публичного договора и Политику конфиденцальности.</Checkbox>
               </Fragment>
               }
               {currentStep === 3 &&
@@ -386,7 +387,7 @@ class RegistrationForm extends React.Component {
                     </Fragment>
                     }
                   <div style={{ marginTop: '2rem' }}>
-                    <Button type='primary' htmlType='submit' disabled={currentStep === 2 && !this.state.isChecked}>
+                    <Button type='primary' htmlType='submit' disabled={currentStep === 0 && !this.state.isChecked}>
                       {currentStep === 3 ? 'Завершить регистрацию' : 'Продолжить'}
                     </Button>
                   </div>

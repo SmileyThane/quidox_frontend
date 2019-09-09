@@ -10,11 +10,11 @@ const DraftsPage = props => {
     removeDocumentById,
     removeDocumentsByIds
   } = props
+  console.log(draftDocuments)
   return (
     <Fragment>
       <div className='content'>
         <Table
-          rowKey='id'
           className='document-table'
           tableData={draftDocuments}
           loading={isFetching}
