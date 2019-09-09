@@ -37,8 +37,8 @@ const { Option } = Select
 
 const AntdTable = props => {
   const {
+    getDocumentsByActiveCompanyId,
     activeCompany,
-    getDocumentsWithParams,
     children,
     type,
     columnName = '',
@@ -47,6 +47,7 @@ const AntdTable = props => {
     documents,
     sendDocumentToUser,
     tableData,
+    status,
     ...rest
   } = props
 
@@ -56,9 +57,9 @@ const AntdTable = props => {
 
   useEffect(() => {
     if (activeCompany) {
-      getDocumentsWithParams(activeCompany, { per_page: window.localStorage.getItem('perPage') ? +window.localStorage.getItem('perPage') : 5 })
+      getDocumentsByActiveCompanyId(activeCompany, { status: status, per_page: window.localStorage.getItem('perPage') ? +window.localStorage.getItem('perPage') : 5 })
     }
-  }, [activeCompany, getDocumentsWithParams])
+  }, [activeCompany, getDocumentsByActiveCompanyId])
 
   const columns = [
     {
@@ -122,7 +123,7 @@ const AntdTable = props => {
       title: 'Квитанция',
       render: record => <Fragment>
         <Tooltip title='Скачать квитанцию в формате pdf'>
-        <Icon type='file-pdf' />
+          <Icon type='file-pdf' />
         </Tooltip>
 
         <Tooltip title='Скачать квитанцию в формате xml'>
@@ -167,9 +168,9 @@ const AntdTable = props => {
 
   const handleSearch = value => {
     if (value.length >= 3) {
-      getDocumentsWithParams(activeCompany, { parameter: value })
+      getDocumentsByActiveCompanyId(activeCompany, { status: status, parameter: value })
     } else {
-      getDocumentsWithParams(activeCompany)
+      getDocumentsByActiveCompanyId(activeCompany, { status: status })
     }
   }
 
@@ -237,7 +238,7 @@ const AntdTable = props => {
       user_company_id: JSON.stringify(tableState.value.map(i => i.key))
     }
     sendDocumentToUser(docsDataToUser)
-      .then(getDocumentsWithParams(activeCompany))
+      .then(getDocumentsByActiveCompanyId(activeCompany, { status: status }))
       .then(response => {
         if (response.success) {
           message.success('Сообщение успешно отправлено!')
@@ -258,9 +259,9 @@ const AntdTable = props => {
 
   const handleChangePerPage = value => {
     window.localStorage.setItem('perPage', value)
-    getDocumentsWithParams(activeCompany, { per_page: +window.localStorage.getItem('perPage') })
+    getDocumentsByActiveCompanyId(activeCompany, { status: status, per_page: +window.localStorage.getItem('perPage') })
   }
-  console.log(tableData.data)
+  
   return (
     <Fragment>
       {tableState.showModal && <Modal
@@ -298,7 +299,7 @@ const AntdTable = props => {
         className='table'
         columns={columns}
         rowSelection={rowSelection}
-        dataSource={tableData.hasOwnProperty('data') ? tableData.data : []}
+        // dataSource={tableData.hasOwnProperty('data') ? tableData.data : []}
         locale={{ emptyText: 'Нет данных' }}
         pagination={false}
         title={() =>
@@ -321,8 +322,8 @@ const AntdTable = props => {
               <Pagination
                 simple
                 defaultCurrent={1}
-                total={Math.ceil(tableData.total / +tableData.per_page) * 10}
-                onChange={page => getDocumentsWithParams(activeCompany, { per_page: +window.localStorage.getItem('perPage'), page: page })}
+                // total={Math.ceil(tableData.total / +tableData.per_page) * 10}
+                onChange={page => getDocumentsByActiveCompanyId(activeCompany, { status: status, per_page: +window.localStorage.getItem('perPage'), page: page })}
               />
             </div>
           )}
@@ -334,7 +335,7 @@ const AntdTable = props => {
                   <Text>Отмечено: {tableState.selectedRowKeys.length}</Text>
                 </div>
                 <div className='table-footer__item'>
-                  <Text>Всего: {tableData.hasOwnProperty('data') && tableData.data.length}</Text>
+                  {/*<Text>Всего: {tableData.hasOwnProperty('data') && tableData.data.length}</Text>*/}
                 </div>
               </div>
               <div>

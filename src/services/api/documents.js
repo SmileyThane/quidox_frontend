@@ -16,25 +16,9 @@ const sendDocumentToUser = data => {
   })
 }
 
-const getInboxDocumentsByActiveCompanyId = (id, params) => {
+const getDocumentsByActiveCompanyId = (id, params) => {
   return http({
-    url: `documents/in/${id}`,
-    method: 'GET',
-    params
-  })
-}
-
-const getOutDocumentsByActiveCompanyId = (id, params) => {
-  return http({
-    url: `documents/out/${id}`,
-    method: 'GET',
-    params
-  })
-}
-
-const getDraftDocumentsByActiveCompany = (id, params) => {
-  return http({
-    url: `/documents/drafts/${id}`,
+    url: `documents/show/${id}`,
     method: 'GET',
     params
   })
@@ -59,9 +43,7 @@ const checkFlashKey = data => {
 export {
   createDocument,
   sendDocumentToUser,
-  getInboxDocumentsByActiveCompanyId,
-  getOutDocumentsByActiveCompanyId,
-  getDraftDocumentsByActiveCompany,
+  getDocumentsByActiveCompanyId,
   removeDocumentsByIds,
   checkFlashKey
 }

@@ -250,9 +250,8 @@ class UserInfoPage extends React.Component {
           title='Смена пороля'
           visible
           closable={false}
+          footer={null}
           className='reset-password'
-          onCancel={this.openModal}
-          onOk={this.changeUserPassword}
         >
           <Form>
             <Form.Item label='Старый пароль' hasFeedback>
@@ -296,6 +295,12 @@ class UserInfoPage extends React.Component {
               })(<Input.Password />)}
             </Form.Item>
           </Form>
+
+          <div style={{ marginTop: '2rem' }}>
+            <Button type='primary' onClick={this.changeUserPassword}>Сохранить новый пароль</Button>
+
+            <Button type='primary' ghost onClick={this.openModal} style={{ marginLeft: '1rem' }}>Закрыть</Button>
+          </div>
         </Modal>
         }
       </Fragment>

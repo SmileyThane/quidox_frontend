@@ -5,7 +5,6 @@ import { Table, PageDescription } from '../../components'
 const DraftsPage = props => {
   const {
     user: { data },
-    documents: { draftDocuments, isFetching },
     getDraftDocumentsByActiveCompany,
     removeDocumentById,
     removeDocumentsByIds
@@ -15,8 +14,6 @@ const DraftsPage = props => {
       <div className='content'>
         <Table
           rowKey='id'
-          tableData={draftDocuments}
-          loading={isFetching}
           className='document-table'
           removeDocument={removeDocumentById}
           removeDocuments={removeDocumentsByIds}
@@ -24,6 +21,7 @@ const DraftsPage = props => {
           activeCompany={data.active_company_id}
           type='out-unconfirmed'
           columnName='Получатель'
+          status={1}
         />
       </div>
 

@@ -45,12 +45,12 @@ const sendDocumentToUser = data => dispatch => {
     })
 }
 
-const getInboxDocumentsByActiveCompanyId = (id, params) => dispatch => {
+const getDocumentsByActiveCompanyId = (id, params) => dispatch => {
   dispatch({
     type: t.GET_INBOX_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
     payload: true
   })
-  return api.documents.getInboxDocumentsByActiveCompanyId(id, params)
+  return api.documents.getDocumentsByActiveCompanyId(id, params)
     .then(({ data }) => {
       if (data) {
         dispatch({
@@ -65,45 +65,6 @@ const getInboxDocumentsByActiveCompanyId = (id, params) => dispatch => {
     })
 }
 
-const getOutDocumentsByActiveCompanyId = (id, params) => dipsatch => {
-  dipsatch({
-    type: t.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
-    payload: true
-  })
-  return api.documents.getOutDocumentsByActiveCompanyId(id, params)
-    .then(({ data }) => {
-      if (data) {
-        dipsatch({
-          type: t.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
-          payload: data
-        })
-      }
-      dipsatch({
-        type: t.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
-        payload: false
-      })
-    })
-}
-
-const getDraftDocumentsByActiveCompany = (id, params) => dispatch => {
-  dispatch({
-    type: t.GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
-    payload: true
-  })
-  return api.documents.getDraftDocumentsByActiveCompany(id, params)
-    .then(({ data }) => {
-      if (data) {
-        dispatch({
-          type: t.GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
-          payload: data
-        })
-      }
-      dispatch({
-        type: t.GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
-        payload: false
-      })
-    })
-}
 
 const removeDocumentsByIds = (ids, type) => dispatch => {
   dispatch({
@@ -157,8 +118,6 @@ const removeDocumentsByIds = (ids, type) => dispatch => {
 export {
   createDocument,
   sendDocumentToUser,
-  getInboxDocumentsByActiveCompanyId,
-  getOutDocumentsByActiveCompanyId,
-  getDraftDocumentsByActiveCompany,
+  getDocumentsByActiveCompanyId,
   removeDocumentsByIds
 }

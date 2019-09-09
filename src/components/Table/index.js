@@ -6,7 +6,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  sendDocumentToUser: data => dispatch(actions.documents.sendDocumentToUser(data))
+  sendDocumentToUser: data => dispatch(actions.documents.sendDocumentToUser(data)),
+  getDocumentsByActiveCompanyId: id => dispatch(actions.documents.getDocumentsByActiveCompanyId(id))
 })
 
 export default connect(
