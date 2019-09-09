@@ -45,21 +45,22 @@ const sendDocumentToUser = data => dispatch => {
     })
 }
 
-const getDocumentsByActiveCompanyId = (id, params) => dispatch => {
+const getDocumentsByActiveCompanyId = (id, type, params) => dispatch => {
   dispatch({
-    type: t.GET_INBOX_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+    type: t.GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
     payload: true
   })
+  console.log(type)
   return api.documents.getDocumentsByActiveCompanyId(id, params)
     .then(({ data }) => {
       if (data) {
         dispatch({
-          type: t.GET_INBOX_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
+          type: t.GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
           payload: data
         })
       }
       dispatch({
-        type: t.GET_INBOX_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+        type: t.GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
         payload: false
       })
     })
