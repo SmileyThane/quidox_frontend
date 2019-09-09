@@ -180,7 +180,7 @@ const CopmanyPage = props => {
       <div className='content content_small-margin'>
         <Table
           pagination
-          rowKey='id'
+          rowKey='company_id'
           columns={columns}
           dataSource={list}
           loading={isFetching}

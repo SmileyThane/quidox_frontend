@@ -1,6 +1,5 @@
-import React, { useState, useEffect, Fragment } from 'react'
-import useForm from 'rc-form-hooks'
-
+import React, { Fragment } from 'react'
+import MaskedInput from 'antd-mask-input'
 import {
   Select,
   Spin,
@@ -15,213 +14,294 @@ import {
 } from 'antd'
 import './UserInfoPage.scss'
 
-const defaultUserState = {
-  userId: null,
-  activeCompanyId: null,
-  name: '',
-  lastname: '',
-  patronymic: '',
-  email: '',
-  phone: '',
-  position: '',
-  newUserEmail: '',
-  showInput: false,
-  isEditMode: false,
-  password: '',
-  isVisible: false
-}
+const { Option } = Select
 
-const UserInfoPage = props => {
-  const {
-    user: {
-      isFetching,
-      data: {
-        companies = []
-      },
-      data
-    },
-    updateUser
-  } = props
+class UserInfoPage extends React.Component {
+  state = {
+    userId: null,
+    activeCompanyId: null,
+    isEditMode: false,
+    isModalVisible: false
+  }
+  componentDidMount () {
+    const { user: { isFetching, data: { companies = [] }, data }, updateUser } = this.props
+  }
 
-  const [userState, setUserState] = useState({ ...defaultUserState })
+  openModal = () => {
+    this.setState({ isModalVisible: !this.state.isModalVisible })
+  }
 
-  const { getFieldDecorator, validateFields } = useForm()
-
-  useEffect(() => {
-    if (data) {
-      setUserState({
-        ...userState,
-        name: data.name,
-        lastname: data.lastname,
-        patronymic: data.patronymic,
-        position: data.position,
-        role: data.role,
-        email: data.email,
-        phone: data.phone,
-        password: data.password,
-        active_company_id: data.active_company_id
-      })
+  changeMode = () => {
+    if (!this.state.isEditMode) {
+      this.setState({ isEditMode: true })
     }
-  }, [data])
+  }
 
-  const Option = Select.Option
+  validateToNextPassword = (rule, value, callback) => {
+    const form = this.props.form
+    if (value && this.state.confirmDirty) {
+      form.validateFields(['confirm'], { force: true })
+    }
+    callback()
+  }
 
-  const updateField = (field, value) => {
-    setUserState({
-      ...userState,
-      [field]: value
+  compareToFirstPassword = (rule, value, callback) => {
+    const form = this.props.form
+    if (value && value !== form.getFieldValue('password')) {
+      callback('Пароли не совпадают')
+    } else {
+      callback()
+    }
+  }
+
+  changeUserPassword = e => {
+    e.preventDefault()
+    this.props.form.validateFieldsAndScroll(['old_password', 'password'], (err, values) => {
+      if (!err) {
+        this.props.updateUser(values)
+          .then(data => {
+            if (data.success) {
+              message.success('Пароль обновлен')
+              this.setState({ isModalVisible: !this.state.isModalVisible })
+            } else {
+              throw new Error(data.error)
+            }
+          })
+          .catch(error => {
+            message.error(error.message)
+          })
+      }
     })
   }
 
-   const compareToFirstPassword = (rule, value, callback) => {
-     const { form } = this.props;
-     if (value && value !== form.getFieldValue('password')) {
-       callback('Two passwords that you enter is inconsistent!');
-     } else {
-       callback();
-     }
-   }
+  changeUserInfo = e => {
+    e.preventDefault()
+    this.props.form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        this.props.updateUser(values)
+          .then(data => {
+            if (data.success) {
+              message.success('Данные обновленные')
+              this.setState({ isEditMode: false })
+            } else {
+              throw new Error(data.error)
+            }
+          })
+          .catch(error => {
+            message.error(error.message)
+          })
+      }
+    })
 
-
-    const changePassword = e => {
-      e.preventDefault()
-      props.form.validateFieldsAndScroll((err, values) => {
-        if (!err) {
-          console.log('Received values of form: ', values);
-        }
-      });
-    }
-
-  const handleButtonClick = () => {
-    if (userState.isEditMode) {
-      setUserState({
-        ...userState,
-        isEditMode: !userState.isEditMode
-      })
-      updateUser(userState)
-        .then(data => {
-          if (data.success) {
-            message.success('Данные успешно обновлены')
-          } else {
-            throw new Error(data.error)
-          }
-        })
-        .catch(error => {
-          message.error(error.message)
-        })
-    } else {
-      setUserState({
-        ...userState,
-        isEditMode: !userState.isEditMode
-      })
-    }
   }
 
-  console.log(userState)
-  return (
-    <Fragment>
-      <div className='content content_user'>
-        <Spin spinning={isFetching} style={{ maxWidth: '50rem', margin: '0 auto' }}>
-          <Row gutter={30}>
-            <Col span={12}>
-              <p className='user-info-name'>Адрес электронной почты:</p>
-              <Input kind='text' onChange={e => updateField('email', e.target.value)} value={userState.email} disabled={!userState.isEditMode} />
-            </Col>
-            <Col span={12}>
-              <p className='user-info-name'>Имя:</p>
-              <Input kind='text' onChange={e => updateField('name', e.target.value)} value={userState.name} disabled={!userState.isEditMode} />
-            </Col>
-            <Col span={12}>
-              <p className='user-info-name'>Отчество:</p>
-              <Input kind='text' onChange={e => updateField('patronymic', e.target.value)} value={userState.patronymic} disabled={!userState.isEditMode} />
-            </Col>
-            <Col span={12}>
-              <p className='user-info-name'>Фамилия:</p>
-              <Input kind='text' onChange={e => updateField('lastname', e.target.value)} value={userState.lastname} disabled={!userState.isEditMode} />
-            </Col>
-            <Col span={12}>
-              <p className='user-info-name'>Номер телефона: </p>
-              <Input kind='text' onChange={e => updateField('phone', e.target.value)} value={userState.phone} disabled={!userState.isEditMode} />
-            </Col>
-            <Col span={12}>
-              <p className='user-info-name'>Должность:</p>
-              <Input kind='text' onChange={e => updateField('position', e.target.value)} value={userState.position} disabled={!userState.isEditMode} />
-            </Col>
-            <Col span={12}>
-              <p className='user-info-name'>Роль:</p>
-              <Input kind='text' value={userState.role} disabled />
-            </Col>
-            <Col span={12}>
-              <p className='user-info-name'>Активная компания:</p>
-              <Select
-                style={{ width: '100%' }}
-                value={!isNaN(userState.active_company_id) ? userState.active_company_id : ''}
-                disabled={!userState.isEditMode}
-                onChange={v => {
-                  setUserState({ ...userState, active_company_id: v })
-                }}
-              >
-                {companies && companies.map(i => <Option key={i.company_id} value={i.company_id}>{i.company_name}</Option>)}
-              </Select>
-            </Col>
-          </Row>
-        </Spin>
-      </div>
-      <div>
-        <Button style={{ margin: '2rem 2rem 0 0' }} type='primary' onClick={() => handleButtonClick()}>
-          <Icon type='edit' />
-          {userState.isEditMode ? 'Сохранить изменения' : 'Изменить данные'}
-        </Button>
-        <Button type='primary' onClick={() => setUserState({ ...userState, isVisible: true })}>
-          <Icon type='edit' />
-          Сменить пароль
-        </Button>
-      </div>
-      {userState.isVisible &&
-      <Modal title='Смена пороля' visible>
-        <Form>
-          <Form.Item label='Введите старый пароль'>
-            {getFieldDecorator('password', {
-              rules: [{ required: true, message: 'Пожалуйста, введите пароль!' }]
-            })(
-              <Input.Password
-                prefix={<Icon type='lock' style={{ color: 'rgba(0,0,0,.25)' }} />}
-                type='password'
-              />
-            )}
-          </Form.Item>
+  render () {
+    const { getFieldDecorator } = this.props.form
+    const {
+      isEditMode,
+      isModalVisible
+    } = this.state
 
-          <Form.Item label='Введите новый пароль'>
-            {getFieldDecorator('password', {
-              rules: [{ required: true, message: 'Пожалуйста, введите пароль!' }]
-            })(
-              <Input.Password
-                prefix={<Icon type='lock' style={{ color: 'rgba(0,0,0,.25)' }} />}
-                type='password'
-              />
-            )}
-          </Form.Item>
-
-          <Form.Item label='Повторите новый пароль'>
-            {getFieldDecorator('confirm', {
-              rules: [
-                { required: true, message: 'Пожалуйста, повторите новый пароль!' },
-                {
-                  validator: compareToFirstPassword
-                }
-                ]
-            })(
-              <Input.Password
-                prefix={<Icon type='lock' style={{ color: 'rgba(0,0,0,.25)' }} />}
-                type='password'
-              />
-            )}
-          </Form.Item>
+    const {
+      user: { isFetching, data: { companies = [] }, data }, updateUser
+    } = this.props
+    return (
+      <Fragment>
+        <Form className='content content_user form-user'>
+          <Spin spinning={isFetching} style={{ maxWidth: '50rem', margin: '0 auto' }}>
+            <Row gutter={30}>
+              <Col span={12}>
+                <Form.Item label='Адрес электронной почты'>
+                  {getFieldDecorator('email', {
+                    initialValue: data.email,
+                    rules: [
+                      {
+                        type: 'email',
+                        message: 'Не правильный адрес электронной почты!'
+                      },
+                      {
+                        required: true,
+                        message: 'Пожалуйста, введите адрес электронной почты!'
+                      }
+                    ]
+                  })(<Input disabled />)}
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label='Имя:'>
+                  {getFieldDecorator('name', {
+                    initialValue: data.name,
+                    rules: [
+                      {
+                        type: 'string',
+                        message: 'Не похоже, что это имя!'
+                      },
+                      {
+                        required: true,
+                        message: 'Пожалуйста, введите ваше имя!'
+                      }
+                    ]
+                  })(<Input disabled={!isEditMode} />)}
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label='Отчество:'>
+                  {getFieldDecorator('patronymic', {
+                    initialValue: data.patronymic,
+                    rules: [
+                      {
+                        type: 'string',
+                        message: 'Не похоже, что это отчество!'
+                      }
+                    ]
+                  })(<Input disabled={!isEditMode} />)}
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label='Фамилия:'>
+                  {getFieldDecorator('lastname', {
+                    initialValue: data.lastname,
+                    rules: [
+                      {
+                        type: 'string',
+                        message: 'Не похоже, что это фамилия!'
+                      },
+                      {
+                        required: true,
+                        message: 'Пожалуйста, введите вашу фамилию!'
+                      }
+                    ]
+                  })(<Input disabled={!isEditMode} />)}
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label='Номер телефона:'>
+                  {getFieldDecorator('phone', {
+                    initialValue: data.phone,
+                    rules: [
+                      {
+                        type: 'string',
+                        message: 'Пожалуйста, введите номер мобильного телефона'
+                      },
+                      {
+                        required: true,
+                        message: 'Пожалуйста, введите номер мобильного телефона'
+                      }
+                    ]
+                  })(<MaskedInput disabled={!isEditMode} mask='+111(11)111-11-11' />)}
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label='Активаная компания:'>
+                  {getFieldDecorator('active_company_id', {
+                    initialValue: data.active_company_id,
+                    rules: [
+                      {
+                        type: 'number',
+                        message: 'Пожалуйста, укажите активную'
+                      },
+                      {
+                        required: true,
+                        message: 'Пожалуйста, укажите активную компанию'
+                      }
+                    ]
+                  })(<Select disabled={!isEditMode}>
+                    {(data.companies && data.companies.length) &&
+                      data.companies.map(i => (
+                        <Option key={i.company_id} value={i.company_id}>{i.company_name}</Option>
+                      ))
+                    }
+                  </Select>)}
+                </Form.Item>
+              </Col>
+              {data.position &&
+                <Col span={12}>
+                  <Form.Item label='Должность:'>
+                    {getFieldDecorator('position', {
+                      initialValue: data.position
+                    })(<Input disabled/>)}
+                  </Form.Item>
+                </Col>
+              }
+              {data.role &&
+                <Col span={12}>
+                  <Form.Item label='Роль:'>
+                    {getFieldDecorator('role', {
+                      initialValue: data.role
+                    })(<Input disabled/>)}
+                  </Form.Item>
+                </Col>
+              }
+            </Row>
+          </Spin>
         </Form>
-      </Modal>
-      }
-    </Fragment>
-  )
+        <div>
+          <Button style={{ margin: '2rem 2rem 0 0' }} type='primary' onClick={isEditMode ? e => this.changeUserInfo(e) : (() => this.changeMode())}>
+            <Icon type='edit' />
+            {isEditMode ? 'Сохранить изменения' : 'Изменить данные'}
+          </Button>
+          <Button type='primary' onClick={() => this.openModal()}>
+            <Icon type='edit'/>
+            Сменить пароль
+          </Button>
+        </div>
+        {isModalVisible &&
+        <Modal
+          title='Смена пороля'
+          visible
+          closable={false}
+          className='reset-password'
+          onCancel={this.openModal}
+          onOk={this.changeUserPassword}
+        >
+          <Form>
+            <Form.Item label='Старый пароль' hasFeedback>
+              {getFieldDecorator('old_password', {
+                rules: [
+                  {
+                    required: true,
+                    message: 'Введите старый пароль'
+                  }
+                ]
+              })(<Input.Password />)}
+            </Form.Item>
+
+            <Form.Item label='Новый пароль' hasFeedback>
+              {getFieldDecorator('password', {
+                rules: [
+                  {
+                    required: true,
+                    message: 'Минимум восемь символов, как минимум одна буква, одна цифра и один специальный символ',
+                    pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,}$/
+                  },
+                  {
+                    validator: this.validateToNextPassword
+                  }
+                ]
+              })(<Input.Password />)}
+            </Form.Item>
+
+            <Form.Item label='Подтвердите новый пароль' hasFeedback>
+              {getFieldDecorator('confirm', {
+                rules: [
+                  {
+                    required: true,
+                    message: 'Минимум восемь символов, как минимум одна буква, одна цифра и один специальный символ',
+                    pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,}$/
+                  },
+                  {
+                    validator: this.compareToFirstPassword
+                  }
+                ]
+              })(<Input.Password />)}
+            </Form.Item>
+          </Form>
+        </Modal>
+        }
+      </Fragment>
+    )
+  }
 }
 
-export default UserInfoPage
+const WrappedUserForm = Form.create({ name: 'user' })(UserInfoPage)
+export default WrappedUserForm
