@@ -31,7 +31,8 @@ const defaultDocumentData = {
   ids: [],
   status: 3,
   verifyFetching: false,
-  isVisibleRecipients: false
+  isVisibleRecipients: false,
+  isClicked: false
 }
 // eslint-disable-next-line spaced-comment
 const isIE = /*@cc_on!@*/false || !!document.documentMode
@@ -131,7 +132,8 @@ const NewDocumentPage = props => {
           message.success(`Документ ${documentState.name} успешно сохранен!`)
           setDocumentState({
             ...documentState,
-            fetching: false
+            fetching: false,
+            isClicked: true
           })
           if (documentState.fileHashes.filter(i => !!i).length) {
             setDocumentState({
@@ -380,6 +382,7 @@ const NewDocumentPage = props => {
               type='primary'
               onClick={handleSendToDraft}
               style={{ minWidth: 216 }}
+              disabled={documentState.isClicked}
             >
               <Icon type='file-text' />
               Сохранить в черновиках
