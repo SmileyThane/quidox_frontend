@@ -38,7 +38,7 @@ const CompanyUsers = props => {
   const { users } = props
 
   return (
-    <Table dataSource={users} columns={columns} rowKey='id' />
+    <Table dataSource={users} columns={columns} rowKey='id' locale={{ emptyText: 'Нет данных' }} />
   )
 }
 

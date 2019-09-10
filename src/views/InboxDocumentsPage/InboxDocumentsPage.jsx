@@ -12,13 +12,11 @@ const InboxDocumentsPage = props => {
     removeDocumentById,
     removeDocumentsByIds
   } = props
-
-  console.log(inboxDocuments)
+  
   return (
     <Fragment>
       <div className='content'>
         <Table
-          rowKey='id'
           tableData={inboxDocuments}
           loading={isFetching}
           className='document-table'

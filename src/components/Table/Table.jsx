@@ -305,6 +305,7 @@ const AntdTable = props => {
         dataSource={tableData.hasOwnProperty('data') ? tableData.data : []}
         rowKey='document_id'
         locale={{ emptyText: 'Нет данных' }}
+        rowClassName={record => record.is_read === 0 ? 'unread' : ''}
         pagination={false}
         title={() =>
           (

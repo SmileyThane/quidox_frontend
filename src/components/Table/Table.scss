@@ -46,3 +46,11 @@
 .table-download {
   text-align: center !important;
 }
+.ant-table-body {
+  .unread {
+    background-color: rgba(242,245,245,0.8);
+    td {
+      font-weight: bold;
+    }
+  }
+}

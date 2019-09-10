@@ -10,7 +10,6 @@ const DraftsPage = props => {
     removeDocumentById,
     removeDocumentsByIds
   } = props
-  console.log(draftDocuments)
   return (
     <Fragment>
       <div className='content'>
