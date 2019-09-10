@@ -371,11 +371,12 @@ const SingleDocumentPage = props => {
                           <Tooltip title='Отказать в подписании'>
                             <Icon type='stop' style={{ color: '#3278fb', fontSize: 18, marginRight: 5, }} />
                           </Tooltip>,
-                          <Tooltip title='Отказать в подписании'>
-                            <Icon type='stop' />
+                          <Tooltip title='Подписать документ'>
+                            <Icon type='edit' style={{ color: '#3278fb', fontSize: 18, marginRight: 5 }} onClick={() => verifyFile(item, index)} />
                           </Tooltip>,
-                          <Icon type='edit' style={{ color: '#3278fb', fontSize: 18, marginRight: 5 }} onClick={() => verifyFile(item, index)} />,
-                          <Icon style={{ color: '#3278fb', fontSize: 20 }} onClick={() => downloadDocumentContent(item, false, true)} type='download' />
+                          <Tooltip title={`Скачать документ`} placement='topRight'>
+                            <Icon style={{ color: '#3278fb', fontSize: 20 }} onClick={() => downloadDocumentContent(item, false, true)} type='download' />
+                          </Tooltip>
                         ]
                         : [
                           <Tooltip title='Отказать в подписании'>
@@ -394,7 +395,9 @@ const SingleDocumentPage = props => {
                           >
                             <Icon type='edit' style={{ color: '#E0E0E0', fontSize: 18, marginRight: 5, cursor: 'not-allowed'}}/>
                           </Popover>,
-                          <Icon style={{ color: '#3278fb', fontSize: 20 }} onClick={() => downloadDocumentContent(item, false, true)} type='download' />
+                          <Tooltip title={`Скачать документ`} placement='topRight'>
+                            <Icon style={{ color: '#3278fb', fontSize: 20 }} onClick={() => downloadDocumentContent(item, false, true)} type='download' />
+                          </Tooltip>
                         ]
                       }
                     >
