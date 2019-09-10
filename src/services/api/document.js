@@ -29,9 +29,18 @@ const verifyDocument = data => {
   })
 }
 
+const updateDocumentById = (id, data) => {
+  return http({
+    url: `document/update/${id}`,
+    method: 'POST',
+    data
+  })
+}
+
 export {
   getDocumentById,
   removeDocumentById,
   downloadDocument,
-  verifyDocument
+  verifyDocument,
+  updateDocumentById
 }

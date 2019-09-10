@@ -26,6 +26,17 @@ export default (state = initialState, action) => {
       return {
         ...state
       }
+    case t.UPDATE_DOCUMENT_BY_ID_FETCHING:
+      return {
+        ...state,
+        isFetching: action.payload
+      }
+    case t.UPDATE_DOCUMENT_BY_ID_SUCCESS:
+      console.log(action.payload)
+      return {
+        ...state,
+        data: action.payload
+      }
     default:
       return state
   }

@@ -46,6 +46,7 @@ const SingleDocumentPage = props => {
     match,
     getDocumentById,
     sendDocumentToUser,
+    updateDocumentById,
     verifyDocument
   } = props
 
@@ -305,6 +306,17 @@ const SingleDocumentPage = props => {
     })
   }
 
+  const handleEditDocumentName = str => {
+    if (str === '') {
+      message.error('Поле не может быть пустым')
+      return null
+    }
+    updateDocumentById(data.id, { name: str, description: data.description  } )
+      .then(response => {
+        console.log(response)
+      })
+  }
+
   return (
     <Fragment>
       <Spin spinning={isFetching}>
@@ -315,8 +327,8 @@ const SingleDocumentPage = props => {
                 <div className='back' onClick={() => history.goBack()} >
                   <Icon type='left' />
                 </div>
-                {(data.status && data.status === 1)
-                  ? <Paragraph className='document-title' editable>{data.name}</Paragraph>
+                {data
+                  ? <Paragraph className='document-title' editable={{ onChange: handleEditDocumentName }}>{data.name}</Paragraph>
                   : <h2 className='document__title'>{data.name}</h2>
                 }
               </div>

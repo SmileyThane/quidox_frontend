@@ -22,6 +22,27 @@ const getDocumentById = id => dispatch => {
     })
 }
 
+const updateDocumentById = (id, data) => dispatch => {
+  dispatch({
+    type: t.UPDATE_DOCUMENT_BY_ID_FETCHING,
+    payload: true
+  })
+  return api.document.updateDocumentById(id, data)
+    .then(({ data }) => {
+      if (data) {
+        dispatch({
+          type: t.UPDATE_DOCUMENT_BY_ID_SUCCESS,
+          payload: data
+        })
+      }
+      dispatch({
+        type: t.UPDATE_DOCUMENT_BY_ID_FETCHING,
+        payload: false
+      })
+      return data
+    })
+}
+
 const verifyDocument = data => dispatch => {
   dispatch({
     type: t.VERIFY_DOCUMENT_FETCHING,
@@ -40,7 +61,7 @@ const verifyDocument = data => dispatch => {
           type: t.VERIFY_DOCUMENT_FETCHING,
           payload: false
         })
-      return data
+        return data
       })
 }
 
@@ -96,5 +117,6 @@ const removeDocumentById = (id, type) => dispatch => {
 export {
   getDocumentById,
   removeDocumentById,
+  updateDocumentById,
   verifyDocument
 }
