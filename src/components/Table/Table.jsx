@@ -123,7 +123,7 @@ const AntdTable = props => {
       title: 'Статус',
       key: 'status',
       className: 'status-column',
-      render: record => <Text>{record.document.status}</Text>
+      render: record => <Text>{record.status_name}</Text>
     },
     {
       title: 'Квитанция',
