@@ -42,7 +42,7 @@ const { Option } = Select
 
 const SingleDocumentPage = props => {
   const {
-    document: { isFetching, data },
+    documents: { isFetching, singleDocument },
     match,
     getDocumentById,
     sendDocumentToUser,
@@ -118,7 +118,7 @@ const SingleDocumentPage = props => {
     setDocumentState({
       ...documentState,
       showModal: true,
-      userData: data,
+      userData: singleDocument,
       modalType: type,
       fileCerts: dataArray,
       ecpInfo
@@ -162,7 +162,7 @@ const SingleDocumentPage = props => {
 
   const sendToUser = () => {
     const docDataToUser = {
-      document_ids: data.attachments.map(i => i.document_id),
+      document_ids: singleDocument.attachments.map(i => i.document_id),
       user_company_id: JSON.stringify(documentState.value.map(i => i.key))
     }
     sendDocumentToUser(docDataToUser)
@@ -199,7 +199,7 @@ const SingleDocumentPage = props => {
       const key = flashData.cert['1.2.112.1.2.1.1.1.1.2'] + flashData.cert['1.2.112.1.2.1.1.1.1.1']
       const newData = {
         documents: [{
-          id: data.id,
+          id: singleDocument.id,
           attachments: [
             {
               id: item.id,
@@ -311,7 +311,7 @@ const SingleDocumentPage = props => {
       message.error('Поле не может быть пустым')
       return null
     }
-    updateDocumentById(data.id, { name: str, description: data.description })
+    updateDocumentById(singleDocument.id, { name: str, description: singleDocument.description })
       .then(response => {
         console.log(response)
       })
@@ -322,7 +322,7 @@ const SingleDocumentPage = props => {
       message.error('Поле не может быть пустым')
       return null
     }
-    updateDocumentById(data.id, { name: data.name, description: str })
+    updateDocumentById(singleDocument.id, { name: singleDocument.name, description: str })
       .then(response => {
         console.log(response)
       })
@@ -338,13 +338,13 @@ const SingleDocumentPage = props => {
                 <div className='back' onClick={() => history.goBack()} >
                   <Icon type='left' />
                 </div>
-                {(data.status && data.status === 1)
-                  ? <Paragraph className='document-title' editable={{ onChange: handleEditDocumentName }}>{data.name}</Paragraph>
-                  : <h2 className='document__title'>{data.name}</h2>
+                {(singleDocument.status && singleDocument.status === 1)
+                  ? <Paragraph className='document-title' editable={{ onChange: handleEditDocumentName }}>{singleDocument.name}</Paragraph>
+                  : <h2 className='document__title'>{singleDocument.name}</h2>
                 }
               </div>
               <div className='document__header_right'>
-                <p className='document__date'>{moment.utc(data.created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD/MM/YYYY HH:mm:ss')}</p>
+                <p className='document__date'>{moment.utc(singleDocument.created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD/MM/YYYY HH:mm:ss')}</p>
               </div>
             </div>
             <div className='document__content'>
@@ -352,41 +352,41 @@ const SingleDocumentPage = props => {
                 <div className='info__item'>
                   <div className='info__title'>Получатели</div>
                   <div className='info__content'>
-                    {data.attached_to_users &&
-                      data.attached_to_users.map(user => (
-                        <div key={user.id} style={{ padding: '.5rem 0' }}>
-                          <Text>{user.user_company && user.user_company.user_email}</Text>
-                          <br />
-                          <Text>{user.user_company && '[ ' + user.user_company.company_name + ' ]'}</Text>
-                        </div>
-                      ))
+                    {singleDocument.attached_to_users &&
+                    singleDocument.attached_to_users.map(user => (
+                      <div key={user.id} style={{ padding: '.5rem 0' }}>
+                        <Text>{user.user_company && user.user_company.user_email}</Text>
+                        <br />
+                        <Text>{user.user_company && '[ ' + user.user_company.company_name + ' ]'}</Text>
+                      </div>
+                    ))
                     }
                   </div>
                 </div>
                 <div className='info__item'>
                   <div className='info__title'>Отправители</div>
                   <div className='info__content'>
-                    {data.author &&
+                    {singleDocument.author &&
                     <div>
-                      <Text>{ data.author && data.author.user_email}</Text>
+                      <Text>{ singleDocument.author && singleDocument.author.user_email}</Text>
                       <br />
-                      <Text>{data.author && '[ ' + data.author.company_name + ' ]'}</Text>
+                      <Text>{singleDocument.author && '[ ' + singleDocument.author.company_name + ' ]'}</Text>
                     </div>
                     }
                   </div>
                 </div>
                 <div className='info__item'>
                   <div className='info__title'>Комментарий</div>
-                  {(data.status && data.status === 1)
-                    ? <Paragraph editable={{ onChange: handleEditDocumentDescription }} className='info__content'>{data.description}</Paragraph>
-                    : <div className='info__content'>{data.description}</div>
+                  {(singleDocument.status && singleDocument.status === 1)
+                    ? <Paragraph editable={{ onChange: handleEditDocumentDescription }} className='info__content'>{singleDocument.description}</Paragraph>
+                    : <div className='info__content'>{singleDocument.description}</div>
                   }
                 </div>
               </div>
               <div className='document__attached-doc attached-doc'>
                 <List
                   itemLayout='horizontal'
-                  dataSource={data.attachments}
+                  dataSource={singleDocument.attachments}
                   renderItem={(item, index) => (
                     <List.Item key={index}
                       actions={isIE
@@ -441,17 +441,17 @@ const SingleDocumentPage = props => {
                 />
               </div>
             </div>
-            { (data && data.attachments) &&
+            { (singleDocument && singleDocument.attachments) &&
               <Fragment>
                 <div className='document__actions'>
                   <div className='document__actions__left'>
-                    {data.attachments.length
+                    {singleDocument.attachments.length
                       ? <Fragment>
-                        <Button style={{ marginRight: 15 }} type='primary' onClick={() => downloadDocumentContent(data, false)}>
+                        <Button style={{ marginRight: 15 }} type='primary' onClick={() => downloadDocumentContent(singleDocument, false)}>
                           <Icon type='file-zip' />
                             Скачать всё
                         </Button>
-                        <Button type='primary' onClick={() => downloadDocumentContent(data, true)}>
+                        <Button type='primary' onClick={() => downloadDocumentContent(singleDocument, true)}>
                           <Icon type='file-zip' />
                             Скачать всё с сигнатурами
                         </Button>

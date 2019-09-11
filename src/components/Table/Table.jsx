@@ -125,12 +125,12 @@ const AntdTable = props => {
       key: 'receipt',
       className: 'table-download',
       render: record => <Fragment>
-        <Tooltip title='Скачать квитанцию в формате pdf'>
-          <Icon type='file-pdf' />
+        <Tooltip placement='topRight' title='Скачать квитанцию в формате pdf' arrowPointAtCenter>
+          <Icon type='file-pdf' style={{ marginRight: '0.5rem', fontSize: '1.8rem' }} />
         </Tooltip>
 
-        <Tooltip title='Скачать квитанцию в формате xml'>
-          <Icon type='file-text' />
+        <Tooltip placement='topRight' title='Скачать квитанцию в формате xml' arrowPointAtCenter>
+          <Icon type='file-text' style={{ fontSize: '1.8rem' }} />
         </Tooltip>
       </Fragment>
     }
@@ -303,7 +303,7 @@ const AntdTable = props => {
         columns={columns}
         rowSelection={rowSelection}
         dataSource={tableData.hasOwnProperty('data') ? tableData.data : []}
-        rowKey='document_id'
+        rowKey='id'
         locale={{ emptyText: 'Нет данных' }}
         rowClassName={record => record.is_read === 0 ? 'unread' : ''}
         pagination={false}

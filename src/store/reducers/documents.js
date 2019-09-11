@@ -4,6 +4,7 @@ const initialState = {
   draftDocuments: {},
   inboxDocuments: {},
   outDocuments: {},
+  singleDocument: {},
   isFetching: false
 }
 
@@ -18,6 +19,39 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isFetching: action.payload
+      }
+    case t.GET_DOCUMENT_BY_ID_FETCHING:
+      return {
+        ...state,
+        isFetching: action.payload
+      }
+    case t.GET_DOCUMENT_BY_ID_SUCCESS:
+      return {
+        ...state,
+        singleDocument: action.payload.data
+      }
+    case t.UPDATE_DOCUMENT_BY_ID_FETCHING:
+      return {
+        ...state,
+        isFetching: action.payload
+      }
+    case t.UPDATE_DOCUMENT_BY_ID_SUCCESS:
+      return {
+        ...state,
+        singleDocument: {
+          ...state.singleDocument,
+          name: action.payload.data.name,
+          description: action.payload.data.description
+        }
+      }
+    case t.VERIFY_DOCUMENT_FETCHING:
+      return {
+        ...state,
+        isFetching: action.payload
+      }
+    case t.VERIFY_DOCUMENT_SUCCESS:
+      return {
+        ...state
       }
 
     case t.GET_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:
