@@ -37,7 +37,8 @@ export default (state = initialState, action) => {
         ...state,
         data: {
           ...state.data,
-          name: action.payload.data.name
+          name: action.payload.data.name,
+          description: action.payload.data.description
         }
       }
     default:

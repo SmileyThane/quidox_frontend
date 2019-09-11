@@ -317,6 +317,17 @@ const SingleDocumentPage = props => {
       })
   }
 
+  const handleEditDocumentDescription = str => {
+    if (str === '') {
+      message.error('Поле не может быть пустым')
+      return null
+    }
+    updateDocumentById(data.id, { name: data.name, description: str  } )
+      .then(response => {
+        console.log(response)
+      })
+  }
+
   return (
     <Fragment>
       <Spin spinning={isFetching}>
@@ -366,8 +377,8 @@ const SingleDocumentPage = props => {
                 </div>
                 <div className='info__item'>
                   <div className='info__title'>Комментарий</div>
-                  {(data.status && data.status === 1)
-                    ? <Paragraph editable className='info__content'>{data.description}</Paragraph>
+                  {(data)
+                    ? <Paragraph editable={{ onChange: handleEditDocumentDescription }} className='info__content'>{data.description}</Paragraph>
                     : <div className='info__content'>{data.description}</div>
                   }
                 </div>
