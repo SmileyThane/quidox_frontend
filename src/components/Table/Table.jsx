@@ -131,11 +131,11 @@ const AntdTable = props => {
       className: 'table-download',
       render: record => <Fragment>
         <Tooltip placement='topRight' title='Скачать квитанцию в формате pdf' arrowPointAtCenter>
-          <Icon type='file-pdf' style={{ marginRight: '0.5rem', fontSize: '1.8rem' }} />
+          <Icon type='file-pdf' style={{ marginRight: '0.5rem', fontSize: '1.8rem', cursor: 'pointer' }} />
         </Tooltip>
 
         <Tooltip placement='topRight' title='Скачать квитанцию в формате xml' arrowPointAtCenter>
-          <Icon type='file-text' style={{ fontSize: '1.8rem' }} />
+          <Icon type='file-text' style={{ fontSize: '1.8rem', cursor: 'pointer' }} />
         </Tooltip>
       </Fragment>
     }
