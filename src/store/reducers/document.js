@@ -35,7 +35,10 @@ export default (state = initialState, action) => {
       console.log(action.payload)
       return {
         ...state,
-        data: action.payload
+        data: {
+          ...state.data,
+          name: action.payload.data.name
+        }
       }
     default:
       return state
