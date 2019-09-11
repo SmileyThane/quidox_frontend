@@ -3,11 +3,11 @@ import actions from '../../store/actions'
 import SingleCompanyPage from './SingleCompanyPage'
 
 const mapStateToProps = state => ({
-  company: state.company
+  companies: state.companies
 })
 
 const mapDispatchToProps = dispatch => ({
-  getCompanyById: id => dispatch(actions.company.getCompanyById(id))
+  getCompanyById: id => dispatch(actions.companies.getCompanyById(id))
 })
 
 export default connect(

@@ -20,7 +20,7 @@ import {
   Input
 } from 'antd'
 
-import './CompanyPage.scss'
+import './CompaniesPage.scss'
 import { Link } from "react-router-dom";
 
 const defaultCompanyState = {
@@ -43,9 +43,9 @@ const { Text } = Typography
 // eslint-disable-next-line spaced-comment
 const isIE = /*@cc_on!@*/false || !!document.documentMode
 
-const CopmanyPage = props => {
+const CompaniesPage = props => {
   const {
-    getCompany,
+    getCompanies,
     createCompany,
     changeActiveCompanyById,
     companies: { isFetching, list },
@@ -55,7 +55,7 @@ const CopmanyPage = props => {
   const { getFieldDecorator, validateFields } = useForm()
 
   useEffect(() => {
-    getCompany()
+    getCompanies()
   }, [])
 
   const [companyState, setCompanyState] = useState({ ...defaultCompanyState })
@@ -296,4 +296,4 @@ const CopmanyPage = props => {
   )
 }
 
-export default CopmanyPage
+export default CompaniesPage

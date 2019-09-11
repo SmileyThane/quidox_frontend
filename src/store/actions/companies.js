@@ -2,21 +2,21 @@ import * as t from '../types'
 
 import { api } from '../../services'
 
-const getCompany = () => dispatch => {
+const getCompanies = () => dispatch => {
   dispatch({
-    type: t.GET_COMPANY_FETCHING,
+    type: t.GET_COMPANIES_FETCHING,
     payload: true
   })
-  return api.company.getCompany()
+  return api.companies.getCompanies()
     .then(({ data }) => {
       if (data) {
         dispatch({
-          type: t.GET_COMPANY_SUCCESS,
+          type: t.GET_COMPANIES_SUCCESS,
           payload: data
         })
       }
       dispatch({
-        type: t.GET_COMPANY_FETCHING,
+        type: t.GET_COMPANIES_FETCHING,
         payload: false
       })
       return data
@@ -28,7 +28,7 @@ const getCompanyById = id => dispatch => {
     type: t.GET_COMPANY_BY_ID_FETCHING,
     payload: true
   })
-  return api.company.getCompanyById(id)
+  return api.companies.getCompanyById(id)
     .then(({ data }) => {
       if (data) {
         dispatch({
@@ -48,7 +48,7 @@ const changeActiveCompanyById = id => dispatch => {
     type: t.CHANGE_ACTIVE_COMPANY_BY_ID_FETCHING,
     payload: true
   })
-  return api.company.changeActiveCompanyById(id)
+  return api.companies.changeActiveCompanyById(id)
     .then(({ data }) => {
       if (data.success) {
         dispatch({
@@ -69,7 +69,7 @@ const createCompany = body => (dispatch, getState) => {
     type: t.CREATE_COMPANY_FETCHING,
     payload: true
   })
-  return api.company.createCompany(body)
+  return api.companies.createCompany(body)
     .then(({ data }) => {
       console.log(data)
       if (data && data.success) {
@@ -78,7 +78,7 @@ const createCompany = body => (dispatch, getState) => {
           payload: data
         })
 
-        if (!state.company.list.length) {
+        if (!state.companies.list.length) {
           dispatch({
             type: t.CHANGE_ACTIVE_COMPANY_BY_ID_SUCCESS,
             payload: data.data.id
@@ -100,7 +100,7 @@ const createCompany = body => (dispatch, getState) => {
 }
 
 export {
-  getCompany,
+  getCompanies,
   getCompanyById,
   createCompany,
   changeActiveCompanyById

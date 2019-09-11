@@ -1,6 +1,6 @@
 import http from './http'
 
-const getCompany = () => {
+const getCompanies = () => {
   return http({
     url: 'companies',
     method: 'GET'
@@ -38,7 +38,7 @@ const attachUnregisteredUserToCompany = data => {
 }
 
 export {
-  getCompany,
+  getCompanies,
   getCompanyById,
   changeActiveCompanyById,
   createCompany,

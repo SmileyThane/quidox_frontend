@@ -1,19 +1,19 @@
 import * as t from '../types'
 
-const initalState = {
+const initialState = {
   list: [],
   singleCompany: {},
   isFetching: false
 }
 
-export default (state = initalState, action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
-    case t.GET_COMPANY_FETCHING:
+    case t.GET_COMPANIES_FETCHING:
       return {
         ...state,
         isFetching: action.payload
       }
-    case t.GET_COMPANY_SUCCESS:
+    case t.GET_COMPANIES_SUCCESS:
       return {
         ...state,
         list: action.payload.data

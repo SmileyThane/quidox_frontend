@@ -18,7 +18,7 @@ const SingleCompanyPage = props => {
   const {
     match,
     getCompanyById,
-    company: { singleCompany, isFetching }
+    companies: { singleCompany, isFetching }
   } = props
 
   useEffect(() => {

@@ -6,7 +6,7 @@ import SingleDocumentPage from './SingleDocumentPage'
 import SingleCompanyPage from './SingleCompanyPage'
 import NewDocumentPage from './NewDocumentPage'
 import DraftsPage from './DraftsPage'
-import CompanyPage from './CompanyPage'
+import CompaniesPage from './CompaniesPage'
 import ExternalsPage from './ExternalsPage'
 import InboxDocumentsPage from './InboxDocumentsPage'
 import OutDocumentsPage from './OutDocumentsPage'
@@ -24,7 +24,7 @@ export {
   NewDocumentPage,
   DraftsPage,
   ExternalsPage,
-  CompanyPage,
+  CompaniesPage,
   InboxDocumentsPage,
   OutDocumentsPage,
   ArchiveDocumentsPage

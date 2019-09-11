@@ -50,17 +50,17 @@ const HeaderBlock = props => {
                   <Button type='primary' ghost>Верификация ЭЦП</Button>
                   <div className='header-setting-item'>
                     <Text>Баланс (BY): </Text>
-                    <Tag color='#108ee9' style={{ marginLeft: '1rem' }}>0.00</Tag>
+                    <Tag color='blue' style={{ marginLeft: '1rem' }}>0.00</Tag>
                   </div>
 
                   <div className='header-setting-item'>
                     <Text>Доступно действий: </Text>
-                    <Tag color='#108ee9' style={{ marginLeft: '1rem' }}>0</Tag>
+                    <Tag color='blue' style={{ marginLeft: '1rem' }}>0</Tag>
                   </div>
 
                   <div className='header-setting-item'>
                     <Text>Тариф: </Text>
-                    <Tag color='#108ee9' style={{ marginLeft: '1rem' }}>0</Tag>
+                    <Tag color='blue' style={{ marginLeft: '1rem' }}>0</Tag>
                   </div>
                 </div>
                 <div className='user header__user' ref={nodeRef}>
