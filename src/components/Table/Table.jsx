@@ -88,14 +88,14 @@ const AntdTable = props => {
                 }
               })}
             </Fragment>
-            : <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }}>
+            : <Link to={{ pathname: `/documents/${record.document.id}`, state: { from: history.location.pathname } }}>
               <div>
-                {record.author &&
-                '[' + record.author['user_email'] + ']'
+                {record.document.author &&
+                '[' + record.document.author['user_email'] + ']'
                 }
                 <br />
-                {record.author &&
-                  '[' + record.author['company_name'] + ']'
+                {record.document.author &&
+                  '[' + record.document.author['company_name'] + ']'
                 }
               </div>
             </Link>
