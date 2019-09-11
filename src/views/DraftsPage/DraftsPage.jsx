@@ -3,11 +3,13 @@ import React, { Fragment } from 'react'
 import { Table, PageDescription } from '../../components'
 
 const DraftsPage = props => {
+
   const {
     user: { data },
     documents: { draftDocuments, isFetching },
     getDocumentsByActiveCompanyId
   } = props
+
   return (
     <Fragment>
       <div className='content'>

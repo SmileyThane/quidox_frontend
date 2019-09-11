@@ -52,6 +52,12 @@ const AntMenu = props => {
           icon='file-text'
         />
         <MenuItem
+          heading='Архив'
+          url='/archive-documents'
+          key='/archive-documents'
+          icon='delete'
+        />
+        <MenuItem
           heading='Компании'
           url='/companies'
           key='/companies'
@@ -117,13 +123,6 @@ const AntMenu = props => {
           url=''
           key={1}
           icon='setting'
-          disabled
-        />
-        <MenuItem
-          heading='Архив'
-          url=''
-          key={2}
-          icon='delete'
           disabled
         />
         <MenuItem

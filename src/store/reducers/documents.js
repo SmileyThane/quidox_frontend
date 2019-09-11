@@ -4,6 +4,7 @@ const initialState = {
   draftDocuments: {},
   inboxDocuments: {},
   outDocuments: {},
+  archiveDocuments: {},
   singleDocument: {},
   isFetching: false
 }
@@ -77,6 +78,12 @@ export default (state = initialState, action) => {
         draftDocuments: action.payload.data
       }
 
+    case t.GET_ARCHIVE_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
+      return {
+        ...state,
+        archiveDocuments: action.payload.data
+      }
+
     case t.REMOVE_DOCUMENT_BY_ID_FETCHING:
       return {
         ...state,
@@ -110,6 +117,15 @@ export default (state = initialState, action) => {
         }
       }
 
+    case t.REMOVE_ARCHIVE_DOCUMENT_BY_ID_SUCCESS:
+      return {
+        ...state,
+        archiveDocuments: {
+          ...state.archiveDocuments,
+          data: state.archiveDocuments.data.filter(i => i.document_id !== action.payload)
+        }
+      }
+
     case t.REMOVE_DOCUMENTS_BY_IDS_FETCHING:
       return {
         ...state,
@@ -140,6 +156,15 @@ export default (state = initialState, action) => {
         outDocuments: {
           ...state.outDocuments,
           data: state.outDocuments.data.filter(i => action.payload.ids.indexOf(i.document_id) === -1)
+        }
+      }
+
+    case t.REMOVE_ARCHIVE_DOCUMENTS_BY_IDS_SUCCESS:
+      return {
+        ...state,
+        archiveDocuments: {
+          ...state.archiveDocuments,
+          data: state.archiveDocuments.data.filter(i => action.payload.ids.indexOf(i.document_id) === -1)
         }
       }
 

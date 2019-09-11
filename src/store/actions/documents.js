@@ -53,7 +53,6 @@ const getDocumentsByActiveCompanyId = (id, params) => dispatch => {
   return api.documents.getDocumentsByActiveCompanyId(id, params)
     .then(({ data }) => {
       if (data) {
-        console.log(params)
         switch (params.status) {
           case 1:
             dispatch({
@@ -70,6 +69,12 @@ const getDocumentsByActiveCompanyId = (id, params) => dispatch => {
           case 3:
             dispatch({
               type: t.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
+              payload: data
+            })
+            break
+          case 4:
+            dispatch({
+              type: t.GET_ARCHIVE_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
               payload: data
             })
             break
@@ -106,6 +111,12 @@ const removeDocumentsByIds = (ids, type) => dispatch => {
             })
             break
           case 'out':
+            dispatch({
+              type: t.REMOVE_OUT_DOCUMENTS_BY_IDS_SUCCESS,
+              payload: ids
+            })
+            break
+          case 'archive':
             dispatch({
               type: t.REMOVE_OUT_DOCUMENTS_BY_IDS_SUCCESS,
               payload: ids

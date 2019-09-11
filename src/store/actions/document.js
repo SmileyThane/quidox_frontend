@@ -91,6 +91,12 @@ const removeDocumentById = (id, type) => dispatch => {
             payload: id
           })
           break
+        case 'archive':
+          dispatch({
+            type: t.GET_DOCUMENT_BY_ID_SUCCESS,
+            payload: id
+          })
+          break
         default:
       }
       dispatch({
