@@ -69,13 +69,29 @@ const removeDocumentById = (id, type) => dispatch => {
     type: t.REMOVE_DOCUMENT_BY_ID_FETCHING,
     payload: true
   })
+  console.log('type:', type)
   return api.document.removeDocumentById(id, type)
     .then(({ data }) => {
-      if (data) {
-        dispatch({
-          type: t.GET_DOCUMENT_BY_ID_SUCCESS,
-          payload: data
-        })
+      switch (type) {
+        case 'draft':
+          dispatch({
+            type: t.REMOVE_DRAFT_DOCUMENT_BY_ID_SUCCESS,
+            payload: id
+          })
+          break
+        case 'inbox':
+          dispatch({
+            type: t.REMOVE_INBOX_DOCUMENT_BY_ID_SUCCESS,
+            payload: id
+          })
+          break
+        case 'out':
+          dispatch({
+            type: t.GET_DOCUMENT_BY_ID_SUCCESS,
+            payload: id
+          })
+          break
+        default:
       }
       dispatch({
         type: t.REMOVE_DOCUMENT_BY_ID_FETCHING,

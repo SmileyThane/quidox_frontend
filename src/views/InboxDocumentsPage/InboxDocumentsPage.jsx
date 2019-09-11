@@ -24,7 +24,7 @@ const InboxDocumentsPage = props => {
           removeDocuments={removeDocumentsByIds}
           getDocumentsWithParams={getDocumentsByActiveCompanyId}
           activeCompany={data.active_company_id}
-          type='unconfirmed'
+          type='inbox'
           columnName='Отправитель'
           status={2}
         />

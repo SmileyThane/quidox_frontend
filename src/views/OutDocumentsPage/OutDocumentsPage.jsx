@@ -22,7 +22,7 @@ const OutDocumentsPage = props => {
           removeDocuments={removeDocumentsByIds}
           getDocumentsWithParams={getDocumentsByActiveCompanyId}
           activeCompany={data.active_company_id}
-          type='out-unconfirmed'
+          type='out'
           columnName='Получатель'
           status={3}
         />

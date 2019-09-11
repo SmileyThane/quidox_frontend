@@ -6,9 +6,7 @@ const DraftsPage = props => {
   const {
     user: { data },
     documents: { draftDocuments, isFetching },
-    getDocumentsByActiveCompanyId,
-    removeDocumentById,
-    removeDocumentsByIds
+    getDocumentsByActiveCompanyId
   } = props
   return (
     <Fragment>
@@ -17,11 +15,9 @@ const DraftsPage = props => {
           className='document-table'
           tableData={draftDocuments}
           loading={isFetching}
-          removeDocument={removeDocumentById}
-          removeDocuments={removeDocumentsByIds}
           getDocumentsWithParams={getDocumentsByActiveCompanyId}
           activeCompany={data.active_company_id}
-          type='out-unconfirmed'
+          type='draft'
           columnName='Получатель'
           status={1}
         />

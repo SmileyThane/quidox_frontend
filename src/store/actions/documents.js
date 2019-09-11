@@ -99,27 +99,15 @@ const removeDocumentsByIds = (ids, type) => dispatch => {
               payload: ids
             })
             break
-          case 'out-confirmed':
+          case 'inbox':
             dispatch({
-              type: t.REMOVE_OUT_CONFIRMED_DOCUMENTS_BY_IDS_SUCCESS,
+              type: t.REMOVE_INBOX_DOCUMENTS_BY_IDS_SUCCESS,
               payload: ids
             })
             break
-          case 'out-unconfirmed':
+          case 'out':
             dispatch({
-              type: t.REMOVE_OUT_UNCONFIRMED_DOCUMENTS_BY_IDS_SUCCESS,
-              payload: ids
-            })
-            break
-          case 'unconfirmed':
-            dispatch({
-              type: t.REMOVE_INBOX_UNCONFIRMED_DOCUMENTS_BY_IDS_SUCCESS,
-              payload: ids
-            })
-            break
-          case 'confirmed':
-            dispatch({
-              type: t.REMOVE_INBOX_CONFIRMED_DOCUMENTS_BY_IDS_SUCCESS,
+              type: t.REMOVE_OUT_DOCUMENTS_BY_IDS_SUCCESS,
               payload: ids
             })
             break

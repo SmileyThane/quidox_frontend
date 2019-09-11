@@ -66,7 +66,6 @@ export default (state = initialState, action) => {
       }
 
     case t.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
-      console.log(action.payload.data)
       return {
         ...state,
         outDocuments: action.payload.data
@@ -78,98 +77,72 @@ export default (state = initialState, action) => {
         draftDocuments: action.payload.data
       }
 
-    // remove documents
     case t.REMOVE_DOCUMENT_BY_ID_FETCHING:
       return {
         ...state,
         isFetching: action.payload
       }
+
     case t.REMOVE_DRAFT_DOCUMENT_BY_ID_SUCCESS:
       return {
         ...state,
-        draftDocumentsList: state.draftDocumentsList.filter(i => i.id !== action.payload)
+        draftDocuments: {
+          ...state.draftDocuments,
+          data: state.draftDocuments.data.filter(i => i.document_id !== action.payload)
+        }
       }
-    case t.REMOVE_INBOX_UNCONFIRMED_DOCUMENT_BY_ID_SUCCESS:
+
+    case t.REMOVE_INBOX_DOCUMENT_BY_ID_SUCCESS:
       return {
         ...state,
         inboxDocuments: {
           ...state.inboxDocuments,
-          inboxUnconfirmedDocuments: state.inboxDocuments.inboxUnconfirmedDocuments.filter(i => i.id !== action.payload)
+          data: state.inboxDocuments.data.filter(i => i.document_id !== action.payload)
         }
       }
-    case t.REMOVE_INBOX_CONFIRMED_DOCUMENT_BY_ID_SUCCESS: {
+
+    case t.REMOVE_OUT_DOCUMENT_BY_ID_SUCCESS:
       return {
         ...state,
-        inboxDocuments: {
-          ...state.inboxDocuments,
-          inboxConfirmedDocuments: state.inboxDocuments.inboxConfirmedDocuments.filter(i => i.id !== action.payload)
+        outDocuments: {
+          ...state.outDocuments,
+          data: state.outDocuments.data.filter(i => i.document_id !== action.payload)
         }
       }
-    }
-    case t.REMOVE_OUT_CONFIRMED_DOCUMENT_BY_ID_SUCCESS: {
-      return {
-        ...state,
-        outDocumentsList: {
-          ...state.outDocumentsList,
-          outConfirmedDocuments: state.outDocumentsList.outConfirmedDocuments.filter(i => i.id !== action.payload)
-        }
-      }
-    }
-    case t.REMOVE_OUT_UNCONFIRMED_DOCUMENT_BY_ID_SUCCESS: {
-      return {
-        ...state,
-        outDocumentsList: {
-          ...state.outDocumentsList,
-          outUnconfirmedDocuments: state.outDocumentsList.outUnconfirmedDocuments.filter(i => i.id !== action.payload)
-        }
-      }
-    }
+
     case t.REMOVE_DOCUMENTS_BY_IDS_FETCHING:
       return {
         ...state,
         isFetching: action.payload
       }
+
     case t.REMOVE_DRAFT_DOCUMENTS_BY_IDS_SUCCESS:
       return {
         ...state,
-        draftDocumentsList: state.draftDocumentsList.filter(i => action.payload.ids.indexOf(i.id) === -1)
+        draftDocuments: {
+          ...state.draftDocuments,
+          data: state.draftDocuments.data.filter(i => action.payload.ids.indexOf(i.document_id) === -1)
+        }
       }
-    case t.REMOVE_INBOX_UNCONFIRMED_DOCUMENTS_BY_IDS_SUCCESS: {
+
+    case t.REMOVE_INBOX_DOCUMENTS_BY_IDS_SUCCESS:
       return {
         ...state,
         inboxDocuments: {
           ...state.inboxDocuments,
-          inboxUnconfirmedDocuments: state.inboxDocuments.inboxUnconfirmedDocuments.filter(i => action.payload.ids.indexOf(i.id) === -1)
+          data: state.inboxDocuments.data.filter(i => action.payload.ids.indexOf(i.document_id) === -1)
         }
       }
-    }
-    case t.REMOVE_INBOX_CONFIRMED_DOCUMENTS_BY_IDS_SUCCESS: {
+
+    case t.REMOVE_OUT_DOCUMENTS_BY_IDS_SUCCESS:
       return {
         ...state,
-        inboxDocuments: {
-          ...state.inboxDocuments,
-          inboxConfirmedDocuments: state.inboxDocuments.inboxConfirmedDocuments.filter(i => action.payload.ids.indexOf(i.id) === -1)
+        outDocuments: {
+          ...state.outDocuments,
+          data: state.outDocuments.data.filter(i => action.payload.ids.indexOf(i.document_id) === -1)
         }
       }
-    }
-    case t.REMOVE_OUT_CONFIRMED_DOCUMENTS_BY_IDS_SUCCESS: {
-      return {
-        ...state,
-        outDocumentsList: {
-          ...state.outDocumentsList,
-          outConfirmedDocuments: state.outDocumentsList.outConfirmedDocuments.filter(i => action.payload.ids.indexOf(i.id) === -1)
-        }
-      }
-    }
-    case t.REMOVE_OUT_UNCONFIRMED_DOCUMENTS_BY_IDS_SUCCESS: {
-      return {
-        ...state,
-        outDocumentsList: {
-          ...state.outDocumentsList,
-          outUnconfirmedDocuments: state.outDocumentsList.outUnconfirmedDocuments.filter(i => action.payload.ids.indexOf(i.id) === -1)
-        }
-      }
-    }
+
     default:
       return state
   }
