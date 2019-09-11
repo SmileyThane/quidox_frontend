@@ -144,14 +144,17 @@ const CopmanyPage = props => {
 
   const columns = [{
     title: 'Наименование',
+    key: 'name',
     render: record => <Link to={{ pathname: `/companies/${+record.company_id}`, state: { from: history.location.pathname } }}>{record.company_data.name}</Link>
   },
   {
     title: 'УНП',
+    key: 'number',
     dataIndex: 'company_data.company_number'
   },
   {
     title: 'Данные компании',
+    key: 'description',
     dataIndex: 'company_data.description'
   },
   {
@@ -180,7 +183,7 @@ const CopmanyPage = props => {
       <div className='content content_small-margin'>
         <Table
           pagination
-          rowKey='company_id'
+          rowKey='id'
           columns={columns}
           dataSource={list}
           loading={isFetching}

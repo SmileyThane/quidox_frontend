@@ -40,8 +40,8 @@ const AntMenu = props => {
         />
         <MenuItem
           heading='Внутренние'
-          url='/'
-          key='/'
+          url='/inner-documents'
+          key='/inner-documents'
           icon='import'
           disabled
         />
@@ -67,19 +67,19 @@ const AntMenu = props => {
           }
         >
           <Menu.Item key='5' url='/out-documents'>
-            <Icon type='file-text' theme="twoTone" twoToneColor='#52c41a' />
+            <Icon type='file-text' theme='twoTone' twoToneColor='#52c41a' />
             Доставлено, завершено
           </Menu.Item>
           <Menu.Item key='6' url='/'>
-            <Icon type='file-text' theme="twoTone" twoToneColor='#1890ff' />
+            <Icon type='file-text' theme='twoTone' twoToneColor='#1890ff' />
             Доставлено, в работе
           </Menu.Item>
           <Menu.Item key='7' url='/'>
-            <Icon type='file-text' theme="twoTone" twoToneColor='#fa8c16' />
+            <Icon type='file-text' theme='twoTone' twoToneColor='#fa8c16' />
             Требует реакции
           </Menu.Item>
           <Menu.Item key='8' url='/'>
-            <Icon type='file-text' theme="twoTone" twoToneColor='#f5222d' />
+            <Icon type='file-text' theme='twoTone' twoToneColor='#f5222d' />
             Отклонено
           </Menu.Item>
         </SubMenu>
@@ -93,15 +93,15 @@ const AntMenu = props => {
           }
         >
           <Menu.Item key='6' url='/'>
-            <Icon type='file-text' theme="twoTone" twoToneColor='#52c41a' />
+            <Icon type='file-text' theme='twoTone' twoToneColor='#52c41a' />
             Завершено
           </Menu.Item>
           <Menu.Item key='5' url='/out-documents'>
-            <Icon type='file-text' theme="twoTone" twoToneColor='#1890ff' />
+            <Icon type='file-text' theme='twoTone' twoToneColor='#1890ff' />
             Требуется подпись
           </Menu.Item>
           <Menu.Item key='7' url='/'>
-            <Icon type='file-text' theme="twoTone" twoToneColor='#f5222d' />
+            <Icon type='file-text' theme='twoTone' twoToneColor='#f5222d' />
             Отклонен
           </Menu.Item>
         </SubMenu>

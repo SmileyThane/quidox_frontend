@@ -1,8 +1,7 @@
 import React, { Fragment, useEffect } from 'react'
 
- import {
+import {
   Spin,
-  Typography,
   Tabs,
   Icon
 } from 'antd'
@@ -11,9 +10,8 @@ import {
   CompanyUsers,
   CompanyDescription
 } from './internal'
-import history from  '../../history';
+import history from '../../history'
 
-const { Title, Text } = Typography
 const { TabPane } = Tabs
 
 const SingleCompanyPage = props => {
@@ -58,14 +56,14 @@ const SingleCompanyPage = props => {
                 </Fragment>
               }
             >
-              <CompanyUsers users={singleCompany.users}/>
+              <CompanyUsers users={singleCompany.users} />
             </TabPane>
 
             <TabPane
               key='3'
               tab={
                 <Fragment>
-                  <Icon type="wallet" />
+                  <Icon type='wallet' />
                    Баланс
                 </Fragment>
               }
@@ -76,7 +74,7 @@ const SingleCompanyPage = props => {
               key='4'
               tab={
                 <Fragment>
-                  <Icon type="wallet" />
+                  <Icon type='wallet' />
                   Документы
                 </Fragment>
               }

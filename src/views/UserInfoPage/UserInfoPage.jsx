@@ -23,9 +23,6 @@ class UserInfoPage extends React.Component {
     isEditMode: false,
     isModalVisible: false
   }
-  componentDidMount () {
-    const { user: { isFetching, data: { companies = [] }, data }, updateUser } = this.props
-  }
 
   openModal = () => {
     this.setState({ isModalVisible: !this.state.isModalVisible })
@@ -103,7 +100,7 @@ class UserInfoPage extends React.Component {
     } = this.state
 
     const {
-      user: { isFetching, data: { companies = [] }, data }, updateUser
+      user: { isFetching, data }
     } = this.props
     return (
       <Fragment>

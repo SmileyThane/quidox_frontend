@@ -311,7 +311,7 @@ const SingleDocumentPage = props => {
       message.error('Поле не может быть пустым')
       return null
     }
-    updateDocumentById(data.id, { name: str, description: data.description  } )
+    updateDocumentById(data.id, { name: str, description: data.description })
       .then(response => {
         console.log(response)
       })
@@ -322,7 +322,7 @@ const SingleDocumentPage = props => {
       message.error('Поле не может быть пустым')
       return null
     }
-    updateDocumentById(data.id, { name: data.name, description: str  } )
+    updateDocumentById(data.id, { name: data.name, description: str })
       .then(response => {
         console.log(response)
       })
@@ -338,7 +338,7 @@ const SingleDocumentPage = props => {
                 <div className='back' onClick={() => history.goBack()} >
                   <Icon type='left' />
                 </div>
-                {data
+                {(data.status && data.status === 1)
                   ? <Paragraph className='document-title' editable={{ onChange: handleEditDocumentName }}>{data.name}</Paragraph>
                   : <h2 className='document__title'>{data.name}</h2>
                 }
@@ -377,7 +377,7 @@ const SingleDocumentPage = props => {
                 </div>
                 <div className='info__item'>
                   <div className='info__title'>Комментарий</div>
-                  {(data)
+                  {(data.status && data.status === 1)
                     ? <Paragraph editable={{ onChange: handleEditDocumentDescription }} className='info__content'>{data.description}</Paragraph>
                     : <div className='info__content'>{data.description}</div>
                   }
@@ -392,7 +392,7 @@ const SingleDocumentPage = props => {
                       actions={isIE
                         ? [
                           <Tooltip title='Отказать в подписании'>
-                            <Icon type='stop' style={{ color: '#3278fb', fontSize: 18, marginRight: 5, }} />
+                            <Icon type='stop' style={{ color: '#3278fb', fontSize: 18, marginRight: 5 }} />
                           </Tooltip>,
                           <Tooltip title='Подписать документ'>
                             <Icon type='edit' style={{ color: '#3278fb', fontSize: 18, marginRight: 5 }} onClick={() => verifyFile(item, index)} />
@@ -403,7 +403,7 @@ const SingleDocumentPage = props => {
                         ]
                         : [
                           <Tooltip title='Отказать в подписании'>
-                            <Icon type='stop' style={{ color: '#3278fb', fontSize: 18, marginRight: 5, }} />
+                            <Icon type='stop' style={{ color: '#3278fb', fontSize: 18, marginRight: 5 }} />
                           </Tooltip>,
                           <Popover
                             placement='topRight'
@@ -416,7 +416,7 @@ const SingleDocumentPage = props => {
                               </Fragment>
                             }
                           >
-                            <Icon type='edit' style={{ color: '#E0E0E0', fontSize: 18, marginRight: 5, cursor: 'not-allowed'}}/>
+                            <Icon type='edit' style={{ color: '#E0E0E0', fontSize: 18, marginRight: 5, cursor: 'not-allowed' }} />
                           </Popover>,
                           <Tooltip title={`Скачать документ`} placement='topRight'>
                             <Icon style={{ color: '#3278fb', fontSize: 20 }} onClick={() => downloadDocumentContent(item, false, true)} type='download' />
@@ -599,4 +599,3 @@ const SingleDocumentPage = props => {
 }
 
 export default SingleDocumentPage
-
