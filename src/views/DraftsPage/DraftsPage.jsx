@@ -26,6 +26,7 @@ const DraftsPage = props => {
       </div>
 
       <PageDescription
+        isVisible={(draftDocuments.data && !draftDocuments.data.length)}
         title='В эту папку Вы сможете сохранить черновик любого сообщения.'
         text={['Вы сможете в любой момент продолжить редактирование сообщения и отправить его адресату.']}
       />
