@@ -69,19 +69,24 @@ const AntdTable = props => {
         <Fragment>
           {columnName !== 'Отправитель'
             ? <Fragment>
-              {record.document.attached_to_users && record.document.attached_to_users.map(user => (
-                <Link to={{ pathname: `/documents/${user.document_id}`, state: { from: history.location.pathname } }} key={user.id}>
-                  <div style={{ padding: '.5rem 0' }}>
-                    {user.user_company &&
-                      user.user_company.user_email
-                    }
-                    <br />
-                    {user.user_company &&
-                      '[ ' + user.user_company.company_name + ' ]'
-                    }
-                  </div>
-                </Link>
-              ))}
+              {record.document.attached_to_users && record.document.attached_to_users.map((user, index) => {
+                if (index === 0) {
+                  return (
+                    <Link to={{ pathname: `/documents/${user.document_id}`, state: { from: history.location.pathname } }} key={user.id}>
+                      <div style={{ padding: '.5rem 0' }}>
+                        {user.user_company &&
+                        user.user_company.user_email
+                        }
+                        <br />
+                        {user.user_company &&
+                        '[ ' + user.user_company.company_name + ' ]'
+                        }
+                        {record.document.attached_to_users.length > 1 && <Fragment><br />и еще {record.document.attached_to_users.length - 1}</Fragment>}
+                      </div>
+                    </Link>
+                  )
+                }
+              })}
             </Fragment>
             : <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }}>
               <div>
@@ -137,6 +142,7 @@ const AntdTable = props => {
   ]
 
   const onSelectChange = selectedRowKeys => {
+    console.log(onSelectChange)
     setTableState({
       ...tableState,
       selectedRowKeys
@@ -158,10 +164,14 @@ const AntdTable = props => {
           setTableState({ ...defaultTableState })
         })
     } else {
-      removeDocument(tableState.selectedRowKeys[0], type)
+      removeDocument(tableState.selectedRowKeys[0])
         .then(response => {
-          message.success('Документ удален')
-          setTableState({ ...defaultTableState })
+          if (response.success) {
+            message.success('Документ удален')
+            setTableState({ ...defaultTableState })
+          } else {
+            throw new Error(response.error)
+          }
         })
         .catch(error => {
           message.error(error.message)
@@ -303,7 +313,7 @@ const AntdTable = props => {
         columns={columns}
         rowSelection={rowSelection}
         dataSource={tableData.hasOwnProperty('data') ? tableData.data : []}
-        rowKey='id'
+        rowKey='document_id'
         locale={{ emptyText: 'Нет данных' }}
         rowClassName={record => record.is_read === 0 ? 'unread' : ''}
         pagination={false}

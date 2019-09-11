@@ -4,6 +4,7 @@ import Table from './Table'
 
 const mapDispatchToProps = dispatch => ({
   sendDocumentToUser: data => dispatch(actions.documents.sendDocumentToUser(data)),
+  removeDocument: id => dispatch(actions.document.removeDocumentById(id))
 })
 
 export default connect(

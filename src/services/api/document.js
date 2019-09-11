@@ -7,7 +7,7 @@ const getDocumentById = id => {
   })
 }
 
-const removeDocumentById = (id, type) => {
+const removeDocumentById = id => {
   return http({
     url: `/document/delete/${id}`,
     method: 'GET'

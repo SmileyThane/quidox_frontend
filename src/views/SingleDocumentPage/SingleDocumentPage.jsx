@@ -391,22 +391,23 @@ const SingleDocumentPage = props => {
                     <List.Item key={index}
                       actions={isIE
                         ? [
-                          <Tooltip title='Отказать в подписании'>
-                            <Icon type='stop' style={{ color: '#3278fb', fontSize: 18, marginRight: 5 }} />
+                          <Tooltip title='Отказать в подписании' arrowPointAtCenter>
+                            <Icon type='stop' style={{ color: '#f5222d', marginRight: 5 }} />
                           </Tooltip>,
-                          <Tooltip title='Подписать документ'>
-                            <Icon type='edit' style={{ color: '#3278fb', fontSize: 18, marginRight: 5 }} onClick={() => verifyFile(item, index)} />
+                          <Tooltip title='Подписать документ' arrowPointAtCenter>
+                            <Icon type='edit' style={{ color: '#3278fb', marginRight: 5, fontSize: '1.6rem' }} onClick={() => verifyFile(item, index)} />
                           </Tooltip>,
-                          <Tooltip title={`Скачать документ`} placement='topRight'>
-                            <Icon style={{ color: '#3278fb', fontSize: 20 }} onClick={() => downloadDocumentContent(item, false, true)} type='download' />
+                          <Tooltip title={`Скачать документ`} placement='topRight' arrowPointAtCenter>
+                            <Icon style={{ color: '#3278fb', fontSize: '1.6rem' }} onClick={() => downloadDocumentContent(item, false, true)} type='download' />
                           </Tooltip>
                         ]
                         : [
-                          <Tooltip title='Отказать в подписании'>
-                            <Icon type='stop' style={{ color: '#3278fb', fontSize: 18, marginRight: 5 }} />
+                          <Tooltip title='Отказать в подписании' arrowPointAtCenter>
+                            <Icon type='stop' style={{ color: '#f5222d', marginRight: 5 }} />
                           </Tooltip>,
                           <Popover
                             placement='topRight'
+                            arrowPointAtCenter
                             content={
                               <Fragment>
                                 <Text>Подпись файла возможна только в браузере Internet Explorer верифицированным пользователем {' '}</Text>
@@ -416,16 +417,18 @@ const SingleDocumentPage = props => {
                               </Fragment>
                             }
                           >
-                            <Icon type='edit' style={{ color: '#E0E0E0', fontSize: 18, marginRight: 5, cursor: 'not-allowed' }} />
+                            <Icon type='edit' style={{ color: '#E0E0E0', marginRight: 5, fontSize: '1.6rem', cursor: 'not-allowed' }} />
                           </Popover>,
-                          <Tooltip title={`Скачать документ`} placement='topRight'>
-                            <Icon style={{ color: '#3278fb', fontSize: 20 }} onClick={() => downloadDocumentContent(item, false, true)} type='download' />
+                          <Tooltip title={`Скачать документ`} placement='topRight' arrowPointAtCenter>
+                            <Icon style={{ color: '#3278fb', fontSize: '1.6rem' }} onClick={() => downloadDocumentContent(item, false, true)} type='download' />
                           </Tooltip>
                         ]
                       }
                     >
                       <div className='single-document'>
-                        <Icon style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }} type='eye' onClick={() => showModal(item)} />
+                        <Tooltip title={`Просмотреть содержиоме файла`} placement='top' arrowPointAtCenter>
+                          <Icon style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }} type='eye' onClick={() => showModal(item)} />
+                        </Tooltip>
                         <p style={{ marginRight: 10 }} className='single-document__name'>{item.name}</p>
                         {item.users_companies.length
                           ? <Tag
