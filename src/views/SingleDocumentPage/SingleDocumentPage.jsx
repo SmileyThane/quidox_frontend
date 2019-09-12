@@ -164,7 +164,7 @@ const SingleDocumentPage = props => {
 
   const sendToUser = () => {
     const docDataToUser = {
-      document_ids: singleDocument.attachments.map(i => i.document_id),
+      document_ids: document.attachments.map(i => i.document_id),
       user_company_id: JSON.stringify(documentState.value.map(i => i.key))
     }
     sendDocumentToUser(docDataToUser)
