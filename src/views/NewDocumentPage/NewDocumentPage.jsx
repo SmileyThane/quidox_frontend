@@ -61,13 +61,6 @@ const NewDocumentPage = props => {
     })
   }
 
-  const changeStatus = value => {
-    setDocumentState({
-      ...documentState,
-      status: value
-    })
-  }
-
   const getFiles = e => {
     setDocumentState({
       ...documentState,
@@ -266,8 +259,9 @@ const NewDocumentPage = props => {
       window.sign('File-' + index)
 
       setTimeout(() => {
-        const value = document.getElementById('verifiedData' + 'File-' + index).value
-        const signedValue = document.getElementById('signedData' + 'File-' + index).value
+        // const value = document.getElementById('verifiedData' + 'File-' + index).value
+        const value = document.getElementById(`verifiedDataFile-${index}`).value
+        const signedValue = document.getElementById(`signedDataFile${index}`).value
         const flashData = JSON.parse(decodeURIComponent(value))
         const key = flashData.cert['1.2.112.1.2.1.1.1.1.2'] + flashData.cert['1.2.112.1.2.1.1.1.1.1']
         api.documents.checkFlashKey({ key: key })

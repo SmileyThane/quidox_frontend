@@ -369,7 +369,7 @@ class RegistrationForm extends React.Component {
                       <Text type='secondary'>Не получили код?<br />
                         {seconds > 0
                           ? <Fragment>Выслать повторно через... {seconds}</Fragment>
-                          : <a onClick={() => this.getSmsCode()}>Выслать повторно!</a>
+                          : <Button type='link' onClick={() => this.getSmsCode()}>Выслать повторно!</Button>
                         }
                       </Text>
                     </Fragment>

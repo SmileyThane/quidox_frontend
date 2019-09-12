@@ -56,7 +56,7 @@ const CompaniesPage = props => {
 
   useEffect(() => {
     getCompanies()
-  }, [])
+  }, [getCompanies])
 
   const [companyState, setCompanyState] = useState({ ...defaultCompanyState })
 

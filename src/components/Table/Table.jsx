@@ -59,7 +59,7 @@ const AntdTable = props => {
     if (activeCompany) {
       getDocumentsWithParams(activeCompany, { status: status, per_page: window.localStorage.getItem('perPage') ? +window.localStorage.getItem('perPage') : 5 })
     }
-  }, [activeCompany, getDocumentsWithParams])
+  }, [activeCompany, getDocumentsWithParams, status])
 
   const columns = [
     {
@@ -85,6 +85,8 @@ const AntdTable = props => {
                       </div>
                     </Link>
                   )
+                } else {
+                  return null
                 }
               })}
             </Fragment>

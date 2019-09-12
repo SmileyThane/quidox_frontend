@@ -6,8 +6,6 @@ import axios from 'axios'
 import history from '../../history.js'
 import { Form, Icon, Input, Button, Checkbox, message, Typography } from 'antd'
 import './LoginPage.scss'
-import { Hash } from 'crypto';
-
 const { Text, Title } = Typography
 
 class LoginPage extends React.Component {

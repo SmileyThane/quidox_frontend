@@ -17,7 +17,7 @@ const PrivateRoute = ({ component: Component, getUser, ...rest }) => {
         }, 1500)
       }
     }
-  }, [getUser])
+  }, [getUser, isIE])
 
   return <Route {...rest}
     render={props =>

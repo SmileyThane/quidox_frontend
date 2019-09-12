@@ -62,7 +62,8 @@ const SingleDocumentPage = props => {
     if (documentState.fileCerts[documentState.activeFileCert]) {
       showUserData('ecp', documentState.fileCerts, documentState.activeFileCert)
     }
-  }, [documentState.activeFileCert])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [documentState.activeFileCert, documentState.fileCerts])
 
   const showModal = item => {
     axios.get(item['preview_path'], {
@@ -186,15 +187,17 @@ const SingleDocumentPage = props => {
 
   const verifyFile = (item, index) => {
     const base64 = item.encoded_file
-    var input = document.createElement('input')
+    const input = document.createElement('input')
     input.type = 'hidden'
     input.id = 'dataFile-' + index
     document.body.appendChild(input)
-    document.getElementById('dataFile-' + index).value = base64
-    window.sign('File-' + index)
+    // document.getElementById('dataFile-' + index).value = base64
+    document.getElementById(`dataFile-${index}`).value = base64
+    // window.sign('File-' + index)
+    window.sign(`File-${index}`)
     setTimeout(() => {
-      const value = document.getElementById('verifiedData' + 'File-' + index).value
-      const signedValue = document.getElementById('signedData' + 'File-' + index).value
+      const value = document.getElementById(`verifiedDataFile${index}`).value
+      const signedValue = document.getElementById(`signedDataFile-${index}`).value
       const flashData = JSON.parse(decodeURIComponent(value))
       const key = flashData.cert['1.2.112.1.2.1.1.1.1.2'] + flashData.cert['1.2.112.1.2.1.1.1.1.1']
       const newData = {
@@ -411,7 +414,7 @@ const SingleDocumentPage = props => {
                             content={
                               <Fragment>
                                 <Text>Подпись файла возможна только в браузере Internet Explorer верифицированным пользователем {' '}</Text>
-                                <a href='https://quidox.by/settings_download/' target='_blank'>
+                                <a href='https://quidox.by/settings_download/' target='_blank' rel="noopener noreferrer">
                                   Подробнее
                                 </a>
                               </Fragment>

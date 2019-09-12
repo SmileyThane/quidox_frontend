@@ -4,6 +4,8 @@ import axios from 'axios'
 import history from '../../history.js'
 import { Form, Input, Button, message } from 'antd'
 
+import './ResetPasswordPage.scss'
+
 class LoginPage extends React.Component {
   state = {
     email: '',
@@ -38,7 +40,7 @@ class LoginPage extends React.Component {
     const { getFieldDecorator } = this.props.form
     console.log(this.state.email)
     return (
-      <Form onSubmit={this.sendEmail} className='form' style={{ maxHeight: '20rem', maxWidth: '45rem' }}>
+      <Form onSubmit={this.sendEmail} className='form form-reset-password' style={{ maxHeight: '20rem', maxWidth: '45rem' }}>
         <Form.Item label='Введите адрес электронной почты'>
           {getFieldDecorator('email', {
             rules: [
