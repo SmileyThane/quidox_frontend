@@ -327,15 +327,19 @@ const AntdTable = props => {
           (
             <div className='table__header table-header'>
               <div className='table-header__actions'>
-                <Icon type='cloud-upload' onClick={() => openModal()} />
-                <Popconfirm
-                  title='Вы уверены?'
-                  onConfirm={() => handleRemove(type)}
-                  okText='Удалить'
-                  cancelText='Отмена'
-                >
-                  <Icon type='delete' style={{ color: '#FF7D1D' }} />
-                </Popconfirm>
+                <Tooltip title='Перенаправление документа(ов)' placement='topRight' arrowPointAtCenter>
+                  <Icon type='cloud-upload' onClick={() => openModal()} />
+                </Tooltip>
+                <Tooltip title='Удаление документа(ов)' placement='topRight' arrowPointAtCenter>
+                  <Popconfirm
+                    title='Вы уверены?'
+                    onConfirm={() => handleRemove(type)}
+                    okText='Удалить'
+                    cancelText='Отмена'
+                  >
+                    <Icon type='delete' style={{ color: '#FF7D1D' }} />
+                  </Popconfirm>
+                </Tooltip>
               </div>
               <div className='table-header__search'>
                 <AutoComplete onSearch={_.debounce(handleSearch, 500)} placeholder='Введите дату, отправителя, тему...' />
