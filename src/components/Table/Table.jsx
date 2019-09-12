@@ -158,14 +158,20 @@ const AntdTable = props => {
         ids: tableState.selectedRowKeys
       }
       removeDocumentsByIds(obj, type)
-        .then(() => {
-          message.success('Документы удалены')
-          setTableState({ ...defaultTableState })
+        .then(response => {
+          if (response.success) {
+            message.success('Документы удалены')
+            setTableState({ ...defaultTableState })
+          } else {
+            throw new Error(response.error)
+          }
+        })
+        .catch(error => {
+          message.error(error.message)
         })
     } else {
       removeDocumentById(tableState.selectedRowKeys[0], type)
         .then(response => {
-          console.log('response', response)
           if (response.success) {
             message.success('Документ удален')
             setTableState({ ...defaultTableState })
@@ -175,7 +181,6 @@ const AntdTable = props => {
         })
         .catch(error => {
           message.error(error.message)
-          message.success('Документ удален')
         })
     }
   }

@@ -129,6 +129,7 @@ const removeDocumentsByIds = (ids, type) => dispatch => {
         type: t.REMOVE_DOCUMENTS_BY_IDS_FETCHING,
         payload: false
       })
+      return data
     })
 }
 
