@@ -41,8 +41,11 @@ export default (state = initialState, action) => {
         ...state,
         singleDocument: {
           ...state.singleDocument,
-          name: action.payload.data.name,
-          description: action.payload.data.description
+          document: {
+            ...state.singleDocument.document,
+            name: action.payload.data.name,
+            description: action.payload.data.description
+          }
         }
       }
     case t.VERIFY_DOCUMENT_FETCHING:

@@ -8,7 +8,7 @@ import {
 } from './interceptors'
 
 const instance = axios.create({
-  baseURL: 'https://api.quidox.by/api',
+  baseURL: process.env.REACT_APP_BASE_URL,
   headers: {
     'X-Frame-Options': 'sameorigin',
     'Access-Control-Allow-Origin': '*'

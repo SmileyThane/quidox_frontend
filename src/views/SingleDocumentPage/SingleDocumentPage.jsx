@@ -314,9 +314,13 @@ const SingleDocumentPage = props => {
       message.error('Поле не может быть пустым')
       return null
     }
-    updateDocumentById(singleDocument.id, { name: str, description: singleDocument.description })
+    updateDocumentById(document.id, { name: str, description: document.description })
       .then(response => {
-        console.log(response)
+        if (response.success) {
+          message.success('Данные обновлены')
+        } else {
+          throw new
+        }
       })
   }
 
@@ -325,11 +329,13 @@ const SingleDocumentPage = props => {
       message.error('Поле не может быть пустым')
       return null
     }
-    updateDocumentById(singleDocument.id, { name: singleDocument.name, description: str })
+    updateDocumentById(document.id, { name: document.name, description: str })
       .then(response => {
         console.log(response)
       })
   }
+
+  const { document, sender, statuses } = singleDocument
 
   return (
     <Fragment>
@@ -341,9 +347,9 @@ const SingleDocumentPage = props => {
                 <div className='back' onClick={() => history.goBack()} >
                   <Icon type='left' />
                 </div>
-                {(singleDocument.status && singleDocument.status === 1)
-                  ? <Paragraph className='document-title' editable={{ onChange: handleEditDocumentName }}>{singleDocument.name}</Paragraph>
-                  : <h2 className='document__title'>{singleDocument.name}</h2>
+                {(statuses && statuses.length && statuses[0].user_company_document_list_id === 1)
+                  ? <Paragraph className='document-title' editable={{ onChange: handleEditDocumentName }}>{document && document.name}</Paragraph>
+                  : <h2 className='document__title'>{document && document.name}</h2>
                 }
               </div>
               <div className='document__header_right'>
@@ -355,12 +361,12 @@ const SingleDocumentPage = props => {
                 <div className='info__item'>
                   <div className='info__title'>Получатели</div>
                   <div className='info__content'>
-                    {singleDocument.attached_to_users &&
-                    singleDocument.attached_to_users.map(user => (
+                    {document &&
+                    document.attached_to_users.map(user => (
                       <div key={user.id} style={{ padding: '.5rem 0' }}>
-                        <Text>{user.user_company && user.user_company.user_email}</Text>
+                        <Text>{user.user_company.user_email}</Text>
                         <br />
-                        <Text>{user.user_company && '[ ' + user.user_company.company_name + ' ]'}</Text>
+                        <Text>{`[ ${user.user_company.company_name} ]`}</Text>
                       </div>
                     ))
                     }
@@ -369,27 +375,27 @@ const SingleDocumentPage = props => {
                 <div className='info__item'>
                   <div className='info__title'>Отправители</div>
                   <div className='info__content'>
-                    {singleDocument.author &&
+                    {sender &&
                     <div>
-                      <Text>{ singleDocument.author && singleDocument.author.user_email}</Text>
+                      <Text>{sender.user_email}</Text>
                       <br />
-                      <Text>{singleDocument.author && '[ ' + singleDocument.author.company_name + ' ]'}</Text>
+                      <Text>{`[ ${sender.company_name} ]`}</Text>
                     </div>
                     }
                   </div>
                 </div>
                 <div className='info__item'>
                   <div className='info__title'>Комментарий</div>
-                  {(singleDocument.status && singleDocument.status === 1)
-                    ? <Paragraph editable={{ onChange: handleEditDocumentDescription }} className='info__content'>{singleDocument.description}</Paragraph>
-                    : <div className='info__content'>{singleDocument.description}</div>
+                  {(statuses && statuses.length && statuses[0].user_company_document_list_id === 1)
+                    ? <Paragraph editable={{ onChange: handleEditDocumentDescription }} className='info__content'>{document && document.description}</Paragraph>
+                    : <div className='info__content'>{document && document.description}</div>
                   }
                 </div>
               </div>
               <div className='document__attached-doc attached-doc'>
                 <List
                   itemLayout='horizontal'
-                  dataSource={singleDocument.attachments}
+                  dataSource={document && document.attachments}
                   renderItem={(item, index) => (
                     <List.Item key={index}
                       actions={isIE
@@ -447,17 +453,17 @@ const SingleDocumentPage = props => {
                 />
               </div>
             </div>
-            { (singleDocument && singleDocument.attachments) &&
+            { (document && document.attachments) &&
               <Fragment>
                 <div className='document__actions'>
                   <div className='document__actions__left'>
-                    {singleDocument.attachments.length
+                    {document.attachments.length
                       ? <Fragment>
-                        <Button style={{ marginRight: 15 }} type='primary' onClick={() => downloadDocumentContent(singleDocument, false)}>
+                        <Button style={{ marginRight: 15 }} type='primary' onClick={() => downloadDocumentContent(document, false)}>
                           <Icon type='file-zip' />
                             Скачать всё
                         </Button>
-                        <Button type='primary' onClick={() => downloadDocumentContent(singleDocument, true)}>
+                        <Button type='primary' onClick={() => downloadDocumentContent(document, true)}>
                           <Icon type='file-zip' />
                             Скачать всё с сигнатурами
                         </Button>
