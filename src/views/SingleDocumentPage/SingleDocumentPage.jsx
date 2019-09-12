@@ -50,6 +50,8 @@ const SingleDocumentPage = props => {
     verifyDocument
   } = props
 
+  const { document, sender, statuses } = singleDocument
+
   const [documentState, setDocumentState] = useState({ ...defaultDocumentState })
 
   useEffect(() => {
@@ -74,7 +76,6 @@ const SingleDocumentPage = props => {
       }
     })
       .then(response => {
-        console.log(response)
         const blob = new window.Blob([response.data], { type: 'application/pdf' })
         const blobURL = window.URL.createObjectURL(blob)
         const fileType = response.headers['content-type'].split('/').pop()
@@ -119,7 +120,7 @@ const SingleDocumentPage = props => {
     setDocumentState({
       ...documentState,
       showModal: true,
-      userData: singleDocument,
+      userData: document,
       modalType: type,
       fileCerts: dataArray,
       ecpInfo
@@ -189,7 +190,7 @@ const SingleDocumentPage = props => {
     const base64 = item.encoded_file
     const input = document.createElement('input')
     input.type = 'hidden'
-    input.id = 'dataFile-' + index
+    input.id = `dataFile-${index}`
     document.body.appendChild(input)
     // document.getElementById('dataFile-' + index).value = base64
     document.getElementById(`dataFile-${index}`).value = base64
@@ -217,7 +218,6 @@ const SingleDocumentPage = props => {
           if (data.success) {
             verifyDocument(newData)
               .then((response) => {
-                console.log('response', response)
                 if (response.success) {
                   message.success('Файл успешно подписан!')
                   setDocumentState({ ...defaultDocumentState })
@@ -319,8 +319,11 @@ const SingleDocumentPage = props => {
         if (response.success) {
           message.success('Данные обновлены')
         } else {
-          throw new
+          throw new Error(response.error)
         }
+      })
+      .catch(error => {
+        message.error(error.message)
       })
   }
 
@@ -331,12 +334,17 @@ const SingleDocumentPage = props => {
     }
     updateDocumentById(document.id, { name: document.name, description: str })
       .then(response => {
-        console.log(response)
+        if (response.success) {
+          message.success('Данные обновлены')
+        } else {
+          throw new Error(response.error)
+        }
+      })
+      .catch(error => {
+        message.error(error.message)
       })
   }
-
-  const { document, sender, statuses } = singleDocument
-
+  console.log('documentState:', documentState)
   return (
     <Fragment>
       <Spin spinning={isFetching}>
