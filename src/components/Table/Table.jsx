@@ -189,9 +189,9 @@ const AntdTable = props => {
 
   const handleSearch = value => {
     if (value.length >= 3) {
-      getDocumentsWithParams(activeCompany, { status: status, parameter: value })
+      getDocumentsWithParams(activeCompany, { status: status, per_page: window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 5, parameter: value })
     } else {
-      getDocumentsWithParams(activeCompany, { status: status })
+      getDocumentsWithParams(activeCompany, { status: status, per_page: window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 5})
     }
   }
 

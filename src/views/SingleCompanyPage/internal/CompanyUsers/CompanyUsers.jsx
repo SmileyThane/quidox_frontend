@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 
 import { Table, Typography } from 'antd'
 
@@ -9,22 +9,26 @@ const { Text } = Typography
 const columns = [
   {
     title: 'Имя',
-    render: record => <Text>{record.user_data.name + ' ' + record.user_data.patronymic + ' ' + record.user_data.lastname}</Text>,
+    render: record => <Fragment>
+      <Text>{record.user_data.name && `${record.user_data.name} `}</Text>
+      <Text>{record.user_data.patronymic && `${record.user_data.patronymic} `}</Text>
+      <Text>{record.user_data.lastname && record.user_data.lastname}</Text>
+    </Fragment>,
     key: 'name'
   },
   {
     title: 'Моб. телефон',
-    render: record => <Text>{record.user_data.phone}</Text>,
+    render: record => <Text>{record.user_data.phone && record.user_data.phone}</Text>,
     key: 'phone'
   },
   {
     title: 'Адрес электронной почты',
-    render: record => <Text>{record.user_data.email}</Text>,
+    render: record => <Text>{record.user_data.email && record.user_data.email}</Text>,
     key: 'email'
   },
   {
     title: 'Роль',
-    render: record => <Text>{record.role_name}</Text>,
+    render: record => <Text>{record.role_name && record.role_name}</Text>,
     key: 'role'
   },
   {

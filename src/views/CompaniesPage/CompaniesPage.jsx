@@ -103,7 +103,7 @@ const CompaniesPage = props => {
     e.preventDefault()
     validateFields()
       .then(() => {
-        api.company.attachUnregisteredUserToCompany({ email: companyState.newUserEmail })
+        api.companies.attachUnregisteredUserToCompany({ email: companyState.newUserEmail })
           .then(({ data }) => {
             if (data.success) {
               message.success('Приглашение отправлено')
