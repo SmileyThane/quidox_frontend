@@ -36,7 +36,7 @@ const defaultDocumentState = {
   ecpInfo: null
 }
 // eslint-disable-next-line spaced-comment
-const isIE = /*@cc_on!@*/false || !!document.documentMode
+const isIE = /*@cc_on!@*/false || !!window.document.documentMode
 
 const { Option } = Select
 
@@ -188,18 +188,18 @@ const SingleDocumentPage = props => {
 
   const verifyFile = (item, index) => {
     const base64 = item.encoded_file
-    const input = document.createElement('input')
+    const input = window.document.createElement('input')
     input.type = 'hidden'
     input.id = `dataFile-${index}`
-    document.body.appendChild(input)
-    document.getElementById('dataFile-' + index).value = base64
+    window.document.body.appendChild(input)
+    window.document.getElementById('dataFile-' + index).value = base64
     // document.getElementById(`dataFile-${index}`).value = base64
     window.sign('File-' + index)
     // window.sign(`File-${index}`)
     setTimeout(() => {
-      const value = document.getElementById('verifiedData' + 'File-' + index).value
+      const value = window.document.getElementById('verifiedData' + 'File-' + index).value
       // const value = document.getElementById(`verifiedDataFile-${index}`).value
-      const signedValue = document.getElementById('signedData' + 'File-' + index).value
+      const signedValue = window.document.getElementById('signedData' + 'File-' + index).value
       // const signedValue = document.getElementById(`signedDataFile-${index}`).value
       const flashData = JSON.parse(decodeURIComponent(value))
       const key = flashData.cert['1.2.112.1.2.1.1.1.1.2'] + flashData.cert['1.2.112.1.2.1.1.1.1.1']
