@@ -25,7 +25,6 @@ const InboxDocumentsPage = props => {
           getDocumentsWithParams={getDocumentsByActiveCompanyId}
           activeCompany={data.active_company_id}
           type='inbox'
-          columnName='Отправитель'
           status={2}
         />
       </div>

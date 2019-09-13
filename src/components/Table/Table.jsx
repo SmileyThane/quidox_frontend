@@ -41,7 +41,6 @@ const AntdTable = props => {
     activeCompany,
     children,
     type,
-    columnName = '',
     removeDocumentById,
     removeDocumentsByIds,
     documents,
@@ -63,11 +62,11 @@ const AntdTable = props => {
 
   const columns = [
     {
-      title: type !== 'draft' && `${columnName}`,
-      key: type !== 'draft' ? 'author' : '',
+      title: type === 'inbox' ? 'Отправитель' : 'Получатель',
+      key: type,
       render: record => type !== 'draft' &&
         <Fragment>
-          {columnName !== 'Отправитель'
+          {type !== 'inbox'
             ? <Fragment>
               {record.document.attached_to_users && record.document.attached_to_users.map((user, index) => {
                 if (index === 0) {

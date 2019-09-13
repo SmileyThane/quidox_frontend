@@ -7,23 +7,17 @@ const OutDocumentsPage = props => {
     user: { data },
     documents: { isFetching, outDocuments },
     getDocumentsByActiveCompanyId,
-    removeDocumentById,
-    removeDocumentsByIds
   } = props
   return (
     <Fragment>
       <div className='content'>
         <Table
-          rowKey='id'
           tableData={outDocuments}
           loading={isFetching}
           className='document-table'
-          removeDocument={removeDocumentById}
-          removeDocuments={removeDocumentsByIds}
           getDocumentsWithParams={getDocumentsByActiveCompanyId}
           activeCompany={data.active_company_id}
           type='out'
-          columnName='Получатель'
           status={3}
         />
       </div>

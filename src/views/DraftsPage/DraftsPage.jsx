@@ -20,7 +20,6 @@ const DraftsPage = props => {
           getDocumentsWithParams={getDocumentsByActiveCompanyId}
           activeCompany={data.active_company_id}
           type='draft'
-          columnName='Получатель'
           status={1}
         />
       </div>
