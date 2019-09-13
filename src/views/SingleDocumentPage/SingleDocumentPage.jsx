@@ -455,6 +455,9 @@ const SingleDocumentPage = props => {
                           </Tag>
                           : ''
                         }
+                        <Tag color='green'>doc. status</Tag>
+                        <Tag color='blue'>doc. status</Tag>
+                        <Tag color='red'>doc. status</Tag>
                       </div>
                     </List.Item>
                   )}
