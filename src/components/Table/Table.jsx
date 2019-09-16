@@ -118,7 +118,8 @@ const AntdTable = props => {
       key: 'date',
       className: 'date-column',
       render: record => <Text>{moment.utc(record.document.created_at, 'YYYY-MM-DD HH:mm').local().format('DD/MM/YYYY HH:mm:ss')}</Text>,
-      sorter: (a, b) => getTimeStamp(a.document.created_at) - getTimeStamp(b.document.created_at)
+      sorter: (a, b) => getTimeStamp(a.document.created_at) - getTimeStamp(b.document.created_at),
+      sortDirections: ['descend', 'ascend']
     },
     {
       title: 'Статус',
