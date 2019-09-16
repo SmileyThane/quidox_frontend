@@ -62,9 +62,9 @@ const AntdTable = props => {
 
   const columns = [
     {
-      title: type === 'inbox' ? 'Отправитель' : 'Получатель',
+      title: (status !== 1 && status !== 3) ? 'Отправитель' : 'Получатель',
       key: type,
-      render: record => type !== 'draft' &&
+      render: record =>
         <Fragment>
           {type !== 'inbox'
             ? <Fragment>

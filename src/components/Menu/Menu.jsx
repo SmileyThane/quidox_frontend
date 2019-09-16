@@ -22,7 +22,8 @@ const AntMenu = props => {
   const { SubMenu } = Menu
   const { data } = menuData
 
-  console.log(data)
+  console.log(props.match)
+  console.log(props.location)
   return (
     <Fragment>
       <Button
@@ -37,7 +38,7 @@ const AntMenu = props => {
       </Button>
       <Menu
         mode='inline'
-        // selectedKeys={[props.match.path, (props.location.state || {}).from]}
+        selectedKeys={[props.match.url, (props.location.pathname || {}).from]}
       >
         <MenuItem
           heading='Полученные'
@@ -81,7 +82,7 @@ const AntMenu = props => {
         >
           {data &&  data.attachment_statuses.map(i => (
             <MenuItem
-              key={`attachemnt/${i.id}`}
+              key={i.id}
               url={`/attachments/${i.id}`}
               icon='file-text'
               heading={i.name}
