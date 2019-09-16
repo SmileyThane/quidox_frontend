@@ -33,7 +33,7 @@ const columns = [
   },
   {
     title: 'ЭЦП',
-    render: record => <Text>{record.user_data.with_verified_companies ? 'Верифицирован' : 'Не верифицирован'}</Text>
+    render: record => <Text>{record.is_verified ? 'Верифицирован' : 'Не верифицирован'}</Text>
   }
 ]
 

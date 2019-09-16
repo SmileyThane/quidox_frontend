@@ -64,40 +64,18 @@ const verifyDocument = data => dispatch => {
     })
 }
 
-const removeDocumentById = (id, type) => dispatch => {
+const removeDocumentById = id => dispatch => {
   dispatch({
     type: t.REMOVE_DOCUMENT_BY_ID_FETCHING,
     payload: true
   })
-  console.log('type:', type)
-  return api.document.removeDocumentById(id, type)
+  return api.document.removeDocumentById(id)
     .then(({ data }) => {
-      switch (type) {
-        case 'draft':
-          dispatch({
-            type: t.REMOVE_DRAFT_DOCUMENT_BY_ID_SUCCESS,
-            payload: id
-          })
-          break
-        case 'inbox':
-          dispatch({
-            type: t.REMOVE_INBOX_DOCUMENT_BY_ID_SUCCESS,
-            payload: id
-          })
-          break
-        case 'out':
-          dispatch({
-            type: t.GET_DOCUMENT_BY_ID_SUCCESS,
-            payload: id
-          })
-          break
-        case 'archive':
-          dispatch({
-            type: t.GET_DOCUMENT_BY_ID_SUCCESS,
-            payload: id
-          })
-          break
-        default:
+      if (data) {
+        dispatch({
+          type: t.REMOVE_DOCUMENT_BY_ID_SUCCESS,
+          payload: id
+        })
       }
       dispatch({
         type: t.REMOVE_DOCUMENT_BY_ID_FETCHING,

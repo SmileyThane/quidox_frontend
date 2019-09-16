@@ -12,6 +12,7 @@ import InboxDocumentsPage from './InboxDocumentsPage'
 import OutDocumentsPage from './OutDocumentsPage'
 import ResetPasswordPage from './ResetPasswordPage'
 import ArchiveDocumentsPage from './ArchiveDocumentsPage'
+import DocumentsPage from './DocumentsPage';
 
 export {
   LoginPage,
@@ -27,5 +28,6 @@ export {
   CompaniesPage,
   InboxDocumentsPage,
   OutDocumentsPage,
-  ArchiveDocumentsPage
+  ArchiveDocumentsPage,
+  DocumentsPage
 }

@@ -1,7 +1,7 @@
-import React, { Fragment } from 'react'
-
+import React, { useEffect, useState, Fragment } from 'react'
 import { Menu, Icon } from 'antd'
 
+import api  from '../../services/api'
 import history from '../../history.js'
 
 import { Button } from '../'
@@ -9,7 +9,20 @@ import { MenuItem } from './internal'
 import './Menu.scss'
 
 const AntMenu = props => {
+  const [menuData, setMenuData] = useState({})
+
+  useEffect( () => {
+    const fetchData = async () => {
+      const result = await api.documents.getDocumentsStatuses()
+      setMenuData(result.data);
+    }
+    fetchData()
+  }, []);
+
   const { SubMenu } = Menu
+  const { data } = menuData
+
+  console.log(data)
   return (
     <Fragment>
       <Button
@@ -24,37 +37,30 @@ const AntMenu = props => {
       </Button>
       <Menu
         mode='inline'
-        selectedKeys={[props.match.path, (props.location.state || {}).from]}
+        // selectedKeys={[props.match.path, (props.location.state || {}).from]}
       >
         <MenuItem
-          heading='Входящие'
-          url='/inbox-documents'
-          key='/inbox-documents'
+          heading='Полученные'
+          url='/documents/2'
+          key='/documents/2'
           icon='export'
         />
         <MenuItem
           heading='Отправленные'
-          url='/out-documents'
-          key='/out-documents'
+          url='/documents/3'
+          key='/documents/3'
           icon='import'
-        />
-        <MenuItem
-          heading='Внутренние'
-          url='/inner-documents'
-          key='/inner-documents'
-          icon='import'
-          disabled
         />
         <MenuItem
           heading='Черновики'
-          url='/drafts-documents'
-          key='/drafts-documents'
+          url='/documents/1'
+          key='/documents/1'
           icon='file-text'
         />
         <MenuItem
           heading='Архив'
-          url='/archive-documents'
-          key='/archive-documents'
+          url='/documents/4'
+          key='/documents/4'
           icon='delete'
         />
         <MenuItem
@@ -65,6 +71,7 @@ const AntMenu = props => {
         />
         <SubMenu
           key='sub1'
+          disabled
           title={
             <span>
               <Icon type='funnel-plot' />
@@ -72,22 +79,15 @@ const AntMenu = props => {
             </span>
           }
         >
-          <Menu.Item key='5' url='/out-documents'>
-            <Icon type='file-text' theme='twoTone' twoToneColor='#52c41a' />
-            Доставлено, завершено
-          </Menu.Item>
-          <Menu.Item key='6' url='/'>
-            <Icon type='file-text' theme='twoTone' twoToneColor='#1890ff' />
-            Доставлено, в работе
-          </Menu.Item>
-          <Menu.Item key='7' url='/'>
-            <Icon type='file-text' theme='twoTone' twoToneColor='#fa8c16' />
-            Требует реакции
-          </Menu.Item>
-          <Menu.Item key='8' url='/'>
-            <Icon type='file-text' theme='twoTone' twoToneColor='#f5222d' />
-            Отклонено
-          </Menu.Item>
+          {data &&  data.attachment_statuses.map(i => (
+            <MenuItem
+              key={`attachemnt/${i.id}`}
+              url={`/attachments/${i.id}`}
+              icon='file-text'
+              heading={i.name}
+              iconColor='#52c41a'
+            />
+          ))}
         </SubMenu>
         <SubMenu
           key='sub2'
@@ -98,18 +98,15 @@ const AntMenu = props => {
             </span>
           }
         >
-          <Menu.Item key='6' url='/'>
-            <Icon type='file-text' theme='twoTone' twoToneColor='#52c41a' />
-            Завершено
-          </Menu.Item>
-          <Menu.Item key='5' url='/out-documents'>
-            <Icon type='file-text' theme='twoTone' twoToneColor='#1890ff' />
-            Требуется подпись
-          </Menu.Item>
-          <Menu.Item key='7' url='/'>
-            <Icon type='file-text' theme='twoTone' twoToneColor='#f5222d' />
-            Отклонен
-          </Menu.Item>
+          {data &&  data.document_statuses.map(i => (
+            <MenuItem
+              key={i.id}
+              url={`/documents/${i.id}`}
+              icon='file-text'
+              heading={i.name}
+              iconColor='#52c41a'
+            />
+          ))}
         </SubMenu>
         <MenuItem
           heading='Сторонние источники'
@@ -121,28 +118,28 @@ const AntMenu = props => {
         <MenuItem
           heading='Панель администратора'
           url=''
-          key={1}
+          key={11}
           icon='setting'
           disabled
         />
         <MenuItem
           heading='Защищенный архив'
           url=''
-          key={3}
+          key={33}
           icon='file-zip'
           disabled
         />
         <MenuItem
           heading='Интеграция (1С, CRM...)'
           url=''
-          key={4}
+          key={44}
           icon='code'
           disabled
         />
         <MenuItem
           heading='Папки пользователя'
           url=''
-          key={5}
+          key={55}
           icon='folder'
           disabled
         />

@@ -71,7 +71,7 @@ const AntdTable = props => {
               {record.document.attached_to_users && record.document.attached_to_users.map((user, index) => {
                 if (index === 0) {
                   return (
-                    <Link to={{ pathname: `/documents/${user.document_id}`, state: { from: history.location.pathname } }} key={user.id}>
+                    <Link to={{ pathname: `/document/${user.document_id}`, state: { from: history.location.pathname } }} key={user.id}>
                       <div style={{ padding: '.5rem 0' }}>
                         {user.user_company &&
                         user.user_company.user_email
@@ -89,7 +89,7 @@ const AntdTable = props => {
                 }
               })}
             </Fragment>
-            : <Link to={{ pathname: `/documents/${record.document.id}`, state: { from: history.location.pathname } }}>
+            : <Link to={{ pathname: `/document/${record.document.id}`, state: { from: history.location.pathname } }}>
               <div>
                 {record.sender &&
                 '[' + record.sender['user_email'] + ']'
@@ -106,12 +106,12 @@ const AntdTable = props => {
     {
       title: 'Тема',
       key: 'descr',
-      render: record => <Link to={{ pathname: `/documents/${record.document.id}`, state: { from: history.location.pathname } }}>{record.document.name}</Link>
+      render: record => <Link to={{ pathname: `/document/${record.document.id}`, state: { from: history.location.pathname } }}>{record.document.name}</Link>
     },
     {
       title: () => <Icon type="paper-clip" />,
       key: 'attachments',
-      render: record => <Link to={{ pathname: `/documents/${record.document.id}`, state: { from: history.location.pathname } }} style={{ textAlign: 'center' }} >{record.document.attachments.length === 0 ? 'Нет приложенных документов' : record.document.attachments.length }</Link>
+      render: record => <Link to={{ pathname: `/document/${record.document.id}`, state: { from: history.location.pathname } }} style={{ textAlign: 'center' }} >{record.document.attachments.length === 0 ? 'Нет приложенных документов' : record.document.attachments.length }</Link>
     },
     {
       title: 'Дата',
@@ -149,7 +149,7 @@ const AntdTable = props => {
     })
   }
 
-  const handleRemove = (type) => {
+  const handleRemove = () => {
     if (tableState.selectedRowKeys.length === 0) {
       message.error('Нет выбраных документов!')
       return null
@@ -158,7 +158,7 @@ const AntdTable = props => {
       const obj = {
         ids: tableState.selectedRowKeys
       }
-      removeDocumentsByIds(obj, type)
+      removeDocumentsByIds(obj)
         .then(response => {
           if (response.success) {
             message.success('Документы удалены')
@@ -282,6 +282,7 @@ const AntdTable = props => {
     getDocumentsWithParams(activeCompany, { status: status, per_page: +window.localStorage.getItem('perPage') })
   }
 
+  console.log('Table Data:', tableData)
   return (
     <Fragment>
       {tableState.showModal && <Modal

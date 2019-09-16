@@ -19,7 +19,8 @@ import {
   CompaniesPage,
   InboxDocumentsPage,
   OutDocumentsPage,
-  ArchiveDocumentsPage
+  ArchiveDocumentsPage,
+  DocumentsPage
 } from './views'
 
 function App () {
@@ -41,7 +42,8 @@ function App () {
           <PrivateRoute exact path='/companies' component={CompaniesPage} />
           <PrivateRoute path='/companies/:id' component={SingleCompanyPage} />
 
-          <PrivateRoute path='/documents/:id' component={SingleDocumentPage} />
+          <PrivateRoute path='/documents/:id' component={DocumentsPage} />
+          <PrivateRoute path='/document/:id' component={SingleDocumentPage} />
           <PrivateRoute path='/user-me' component={UserInfoPage} />
 
           <PublicRoute path='/login' component={LoginPage} />

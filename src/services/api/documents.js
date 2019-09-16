@@ -40,10 +40,18 @@ const checkFlashKey = data => {
   })
 }
 
+const getDocumentsStatuses = () => {
+  return http({
+    url: '/documents_statuses',
+    method: 'GET'
+  })
+}
+
 export {
   createDocument,
   sendDocumentToUser,
   getDocumentsByActiveCompanyId,
   removeDocumentsByIds,
-  checkFlashKey
+  checkFlashKey,
+  getDocumentsStatuses
 }

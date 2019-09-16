@@ -1,10 +1,7 @@
 import * as t from '../types'
 
 const initialState = {
-  draftDocuments: {},
-  inboxDocuments: {},
-  outDocuments: {},
-  archiveDocuments: {},
+  documents: {},
   singleDocument: {},
   isFetching: false
 }
@@ -63,28 +60,10 @@ export default (state = initialState, action) => {
         ...state,
         isFetching: action.payload
       }
-    case t.GET_INBOX_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
+    case t.GET_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
       return {
         ...state,
-        inboxDocuments: action.payload.data
-      }
-
-    case t.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
-      return {
-        ...state,
-        outDocuments: action.payload.data
-      }
-
-    case t.GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
-      return {
-        ...state,
-        draftDocuments: action.payload.data
-      }
-
-    case t.GET_ARCHIVE_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS:
-      return {
-        ...state,
-        archiveDocuments: action.payload.data
+        documents: action.payload.data
       }
 
     case t.REMOVE_DOCUMENT_BY_ID_FETCHING:
@@ -93,83 +72,32 @@ export default (state = initialState, action) => {
         isFetching: action.payload
       }
 
-    case t.REMOVE_DRAFT_DOCUMENT_BY_ID_SUCCESS:
+    case t.REMOVE_DOCUMENT_BY_ID_SUCCESS: {
       return {
         ...state,
-        draftDocuments: {
-          ...state.draftDocuments,
-          data: state.draftDocuments.data.filter(i => i.document_id !== action.payload)
+        documents: {
+          ...state.documents,
+          data: state.documents.data.filter(i => i.document_id !== action.payload)
         }
       }
+    }
 
-    case t.REMOVE_INBOX_DOCUMENT_BY_ID_SUCCESS:
-      return {
-        ...state,
-        inboxDocuments: {
-          ...state.inboxDocuments,
-          data: state.inboxDocuments.data.filter(i => i.document_id !== action.payload)
-        }
-      }
-
-    case t.REMOVE_OUT_DOCUMENT_BY_ID_SUCCESS:
-      return {
-        ...state,
-        outDocuments: {
-          ...state.outDocuments,
-          data: state.outDocuments.data.filter(i => i.document_id !== action.payload)
-        }
-      }
-
-    case t.REMOVE_ARCHIVE_DOCUMENT_BY_ID_SUCCESS:
-      return {
-        ...state,
-        archiveDocuments: {
-          ...state.archiveDocuments,
-          data: state.archiveDocuments.data.filter(i => i.document_id !== action.payload)
-        }
-      }
-
-    case t.REMOVE_DOCUMENTS_BY_IDS_FETCHING:
+    case t.REMOVE_DOCUMENTS_BY_IDS_FETCHING: {
       return {
         ...state,
         isFetching: action.payload
       }
+    }
 
-    case t.REMOVE_DRAFT_DOCUMENTS_BY_IDS_SUCCESS:
+    case t.REMOVE_DOCUMENTS_BY_IDS_SUCCESS: {
       return {
         ...state,
-        draftDocuments: {
-          ...state.draftDocuments,
-          data: state.draftDocuments.data.filter(i => action.payload.ids.indexOf(i.document_id) === -1)
+        documents: {
+          ...state.documents,
+          data: state.documents.data.filter(i => action.payload.ids.indexOf(i.document_id) === -1)
         }
       }
-
-    case t.REMOVE_INBOX_DOCUMENTS_BY_IDS_SUCCESS:
-      return {
-        ...state,
-        inboxDocuments: {
-          ...state.inboxDocuments,
-          data: state.inboxDocuments.data.filter(i => action.payload.ids.indexOf(i.document_id) === -1)
-        }
-      }
-
-    case t.REMOVE_OUT_DOCUMENTS_BY_IDS_SUCCESS:
-      return {
-        ...state,
-        outDocuments: {
-          ...state.outDocuments,
-          data: state.outDocuments.data.filter(i => action.payload.ids.indexOf(i.document_id) === -1)
-        }
-      }
-
-    case t.REMOVE_ARCHIVE_DOCUMENTS_BY_IDS_SUCCESS:
-      return {
-        ...state,
-        archiveDocuments: {
-          ...state.archiveDocuments,
-          data: state.archiveDocuments.data.filter(i => action.payload.ids.indexOf(i.document_id) === -1)
-        }
-      }
+    }
 
     default:
       return state

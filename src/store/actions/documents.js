@@ -53,33 +53,10 @@ const getDocumentsByActiveCompanyId = (id, params) => dispatch => {
   return api.documents.getDocumentsByActiveCompanyId(id, params)
     .then(({ data }) => {
       if (data) {
-        switch (params.status) {
-          case 1:
-            dispatch({
-              type: t.GET_DRAFT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
-              payload: data
-            })
-            break
-          case 2:
-            dispatch({
-              type: t.GET_INBOX_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
-              payload: data
-            })
-            break
-          case 3:
-            dispatch({
-              type: t.GET_OUT_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
-              payload: data
-            })
-            break
-          case 4:
-            dispatch({
-              type: t.GET_ARCHIVE_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
-              payload: data
-            })
-            break
-          default:
-        }
+        dispatch({
+          type: t.GET_DOCUMENTS_BY_ACTIVE_COMPANY_ID_SUCCESS,
+          payload: data
+        })
       }
       dispatch({
         type: t.GET_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
@@ -89,7 +66,7 @@ const getDocumentsByActiveCompanyId = (id, params) => dispatch => {
 }
 
 
-const removeDocumentsByIds = (ids, type) => dispatch => {
+const removeDocumentsByIds = ids => dispatch => {
   dispatch({
     type: t.REMOVE_DOCUMENTS_BY_IDS_FETCHING,
     payload: true
@@ -97,33 +74,10 @@ const removeDocumentsByIds = (ids, type) => dispatch => {
   return api.documents.removeDocumentsByIds(ids)
     .then(({ data }) => {
       if (data) {
-        switch (type) {
-          case 'draft':
-            dispatch({
-              type: t.REMOVE_DRAFT_DOCUMENTS_BY_IDS_SUCCESS,
-              payload: ids
-            })
-            break
-          case 'inbox':
-            dispatch({
-              type: t.REMOVE_INBOX_DOCUMENTS_BY_IDS_SUCCESS,
-              payload: ids
-            })
-            break
-          case 'out':
-            dispatch({
-              type: t.REMOVE_OUT_DOCUMENTS_BY_IDS_SUCCESS,
-              payload: ids
-            })
-            break
-          case 'archive':
-            dispatch({
-              type: t.REMOVE_OUT_DOCUMENTS_BY_IDS_SUCCESS,
-              payload: ids
-            })
-            break
-          default:
-        }
+        dispatch({
+          type: t.REMOVE_DOCUMENTS_BY_IDS_SUCCESS,
+          payload: ids
+        })
       }
       dispatch({
         type: t.REMOVE_DOCUMENTS_BY_IDS_FETCHING,
