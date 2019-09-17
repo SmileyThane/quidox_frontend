@@ -18,11 +18,11 @@ class LoginPage extends React.Component {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        values.secret_key = "aRA8yGzFWz9crhYD5ZD0KcfPy36VxE6knnIpZ8LD";
-        values.auth_data = generateHash({ length: 10 }) + btoa( JSON.stringify(values)) + generateHash({ length: 5 });
-        delete values.email;
-        delete values.password;
-        delete values.secret_key;
+        values.secret_key = process.env.REACT_APP_SECRET_KEY
+        values.auth_data = generateHash({ length: 10 }) + btoa( JSON.stringify(values)) + generateHash({ length: 5 })
+        delete values.email
+        delete values.password
+        delete values.secret_key
         axios.post('https://api.quidox.by/api/login', values)
           .then(({ data }) => {
             if (data.success) {
