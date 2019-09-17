@@ -16,6 +16,7 @@ import { close } from './img'
 import './SingleDocumentPage.scss'
 
 const { Text, Paragraph } = Typography
+const { Option } = Select
 
 const defaultDocumentState = {
   isVisible: false,
@@ -33,12 +34,11 @@ const defaultDocumentState = {
   fileData: '',
   fileCerts: [],
   activeFileCert: 0,
-  ecpInfo: null
+  ecpInfo: null,
+  isSelectVisible: false
 }
 // eslint-disable-next-line spaced-comment
 const isIE = /*@cc_on!@*/false || !!window.document.documentMode
-
-const { Option } = Select
 
 const SingleDocumentPage = props => {
   const {
@@ -50,7 +50,7 @@ const SingleDocumentPage = props => {
     verifyDocument
   } = props
 
-  const { document, sender, statuses } = singleDocument
+  const { document, sender, recipient, statuses } = singleDocument
 
   const [documentState, setDocumentState] = useState({ ...defaultDocumentState })
 
@@ -66,6 +66,17 @@ const SingleDocumentPage = props => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [documentState.activeFileCert, documentState.fileCerts])
+
+  const chooseStatusAndSend = () => {
+    if (documentState.isSelectVisible) {
+      showUserData('send')
+    } else {
+      setDocumentState({
+        ...documentState,
+        isSelectVisible: !documentState.isSelectVisible
+      })
+    }
+  }
 
   const showModal = item => {
     axios.get(item['preview_path'], {
@@ -174,7 +185,8 @@ const SingleDocumentPage = props => {
           setDocumentState({
             ...documentState,
             fetching: false,
-            showModal: false
+            showModal: false,
+            isSelectVisible: false
           })
         } else {
           throw new Error(response.error)
@@ -346,7 +358,7 @@ const SingleDocumentPage = props => {
         message.error(error.message)
       })
   }
-  console.log('documentState:', documentState)
+
   return (
     <Fragment>
       <Spin spinning={isFetching}>
@@ -371,14 +383,12 @@ const SingleDocumentPage = props => {
                 <div className='info__item'>
                   <div className='info__title'>Получатели</div>
                   <div className='info__content'>
-                    {document &&
-                    document.attached_to_users.map(user => (
-                      <div key={user.id} style={{ padding: '.5rem 0' }}>
-                        <Text>{user.user_company.user_email}</Text>
+                    {recipient &&
+                      <div style={{ padding: '.5rem 0' }}>
+                        <Text>{recipient['user_email']}</Text>
                         <br />
-                        <Text>{`[ ${user.user_company.company_name} ]`}</Text>
+                        <Text>{`[ ${recipient['company_name']} ]`}</Text>
                       </div>
-                    ))
                     }
                   </div>
                 </div>
@@ -463,9 +473,21 @@ const SingleDocumentPage = props => {
                           </Tag>
                           : ''
                         }
+
                         <Tag color='green'>doc. status</Tag>
                         <Tag color='blue'>doc. status</Tag>
                         <Tag color='red'>doc. status</Tag>
+
+                        {documentState.isSelectVisible &&
+                          <div className='doc-select'>
+                            <Text>Требуется:</Text>
+                            <Select defaultValue={1} style={{ marginLeft: 10, minWidth: '20rem' }}>
+                              <Option value={1}>Подпись получателя</Option>
+                              <Option value={2}>Согласование</Option>
+                              <Option value={3}>Простая доставка</Option>
+                            </Select>
+                          </div>
+                        }
                       </div>
                     </List.Item>
                   )}
@@ -491,10 +513,14 @@ const SingleDocumentPage = props => {
                     }
                   </div>
                   <div className='document__actions__right'>
-                    <Button onClick={() => showUserData('send')} type='primary'>
-                      <Icon type='redo' />
-                        Перенаправить
+                    <Button onClick={() => chooseStatusAndSend()} type='primary'>
+                      <Icon type={documentState.isSelectVisible ? 'double-right' : 'redo' } />
+                      {documentState.isSelectVisible ? 'Продолжить' : 'Перенаправить'}
                     </Button>
+                    {/*<Button onClick={() => showUserData('send')} type='primary'>*/}
+                    {/*  <Icon type='redo' />*/}
+                    {/*    Перенаправить*/}
+                    {/*</Button>*/}
                   </div>
                 </div>
               </Fragment>
@@ -521,7 +547,7 @@ const SingleDocumentPage = props => {
       }
       {documentState.showModal &&
         <Modal
-          title={null}
+          title='Выберите получателей'
           visible
           closable={false}
           footer={null}

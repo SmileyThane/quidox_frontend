@@ -69,39 +69,28 @@ const AntdTable = props => {
       render: record =>
         <Fragment>
           {(status === 1 || status === 3)
-            ? <Fragment>
-              {record.document.attached_to_users && record.document.attached_to_users.map((user, index) => {
-                if (index === 0) {
-                  return (
-                    <Link to={{ pathname: `/document/${user.document_id}`, state: { from: history.location.pathname } }} key={user.id}>
-                      <div style={{ padding: '.5rem 0' }}>
-                        {user.user_company &&
-                        user.user_company.user_email
-                        }
-                        <br />
-                        {user.user_company &&
-                        '[ ' + user.user_company.company_name + ' ]'
-                        }
-                        {record.document.attached_to_users.length > 1 && <Fragment><br />и еще {record.document.attached_to_users.length - 1}</Fragment>}
-                      </div>
-                    </Link>
-                  )
-                } else {
-                  return null
-                }
-              })}
-            </Fragment>
+            ? <Link to={{ pathname: `/document/${record.document.id}`, state: { from: history.location.pathname } }}>
+                <div>
+                  {record.recipient &&
+                    record.recipient['user_email']
+                  }
+                  <br />
+                  {record.recipient &&
+                  '[' + record.recipient['company_name'] + ']'
+                  }
+                </div>
+              </Link>
             : <Link to={{ pathname: `/document/${record.document.id}`, state: { from: history.location.pathname } }}>
-              <div>
-                {record.sender &&
-                '[' + record.sender['user_email'] + ']'
-                }
-                <br />
-                {record.sender &&
-                  '[' + record.sender['company_name'] + ']'
-                }
-              </div>
-            </Link>
+                <div>
+                  {record.sender &&
+                    record.sender['user_email']
+                  }
+                  <br />
+                  {record.sender &&
+                    '[' + record.sender['company_name'] + ']'
+                  }
+                </div>
+              </Link>
           }
         </Fragment>
     },
