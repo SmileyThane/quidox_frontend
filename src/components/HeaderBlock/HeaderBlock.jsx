@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, Fragment } from 'react'
 
-import { Layout, Icon, Skeleton, Tag, Typography, Button } from 'antd'
+import { Layout, Icon, Skeleton, Tag, Typography, Button, Dropdown } from 'antd'
 
 import history from '../../history.js'
 import { logo } from '../../resources/img'
@@ -13,24 +13,6 @@ const HeaderBlock = props => {
   const {
     user: { isFetching, data }
   } = props
-
-  const [isVisible, setVisible] = useState(false)
-
-  const nodeRef = useRef(null)
-
-  useEffect(() => {
-    document.addEventListener('mousedown', handleClick)
-    return () => {
-      document.removeEventListener('mousedown', handleClick)
-    }
-  }, [])
-
-  const handleClick = (event) => {
-    if (nodeRef.current.contains(event.target)) {
-      return
-    }
-    setVisible(false)
-  }
 
   const handleLogout = () => {
     window.localStorage.clear()
@@ -63,29 +45,35 @@ const HeaderBlock = props => {
                     <Tag color='blue' style={{ marginLeft: '1rem' }}>0</Tag>
                   </div>
                 </div>
-                <div className='user header__user' ref={nodeRef}>
-                  <span onClick={() => setVisible(!isVisible)}>{data.email && data.email}</span>
-                  {isVisible &&
-                  <ul className='user__dropdown'>
-                    <li className='user__dropdown__item' style={{ textAlign: 'center' }}>
-                      {(data && data.companies) && data.companies.map(i => {
-                        if (i.company_id === data.active_company_id) {
-                          return <Tag key={i.company_id} color='#87d068' style={{ width: '100%' }}>{+i.company_number === 0 ? i.company_name : (`УНП: ${i.company_number}`)}</Tag>
-                        } else {
-                          return null
-                        }
-                      })}
-                    </li>
-                    <li className='user__dropdown__item' onClick={() => history.push('/user-me')}>
-                      <Icon type='profile' style={{ marginRight: 10 }} />
-                      <span>Профиль</span>
-                    </li>
-                    <li className='user__dropdown__item' onClick={() => handleLogout()}>
-                      <Icon type='logout' style={{ marginRight: 10 }} />
-                      <span>Выйти</span>
-                    </li>
-                  </ul>
-                  }
+                <div className='user header__user'>
+                  <Dropdown
+                    overlay={
+                      (
+                        <ul className='user__dropdown'>
+                          <li className='user__dropdown__item' style={{ textAlign: 'center' }}>
+                            {(data && data.companies) && data.companies.map(i => {
+                              if (i.company_id === data.active_company_id) {
+                                return <Tag key={i.company_id} color='#87d068' style={{ width: '100%' }}>{+i.company_number === 0 ? i.company_name : (`УНП: ${i.company_number}`)}</Tag>
+                              } else {
+                                return null
+                              }
+                            })}
+                          </li>
+                          <li className='user__dropdown__item' onClick={() => history.push('/user-me')}>
+                            <Icon type='profile' style={{ marginRight: 10 }} />
+                            <span>Профиль</span>
+                          </li>
+                          <li className='user__dropdown__item' onClick={() => handleLogout()}>
+                            <Icon type='logout' style={{ marginRight: 10 }} />
+                            <span>Выйти</span>
+                          </li>
+                        </ul>
+                      )
+                    }
+                    trigger={['click']}
+                  >
+                    <span>{data.email && data.email}</span>
+                  </Dropdown>
                 </div>
               </div>
             </Skeleton>

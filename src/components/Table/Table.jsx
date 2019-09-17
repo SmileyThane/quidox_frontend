@@ -29,7 +29,9 @@ const defaultTableState = {
   value: [],
   fetching: false,
   data: [],
-  showModal: false
+  showModal: false,
+  perPage: window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 5,
+  sorter: ''
 }
 
 const { Text } = Typography
@@ -118,7 +120,7 @@ const AntdTable = props => {
       key: 'date',
       className: 'date-column',
       render: record => <Text>{moment.utc(record.document.created_at, 'YYYY-MM-DD HH:mm').local().format('DD/MM/YYYY HH:mm:ss')}</Text>,
-      sorter: (a, b) => getTimeStamp(a.document.created_at) - getTimeStamp(b.document.created_at),
+      sorter: true,
       sortDirections: ['descend', 'ascend']
     },
     {
@@ -280,10 +282,35 @@ const AntdTable = props => {
 
   const handleChangePerPage = value => {
     window.localStorage.setItem('perPage', value)
-    getDocumentsWithParams(activeCompany, { status: status, per_page: +window.localStorage.getItem('perPage') })
+    setTableState({
+      ...defaultTableState,
+      perPage: window.localStorage.getItem('perPage')
+    })
+    if (tableState.sorter !== '') {
+      getDocumentsWithParams(activeCompany, { status: status, sort_value: tableState.sorter, per_page: +window.localStorage.getItem('perPage') })
+    } else {
+      getDocumentsWithParams(activeCompany, { status: status, per_page: +window.localStorage.getItem('perPage') })
+    }
   }
 
-  console.log('Table Data:', tableData)
+  const handleTableChange = (pagination, filters, sorter) => {
+    console.log(sorter)
+    if (sorter.order) {
+      setTableState({
+        ...tableState,
+        sorter: sorter.order
+      })
+      getDocumentsWithParams(activeCompany, { status: status, sort_value: sorter.order, per_page: +window.localStorage.getItem('perPage') })
+    } else {
+      setTableState({
+        ...tableState,
+        sorter: ''
+      })
+      getDocumentsWithParams(activeCompany, { status: status, per_page: +window.localStorage.getItem('perPage') })
+    }
+
+  };
+  console.log(tableState)
   return (
     <Fragment>
       {tableState.showModal && <Modal
@@ -322,10 +349,11 @@ const AntdTable = props => {
         columns={columns}
         rowSelection={rowSelection}
         dataSource={tableData.hasOwnProperty('data') ? tableData.data : []}
-        rowKey='document_id'
+        rowKey='id'
         locale={{ emptyText: 'Нет данных' }}
         rowClassName={record => record.is_read === 0 ? 'unread' : ''}
         pagination={false}
+        onChange={handleTableChange}
         title={() =>
           (
             <div className='table__header table-header'>

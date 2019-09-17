@@ -19,11 +19,20 @@ const AntMenu = props => {
     fetchData()
   }, []);
 
+  const handleTitleClick = menuKey => {
+    const { pathname, state: prevState } = props.location
+    const state = {
+      ...prevState,
+      menuKey: prevState && prevState.menuKey ? '' : menuKey
+    }
+    history.push({ pathname, state })
+  }
+
   const { SubMenu } = Menu
   const { data } = menuData
 
-  console.log(props.match)
-  console.log(props.location)
+  console.log('MATCH:', props.match)
+  console.log('LOCATION:', props.location)
   return (
     <Fragment>
       <Button
@@ -38,37 +47,44 @@ const AntMenu = props => {
       </Button>
       <Menu
         mode='inline'
-        selectedKeys={[props.match.url, (props.location.pathname || {}).from]}
+        openKeys={[props.location.state ? props.location.state.menuKey : '']}
+        // selectedKeys={[props.match.url, (props.location.pathname || {}).from]}
+        selectedKeys={[`${props.location.state ? props.location.state.id : ''}`]}
       >
         <MenuItem
           heading='Полученные'
           url='/documents/2'
           key='/documents/2'
           icon='export'
+          id={'/documents/2'}
         />
         <MenuItem
           heading='Отправленные'
           url='/documents/3'
           key='/documents/3'
           icon='import'
+          id={'/documents/3'}
         />
         <MenuItem
           heading='Черновики'
           url='/documents/1'
           key='/documents/1'
           icon='file-text'
+          id={'/documents/1'}
         />
         <MenuItem
           heading='Архив'
           url='/documents/4'
           key='/documents/4'
           icon='delete'
+          id={'/documents/4'}
         />
         <MenuItem
           heading='Компании'
           url='/companies'
           key='/companies'
           icon='cluster'
+          id={'/companies'}
         />
         <SubMenu
           key='sub1'
@@ -98,10 +114,14 @@ const AntMenu = props => {
               <span>Статусы документов</span>
             </span>
           }
+          onTitleClick={({ key: menuKey }) => handleTitleClick(menuKey)}
         >
           {data &&  data.document_statuses.map(i => (
             <MenuItem
               key={i.id}
+              id={i.id}
+              menuKey='sub2'
+              isInner
               url={`/documents/${i.id}`}
               icon='file-text'
               heading={i.name}
