@@ -161,6 +161,7 @@ const AntdTable = props => {
       const obj = {
         ids: tableState.selectedRowKeys
       }
+      console.log(obj)
       removeDocumentsByIds(obj)
         .then(response => {
           if (response.success) {
