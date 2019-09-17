@@ -77,7 +77,7 @@ export default (state = initialState, action) => {
         ...state,
         documents: {
           ...state.documents,
-          data: state.documents.data.filter(i => i.document_id !== action.payload)
+          data: state.documents.data.filter(i => i.id !== action.payload)
         }
       }
     }
@@ -94,7 +94,7 @@ export default (state = initialState, action) => {
         ...state,
         documents: {
           ...state.documents,
-          data: state.documents.data.filter(i => action.payload.ids.indexOf(i.document_id) === -1)
+          data: state.documents.data.filter(i => action.payload.ids.indexOf(i.id) === -1)
         }
       }
     }

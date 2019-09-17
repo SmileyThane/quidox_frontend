@@ -64,11 +64,11 @@ const AntdTable = props => {
 
   const columns = [
     {
-      title: (status !== 1 && status !== 3) ? 'Отправитель' : 'Получатель',
+      title: (status === 1 || status === 3) ? 'Получатель' : 'Отправитель',
       key: type,
       render: record =>
         <Fragment>
-          {type !== 'inbox'
+          {(status === 1 || status === 3)
             ? <Fragment>
               {record.document.attached_to_users && record.document.attached_to_users.map((user, index) => {
                 if (index === 0) {

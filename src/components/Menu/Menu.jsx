@@ -92,7 +92,7 @@ const AntMenu = props => {
           title={
             <span>
               <Icon type='funnel-plot' />
-              <span>Статусы сообщений</span>
+              <span>Статусы документов</span>
             </span>
           }
         >
@@ -111,7 +111,7 @@ const AntMenu = props => {
           title={
             <span>
               <Icon type='funnel-plot' />
-              <span>Статусы документов</span>
+              <span>Статусы сообщений</span>
             </span>
           }
           onTitleClick={({ key: menuKey }) => handleTitleClick(menuKey)}
