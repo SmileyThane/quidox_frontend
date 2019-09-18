@@ -62,13 +62,15 @@ const NewDocumentPage = props => {
   }
 
   const getFiles = e => {
+    const files = [...e.target.files]
+
     setDocumentState({
       ...documentState,
-      files: documentState.files.concat([...e.target.files]),
+      files: [...documentState.files, ...files],
       base64files: [...documentState.base64files, null],
       fileHashes: [...documentState.fileHashes, null],
       fileData: [...documentState.fileData, null],
-      statuses: [...documentState.statuses, 1]
+      statuses: [...documentState.statuses, ...files.map(() => 1)]
     })
   }
 
@@ -141,14 +143,15 @@ const NewDocumentPage = props => {
                   attachments: documentState.statuses
                     .map((item, i) => ({
                       id: data.data.attachments[i].id,
-                      hash: documentState.fileHashes[i] && documentState.fileHashes[i],
-                      data: documentState.fileData[i] && documentState.fileData[i],
+                      hash: documentState.fileHashes[i] ? documentState.fileHashes[i] : null,
+                      data: documentState.fileData[i] ? documentState.fileData[i] : null,
                       status: documentState.statuses[i]
                     }))
                 }
               ]
             }
 
+            console.log(newData)
             return axios.post('https://api.quidox.by/api/documents/confirm', newData, {
               headers: {
                 'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
@@ -351,7 +354,7 @@ const NewDocumentPage = props => {
           <div className='files-group'>
             <ul className='attached-files'>
               {documentState.files && documentState.files.map((e, i) => (
-                <li className='attached-file' key={e.name}>
+                <li className='attached-file' key={i}>
                   <Text type='secondary' style={{ marginRight: '1rem' }}>{i + 1}</Text>
                   <Text strong>{e.name}</Text>
                   { documentState.fileHashes[i] && <Tag color='#3278fb'>ЭЦП</Tag> }
