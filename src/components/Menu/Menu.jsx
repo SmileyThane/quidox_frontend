@@ -88,7 +88,7 @@ const AntMenu = props => {
         />
         <SubMenu
           key='sub1'
-          disabled
+          onTitleClick={({ key: menuKey }) => handleTitleClick(menuKey)}
           title={
             <span>
               <Icon type='funnel-plot' />
