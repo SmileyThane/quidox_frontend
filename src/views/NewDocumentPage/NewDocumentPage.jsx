@@ -25,11 +25,11 @@ const defaultDocumentData = {
   certs: [],
   fileHashes: [],
   fileData: [],
+  statuses: [],
   data: [],
   value: [],
   fetching: false,
   ids: [],
-  status: 3,
   verifyFetching: false,
   isVisibleRecipients: false,
   isClicked: false
@@ -67,7 +67,8 @@ const NewDocumentPage = props => {
       files: documentState.files.concat([...e.target.files]),
       base64files: [...documentState.base64files, null],
       fileHashes: [...documentState.fileHashes, null],
-      fileData: [...documentState.fileData, null]
+      fileData: [...documentState.fileData, null],
+      statuses: [...documentState.statuses, 1]
     })
   }
 
@@ -78,7 +79,8 @@ const NewDocumentPage = props => {
       files: documentState.files.filter((e, i) => i !== index),
       base64files: documentState.base64files.filter((e, i) => i !== index),
       fileHashes: documentState.fileHashes.filter((e, i) => i !== index),
-      fileData: documentState.fileData.filter((e, i) => i !== index)
+      fileData: documentState.fileData.filter((e, i) => i !== index),
+      statuses: documentState.statuses.filter((e, i) => i !== index)
     })
   }
 
@@ -128,7 +130,6 @@ const NewDocumentPage = props => {
             fetching: false,
             isClicked: true
           })
-          if (documentState.fileHashes.filter(i => !!i).length) {
             setDocumentState({
               ...documentState,
               fetching: true
@@ -137,11 +138,12 @@ const NewDocumentPage = props => {
               documents: [
                 {
                   id: data.data.id,
-                  attachments: documentState.fileHashes
+                  attachments: documentState.statuses
                     .map((item, i) => ({
                       id: data.data.attachments[i].id,
-                      hash: item,
-                      data: documentState.fileData[i]
+                      hash: documentState.fileHashes[i] && documentState.fileHashes[i],
+                      data: documentState.fileData[i] && documentState.fileData[i],
+                      status: documentState.statuses[i]
                     }))
                 }
               ]
@@ -157,7 +159,6 @@ const NewDocumentPage = props => {
                 setDocumentState({ ...defaultDocumentData })
                 return data
               })
-          }
           return data
         }
       })
@@ -299,6 +300,18 @@ const NewDocumentPage = props => {
     }
   }
 
+  const handleStatusChange = index => value => {
+    setDocumentState({
+      ...documentState,
+      statuses: [
+        ...documentState.statuses.slice(0, index),
+        value,
+        ...documentState.statuses.slice(index + 1)
+      ]
+    })
+  }
+
+  console.log(documentState.statuses)
   return (
     <Fragment>
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>
@@ -345,10 +358,10 @@ const NewDocumentPage = props => {
                   <div className='attached-file__actions'>
                     <div className='actions-left'>
                       <Text>Требуется:</Text>
-                      <Select defaultValue={1} style={{ marginLeft: 10, minWidth: '20rem' }}>
-                        <Option value={1}>Подпись получателя</Option>
+                      <Select defaultValue={1} onChange={handleStatusChange(i)} style={{ marginLeft: 10, minWidth: '20rem' }}>
+                        <Option value={1}>Простая доставка</Option>
                         <Option value={2}>Согласование</Option>
-                        <Option value={3}>Простая доставка</Option>
+                        <Option value={3}>Подпись получателя</Option>
                       </Select>
                     </div>
                     <div className='actions-right'>
