@@ -69,25 +69,25 @@ const AntdTable = props => {
       render: record =>
         <Fragment>
           {(status === 1 || status === 3)
-            ? <Link to={{ pathname: `/document/${record.document.id}`, state: { from: history.location.pathname } }}>
+            ? <Link to={{ pathname: `/document/${record.id}`, state: { from: history.location.pathname } }}>
                 <div>
                   {record.recipient &&
                     record.recipient['user_email']
                   }
                   <br />
                   {record.recipient &&
-                  '[' + record.recipient['company_name'] + ']'
+                  <p>{`[ ${record.recipient['company_name']} ]`}</p>
                   }
                 </div>
               </Link>
-            : <Link to={{ pathname: `/document/${record.document.id}`, state: { from: history.location.pathname } }}>
+            : <Link to={{ pathname: `/document/${record.id}`, state: { from: history.location.pathname } }}>
                 <div>
                   {record.sender &&
                     record.sender['user_email']
                   }
                   <br />
                   {record.sender &&
-                    '[' + record.sender['company_name'] + ']'
+                  <p>{`[ ${record.sender['company_name']} ]`}</p>
                   }
                 </div>
               </Link>
@@ -97,12 +97,12 @@ const AntdTable = props => {
     {
       title: 'Тема',
       key: 'descr',
-      render: record => <Link to={{ pathname: `/document/${record.document.id}`, state: { from: history.location.pathname } }}>{record.document.name}</Link>
+      render: record => <Link to={{ pathname: `/document/${record.id}`, state: { from: history.location.pathname } }}>{record.document.name}</Link>
     },
     {
       title: () => <Icon type="paper-clip" />,
       key: 'attachments',
-      render: record => <Link to={{ pathname: `/document/${record.document.id}`, state: { from: history.location.pathname } }} style={{ textAlign: 'center' }} >{record.document.attachments.length === 0 ? 'Нет приложенных документов' : record.document.attachments.length }</Link>
+      render: record => <Link to={{ pathname: `/document/${record.id}`, state: { from: history.location.pathname } }} style={{ textAlign: 'center' }} >{record.document.attachments.length === 0 ? 'Нет приложенных документов' : record.document.attachments.length }</Link>
     },
     {
       title: 'Дата',
@@ -154,7 +154,7 @@ const AntdTable = props => {
       removeDocumentsByIds(obj)
         .then(response => {
           if (response.success) {
-            message.success('Документы удалены')
+            message.success('Документы перемещены в архив')
             setTableState({ ...defaultTableState })
           } else {
             throw new Error(response.error)
@@ -167,7 +167,7 @@ const AntdTable = props => {
       removeDocumentById(tableState.selectedRowKeys[0], type)
         .then(response => {
           if (response.success) {
-            message.success('Документ удален')
+            message.success('Документ перемещен в архив')
             setTableState({ ...defaultTableState })
           } else {
             throw new Error(response.error)
