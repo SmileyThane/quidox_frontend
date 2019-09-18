@@ -116,18 +116,22 @@ const AntMenu = props => {
           }
           onTitleClick={({ key: menuKey }) => handleTitleClick(menuKey)}
         >
-          {data &&  data.document_statuses.map(i => (
-            <MenuItem
-              key={i.id}
-              id={i.id}
-              menuKey='sub2'
-              isInner
-              url={`/documents/${i.id}`}
-              icon='file-text'
-              heading={i.name}
-              iconColor='#52c41a'
-            />
-          ))}
+          {data &&  data.document_statuses.map(i => {
+            if (![1, 2, 3, 4].includes(i.id)) {
+              return (
+                <MenuItem
+                  key={i.id}
+                  id={i.id}
+                  menuKey='sub2'
+                  isInner
+                  url={`/documents/${i.id}`}
+                  icon='file-text'
+                  heading={i.name}
+                  iconColor='#52c41a'
+                />
+              )
+            }
+          })}
         </SubMenu>
         <MenuItem
           heading='Сторонние источники'
