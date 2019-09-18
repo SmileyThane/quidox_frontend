@@ -7,7 +7,7 @@ const MenuItem = ({ url, id, icon, isInner = false, menuKey = '', iconColor = ''
   return (
     <Menu.Item {...rest}>
       <NavLink to={{ pathname: url, state: { id, isInner, menuKey } }}>
-        <Icon type={icon} theme={iconColor !== '' && 'twoTone'} />
+        <Icon type={icon} theme={iconColor !== '' && 'twoTone'} twoToneColor={`${iconColor}`} />
         {heading}
       </NavLink>
     </Menu.Item>

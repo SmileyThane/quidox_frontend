@@ -102,7 +102,7 @@ const AntMenu = props => {
               url={`/attachments/${i.id}`}
               icon='file-text'
               heading={i.name}
-              iconColor='#52c41a'
+              iconColor={i.color}
             />
           ))}
         </SubMenu>
