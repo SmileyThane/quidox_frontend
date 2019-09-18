@@ -465,7 +465,7 @@ const SingleDocumentPage = props => {
                           <Icon style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }} type='eye' onClick={() => showModal(item)} />
                         </Tooltip>
                         <p style={{ marginRight: 10 }} className='single-document__name'>{item.name}</p>
-                        {item.users_companies.length
+                        {item.users_companies.length && item.users_companies.verification_hash
                           ? <Tag
                             onClick={() => showUserData('ecp', item.users_companies)}
                             style={{ cursor: 'pointer' }} color='#3278fb'>
@@ -474,10 +474,8 @@ const SingleDocumentPage = props => {
                           : ''
                         }
 
-                        <Tag color='green'>doc. status</Tag>
-                        <Tag color='blue'>doc. status</Tag>
-                        <Tag color='red'>doc. status</Tag>
-
+                        <Tag color={item.status.status_data.color}>{item.status.status_data.name}</Tag>
+                        
                         {documentState.isSelectVisible &&
                           <div className='doc-select'>
                             <Text>Требуется:</Text>
