@@ -31,7 +31,6 @@ const defaultDocumentData = {
   fetching: false,
   ids: [],
   verifyFetching: false,
-  isVisibleRecipients: false,
   isClicked: false
 }
 // eslint-disable-next-line spaced-comment
@@ -103,11 +102,6 @@ const NewDocumentPage = props => {
     formData.append(
       'description',
       documentState.description
-    )
-    const recipientsInt = documentState.isVisibleRecipients ? 1 : 0
-    formData.append(
-      'is_visible_recipients',
-      recipientsInt
     )
 
     if (!condition.length) {
@@ -383,9 +377,6 @@ const NewDocumentPage = props => {
                 </li>
               ))}
             </ul>
-          </div>
-          <div className='buttons-group'>
-            <Checkbox onChange={e => setDocumentState({ ...documentState, isVisibleRecipients: e.target.checked })}>Разрешить получателям видеть всех адресатов сообщения</Checkbox>
           </div>
           <div className='buttons-group'>
             <Button

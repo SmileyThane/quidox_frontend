@@ -52,7 +52,7 @@ const AntMenu = props => {
         selectedKeys={[`${props.location.state ? props.location.state.id : ''}`]}
       >
         <MenuItem
-          heading='Полученные'
+          heading='Входящие'
           url='/documents'
           status={2}
           key='/documents/2'

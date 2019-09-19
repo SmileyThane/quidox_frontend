@@ -58,7 +58,7 @@ const SingleDocumentPage = props => {
     if (match) {
       getDocumentById(match.params.id)
     }
-  }, [match, getDocumentById])
+  }, [getDocumentById])
 
   useEffect(() => {
     if (documentState.fileCerts[documentState.activeFileCert]) {

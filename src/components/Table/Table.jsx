@@ -387,7 +387,7 @@ const AntdTable = props => {
                 </Tooltip>
               </div>
               <div className='table-header__search'>
-                <AutoComplete onSearch={_.debounce(handleSearch, 500)} placeholder='Введите дату, отправителя, тему...' />
+                <AutoComplete onSearch={_.debounce(handleSearch, 500)} placeholder={`Введите тему, ${(status === 1 || status === 3) ? '  получателя' : 'отправителя'}...`} />
               </div>
               <Pagination
                 simple
