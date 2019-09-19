@@ -37,7 +37,8 @@ const defaultTableState = {
 const defaultParameterState = {
   selection_type: '',
   status: null,
-  perPage: window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 5
+  per_page: 5,
+  page: 1
 }
 
 const { Text } = Typography
@@ -69,7 +70,8 @@ const AntdTable = props => {
       setParameterState({
         ...parameterState,
         status: status,
-        selection_type: type
+        selection_type: type,
+        per_page: window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 5
       })
     }
   }, [activeCompany, getDocumentsWithParams, status])
@@ -153,6 +155,7 @@ const AntdTable = props => {
   ]
 
   const onSelectChange = selectedRowKeys => {
+    console.log(selectedRowKeys)
     setTableState({
       ...tableState,
       selectedRowKeys
@@ -288,13 +291,24 @@ const AntdTable = props => {
   }
 
   const handleChangePerPage = value => {
+    console.log(value)
     window.localStorage.setItem('perPage', value)
     setParameterState({
       ...parameterState,
-      per_page: window.localStorage.getItem(value)
+      per_page: value
     })
-    getDocumentsWithParams(activeCompany, parameterState)
   }
+
+  const handleChangePage = page => {
+    setParameterState({
+      ...parameterState,
+      page: page
+    })
+  }
+
+  useEffect(() => {
+    getDocumentsWithParams(activeCompany, parameterState)
+  }, [parameterState.per_page, parameterState.page])
 
   const handleTableChange = (pagination, filters, sorter) => {
     console.log(sorter)
@@ -314,7 +328,7 @@ const AntdTable = props => {
 
   }
 
-  console.log(tableState)
+  console.log(parameterState)
   return (
     <Fragment>
       {tableState.showModal && <Modal
@@ -383,7 +397,7 @@ const AntdTable = props => {
                 simple
                 defaultCurrent={1}
                 total={Math.ceil(tableData.total / +tableData.per_page) * 10}
-                onChange={page => getDocumentsWithParams(activeCompany, { status: status, per_page: +window.localStorage.getItem('perPage') ? +window.localStorage.getItem('perPage') : 5, page: page })}
+                onChange={handleChangePage}
               />
             </div>
           )}

@@ -11,8 +11,6 @@ const DocumentsPage = props => {
     getDocumentsByActiveCompanyId
   } = props
 
-  console.log(window.location.search, props);
-
   const params = new URLSearchParams(props.location.search)
   const status = params.get('status')
 
