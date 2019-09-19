@@ -9,6 +9,7 @@ import CompaniesPage from './CompaniesPage'
 import ExternalsPage from './ExternalsPage'
 import ResetPasswordPage from './ResetPasswordPage'
 import DocumentsPage from './DocumentsPage';
+import AttachmentsPage from './AttachmentsPage'
 
 export {
   LoginPage,
@@ -21,5 +22,6 @@ export {
   NewDocumentPage,
   ExternalsPage,
   CompaniesPage,
-  DocumentsPage
+  DocumentsPage,
+  AttachmentsPage
 }

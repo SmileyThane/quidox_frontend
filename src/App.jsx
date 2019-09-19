@@ -16,7 +16,8 @@ import {
   NewDocumentPage,
   ExternalsPage,
   CompaniesPage,
-  DocumentsPage
+  DocumentsPage,
+  AttachmentsPage
 } from './views'
 
 function App () {
@@ -34,7 +35,7 @@ function App () {
           <PrivateRoute path='/companies/:id' component={SingleCompanyPage} />
 
           <PrivateRoute exact path='/documents' component={DocumentsPage} />
-          <PrivateRoute exact path='/attachments' component={DocumentsPage} />
+          <PrivateRoute exact path='/attachments' component={AttachmentsPage} />
           <PrivateRoute path='/documents/:id' component={SingleDocumentPage} />
           <PrivateRoute path='/attachments/:id' component={SingleDocumentPage} />
           <PrivateRoute path='/user-me' component={UserInfoPage} />
