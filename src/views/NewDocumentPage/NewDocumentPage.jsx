@@ -72,7 +72,10 @@ const NewDocumentPage = props => {
       fileData: [...documentState.fileData, null],
       statuses: [...documentState.statuses, ...files.map(() => 1)]
     })
+    inputNode.current.value = ''
+    console.log(inputNode)
   }
+
 
   const removeFile = (index) => {
     delete inputNode.current.files[index]
