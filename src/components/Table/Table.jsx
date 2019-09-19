@@ -34,6 +34,11 @@ const defaultTableState = {
   sorter: ''
 }
 
+const defaultParameterState = {
+  status: null,
+  perPage: window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 5
+}
+
 const { Text } = Typography
 const { Option } = Select
 
@@ -56,11 +61,22 @@ const AntdTable = props => {
 
   const [tableState, setTableState] = useState({ ...defaultTableState })
 
+  const [parameterState, setParameterState] = useState( { ...defaultParameterState })
+
   useEffect(() => {
     if (activeCompany) {
-      getDocumentsWithParams(activeCompany, { status: status, per_page: window.localStorage.getItem('perPage') ? +window.localStorage.getItem('perPage') : 5 })
+      setParameterState({
+        ...parameterState,
+        status: status
+      })
     }
   }, [activeCompany, getDocumentsWithParams, status])
+
+  useEffect(() => {
+    if (parameterState.status) {
+      getDocumentsWithParams(activeCompany, parameterState)
+    }
+  }, [parameterState.status])
 
   const columns = [
     {
@@ -69,7 +85,7 @@ const AntdTable = props => {
       render: record =>
         <Fragment>
           {(status === 1 || status === 3)
-            ? <Link to={{ pathname: `/document/${record.id}`, state: { from: history.location.pathname } }}>
+            ? <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }}>
                 <div>
                   {record.recipient &&
                     record.recipient['user_email']
@@ -80,7 +96,7 @@ const AntdTable = props => {
                   }
                 </div>
               </Link>
-            : <Link to={{ pathname: `/document/${record.id}`, state: { from: history.location.pathname } }}>
+            : <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }}>
                 <div>
                   {record.sender &&
                     record.sender['user_email']
@@ -97,12 +113,12 @@ const AntdTable = props => {
     {
       title: 'Тема',
       key: 'descr',
-      render: record => <Link to={{ pathname: `/document/${record.id}`, state: { from: history.location.pathname } }}>{record.document.name}</Link>
+      render: record => <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }}>{record.document.name}</Link>
     },
     {
       title: () => <Icon type="paper-clip" />,
       key: 'attachments',
-      render: record => <Link to={{ pathname: `/document/${record.id}`, state: { from: history.location.pathname } }} style={{ textAlign: 'center' }} >{record.document.attachments.length === 0 ? 'Нет приложенных документов' : record.document.attachments.length }</Link>
+      render: record => <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }} style={{ textAlign: 'center' }} >{record.document.attachments.length === 0 ? 'Нет приложенных документов' : record.document.attachments.length }</Link>
     },
     {
       title: 'Дата',
@@ -150,7 +166,6 @@ const AntdTable = props => {
       const obj = {
         ids: tableState.selectedRowKeys
       }
-      console.log(obj)
       removeDocumentsByIds(obj)
         .then(response => {
           if (response.success) {

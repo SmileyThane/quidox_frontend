@@ -11,6 +11,11 @@ const DocumentsPage = props => {
     getDocumentsByActiveCompanyId
   } = props
 
+  console.log(window.location.search, props);
+
+  const params = new URLSearchParams(props.location.search)
+  const status = params.get('status')
+
   return (
     <Fragment>
       <div className='content'>
@@ -21,7 +26,7 @@ const DocumentsPage = props => {
           getDocumentsWithParams={getDocumentsByActiveCompanyId}
           activeCompany={data.active_company_id}
           type='draft'
-          status={+match.params.id}
+          status={Number(status)}
         />
       </div>
 

@@ -20,12 +20,12 @@ const AntMenu = props => {
   }, []);
 
   const handleTitleClick = menuKey => {
-    const { pathname, state: prevState } = props.location
+    const { pathname, search, state: prevState } = props.location
     const state = {
       ...prevState,
       menuKey: prevState && prevState.menuKey ? '' : menuKey
     }
-    history.push({ pathname, state })
+    history.push({ pathname, search, state })
   }
 
   const { SubMenu } = Menu
@@ -53,28 +53,32 @@ const AntMenu = props => {
       >
         <MenuItem
           heading='Полученные'
-          url='/documents/2'
+          url='/documents'
+          status={2}
           key='/documents/2'
           icon='export'
           id={'/documents/2'}
         />
         <MenuItem
           heading='Отправленные'
-          url='/documents/3'
+          url='/documents'
+          status={3}
           key='/documents/3'
           icon='import'
           id={'/documents/3'}
         />
         <MenuItem
           heading='Черновики'
-          url='/documents/1'
+          url='/documents'
+          status={1}
           key='/documents/1'
           icon='file-text'
           id={'/documents/1'}
         />
         <MenuItem
           heading='Архив'
-          url='/documents/4'
+          url='/documents'
+          status={4}
           key='/documents/4'
           icon='delete'
           id={'/documents/4'}
@@ -124,7 +128,8 @@ const AntMenu = props => {
                   id={i.id}
                   menuKey='sub2'
                   isInner
-                  url={`/documents/${i.id}`}
+                  url='/documents'
+                  status={i.id}
                   icon='file-text'
                   heading={i.name}
                   iconColor='#52c41a'
