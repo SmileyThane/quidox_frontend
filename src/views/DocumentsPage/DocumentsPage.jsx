@@ -25,7 +25,7 @@ const DocumentsPage = props => {
           loading={isFetching}
           getDocumentsWithParams={getDocumentsByActiveCompanyId}
           activeCompany={data.active_company_id}
-          type='draft'
+          type='document'
           status={Number(status)}
         />
       </div>

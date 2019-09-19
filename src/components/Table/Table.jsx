@@ -35,6 +35,7 @@ const defaultTableState = {
 }
 
 const defaultParameterState = {
+  selection_type: '',
   status: null,
   perPage: window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 5
 }
@@ -67,7 +68,8 @@ const AntdTable = props => {
     if (activeCompany) {
       setParameterState({
         ...parameterState,
-        status: status
+        status: status,
+        selection_type: type
       })
     }
   }, [activeCompany, getDocumentsWithParams, status])
@@ -125,7 +127,7 @@ const AntdTable = props => {
       key: 'date',
       className: 'date-column',
       render: record => <Text>{moment.utc(record.document.created_at, 'YYYY-MM-DD HH:mm').local().format('DD/MM/YYYY HH:mm:ss')}</Text>,
-      sorter: true,
+      sorter: false,
       sortDirections: ['descend', 'ascend']
     },
     {
@@ -287,15 +289,11 @@ const AntdTable = props => {
 
   const handleChangePerPage = value => {
     window.localStorage.setItem('perPage', value)
-    setTableState({
-      ...defaultTableState,
-      perPage: window.localStorage.getItem('perPage')
+    setParameterState({
+      ...parameterState,
+      per_page: window.localStorage.getItem(value)
     })
-    if (tableState.sorter !== '') {
-      getDocumentsWithParams(activeCompany, { status: status, sort_value: tableState.sorter, per_page: +window.localStorage.getItem('perPage') })
-    } else {
-      getDocumentsWithParams(activeCompany, { status: status, per_page: +window.localStorage.getItem('perPage') })
-    }
+    getDocumentsWithParams(activeCompany, parameterState)
   }
 
   const handleTableChange = (pagination, filters, sorter) => {
@@ -314,7 +312,8 @@ const AntdTable = props => {
       getDocumentsWithParams(activeCompany, { status: status, per_page: +window.localStorage.getItem('perPage') })
     }
 
-  };
+  }
+
   console.log(tableState)
   return (
     <Fragment>
