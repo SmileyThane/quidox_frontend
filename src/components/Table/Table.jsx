@@ -2,7 +2,7 @@ import React, { useState, useEffect, Fragment, useRef } from 'react'
 
 import _ from 'lodash'
 import { Link } from 'react-router-dom'
-import { getTimeStamp } from '../../helpers'
+
 import {
   Table,
   Icon,
@@ -37,7 +37,8 @@ const defaultTableState = {
 const defaultParameterState = {
   selection_type: '',
   status: null,
-  perPage: window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 5
+  per_page: 5,
+  page: 1
 }
 
 const { Text } = Typography
@@ -62,14 +63,15 @@ const AntdTable = props => {
 
   const [tableState, setTableState] = useState({ ...defaultTableState })
 
-  const [parameterState, setParameterState] = useState( { ...defaultParameterState })
+  const [parameterState, setParameterState] = useState({ ...defaultParameterState })
 
   useEffect(() => {
     if (activeCompany) {
       setParameterState({
         ...parameterState,
         status: status,
-        selection_type: type
+        selection_type: type,
+        per_page: window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 5
       })
     }
   }, [activeCompany, getDocumentsWithParams, status])
@@ -88,27 +90,27 @@ const AntdTable = props => {
         <Fragment>
           {(status === 1 || status === 3)
             ? <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }}>
-                <div>
-                  {record.recipient &&
+              <div>
+                {record.recipient &&
                     record.recipient['user_email']
-                  }
-                  <br />
-                  {record.recipient &&
+                }
+                <br />
+                {record.recipient &&
                   <p>{`[ ${record.recipient['company_name']} ]`}</p>
-                  }
-                </div>
-              </Link>
+                }
+              </div>
+            </Link>
             : <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }}>
-                <div>
-                  {record.sender &&
+              <div>
+                {record.sender &&
                     record.sender['user_email']
-                  }
-                  <br />
-                  {record.sender &&
+                }
+                <br />
+                {record.sender &&
                   <p>{`[ ${record.sender['company_name']} ]`}</p>
-                  }
-                </div>
-              </Link>
+                }
+              </div>
+            </Link>
           }
         </Fragment>
     },
@@ -118,7 +120,7 @@ const AntdTable = props => {
       render: record => <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }}>{record.document.name}</Link>
     },
     {
-      title: () => <Icon type="paper-clip" />,
+      title: () => <Icon type='paper-clip' />,
       key: 'attachments',
       render: record => <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }} style={{ textAlign: 'center' }} >{record.document.attachments.length === 0 ? 'Нет приложенных документов' : record.document.attachments.length }</Link>
     },
@@ -200,7 +202,7 @@ const AntdTable = props => {
     if (value.length >= 3) {
       getDocumentsWithParams(activeCompany, { status: status, per_page: window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 5, parameter: value })
     } else {
-      getDocumentsWithParams(activeCompany, { status: status, per_page: window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 5})
+      getDocumentsWithParams(activeCompany, { status: status, per_page: window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 5 })
     }
   }
 
@@ -291,10 +293,19 @@ const AntdTable = props => {
     window.localStorage.setItem('perPage', value)
     setParameterState({
       ...parameterState,
-      per_page: window.localStorage.getItem(value)
+      per_page: value
     })
-    getDocumentsWithParams(activeCompany, parameterState)
   }
+
+  const handleChangePage = page => {
+    setParameterState({
+      ...parameterState,
+      page: page
+    })
+  }
+  useEffect(() => {
+    getDocumentsWithParams(activeCompany, parameterState)
+  }, [parameterState.per_page, parameterState.page])
 
   const handleTableChange = (pagination, filters, sorter) => {
     console.log(sorter)
@@ -311,7 +322,6 @@ const AntdTable = props => {
       })
       getDocumentsWithParams(activeCompany, { status: status, per_page: +window.localStorage.getItem('perPage') })
     }
-
   }
 
   console.log(tableState)
@@ -383,7 +393,7 @@ const AntdTable = props => {
                 simple
                 defaultCurrent={1}
                 total={Math.ceil(tableData.total / +tableData.per_page) * 10}
-                onChange={page => getDocumentsWithParams(activeCompany, { status: status, per_page: +window.localStorage.getItem('perPage') ? +window.localStorage.getItem('perPage') : 5, page: page })}
+                onChange={handleChangePage}
               />
             </div>
           )}
