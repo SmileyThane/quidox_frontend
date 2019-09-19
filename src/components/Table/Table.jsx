@@ -38,7 +38,10 @@ const defaultParameterState = {
   selection_type: '',
   status: null,
   per_page: 5,
-  page: 1
+  page: 1,
+  parameter: '',
+  sort_by: '',
+  sort_value: ''
 }
 
 const { Text } = Typography
@@ -71,7 +74,7 @@ const AntdTable = props => {
         ...parameterState,
         status: status,
         selection_type: type,
-        per_page: window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 5
+        per_page: window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 5,
       })
     }
   }, [activeCompany, getDocumentsWithParams, status])
@@ -122,15 +125,15 @@ const AntdTable = props => {
     {
       title: () => <Icon type='paper-clip' />,
       key: 'attachments',
-      render: record => <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }} style={{ textAlign: 'center' }} >{record.document.attachments.length === 0 ? 'Нет приложенных документов' : record.document.attachments.length }</Link>
+      render: record => <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }} style={{ textAlign: 'center' }} >{record.document.attachments.length === 0 ? 'Нет приложенных документов' : record.document.attachments.length }</Link>,
+      sorter: false
     },
     {
       title: 'Дата',
-      key: 'date',
+      key: 'created_at',
       className: 'date-column',
       render: record => <Text>{moment.utc(record.document.created_at, 'YYYY-MM-DD HH:mm').local().format('DD/MM/YYYY HH:mm:ss')}</Text>,
-      sorter: false,
-      sortDirections: ['descend', 'ascend']
+      sorter: true
     },
     {
       title: 'Статус',
@@ -199,11 +202,10 @@ const AntdTable = props => {
   }
 
   const handleSearch = value => {
-    if (value.length >= 3) {
-      getDocumentsWithParams(activeCompany, { status: status, per_page: window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 5, parameter: value })
-    } else {
-      getDocumentsWithParams(activeCompany, { status: status, per_page: window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 5 })
-    }
+    setParameterState({
+      ...parameterState,
+      parameter: value
+    })
   }
 
   const rowSelection = {
@@ -303,26 +305,24 @@ const AntdTable = props => {
       page: page
     })
   }
-  useEffect(() => {
-    getDocumentsWithParams(activeCompany, parameterState)
-  }, [parameterState.per_page, parameterState.page])
 
   const handleTableChange = (pagination, filters, sorter) => {
     console.log(sorter)
-    if (sorter.order) {
-      setTableState({
-        ...tableState,
-        sorter: sorter.order
-      })
-      getDocumentsWithParams(activeCompany, { status: status, sort_value: sorter.order, per_page: +window.localStorage.getItem('perPage') })
-    } else {
-      setTableState({
-        ...tableState,
-        sorter: ''
-      })
-      getDocumentsWithParams(activeCompany, { status: status, per_page: +window.localStorage.getItem('perPage') })
-    }
+    setParameterState({
+      ...parameterState,
+      sort_by: sorter.columnKey,
+      sort_value: sorter.order
+    })
   }
+
+  useEffect(() => {
+    getDocumentsWithParams(activeCompany, parameterState)
+  }, [parameterState.per_page,
+    parameterState.page,
+    parameterState.parameter,
+    parameterState.sort_by,
+    parameterState.sort_value
+  ])
 
   console.log(tableState)
   return (
