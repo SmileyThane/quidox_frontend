@@ -465,7 +465,7 @@ const SingleDocumentPage = props => {
                           <Icon style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }} type='eye' onClick={() => showModal(item)} />
                         </Tooltip>
                         <p style={{ marginRight: 10 }} className='single-document__name'>{item.name}</p>
-                        {item.users_companies.length && item.users_companies.verification_hash
+                        {item.users_companies.length > 0 && item.users_companies[0].verification_hash
                           ? <Tag
                             onClick={() => showUserData('ecp', item.users_companies)}
                             style={{ cursor: 'pointer' }} color='#3278fb'>
