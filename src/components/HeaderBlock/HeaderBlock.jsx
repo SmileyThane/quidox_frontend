@@ -72,7 +72,7 @@ const HeaderBlock = props => {
                     }
                     trigger={['click']}
                   >
-                    <span>{data.email && data.email}</span>
+                    <div>{data.email && data.email}</div>
                   </Dropdown>
                 </div>
               </div>

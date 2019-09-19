@@ -18,6 +18,8 @@
   }
   .header__user {
     min-width: 20rem;
+    text-align: right;
+    padding-right: 15px;
     flex-wrap: nowrap;
     position: relative;
   }
@@ -59,7 +61,7 @@
   top: 100%;
   left: 0;
   width: 100%;
-  margin: .5rem 0 0 0;
+  margin: 2rem 0 0 0;
   padding: 0;
   list-style: none;
   border: .1rem solid map_get($colors, gray);

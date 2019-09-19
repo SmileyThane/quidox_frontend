@@ -473,8 +473,9 @@ const SingleDocumentPage = props => {
                           </Tag>
                           : ''
                         }
-
-                        <Tag color={item.status.status_data.color}>{item.status.status_data.name}</Tag>
+                        {item.status &&
+                          <Tag color={item.status.status_data.color}>{item.status.status_data.name}</Tag>
+                        }
                         
                         {documentState.isSelectVisible &&
                           <div className='doc-select'>
