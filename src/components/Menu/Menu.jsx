@@ -103,7 +103,11 @@ const AntMenu = props => {
           {data &&  data.attachment_statuses.map(i => (
             <MenuItem
               key={i.id}
-              url={`/attachments/${i.id}`}
+              id={i.id}
+              menuKey='sub1'
+              isInner
+              url='/attachments'
+              status={i.id}
               icon='file-text'
               heading={i.name}
               iconColor={i.color}
@@ -132,7 +136,7 @@ const AntMenu = props => {
                   status={i.id}
                   icon='file-text'
                   heading={i.name}
-                  iconColor='#52c41a'
+                  iconColor={i.color}
                 />
               )
             }

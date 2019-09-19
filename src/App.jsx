@@ -34,7 +34,9 @@ function App () {
           <PrivateRoute path='/companies/:id' component={SingleCompanyPage} />
 
           <PrivateRoute exact path='/documents' component={DocumentsPage} />
+          <PrivateRoute exact path='/attachments' component={DocumentsPage} />
           <PrivateRoute path='/documents/:id' component={SingleDocumentPage} />
+          <PrivateRoute path='/attachments/:id' component={SingleDocumentPage} />
           <PrivateRoute path='/user-me' component={UserInfoPage} />
 
           <PublicRoute path='/login' component={LoginPage} />
