@@ -73,7 +73,6 @@ const NewDocumentPage = props => {
       statuses: [...documentState.statuses, ...files.map(() => 1)]
     })
     inputNode.current.value = ''
-    console.log(inputNode)
   }
 
 
