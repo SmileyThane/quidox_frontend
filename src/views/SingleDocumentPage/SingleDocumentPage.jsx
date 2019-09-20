@@ -217,7 +217,7 @@ const SingleDocumentPage = props => {
       const key = flashData.cert['1.2.112.1.2.1.1.1.1.2'] + flashData.cert['1.2.112.1.2.1.1.1.1.1']
       const newData = {
         documents: [{
-          id: singleDocument.id,
+          id: singleDocument.document.id,
           attachments: [
             {
               id: item.id,
@@ -358,7 +358,7 @@ const SingleDocumentPage = props => {
         message.error(error.message)
       })
   }
-
+  consile.log(singleDocument)
   return (
     <Fragment>
       <Spin spinning={isFetching}>
