@@ -1,4 +1,4 @@
-import React, { useRef, useState, Fragment } from 'react'
+import React, { useRef, useState, Fragment, useEffect } from 'react'
 import axios from 'axios'
 import _ from 'lodash'
 
@@ -71,10 +71,13 @@ const NewDocumentPage = props => {
       fileData: [...documentState.fileData, null],
       statuses: [...documentState.statuses, ...files.map(() => 1)]
     })
-    setTimeout(() => {
-      inputNode.current.value = ''
-    }, 100)
+    // setTimeout(() => {
+    //   inputNode.current.value = ''
+    // }, 100)
   }
+  useEffect(() => {
+    inputNode.current.value = ''
+  }, [documentState.files])
 
   const removeFile = (index) => {
     delete inputNode.current.files[index]
