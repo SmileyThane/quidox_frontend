@@ -75,6 +75,7 @@ const AntdTable = props => {
         status: status,
         selection_type: type,
         per_page: window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 5,
+        page: 1
       })
     }
   }, [activeCompany, getDocumentsWithParams, status])
@@ -324,7 +325,7 @@ const AntdTable = props => {
     parameterState.sort_value
   ])
 
-  console.log(tableState)
+  console.log(tableData.total)
   return (
     <Fragment>
       {tableState.showModal && <Modal
@@ -391,7 +392,8 @@ const AntdTable = props => {
               </div>
               <Pagination
                 simple
-                defaultCurrent={1}
+                current={parameterState.page}
+                hideOnSinglePage
                 total={Math.ceil(tableData.total / +tableData.per_page) * 10}
                 onChange={handleChangePage}
               />
