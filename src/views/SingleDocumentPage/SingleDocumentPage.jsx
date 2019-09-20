@@ -358,7 +358,7 @@ const SingleDocumentPage = props => {
         message.error(error.message)
       })
   }
-  consile.log(singleDocument)
+
   return (
     <Fragment>
       <Spin spinning={isFetching}>
