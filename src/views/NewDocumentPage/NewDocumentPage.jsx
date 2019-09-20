@@ -71,9 +71,10 @@ const NewDocumentPage = props => {
       fileData: [...documentState.fileData, null],
       statuses: [...documentState.statuses, ...files.map(() => 1)]
     })
-    inputNode.current.value = ''
+    setTimeout(() => {
+      inputNode.current.value = ''
+    }, 100)
   }
-
 
   const removeFile = (index) => {
     delete inputNode.current.files[index]
@@ -128,36 +129,35 @@ const NewDocumentPage = props => {
             fetching: false,
             isClicked: true
           })
-            setDocumentState({
-              ...documentState,
-              fetching: true
-            })
-            const newData = {
-              documents: [
-                {
-                  id: data.data.id,
-                  attachments: documentState.statuses
-                    .map((item, i) => ({
-                      id: data.data.attachments[i].id,
-                      hash: documentState.fileHashes[i] ? documentState.fileHashes[i] : null,
-                      data: documentState.fileData[i] ? documentState.fileData[i] : null,
-                      status: documentState.statuses[i]
-                    }))
-                }
-              ]
-            }
-
-            console.log(newData)
-            return axios.post('https://api.quidox.by/api/documents/confirm', newData, {
-              headers: {
-                'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
+          setDocumentState({
+            ...documentState,
+            fetching: true
+          })
+          const newData = {
+            documents: [
+              {
+                id: data.data.id,
+                attachments: documentState.statuses
+                  .map((item, i) => ({
+                    id: data.data.attachments[i].id,
+                    hash: documentState.fileHashes[i] ? documentState.fileHashes[i] : null,
+                    data: documentState.fileData[i] ? documentState.fileData[i] : null,
+                    status: documentState.statuses[i]
+                  }))
               }
+            ]
+          }
+
+          return axios.post('https://api.quidox.by/api/documents/confirm', newData, {
+            headers: {
+              'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
+            }
+          })
+            .then(() => {
+              message.success(`файлы успешно подписаны!`)
+              setDocumentState({ ...defaultDocumentData })
+              return data
             })
-              .then(() => {
-                message.success(`файлы успешно подписаны!`)
-                setDocumentState({ ...defaultDocumentData })
-                return data
-              })
           return data
         }
       })
