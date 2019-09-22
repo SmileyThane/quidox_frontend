@@ -1,10 +1,12 @@
 import React from 'react'
 
-import { Typography } from 'antd'
+import { Typography, Button } from 'antd'
 
 import './CompanyDescription.scss'
 
 const { Text } = Typography
+
+const bitrixLink = 'https://quidox.bitrix24.by/pub/form/2_zapros_klyucha_dlya_podklyucheniya_po_api/u9qv11/'
 
 const CompanyDescription = props => {
 
@@ -26,6 +28,12 @@ const CompanyDescription = props => {
         <Text className='company-data-title'>Адрес: </Text>
         <div className='company-data-content'>{data.description}</div>
       </div>
+
+      <Button
+        type='primary'
+        ghost onClick={() => window.open(bitrixLink, '_blank')}>
+        Запросить ключ для подключения по API
+      </Button>
     </div>
   )
 }

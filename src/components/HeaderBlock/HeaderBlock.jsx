@@ -51,19 +51,38 @@ const HeaderBlock = props => {
               <div className='header-data'>
                 <div className='header__setting'>
                   <Button type='primary' ghost>Верификация ЭЦП</Button>
+
                   <div className='header-setting-item'>
-                    <Text>Баланс (BY): </Text>
-                    <Tag color='blue' style={{ marginLeft: '1rem' }}>0.00</Tag>
+                    <Text>Тариф: </Text>
+                    <Tag color='blue' style={{ marginLeft: '1rem' }}>Старт</Tag>
                   </div>
 
                   <div className='header-setting-item'>
                     <Text>Доступно действий: </Text>
-                    <Tag color='blue' style={{ marginLeft: '1rem' }}>0</Tag>
+                    <Tag color='blue' style={{ marginLeft: '1rem' }}>500</Tag>
                   </div>
 
                   <div className='header-setting-item'>
-                    <Text>Тариф: </Text>
-                    <Tag color='blue' style={{ marginLeft: '1rem' }}>0</Tag>
+                    <Text>Баланс (BYN): </Text>
+                    <Tag color='blue' style={{ marginLeft: '1rem' }}>120.00</Tag>
+                    <Button type='link'>Пополнить</Button>
+                  </div>
+                  <div className='header-setting-item'>
+                    {(data && data.companies) && data.companies.map(i => {
+                      if (i.company_id === data.active_company_id) {
+                        return (
+                          <Tag
+                            key={i.company_id}
+                            color='#87d068'
+                            style={{ width: '100%', maxWidth: '15rem', textOverflow: 'ellipsis', overflow: 'hidden' }}
+                          >
+                            {i.company_name}
+                          </Tag>
+                        )
+                      } else {
+                        return null
+                      }
+                    })}
                   </div>
                 </div>
                 <div className='user header__user'>

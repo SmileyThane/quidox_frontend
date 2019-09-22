@@ -37,7 +37,7 @@ const defaultTableState = {
 const defaultParameterState = {
   selection_type: '',
   status: null,
-  per_page: 5,
+  per_page: 15,
   page: 1,
   parameter: '',
   sort_by: 'created_at',
@@ -74,7 +74,7 @@ const AntdTable = props => {
         ...parameterState,
         status: status,
         selection_type: type,
-        per_page: window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 5,
+        per_page: window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 15,
         page: 1
       })
     }
@@ -133,7 +133,7 @@ const AntdTable = props => {
       title: 'Дата',
       key: 'created_at',
       className: 'date-column',
-      render: record => <Text>{moment.utc(record.document.created_at, 'YYYY-MM-DD HH:mm').local().format('DD/MM/YYYY HH:mm:ss')}</Text>,
+      render: record => <Text>{moment.utc(record.document.created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD/MM/YYYY HH:mm:ss')}</Text>,
       sorter: true,
       defaultSortOrder: 'descend'
     },
@@ -412,10 +412,10 @@ const AntdTable = props => {
               </div>
               <div>
                 <Text>На странице:</Text>
-                <Select onChange={handleChangePerPage} defaultValue={window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 5} style={{ width: 120, marginLeft: '1rem' }}>
-                  <Option value={5}>5</Option>
-                  <Option value={10}>10</Option>
+                <Select onChange={handleChangePerPage} defaultValue={window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 15} style={{ width: 120, marginLeft: '1rem' }}>
                   <Option value={15}>15</Option>
+                  <Option value={30}>30</Option>
+                  <Option value={60}>60</Option>
                 </Select>
               </div>
             </div>
