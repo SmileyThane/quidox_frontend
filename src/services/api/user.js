@@ -7,6 +7,13 @@ const getUser = () => {
   })
 }
 
+const userLogout = () => {
+  return http({
+    url: 'logout',
+    method: 'POST'
+  })
+}
+
 const findUsersByParams = params => {
   return http({
     url: `user/company/find/${params}`,
@@ -24,6 +31,7 @@ const updateUser = data => {
 
 export {
   getUser,
+  userLogout,
   updateUser,
   findUsersByParams
 }

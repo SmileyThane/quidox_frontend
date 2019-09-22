@@ -1,6 +1,15 @@
-import React, { useState, useEffect, useRef, Fragment } from 'react'
+import React, { Fragment } from 'react'
 
-import { Layout, Icon, Skeleton, Tag, Typography, Button, Dropdown } from 'antd'
+import {
+  Layout,
+  Icon,
+  Skeleton,
+  Tag,
+  Typography,
+  Button,
+  Dropdown,
+  message
+} from 'antd'
 
 import history from '../../history.js'
 import { logo } from '../../resources/img'
@@ -11,12 +20,24 @@ const { Text } = Typography
 
 const HeaderBlock = props => {
   const {
-    user: { isFetching, data }
+    user: { isFetching, data },
+    userLogout
   } = props
 
   const handleLogout = () => {
-    window.localStorage.clear()
-    history.push('/login')
+    userLogout()
+      .then(({ data }) => {
+        console.log(data)
+        if (data.success) {
+          window.localStorage.clear()
+          history.push('/login')
+        } else {
+          throw new Error(data.error)
+        }
+      })
+      .catch(error => {
+        message.error(error.message)
+      })
   }
   return (
     <Header className='header'>
@@ -85,4 +106,3 @@ const HeaderBlock = props => {
 }
 
 export default HeaderBlock
-

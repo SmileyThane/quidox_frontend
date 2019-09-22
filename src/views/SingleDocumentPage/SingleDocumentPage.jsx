@@ -476,7 +476,7 @@ const SingleDocumentPage = props => {
                         {item.status &&
                           <Tag color={item.status.status_data.color}>{item.status.status_data.name}</Tag>
                         }
-                        
+
                         {documentState.isSelectVisible &&
                           <div className='doc-select'>
                             <Text>Требуется:</Text>

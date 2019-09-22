@@ -55,7 +55,10 @@ class LoginPage extends React.Component {
         </Form.Item>
         <Form.Item>
           {getFieldDecorator('password', {
-            rules: [{ required: true, message: 'Пожалуйста, введите пароль!' }]
+            rules: [{
+              required: true,
+              message: 'Пожалуйста, введите пароль!',
+            }]
           })(
             <Input.Password
               prefix={<Icon type='lock' style={{ color: 'rgba(0,0,0,.25)' }} />}

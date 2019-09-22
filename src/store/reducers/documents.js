@@ -8,7 +8,7 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
-    case t.CREATE_DOCUMENT_FETHCING:
+    case t.CREATE_DOCUMENT_FETCHING:
       return {
         ...state,
         isFetching: action.payload
@@ -55,7 +55,13 @@ export default (state = initialState, action) => {
         ...state
       }
 
-    case t.GET_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING:
+    case t.GET_DOCUMENTS_BY_ACTIVE_COMPANY_ID_REQUEST_FETCHING:
+      return {
+        ...state,
+        isFetching: action.payload.isFetching,
+        documents: action.payload.data
+      }
+    case t.GET_DOCUMENTS_BY_ACTIVE_COMPANY_ID_REQUEST_SUCCESS:
       return {
         ...state,
         isFetching: action.payload

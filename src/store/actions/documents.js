@@ -5,7 +5,7 @@ import { api } from '../../services'
 
 const createDocument = data => dispatch => {
   dispatch({
-    type: t.CREATE_DOCUMENT_FETHCING,
+    type: t.CREATE_DOCUMENT_FETCHING,
     payload: true
   })
   return api.documents.createDocument(data)
@@ -17,7 +17,7 @@ const createDocument = data => dispatch => {
         })
       }
       dispatch({
-        type: t.CREATE_DOCUMENT_FETHCING,
+        type: t.CREATE_DOCUMENT_FETCHING,
         payload: false
       })
       return data
@@ -26,7 +26,7 @@ const createDocument = data => dispatch => {
 
 const sendDocumentToUser = data => dispatch => {
   dispatch({
-    type: t.CREATE_DOCUMENT_FETHCING,
+    type: t.CREATE_DOCUMENT_FETCHING,
     payload: true
   })
   return api.documents.sendDocumentToUser(data)
@@ -38,7 +38,7 @@ const sendDocumentToUser = data => dispatch => {
         })
       }
       dispatch({
-        type: t.CREATE_DOCUMENT_FETHCING,
+        type: t.CREATE_DOCUMENT_FETCHING,
         payload: false
       })
       return data
@@ -47,8 +47,11 @@ const sendDocumentToUser = data => dispatch => {
 
 const getDocumentsByActiveCompanyId = (id, params) => dispatch => {
   dispatch({
-    type: t.GET_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
-    payload: true
+    type: t.GET_DOCUMENTS_BY_ACTIVE_COMPANY_ID_REQUEST_FETCHING,
+    payload: {
+      isFetching: true,
+      data: {}
+    }
   })
   return api.documents.getDocumentsByActiveCompanyId(id, params)
     .then(({ data }) => {
@@ -59,12 +62,11 @@ const getDocumentsByActiveCompanyId = (id, params) => dispatch => {
         })
       }
       dispatch({
-        type: t.GET_DOCUMENTS_BY_ACTIVE_COMPANY_ID_FETCHING,
+        type: t.GET_DOCUMENTS_BY_ACTIVE_COMPANY_ID_REQUEST_SUCCESS,
         payload: false
       })
     })
 }
-
 
 const removeDocumentsByIds = ids => dispatch => {
   dispatch({

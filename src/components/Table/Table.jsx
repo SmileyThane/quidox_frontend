@@ -40,8 +40,8 @@ const defaultParameterState = {
   per_page: 5,
   page: 1,
   parameter: '',
-  sort_by: '',
-  sort_value: ''
+  sort_by: 'created_at',
+  sort_value: 'descend'
 }
 
 const { Text } = Typography
@@ -134,7 +134,8 @@ const AntdTable = props => {
       key: 'created_at',
       className: 'date-column',
       render: record => <Text>{moment.utc(record.document.created_at, 'YYYY-MM-DD HH:mm').local().format('DD/MM/YYYY HH:mm:ss')}</Text>,
-      sorter: true
+      sorter: true,
+      defaultSortOrder: 'descend'
     },
     {
       title: 'Статус',
@@ -325,7 +326,6 @@ const AntdTable = props => {
     parameterState.sort_value
   ])
 
-  console.log(tableData.total)
   return (
     <Fragment>
       {tableState.showModal && <Modal

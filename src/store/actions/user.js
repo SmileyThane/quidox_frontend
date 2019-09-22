@@ -23,6 +23,19 @@ const getUser = () => dispatch => {
     })
 }
 
+const userLogout = () => dispatch => {
+  return api.user.userLogout()
+    .then(data => {
+      if (data) {
+        dispatch({
+          type: t.USER_LOGOUT,
+          payload: null
+        })
+      }
+      return data
+    })
+}
+
 const updateUser = data => dispatch => {
   dispatch({
     type: t.UPDATE_USER_FETCHING,
@@ -46,5 +59,6 @@ const updateUser = data => dispatch => {
 
 export {
   getUser,
+  userLogout,
   updateUser
 }
