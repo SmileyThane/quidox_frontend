@@ -5,7 +5,7 @@ import { Menu, Icon } from 'antd'
 const MenuItem = ({ url, id, icon, isInner = false, menuKey = '', iconColor = '', messages, heading, status, ...rest }) => {
   const to = {
     pathname: url,
-    state: { id, isInner, menuKey },
+    state: { id, isInner, menuKey }
   }
 
   if (status) {
