@@ -59,15 +59,6 @@ const CompaniesPage = props => {
     getCompanies()
   }, [getCompanies])
 
-  const buttonRef = useRef(null)
-
-  const autoCreateCompany = () => {
-    if (location.fromHeader) {
-      buttonRef.current.click()
-    }
-  }
-  autoCreateCompany()
-
   const [companyState, setCompanyState] = useState({ ...defaultCompanyState })
 
   const onClick = () => {
@@ -86,6 +77,15 @@ const CompaniesPage = props => {
       })
     }, 1000)
   }
+
+  const autoCreateCompany = () => {
+    console.log(location.fromHeader)
+    if (location.fromHeader) {
+      console.log('123')
+      onClick()
+    }
+  }
+  autoCreateCompany()
 
   const changeActiveCompany = company => {
     if (company.company_data.id === data.active_company_id) {
@@ -238,7 +238,7 @@ const CompaniesPage = props => {
         </div>
       }
       {isIE
-        ? <Button ref={buttonRef} type='primary' onClick={onClick}>Создать компанию</Button>
+        ? <Button type='primary' onClick={onClick}>Создать компанию</Button>
         : <Text type='secondary'>Создание компании возможно только в браузере Internet Explorer</Text>
       }
       <Button type='primary' style={{ marginLeft: '1rem' }} onClick={() => setCompanyState({ ...companyState, showInput: true })}>
