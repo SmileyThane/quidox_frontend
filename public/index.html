@@ -28,6 +28,7 @@
     var msg, cert, issuerCert;
     var AVCMR_BASE = 0xE82A0100;
     var AVCMR_SIGN_INVALID = AVCMR_BASE + 0x27;
+    Var AVCMF_DETACHED = 0x2000000;
 
     function handleError(e) {
       var lastError = avcmx.GetLastError();
@@ -57,10 +58,10 @@
     function sign(file) {
       try {
         var blob = avcmx.CreateBlob(0);
-        blob.SetAsText(document.getElementById('data' + file).value, 0);
+        blob.SetAsBase64(document.getElementById('data' + file).value, 0);
 
         var dataMessage = conn.CreateMessage(blob, 0);
-        dataMessage.SignAsync(0, function (e, signed) {
+        dataMessage.SignAsync(AVCMF_DETACHED, function (e, signed) {
           if (e) {
             alert(avcmx.GetErrorInformation(e, 0));
             return;
@@ -100,6 +101,10 @@
           alert("Сообщение не является подписанным сообщением");
           return;
         }
+
+        var content = avcmx.CreateBlob(0);
+        content.SetAsBase64(document.getElementById('data' + file).value, 0);
+        msg.Content = content;
 
         try {
           msg.Verify(0);
