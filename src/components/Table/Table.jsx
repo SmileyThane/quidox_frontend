@@ -394,7 +394,7 @@ const AntdTable = props => {
                 simple
                 current={parameterState.page}
                 hideOnSinglePage
-                total={Math.ceil(tableData.total / +tableData.per_page) * 10}
+                total={!isNaN(Math.ceil(tableData.total / +tableData.per_page) * 10) ? Math.ceil(tableData.total / +tableData.per_page) * 10 : 0}
                 onChange={handleChangePage}
               />
             </div>

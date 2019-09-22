@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState, useRef } from 'react'
 import moment from 'moment'
 import useForm from 'rc-form-hooks'
 
@@ -49,7 +49,8 @@ const CompaniesPage = props => {
     createCompany,
     changeActiveCompanyById,
     companies: { isFetching, list },
-    user: { data }
+    user: { data },
+    location
   } = props
 
   const { getFieldDecorator, validateFields } = useForm()
@@ -57,6 +58,15 @@ const CompaniesPage = props => {
   useEffect(() => {
     getCompanies()
   }, [getCompanies])
+
+  const buttonRef = useRef(null)
+
+  const autoCreateCompany = () => {
+    if (location.fromHeader) {
+      buttonRef.current.click()
+    }
+  }
+  autoCreateCompany()
 
   const [companyState, setCompanyState] = useState({ ...defaultCompanyState })
 
@@ -117,7 +127,8 @@ const CompaniesPage = props => {
           })
       })
   }
-
+  location.fromHeader && console.log('123')
+  console.log('company location', location)
   const handleCreateCompany = () => {
     const newCompanyData = {
       name: companyState.newCompanyName,
@@ -227,7 +238,7 @@ const CompaniesPage = props => {
         </div>
       }
       {isIE
-        ? <Button type='primary' onClick={onClick}>Создать компанию</Button>
+        ? <Button ref={buttonRef} type='primary' onClick={onClick}>Создать компанию</Button>
         : <Text type='secondary'>Создание компании возможно только в браузере Internet Explorer</Text>
       }
       <Button type='primary' style={{ marginLeft: '1rem' }} onClick={() => setCompanyState({ ...companyState, showInput: true })}>

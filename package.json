@@ -8,6 +8,7 @@
     "axios": "^0.18.1",
     "babel-eslint": "^10.0.1",
     "classnames": "^2.2.6",
+    "js-base64": "^2.5.1",
     "js-file-download": "^0.4.7",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",

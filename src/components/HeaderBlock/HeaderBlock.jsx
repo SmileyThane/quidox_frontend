@@ -12,6 +12,7 @@ import {
 } from 'antd'
 
 import history from '../../history.js'
+import { NavLink } from 'react-router-dom'
 import { logo } from '../../resources/img'
 import './HeaderBlock.scss'
 
@@ -50,7 +51,12 @@ const HeaderBlock = props => {
             <Skeleton loading={isFetching} active paragraph={false}>
               <div className='header-data'>
                 <div className='header__setting'>
-                  <Button type='primary' ghost>Верификация ЭЦП</Button>
+
+                  <NavLink to={{ pathname: '/companies', state: { id: '/companies', fromHeader: true } }}>
+                    <Button type='primary' ghost>
+                      Верификация ЭЦП
+                    </Button>
+                  </NavLink>
 
                   <div className='header-setting-item'>
                     <Text>Тариф: </Text>

@@ -1,4 +1,5 @@
 import React from 'react'
+import { Base64 } from 'js-base64'
 
 import { Link } from 'react-router-dom'
 import generateHash from 'random-hash'
@@ -19,7 +20,7 @@ class LoginPage extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         values.secret_key = process.env.REACT_APP_SECRET_KEY
-        values.auth_data = generateHash({ length: 10 }) + btoa( JSON.stringify(values)) + generateHash({ length: 5 })
+        values.auth_data = generateHash({ length: 10 }) + Base64.encode( JSON.stringify(values)) + generateHash({ length: 5 })
         delete values.email
         delete values.password
         delete values.secret_key
@@ -42,7 +43,7 @@ class LoginPage extends React.Component {
   render () {
     const { getFieldDecorator } = this.props.form
     return (
-      <Form onSubmit={this.handleSubmit} className='form' style={{ maxHeight: '40rem', maxWidth: '45rem' }}>
+      <Form onSubmit={this.handleSubmit} className='form' style={{ minHeight: '40rem', maxWidth: '45rem' }}>
         <Form.Item>
           {getFieldDecorator('email', {
             rules: [{ required: true, message: 'Пожалуйста, введите адрес электронной почты!' }]
