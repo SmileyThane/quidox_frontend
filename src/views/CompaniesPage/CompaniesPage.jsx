@@ -57,7 +57,7 @@ const CompaniesPage = props => {
 
   useEffect(() => {
     getCompanies()
-  }, [getCompanies])
+  }, [])
 
   const [companyState, setCompanyState] = useState({ ...defaultCompanyState })
 
@@ -79,7 +79,6 @@ const CompaniesPage = props => {
   }
 
   const autoCreateCompany = () => {
-    console.log(location.state.fromHeader && list.length)
     if (location.state.fromHeader) {
       console.log('123')
       onClick()
