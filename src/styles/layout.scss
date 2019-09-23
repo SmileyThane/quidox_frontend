@@ -24,6 +24,7 @@
 .main-content {
   &.main-content__public {
     min-height: 100vh;
+    display: block !important;
   }
 }
 
