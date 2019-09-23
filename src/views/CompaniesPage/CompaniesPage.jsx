@@ -79,7 +79,7 @@ const CompaniesPage = props => {
   }
 
   const autoCreateCompany = () => {
-    if (location.state.fromHeader) {
+    if (location.state.fromHeader && isIE) {
       console.log('123')
       onClick()
     }
