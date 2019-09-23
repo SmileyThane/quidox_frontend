@@ -214,7 +214,7 @@ const SingleDocumentPage = props => {
       const signedValue = window.document.getElementById('signedData' + 'File-' + index).value
       // const signedValue = document.getElementById(`signedDataFile-${index}`).value
       const flashData = JSON.parse(decodeURIComponent(value))
-      const key = flashData.cert['1.2.112.1.2.1.1.1.1.2'] + flashData.cert['1.2.112.1.2.1.1.1.1.1']
+      const key = flashData.cert['2.5.29.14']
       const newData = {
         documents: [{
           id: singleDocument.document.id,
