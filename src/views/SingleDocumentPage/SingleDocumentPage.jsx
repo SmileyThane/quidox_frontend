@@ -37,6 +37,12 @@ const active = {
   fontSize: '1.6rem'
 }
 
+const decline = {
+  color: 'red',
+  marginRight: 5,
+  fontSize: '1.6rem'
+}
+
 const defaultDocumentState = {
   isVisible: false,
   fileLink: '',
@@ -78,7 +84,7 @@ const SingleDocumentPage = props => {
     if (match) {
       getDocumentById(match.params.id)
     }
-  }, [getDocumentById])
+  }, [])
 
   useEffect(() => {
     if (documentState.fileCerts[documentState.activeFileCert]) {
@@ -391,6 +397,41 @@ const SingleDocumentPage = props => {
       ]
     }
     agreeFile(agreeObject)
+      .then(({ data }) => {
+        if (data.success) {
+          message.success('Документ согласован')
+          getDocumentById(match.params.id)
+        } else {
+          throw new Error(data.error)
+        }
+      })
+      .catch(error => {
+        message.error(error.message)
+      })
+  }
+
+  const handleDeclineFile = item => {
+    console.log(item)
+    const agreeObject = {
+      attachments: [
+        {
+          id: item.id,
+          status: 6
+        }
+      ]
+    }
+    agreeFile(agreeObject)
+      .then(({ data }) => {
+        if (data.success) {
+          message.success('Документ согласован')
+          getDocumentById(match.params.id)
+        } else {
+          throw new Error(data.error)
+        }
+      })
+      .catch(error => {
+        message.error(error.message)
+      })
   }
 
   return (
@@ -460,6 +501,7 @@ const SingleDocumentPage = props => {
                               switch (item.status.status_data.id) {
                                 case 2: return 'Согласовать документ'
                                 case 4: return 'Документ согласован'
+                                case 6: return 'В согласовании отказано'
                                 default: return 'Документ не требует согласования'
                               }
                             })()}
@@ -476,8 +518,25 @@ const SingleDocumentPage = props => {
                               onClick={() => handleAgreeFile(item)}
                             />
                           </Tooltip>,
-                          <Tooltip title='Отказать в подписании' arrowPointAtCenter>
-                            <Icon type='stop' style={{ color: '#f5222d', marginRight: 5 }} />
+                          <Tooltip
+                            title={(() => {
+                              switch (item.status.status_data.id) {
+                                case 2: return 'Отклонить в согласовании'
+                                case 4: return 'Нельзя отклонить согласованный документ'
+                                default: return 'Документ не требует согласования'
+                              }
+                            })()}
+                            arrowPointAtCenter>
+                            <Icon
+                              type='stop'
+                              style={(() => {
+                                switch (item.status.status_data.id) {
+                                  case 2: return normal
+                                  case 6: return decline
+                                  default: return disabled
+                                }
+                              })()}
+                              onClick={() => handleDeclineFile(item)} />
                           </Tooltip>,
                           <Tooltip title='Подписать документ' arrowPointAtCenter>
                             <Icon type='edit' style={disabled} onClick={() => verifyFile(item, index)} />
@@ -491,7 +550,7 @@ const SingleDocumentPage = props => {
                             <Icon style={{ color: '#3278fb', marginRight: 5, fontSize: '1.6rem' }} type='check-circle' onClick={() => handleAgreeFile(item)} />
                           </Tooltip>,
                           <Tooltip title='Отказать в подписании' arrowPointAtCenter>
-                            <Icon type='stop' style={{ color: '#f5222d', marginRight: 5 }} />
+                            <Icon type='stop' style={{ color: '#f5222d', marginRight: 5 }} onClick={() => handleDeclineFile(item)} />
                           </Tooltip>,
                           <Popover
                             placement='topRight'
