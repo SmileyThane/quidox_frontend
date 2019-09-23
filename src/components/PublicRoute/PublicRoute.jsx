@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { Redirect, Route } from 'react-router-dom'
 
-import { LayoutBlock, FooterBlock, ContentBlock } from '../'
+import { LayoutBlock, FooterBlock, ContentBlock, HeaderBlock } from '../'
 import { logo } from '../../resources/img'
 
 import './PublicRoute.scss'
@@ -15,9 +15,7 @@ const PublicRoute = ({ component: Component, ...rest }) => {
         : <Fragment>
           <LayoutBlock>
             <ContentBlock logWrapp>
-              <header className='public-header'>
-                <img className='logo' src={logo} alt="Logo"/>
-              </header>
+              <HeaderBlock />
               <Component {...props} />
             </ContentBlock>
             <FooterBlock className='footer public-footer' />

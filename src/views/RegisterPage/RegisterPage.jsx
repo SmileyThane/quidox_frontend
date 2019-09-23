@@ -12,7 +12,8 @@ import {
   message,
   Typography,
   Checkbox,
-  Spin
+  Spin,
+  Result
 } from 'antd'
 
 import './RegisterPage.scss'

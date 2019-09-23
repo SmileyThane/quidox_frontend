@@ -43,7 +43,7 @@ class LoginPage extends React.Component {
   render () {
     const { getFieldDecorator } = this.props.form
     return (
-      <Form onSubmit={this.handleSubmit} className='form' style={{ minHeight: '40rem', maxWidth: '45rem' }}>
+      <Form onSubmit={this.handleSubmit} className='form form_login' style={{ minHeight: '40rem', maxWidth: '45rem' }}>
         <Form.Item>
           {getFieldDecorator('email', {
             rules: [{ required: true, message: 'Пожалуйста, введите адрес электронной почты!' }]
