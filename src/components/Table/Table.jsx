@@ -30,7 +30,6 @@ const defaultTableState = {
   fetching: false,
   data: [],
   showModal: false,
-  perPage: window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 5,
   sorter: ''
 }
 
@@ -69,7 +68,8 @@ const AntdTable = props => {
   const [parameterState, setParameterState] = useState({ ...defaultParameterState })
 
   useEffect(() => {
-    if (activeCompany) {
+    console.log('First UseEffect')
+    if (activeCompany && status && type) {
       setParameterState({
         ...parameterState,
         status: status,
@@ -78,9 +78,10 @@ const AntdTable = props => {
         page: 1
       })
     }
-  }, [activeCompany, getDocumentsWithParams, status])
+  }, [activeCompany, status, type])
 
   useEffect(() => {
+    console.log('Second UseEffect')
     if (parameterState.status) {
       getDocumentsWithParams(activeCompany, parameterState)
     }
@@ -318,14 +319,18 @@ const AntdTable = props => {
   }
 
   useEffect(() => {
-    getDocumentsWithParams(activeCompany, parameterState)
+    console.log('Last useEffect')
+    if (parameterState.status) {
+      getDocumentsWithParams(activeCompany, parameterState)
+    }
   }, [parameterState.per_page,
     parameterState.page,
     parameterState.parameter,
     parameterState.sort_by,
     parameterState.sort_value
   ])
-
+  console.log(parameterState)
+  console.log('STATUS:', status)
   return (
     <Fragment>
       {tableState.showModal && <Modal

@@ -31,8 +31,6 @@ const AntMenu = props => {
   const { SubMenu } = Menu
   const { data } = menuData
 
-  console.log('MATCH:', props.match)
-  console.log('LOCATION:', props.location)
   return (
     <Fragment>
       <Button

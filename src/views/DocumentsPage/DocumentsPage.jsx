@@ -6,12 +6,9 @@ const DocumentsPage = props => {
 
   const {
     user: { data },
-    match,
     documents: { documents, isFetching },
     getDocumentsByActiveCompanyId
   } = props
-
-  console.log(window.location.search, props);
 
   const params = new URLSearchParams(props.location.search)
   const status = params.get('status')
