@@ -29,6 +29,14 @@ const verifyDocument = data => {
   })
 }
 
+const agreeFile = data => {
+  return http({
+    url: 'attachment/status/update',
+    method: 'POST',
+    data
+  })
+}
+
 const updateDocumentById = (id, data) => {
   return http({
     url: `document/update/${id}`,
@@ -42,5 +50,6 @@ export {
   removeDocumentById,
   downloadDocument,
   verifyDocument,
+  agreeFile,
   updateDocumentById
 }

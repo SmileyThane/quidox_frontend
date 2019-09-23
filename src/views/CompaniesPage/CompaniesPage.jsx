@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState, useRef } from 'react'
 import moment from 'moment'
 import useForm from 'rc-form-hooks'
 
-import history from '../../history';
+import history from '../../history'
 import { api } from '../../services'
 import { Button } from '../../components'
 import {
@@ -21,7 +21,7 @@ import {
 } from 'antd'
 
 import './CompaniesPage.scss'
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom'
 
 const defaultCompanyState = {
   selectedCompanyId: null,
@@ -228,14 +228,16 @@ const CompaniesPage = props => {
           </Row>
         </div>
       }
-      {isIE
-        ? <Button type='primary' onClick={onClick}>Создать компанию</Button>
-        : <Text type='secondary'>Создание компании возможно только в браузере Internet Explorer</Text>
-      }
+      <Button type='primary' disabled={!isIE} onClick={onClick}>Создать компанию</Button>
       <Button type='primary' style={{ marginLeft: '1rem' }} onClick={() => setCompanyState({ ...companyState, showInput: true })}>
         <Icon type='usergroup-add' />
         Добавить пользователя в компанию
       </Button>
+      <div style={{ marginTop: '1rem' }}>
+        {!isIE &&
+        <Text type='secondary'>Создание компании возможно только в браузере Internet Explorer</Text>
+        }
+      </div>
       <input type='hidden' id='dataNewCompany' value={window.btoa(data.email)} />
       <input type='hidden' id='companyData' />
       <div id='attrCertSelectContainer' style={{ display: 'none' }}>

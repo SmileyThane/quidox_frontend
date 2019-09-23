@@ -18,6 +18,25 @@ import './SingleDocumentPage.scss'
 const { Text, Paragraph } = Typography
 const { Option } = Select
 
+const disabled = {
+  color: '#E0E0E0',
+  marginRight: 5,
+  fontSize: '1.6rem',
+  cursor: 'not-allowed'
+}
+
+const normal = {
+  color: '#3278fb',
+  marginRight: 5,
+  fontSize: '1.6rem'
+}
+
+const active = {
+  color: 'green',
+  marginRight: 5,
+  fontSize: '1.6rem'
+}
+
 const defaultDocumentState = {
   isVisible: false,
   fileLink: '',
@@ -47,6 +66,7 @@ const SingleDocumentPage = props => {
     getDocumentById,
     sendDocumentToUser,
     updateDocumentById,
+    agreeFile,
     verifyDocument
   } = props
 
@@ -312,6 +332,7 @@ const SingleDocumentPage = props => {
       activeFileCert: documentState.activeFileCert + 1
     })
   }
+
   const prevCert = () => {
     if (documentState.activeFileCert === 0) {
       return
@@ -357,6 +378,19 @@ const SingleDocumentPage = props => {
       .catch(error => {
         message.error(error.message)
       })
+  }
+
+  const handleAgreeFile = item => {
+    console.log(item)
+    const agreeObject = {
+      attachments: [
+        {
+          id: item.id,
+          status: 4
+        }
+      ]
+    }
+    agreeFile(agreeObject)
   }
 
   return (
@@ -418,16 +452,35 @@ const SingleDocumentPage = props => {
                   dataSource={document && document.attachments}
                   renderItem={(item, index) => (
                     <List.Item key={index}
-                      actions={isIE
+                      actions={!isIE
                         ? [
-                          <Tooltip title='Согласовать' arrowPointAtCenter>
-                            <Icon style={{ color: '#3278fb', marginRight: 5, fontSize: '1.6rem' }} type='check-circle' />
+                          <Tooltip
+                            arrowPointAtCenter
+                            title={(() => {
+                              switch (item.status.status_data.id) {
+                                case 2: return 'Согласовать документ'
+                                case 4: return 'Документ согласован'
+                                default: return 'Документ не требует согласования'
+                              }
+                            })()}
+                          >
+                            <Icon
+                              type='check-circle'
+                              style={(() => {
+                                switch (item.status.status_data.id) {
+                                  case 2: return normal
+                                  case 4: return active
+                                  default: return disabled
+                                }
+                              })()}
+                              onClick={() => handleAgreeFile(item)}
+                            />
                           </Tooltip>,
                           <Tooltip title='Отказать в подписании' arrowPointAtCenter>
                             <Icon type='stop' style={{ color: '#f5222d', marginRight: 5 }} />
                           </Tooltip>,
                           <Tooltip title='Подписать документ' arrowPointAtCenter>
-                            <Icon type='edit' style={{ color: '#3278fb', marginRight: 5, fontSize: '1.6rem' }} onClick={() => verifyFile(item, index)} />
+                            <Icon type='edit' style={disabled} onClick={() => verifyFile(item, index)} />
                           </Tooltip>,
                           <Tooltip title={`Скачать документ`} placement='topRight' arrowPointAtCenter>
                             <Icon style={{ color: '#3278fb', fontSize: '1.6rem' }} onClick={() => downloadDocumentContent(item, false, true)} type='download' />
@@ -435,7 +488,7 @@ const SingleDocumentPage = props => {
                         ]
                         : [
                           <Tooltip title='Согласовать' arrowPointAtCenter>
-                            <Icon style={{ color: '#3278fb', marginRight: 5, fontSize: '1.6rem' }} type='check-circle' />
+                            <Icon style={{ color: '#3278fb', marginRight: 5, fontSize: '1.6rem' }} type='check-circle' onClick={() => handleAgreeFile(item)} />
                           </Tooltip>,
                           <Tooltip title='Отказать в подписании' arrowPointAtCenter>
                             <Icon type='stop' style={{ color: '#f5222d', marginRight: 5 }} />
@@ -446,13 +499,13 @@ const SingleDocumentPage = props => {
                             content={
                               <Fragment>
                                 <Text>Подпись файла возможна только в браузере Internet Explorer верифицированным пользователем {' '}</Text>
-                                <a href='https://quidox.by/settings_download/' target='_blank' rel="noopener noreferrer">
+                                <a href='https://quidox.by/settings_download/' target='_blank' rel='noopener noreferrer'>
                                   Подробнее
                                 </a>
                               </Fragment>
                             }
                           >
-                            <Icon type='edit' style={{ color: '#E0E0E0', marginRight: 5, fontSize: '1.6rem', cursor: 'not-allowed' }} />
+                            <Icon type='edit' style={active} />
                           </Popover>,
                           <Tooltip title={`Скачать документ`} placement='topRight' arrowPointAtCenter>
                             <Icon style={{ color: '#3278fb', fontSize: '1.6rem' }} onClick={() => downloadDocumentContent(item, false, true)} type='download' />
@@ -512,14 +565,10 @@ const SingleDocumentPage = props => {
                     }
                   </div>
                   <div className='document__actions__right'>
-                    <Button onClick={() => chooseStatusAndSend()} type='primary'>
-                      <Icon type={documentState.isSelectVisible ? 'double-right' : 'redo' } />
+                    <Button disabled title='Введется разработка' onClick={() => chooseStatusAndSend()} type='primary'>
+                      <Icon type={documentState.isSelectVisible ? 'double-right' : 'redo'} />
                       {documentState.isSelectVisible ? 'Продолжить' : 'Перенаправить'}
                     </Button>
-                    {/*<Button onClick={() => showUserData('send')} type='primary'>*/}
-                    {/*  <Icon type='redo' />*/}
-                    {/*    Перенаправить*/}
-                    {/*</Button>*/}
                   </div>
                 </div>
               </Fragment>

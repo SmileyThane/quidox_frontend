@@ -105,6 +105,40 @@ export default (state = initialState, action) => {
       }
     }
 
+    case t.AGREE_FILE_FETCHING: {
+      return {
+        ...state,
+        isFetching: action.payload
+      }
+    }
+
+    // case t.AGREE_FILE_SUCCESS: {
+    //   return {
+    //     ...state,
+    //     singleDocument: {
+    //       ...state.singleDocument,
+    //       document: {
+    //         ...state.singleDocument.document,
+    //         attachments: [
+    //           ...state.singleDocument.document.attachments.slice(0, action.payload.id),
+    //           {
+    //             ...state.singleDocument.document.attachments[action.payload.id],
+    //             status: {
+    //               ...state.singleDocument.document.attachments[action.payload.id].status,
+    //               status_data: {
+    //                 ...state.singleDocument.document.attachments[action.payload.id].status.status_data,
+    //                 status: action.payload.status,
+    //                 name: 'Согласовано'
+    //               }
+    //             }
+    //           },
+    //           ...state.singleDocument.document.attachments.slice(action.payload.id + 1)
+    //         ]
+    //       }
+    //     }
+    //   }
+    // }
+
     default:
       return state
   }

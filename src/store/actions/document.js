@@ -64,6 +64,27 @@ const verifyDocument = data => dispatch => {
     })
 }
 
+const agreeFile = data => dispatch => {
+  dispatch({
+    type: t.AGREE_FILE_FETCHING,
+    payload: true
+  })
+  return api.document.agreeFile(data)
+    .then(data => {
+      if (data) {
+        dispatch({
+          type: t.AGREE_FILE_SUCCESS,
+          payload: data
+        })
+      }
+      dispatch({
+        type: t.AGREE_FILE_FETCHING,
+        payload: false
+      })
+      return data
+    })
+}
+
 const removeDocumentById = id => dispatch => {
   dispatch({
     type: t.REMOVE_DOCUMENT_BY_ID_FETCHING,
@@ -89,5 +110,6 @@ export {
   getDocumentById,
   removeDocumentById,
   updateDocumentById,
+  agreeFile,
   verifyDocument
 }

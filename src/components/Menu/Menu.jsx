@@ -98,7 +98,7 @@ const AntMenu = props => {
             </span>
           }
         >
-          {data &&  data.attachment_statuses.map(i => (
+          {data && data.attachment_statuses.map(i => (
             <MenuItem
               key={i.id}
               id={i.id}
