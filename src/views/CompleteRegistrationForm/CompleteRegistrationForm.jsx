@@ -86,6 +86,7 @@ class CompleteRegistrationForm extends React.Component {
         const registerData = {
           phone: this.state.phone,
           code: this.state.code,
+          id: this.props.match.params.id
         }
         switch (this.state.currentStep) {
           case 0:
@@ -112,10 +113,12 @@ class CompleteRegistrationForm extends React.Component {
               .then(({ data }) => {
                 if (data.success) {
                   message.success('СМС код введен правильно!')
-                  setTimeout(() => {
-                    this.setState({ currentStep: this.state.currentStep + 1 })
-                    this.inputNode.current.focus()
-                  }, 350)
+                  axios.post('https://api.quidox.bt/api/user/update', registerData)
+                    .then(({ data }) => {
+                      if (data) {
+                        history.push('/login')
+                      }
+                    })
                 } else {
                   throw new Error(data.error)
                 }
@@ -151,28 +154,6 @@ class CompleteRegistrationForm extends React.Component {
       })
   }
 
-  handleConfirmBlur = e => {
-    const value = e.target.value
-    this.setState({ confirmDirty: this.state.confirmDirty || !!value })
-  };
-
-  compareToFirstPassword = (rule, value, callback) => {
-    const form = this.props.form
-    if (value && value !== form.getFieldValue('password')) {
-      callback('Пароли не совпадают')
-    } else {
-      callback()
-    }
-  };
-
-  validateToNextPassword = (rule, value, callback) => {
-    const form = this.props.form
-    if (value && this.state.confirmDirty) {
-      form.validateFields(['confirm'], { force: true })
-    }
-    callback()
-  };
-
   getOneMinuteTimer = () => {
     const timeInterval = setInterval(() => {
       if (this.state.seconds > 0) {
@@ -199,7 +180,7 @@ class CompleteRegistrationForm extends React.Component {
         <Option value='37544'>+375(44)</Option>
       </Select>
     )
-    console.log(this.state.phone)
+    console.log(this.props.match)
     return (
       <Fragment>
         <div className='register'>

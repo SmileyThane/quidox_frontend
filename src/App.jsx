@@ -43,7 +43,7 @@ function App () {
 
           <PublicRoute path='/login' component={LoginPage} />
           <PublicRoute path='/register' component={RegisterPage} />
-          <PublicRoute path='/complete-registration' component={CompleteRegistrationForm} />
+          <PublicRoute path='/complete-registration/:id' component={CompleteRegistrationForm} />
           <PublicRoute path='/password-recovery' component={ResetPasswordPage} />
 
           <Route path='*' render={() => <div>404</div>} />
