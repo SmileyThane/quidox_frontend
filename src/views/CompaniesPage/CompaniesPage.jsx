@@ -79,7 +79,7 @@ const CompaniesPage = props => {
   }
 
   const autoCreateCompany = () => {
-    console.log(location.state.fromHeader)
+    console.log(location.state.fromHeader && list.length)
     if (location.state.fromHeader) {
       console.log('123')
       onClick()
