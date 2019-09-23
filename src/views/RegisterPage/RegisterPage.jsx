@@ -88,9 +88,9 @@ class RegistrationForm extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault()
-    this.setState({ isFetching: true })
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
+        this.setState({ isFetching: true })
         const registerData = {
           phone: this.state.phone,
           code: this.state.code,
@@ -164,6 +164,9 @@ class RegistrationForm extends React.Component {
     this.setState({
       seconds: 60
     })
+    this.setState({
+      isFetching: true
+    })
     this.getOneMinuteTimer()
     const phone = {
       phone: this.state.phone
@@ -171,8 +174,14 @@ class RegistrationForm extends React.Component {
     axios.post('https://api.quidox.by/api/sms/send', phone)
       .then(({ data }) => {
         if (data.success) {
+          this.setState({
+            isFetching: false
+          })
           message.success('Номер телефона успешно отправлен')
         } else {
+          this.setState({
+            isFetching: false
+          })
           throw new Error(data.error)
         }
       })
