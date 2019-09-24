@@ -1,6 +1,7 @@
 import React, { useRef, useState, Fragment, useEffect } from 'react'
 import axios from 'axios'
 import _ from 'lodash'
+import { Base64 } from 'js-base64'
 
 import { api } from '../../services'
 import {
@@ -257,7 +258,8 @@ const NewDocumentPage = props => {
       input.type = 'hidden'
       input.id = 'dataFile-' + index
       document.body.appendChild(input)
-      document.getElementById('dataFile-' + index).value = reader.result
+      console.log(reader.result.split(',').pop())
+      document.getElementById('dataFile-' + index).value = reader.result.split(',').pop()
 
       window.sign('File-' + index)
 
@@ -367,7 +369,7 @@ const NewDocumentPage = props => {
                       </Select>
                     </div>
                     <div className='actions-right'>
-                      {isIE &&
+                      {!isIE &&
                       <Icon onClick={() => verifyFile(i)} style={{ color: '#3278fb' }} type={documentState.verifyFetching ? 'loading' : 'edit'} />
                       }
                       <Icon

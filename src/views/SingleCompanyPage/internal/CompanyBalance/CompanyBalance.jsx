@@ -5,7 +5,7 @@ import {
   pdf20,
   pdf100,
   pdf500,
-  pdf1000,
+  pdf1000
 } from '../../../../resources/pdf'
 
 import './CompanyBalance.scss'

@@ -233,7 +233,6 @@ const SingleDocumentPage = props => {
     window.document.getElementById('dataFile-' + index).value = base64
     // document.getElementById(`dataFile-${index}`).value = base64
     window.sign('File-' + index)
-    // window.sign(`File-${index}`)
     setTimeout(() => {
       const value = window.document.getElementById('verifiedData' + 'File-' + index).value
       // const value = document.getElementById(`verifiedDataFile-${index}`).value
@@ -387,51 +386,92 @@ const SingleDocumentPage = props => {
   }
 
   const handleAgreeFile = item => {
-    console.log(item)
-    const agreeObject = {
-      attachments: [
-        {
-          id: item.id,
-          status: 4
+    switch (item.status.status_data.id) {
+      case 1: {
+        return null
+      }
+      case 4: {
+        return null
+      }
+      case 6: {
+        return null
+      }
+      default: {
+        const agreeObject = {
+          attachments: [
+            {
+              id: item.id,
+              status: 4
+            }
+          ]
         }
-      ]
+        agreeFile(agreeObject)
+          .then(({ data }) => {
+            if (data.success) {
+              message.success('Документ согласован')
+              getDocumentById(match.params.id)
+            } else {
+              throw new Error(data.error)
+            }
+          })
+          .catch(error => {
+            message.error(error.message)
+          })
+      }
     }
-    agreeFile(agreeObject)
-      .then(({ data }) => {
-        if (data.success) {
-          message.success('Документ согласован')
-          getDocumentById(match.params.id)
-        } else {
-          throw new Error(data.error)
-        }
-      })
-      .catch(error => {
-        message.error(error.message)
-      })
   }
 
   const handleDeclineFile = item => {
-    console.log(item)
-    const agreeObject = {
-      attachments: [
-        {
-          id: item.id,
-          status: 6
+    switch (item.status.status_data.id) {
+      case 1: {
+        return null
+      }
+      case 4: {
+        return null
+      }
+      case 6: {
+        return null
+      }
+      default: {
+        const declineObject = {
+          attachments: [
+            {
+              id: item.id,
+              status: 6
+            }
+          ]
         }
-      ]
+        agreeFile(declineObject)
+          .then(({ data }) => {
+            if (data.success) {
+              message.success('Документ согласован')
+              getDocumentById(match.params.id)
+            } else {
+              throw new Error(data.error)
+            }
+          })
+          .catch(error => {
+            message.error(error.message)
+          })
+      }
     }
-    agreeFile(agreeObject)
-      .then(({ data }) => {
-        if (data.success) {
-          message.success('Документ согласован')
-          getDocumentById(match.params.id)
-        } else {
-          throw new Error(data.error)
-        }
-      })
-      .catch(error => {
-        message.error(error.message)
-      })
+  }
+
+  const getButtonTooltipText = (id, type) => {
+    if (type === 'agree') {
+      switch (id) {
+        case 2: return 'Согласовать документ'
+        case 4: return 'Документ согласован'
+        case 6: return 'В согласовании отказано'
+        default: return 'Документ не требует согласования'
+      }
+    } else {
+      switch (id) {
+        case 2: return 'Отклонить в согласовании'
+        case 4: return 'Нельзя отклонить согласованный документ'
+        default: return 'Документ не требует согласования'
+      }
+    }
   }
 
   return (
@@ -493,83 +533,44 @@ const SingleDocumentPage = props => {
                   dataSource={document && document.attachments}
                   renderItem={(item, index) => (
                     <List.Item key={index}
-                      actions={!isIE
-                        ? [
-                          <Tooltip
-                            arrowPointAtCenter
-                            title={(() => {
+                      actions={[
+                        <Tooltip
+                          arrowPointAtCenter
+                          title={getButtonTooltipText(item.status.status_data.id, 'agree')}
+                        >
+                          <Icon
+                            type='check-circle'
+                            style={(() => {
                               switch (item.status.status_data.id) {
-                                case 2: return 'Согласовать документ'
-                                case 4: return 'Документ согласован'
-                                case 6: return 'В согласовании отказано'
-                                default: return 'Документ не требует согласования'
+                                case 2: return normal
+                                case 4: return active
+                                default: return disabled
                               }
                             })()}
-                          >
-                            <Icon
-                              type='check-circle'
-                              style={(() => {
-                                switch (item.status.status_data.id) {
-                                  case 2: return normal
-                                  case 4: return active
-                                  default: return disabled
-                                }
-                              })()}
-                              onClick={() => handleAgreeFile(item)}
-                            />
-                          </Tooltip>,
-                          <Tooltip
-                            title={(() => {
+                            onClick={() => handleAgreeFile(item)}
+                          />
+                        </Tooltip>,
+                        <Tooltip
+                          title={getButtonTooltipText(item.status.status_data.id, 'decline')}
+                          arrowPointAtCenter>
+                          <Icon
+                            type='stop'
+                            style={(() => {
                               switch (item.status.status_data.id) {
-                                case 2: return 'Отклонить в согласовании'
-                                case 4: return 'Нельзя отклонить согласованный документ'
-                                default: return 'Документ не требует согласования'
+                                case 2: return normal
+                                case 6: return decline
+                                default: return disabled
                               }
                             })()}
-                            arrowPointAtCenter>
-                            <Icon
-                              type='stop'
-                              style={(() => {
-                                switch (item.status.status_data.id) {
-                                  case 2: return normal
-                                  case 6: return decline
-                                  default: return disabled
-                                }
-                              })()}
-                              onClick={() => handleDeclineFile(item)} />
-                          </Tooltip>,
-                          <Tooltip title='Подписать документ' arrowPointAtCenter>
-                            <Icon type='edit' style={disabled} onClick={() => verifyFile(item, index)} />
-                          </Tooltip>,
-                          <Tooltip title={`Скачать документ`} placement='topRight' arrowPointAtCenter>
-                            <Icon style={{ color: '#3278fb', fontSize: '1.6rem' }} onClick={() => downloadDocumentContent(item, false, true)} type='download' />
-                          </Tooltip>
-                        ]
-                        : [
-                          <Tooltip title='Согласовать' arrowPointAtCenter>
-                            <Icon style={{ color: '#3278fb', marginRight: 5, fontSize: '1.6rem' }} type='check-circle' onClick={() => handleAgreeFile(item)} />
-                          </Tooltip>,
-                          <Tooltip title='Отказать в подписании' arrowPointAtCenter>
-                            <Icon type='stop' style={{ color: '#f5222d', marginRight: 5 }} onClick={() => handleDeclineFile(item)} />
-                          </Tooltip>,
-                          <Popover
-                            placement='topRight'
-                            arrowPointAtCenter
-                            content={
-                              <Fragment>
-                                <Text>Подпись файла возможна только в браузере Internet Explorer верифицированным пользователем {' '}</Text>
-                                <a href='https://quidox.by/settings_download/' target='_blank' rel='noopener noreferrer'>
-                                  Подробнее
-                                </a>
-                              </Fragment>
-                            }
-                          >
-                            <Icon type='edit' style={active} />
-                          </Popover>,
-                          <Tooltip title={`Скачать документ`} placement='topRight' arrowPointAtCenter>
-                            <Icon style={{ color: '#3278fb', fontSize: '1.6rem' }} onClick={() => downloadDocumentContent(item, false, true)} type='download' />
-                          </Tooltip>
-                        ]
+                            onClick={() => handleDeclineFile(item)} />
+                        </Tooltip>,
+                        <Tooltip title='Подписать документ' arrowPointAtCenter>
+                          <Icon type='edit' style={disabled} onClick={() => verifyFile(item, index)} />
+                        </Tooltip>,
+                        <Tooltip title={`Скачать документ`} placement='topRight' arrowPointAtCenter>
+                          <Icon style={{ color: '#3278fb', fontSize: '1.6rem' }} onClick={() => downloadDocumentContent(item, false, true)} type='download' />
+                        </Tooltip>
+                      ]
                       }
                     >
                       <div className='single-document'>
