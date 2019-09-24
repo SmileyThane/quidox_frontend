@@ -40,6 +40,7 @@ const HeaderBlock = props => {
         message.error(error.message)
       })
   }
+  console.log('User data:', data)
   return (
     <Header className='header'>
       <div className='header__content'>
@@ -71,7 +72,13 @@ const HeaderBlock = props => {
                   <div className='header-setting-item'>
                     <Text>Баланс (BYN): </Text>
                     <Tag color='blue' style={{ marginLeft: '1rem' }}>120.00</Tag>
-                    <Button type='link'>Пополнить</Button>
+                    <NavLink to={{ pathname: `/companies/${data.active_company_id}`, state: { id: '/companies', fromBalance: true } }}>
+                      <Button
+                        type='link'
+                      >
+                        Пополнить
+                      </Button>
+                    </NavLink>
                   </div>
                   <div className='header-setting-item'>
                     {(data && data.companies) && data.companies.map(i => {

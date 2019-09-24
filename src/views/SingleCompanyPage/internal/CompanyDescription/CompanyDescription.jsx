@@ -31,7 +31,8 @@ const CompanyDescription = props => {
 
       <Button
         type='primary'
-        ghost onClick={() => window.open(bitrixLink, '_blank')}>
+        ghost
+        onClick={() => window.open(bitrixLink, '_blank')}>
         Запросить ключ для подключения по API
       </Button>
     </div>

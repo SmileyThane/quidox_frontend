@@ -8,7 +8,8 @@ import {
 
 import {
   CompanyUsers,
-  CompanyDescription
+  CompanyDescription,
+  CompanyBalance
 } from './internal'
 import history from '../../history'
 
@@ -17,6 +18,7 @@ const { TabPane } = Tabs
 const SingleCompanyPage = props => {
   const {
     match,
+    location,
     getCompanyById,
     companies: { singleCompany, isFetching }
   } = props
@@ -27,6 +29,7 @@ const SingleCompanyPage = props => {
     }
   }, [match, getCompanyById])
 
+  console.log(location)
   return (
     <Fragment>
       <Spin spinning={isFetching}>
@@ -34,7 +37,9 @@ const SingleCompanyPage = props => {
           <div style={{ marginBottom: '2rem' }} className='back' onClick={() => history.goBack()} >
             <Icon type='left' />
           </div>
-          <Tabs defaultActiveKey='1'>
+          <Tabs
+            defaultActiveKey={location.state.fromBalance ? '3' : '1'}
+          >
             <TabPane
               key='1'
               tab={
@@ -67,8 +72,9 @@ const SingleCompanyPage = props => {
                    Баланс
                 </Fragment>
               }
-              disabled
-            />
+            >
+              <CompanyBalance />
+            </TabPane>
 
             <TabPane
               key='4'

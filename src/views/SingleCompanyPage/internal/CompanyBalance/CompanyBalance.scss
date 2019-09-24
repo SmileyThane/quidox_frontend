@@ -1,0 +1,24 @@
+.balance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  h3 {
+    margin: 0 !important;
+  }
+}
+
+.balance-links {
+  max-width: 30rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+
+.balance-links-item {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
