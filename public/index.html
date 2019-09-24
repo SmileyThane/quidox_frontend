@@ -61,7 +61,7 @@
         blob.SetAsText(document.getElementById('data' + file).value, 0);
 
         var dataMessage = conn.CreateMessage(blob, 0);
-        dataMessage.SignAsync(AVCMF_DETACHED, function (e, signed) {
+        dataMessage.SignAsync(AVCMF_DETACHED | AVCMF_ADD_SIGN_CERT, function (e, signed) {
           if (e) {
             alert(avcmx.GetErrorInformation(e, 0));
             return;

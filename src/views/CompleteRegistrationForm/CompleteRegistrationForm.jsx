@@ -113,7 +113,7 @@ class CompleteRegistrationForm extends React.Component {
               .then(({ data }) => {
                 if (data.success) {
                   message.success('СМС код введен правильно!')
-                  axios.post('https://api.quidox.bt/api/user/update', registerData)
+                  axios.post('https://api.quidox.by/api/user/update', registerData)
                     .then(({ data }) => {
                       if (data) {
                         history.push('/login')
