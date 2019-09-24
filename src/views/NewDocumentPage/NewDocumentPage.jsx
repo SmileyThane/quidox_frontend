@@ -315,7 +315,6 @@ const NewDocumentPage = props => {
     })
   }
 
-  console.log(documentState.statuses)
   return (
     <Fragment>
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>
@@ -369,7 +368,7 @@ const NewDocumentPage = props => {
                       </Select>
                     </div>
                     <div className='actions-right'>
-                      {!isIE &&
+                      {isIE &&
                       <Icon onClick={() => verifyFile(i)} style={{ color: '#3278fb' }} type={documentState.verifyFetching ? 'loading' : 'edit'} />
                       }
                       <Icon
