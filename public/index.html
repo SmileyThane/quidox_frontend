@@ -58,7 +58,7 @@
     function sign(file) {
       try {
         var blob = avcmx.CreateBlob(0);
-        blob.SetAsText(document.getElementById('data' + file).value, 0);
+        blob.SetAsBase64(document.getElementById('data' + file).value, 0);
 
         var dataMessage = conn.CreateMessage(blob, 0);
         dataMessage.SignAsync(AVCMF_DETACHED | AVCMF_ADD_SIGN_CERT, function (e, signed) {
@@ -102,7 +102,7 @@
         }
 
         var content = avcmx.CreateBlob(0);
-        content.SetAsText(document.getElementById('data' + file).value, 0);
+        content.SetAsBase64(document.getElementById('data' + file).value, 0);
         msg.Content = content;
 
         try {
