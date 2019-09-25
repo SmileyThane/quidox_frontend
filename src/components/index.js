@@ -7,7 +7,6 @@ import SiderBlock from './SiderBlock'
 import FooterBlock from './FooterBlock'
 import Menu from './Menu'
 import Input from './Input'
-import Button from './Button'
 import FormGroup from './FormGroup'
 import Table from './Table'
 import PDFViewer from './PDFViewer'
@@ -23,7 +22,6 @@ export {
   FooterBlock,
   Menu,
   Input,
-  Button,
   FormGroup,
   Table,
   PDFViewer,

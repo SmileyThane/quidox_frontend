@@ -12,9 +12,9 @@ import {
   Tag,
   Typography,
   Input,
-  Checkbox
+  Button
 } from 'antd'
-import { Button } from '../../components'
+
 import './NewDocumentPage.scss'
 
 const defaultDocumentData = {

@@ -1,10 +1,8 @@
 import React, { useEffect, useState, Fragment } from 'react'
-import { Menu, Icon } from 'antd'
+import { Menu, Icon, Button } from 'antd'
 
 import api  from '../../services/api'
 import history from '../../history.js'
-
-import { Button } from '../'
 import { MenuItem } from './internal'
 import './Menu.scss'
 
@@ -17,7 +15,7 @@ const AntMenu = props => {
       setMenuData(result.data);
     }
     fetchData()
-  }, []);
+  }, [])
 
   const handleTitleClick = menuKey => {
     const { pathname, search, state: prevState } = props.location

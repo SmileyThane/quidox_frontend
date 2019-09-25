@@ -4,7 +4,6 @@ import useForm from 'rc-form-hooks'
 
 import history from '../../history'
 import { api } from '../../services'
-import { Button } from '../../components'
 import {
   Table,
   Tag,
@@ -17,7 +16,8 @@ import {
   Icon,
   Row,
   Col,
-  Input
+  Input,
+  Button
 } from 'antd'
 
 import './CompaniesPage.scss'

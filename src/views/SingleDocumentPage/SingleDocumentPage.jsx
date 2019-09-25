@@ -6,10 +6,20 @@ import fileDownload from 'js-file-download'
 import _ from 'lodash'
 
 import { api } from '../../services'
-import { Spin, Icon, List, Tag, Modal, Select, message, Typography, Popover, Tooltip } from 'antd'
+import { Spin,
+  Icon,
+  List,
+  Tag,
+  Modal,
+  Select,
+  message,
+  Typography,
+  Tooltip,
+  Button
+} from 'antd'
 import history from '../../history'
 import { findUsersByParams } from '../../services/api/user'
-import { Button, PDFViewer } from '../../components'
+import { PDFViewer } from '../../components'
 import PDFJSBACKEND from '../../backends/pdfjs'
 
 import { close } from './img'
