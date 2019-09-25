@@ -8,7 +8,8 @@ import {
   Typography,
   Button,
   Dropdown,
-  message
+  message,
+  Tooltip
 } from 'antd'
 
 import history from '../../history.js'
@@ -84,13 +85,15 @@ const HeaderBlock = props => {
                     {(data && data.companies) && data.companies.map(i => {
                       if (i.company_id === data.active_company_id) {
                         return (
-                          <Tag
-                            key={i.company_id}
-                            color='#87d068'
-                            style={{ width: '100%', maxWidth: '15rem', textOverflow: 'ellipsis', overflow: 'hidden' }}
-                          >
-                            {i.company_name}
-                          </Tag>
+                          <Tooltip arrowPointAtCenter title={i.company_name}>
+                            <Tag
+                              key={i.company_id}
+                              color='#87d068'
+                              style={{ width: '100%', maxWidth: '15rem', textOverflow: 'ellipsis', overflow: 'hidden' }}
+                            >
+                              {+i.company_number === 0 ? i.company_name : (`УНП: ${i.company_number}`)}
+                            </Tag>
+                          </Tooltip>
                         )
                       } else {
                         return null
