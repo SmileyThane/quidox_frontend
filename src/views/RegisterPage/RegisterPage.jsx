@@ -139,7 +139,7 @@ class RegistrationForm extends React.Component {
             axios.post('https://api.quidox.by/api/register', registerData)
               .then(({ data }) => {
                 if (data.success) {
-                  message.success('Данные отпрвлены успещно')
+                  message.success('Данные отправлены успешно')
                     this.setState({ currentStep: this.state.currentStep + 1 })
                     this.setState({ isFetching: false })
                 } else {
