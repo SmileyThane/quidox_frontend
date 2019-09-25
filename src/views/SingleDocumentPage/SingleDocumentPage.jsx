@@ -447,7 +447,7 @@ const SingleDocumentPage = props => {
         agreeFile(declineObject)
           .then(({ data }) => {
             if (data.success) {
-              message.success('Документ согласован')
+              message.success('Документ отклонен')
               getDocumentById(match.params.id)
             } else {
               throw new Error(data.error)
@@ -472,6 +472,7 @@ const SingleDocumentPage = props => {
       switch (id) {
         case 2: return 'Отклонить в согласовании'
         case 4: return 'Нельзя отклонить согласованный документ'
+        case 6: return 'Документ отклонен'
         default: return 'Документ не требует согласования'
       }
     }
@@ -568,7 +569,7 @@ const SingleDocumentPage = props => {
                             onClick={() => handleDeclineFile(item)} />
                         </Tooltip>,
                         <Tooltip title='Подписать документ' arrowPointAtCenter>
-                          <Icon type='edit' style={disabled} onClick={() => verifyFile(item, index)} />
+                          <Icon type='edit' style={!isIE ? disabled : normal} onClick={() => verifyFile(item, index)} />
                         </Tooltip>,
                         <Tooltip title={`Скачать документ`} placement='topRight' arrowPointAtCenter>
                           <Icon style={{ color: '#3278fb', fontSize: '1.6rem' }} onClick={() => downloadDocumentContent(item, false, true)} type='download' />
