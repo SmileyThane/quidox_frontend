@@ -461,6 +461,7 @@ const SingleDocumentPage = props => {
   }
 
   const getButtonTooltipText = (id, type) => {
+    console.log(id)
     if (type === 'agree') {
       switch (id) {
         case 2: return 'Согласовать документ'
