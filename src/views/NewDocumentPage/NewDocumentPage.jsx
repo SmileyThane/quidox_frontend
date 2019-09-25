@@ -258,7 +258,6 @@ const NewDocumentPage = props => {
       input.type = 'hidden'
       input.id = 'dataFile-' + index
       document.body.appendChild(input)
-      console.log(reader.result.split(',').pop())
       document.getElementById('dataFile-' + index).value = reader.result.split(',').pop()
 
       window.sign('File-' + index)
@@ -267,7 +266,7 @@ const NewDocumentPage = props => {
         const value = document.getElementById('verifiedData' + 'File-' + index).value
         const signedValue = document.getElementById('signedData' + 'File-' + index).value
         const flashData = JSON.parse(decodeURIComponent(value))
-        const key =  flashData.cert['2.5.29.14'] //flashData.cert['1.2.112.1.2.1.1.1.1.2'] + flashData.cert['1.2.112.1.2.1.1.1.1.1']
+        const key = flashData.cert['2.5.29.14'] //flashData.cert['1.2.112.1.2.1.1.1.1.2'] + flashData.cert['1.2.112.1.2.1.1.1.1.1']
         api.documents.checkFlashKey({ key: key })
           .then(({ data }) => {
             if (data.success) {

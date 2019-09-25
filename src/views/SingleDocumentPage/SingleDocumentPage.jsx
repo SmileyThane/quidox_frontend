@@ -225,6 +225,9 @@ const SingleDocumentPage = props => {
   }
 
   const verifyFile = (item, index) => {
+    if (!isIE) {
+      return null
+    }
     const base64 = item.encoded_file
     const input = window.document.createElement('input')
     input.type = 'hidden'
