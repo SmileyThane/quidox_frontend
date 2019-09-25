@@ -29,9 +29,18 @@ const updateUser = data => {
   })
 }
 
+const updateUserPhone = data => {
+  return http({
+    url: 'user/update/phone',
+    method: 'POST',
+    data
+  })
+}
+
 export {
   getUser,
   userLogout,
   updateUser,
+  updateUserPhone,
   findUsersByParams
 }
