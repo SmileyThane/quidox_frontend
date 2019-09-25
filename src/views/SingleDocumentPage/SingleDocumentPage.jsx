@@ -91,7 +91,7 @@ const SingleDocumentPage = props => {
       showUserData('ecp', documentState.fileCerts, documentState.activeFileCert)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [documentState.activeFileCert, documentState.fileCerts])
+  }, [documentState.activeFileCert, documentState.fileCerts.length])
 
   const chooseStatusAndSend = () => {
     if (documentState.isSelectVisible) {
@@ -136,7 +136,9 @@ const SingleDocumentPage = props => {
     })
   }
 
-  const showUserData = (type, dataArray = []) => {
+  const showUserData = (type, arr = []) => {
+    const dataArray = arr.filter(i => i.verification_hash)
+    console.log(dataArray)
     let ecpInfo = {}
 
     if (type === 'ecp') {
@@ -476,6 +478,20 @@ const SingleDocumentPage = props => {
     }
   }
 
+  const getEcpCount = arr => {
+    if (arr.length) {
+      let acpConut = []
+      arr.forEach(i => {
+        if (i.verification_hash !== null) {
+          acpConut.push(i)
+        }
+      })
+      return acpConut.length
+    } else {
+      return null
+    }
+  }
+  console.log('DOCUMENT:', singleDocument)
   return (
     <Fragment>
       <Spin spinning={isFetching}>
@@ -591,11 +607,11 @@ const SingleDocumentPage = props => {
                           <Icon style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }} type='eye' onClick={() => showModal(item)} />
                         </Tooltip>
                         <p style={{ marginRight: 10 }} className='single-document__name'>{item.name}</p>
-                        {item.users_companies.length > 0 && item.users_companies[0].verification_hash
+                        {item.users_companies.length
                           ? <Tag
                             onClick={() => showUserData('ecp', item.users_companies)}
                             style={{ cursor: 'pointer' }} color='#3278fb'>
-                              ЭЦП {item.users_companies.length}
+                            ЭЦП {getEcpCount(item.users_companies)}
                           </Tag>
                           : ''
                         }
@@ -668,7 +684,6 @@ const SingleDocumentPage = props => {
       }
       {documentState.showModal &&
         <Modal
-          title='Выберите получателей'
           visible
           closable={false}
           footer={null}
