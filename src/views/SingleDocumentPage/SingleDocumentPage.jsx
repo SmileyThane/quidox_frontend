@@ -480,15 +480,8 @@ const SingleDocumentPage = props => {
 
   const getEcpCount = arr => {
     if (arr.length) {
-      let acpConut = []
-      arr.forEach(i => {
-        if (i.verification_hash !== null) {
-          acpConut.push(i)
-        }
-      })
-      return acpConut.length
-    } else {
-      return null
+      let acpCount = arr.filter(i => i.verification_hash !== null)
+      return acpCount.length
     }
   }
   console.log('DOCUMENT:', singleDocument)
@@ -607,13 +600,12 @@ const SingleDocumentPage = props => {
                           <Icon style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }} type='eye' onClick={() => showModal(item)} />
                         </Tooltip>
                         <p style={{ marginRight: 10 }} className='single-document__name'>{item.name}</p>
-                        {item.users_companies.length
-                          ? <Tag
-                            onClick={() => showUserData('ecp', item.users_companies)}
-                            style={{ cursor: 'pointer' }} color='#3278fb'>
-                            ЭЦП {getEcpCount(item.users_companies)}
-                          </Tag>
-                          : ''
+                        {getEcpCount(item.users_companies) > 0 &&
+                        <Tag
+                          onClick={() => showUserData('ecp', item.users_companies)}
+                          style={{ cursor: 'pointer' }} color='#3278fb'>
+                          ЭЦП {getEcpCount(item.users_companies)}
+                        </Tag>
                         }
                         {item.status &&
                           <Tag color={item.status.status_data.color}>{item.status.status_data.name}</Tag>
