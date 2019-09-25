@@ -29,6 +29,7 @@
     var AVCMR_BASE = 0xE82A0100;
     var AVCMR_SIGN_INVALID = AVCMR_BASE + 0x27;
     var AVCMF_DETACHED = 0x2000000;
+    var AVCMF_ADD_SIGN_CERT = 0x100000;
 
     function handleError(e) {
       var lastError = avcmx.GetLastError();
