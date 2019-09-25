@@ -267,7 +267,7 @@ const NewDocumentPage = props => {
         const value = document.getElementById('verifiedData' + 'File-' + index).value
         const signedValue = document.getElementById('signedData' + 'File-' + index).value
         const flashData = JSON.parse(decodeURIComponent(value))
-        const key = flashData.cert['1.2.112.1.2.1.1.1.1.2'] + flashData.cert['1.2.112.1.2.1.1.1.1.1']
+        const key =  flashData.cert['2.5.29.14'] //flashData.cert['1.2.112.1.2.1.1.1.1.2'] + flashData.cert['1.2.112.1.2.1.1.1.1.1']
         api.documents.checkFlashKey({ key: key })
           .then(({ data }) => {
             if (data.success) {
