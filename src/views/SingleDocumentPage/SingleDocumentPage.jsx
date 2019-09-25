@@ -390,16 +390,7 @@ const SingleDocumentPage = props => {
 
   const handleAgreeFile = item => {
     switch (item.status.status_data.id) {
-      case 1: {
-        return null
-      }
-      case 4: {
-        return null
-      }
-      case 6: {
-        return null
-      }
-      default: {
+      case 2: {
         const agreeObject = {
           attachments: [
             {
@@ -420,6 +411,10 @@ const SingleDocumentPage = props => {
           .catch(error => {
             message.error(error.message)
           })
+        break
+      }
+      default: {
+        return null
       }
     }
   }
@@ -430,6 +425,9 @@ const SingleDocumentPage = props => {
         return null
       }
       case 4: {
+        return null
+      }
+      case 5: {
         return null
       }
       case 6: {
@@ -461,7 +459,6 @@ const SingleDocumentPage = props => {
   }
 
   const getButtonTooltipText = (id, type) => {
-    console.log(id)
     if (type === 'agree') {
       switch (id) {
         case 2: return 'Согласовать документ'
@@ -563,6 +560,7 @@ const SingleDocumentPage = props => {
                             style={(() => {
                               switch (item.status.status_data.id) {
                                 case 2: return normal
+                                case 3: return normal
                                 case 6: return decline
                                 default: return disabled
                               }
@@ -570,7 +568,17 @@ const SingleDocumentPage = props => {
                             onClick={() => handleDeclineFile(item)} />
                         </Tooltip>,
                         <Tooltip title='Подписать документ' arrowPointAtCenter>
-                          <Icon type='edit' style={!isIE ? disabled : normal} onClick={() => verifyFile(item, index)} />
+                          <Icon
+                            type='edit'
+                            style={isIE
+                              ? (() => {
+                                switch (item.status.status_data.id) {
+                                  case 3: return normal
+                                  case 5: return active
+                                  default: return disabled
+                                }
+                              })() : disabled}
+                            onClick={() => verifyFile(item, index)} />
                         </Tooltip>,
                         <Tooltip title={`Скачать документ`} placement='topRight' arrowPointAtCenter>
                           <Icon style={{ color: '#3278fb', fontSize: '1.6rem' }} onClick={() => downloadDocumentContent(item, false, true)} type='download' />

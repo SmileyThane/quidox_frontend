@@ -9,7 +9,11 @@ import {
   Button,
   Dropdown,
   message,
-  Tooltip
+  Tooltip,
+  Statistic,
+  Row,
+  Col,
+  Avatar
 } from 'antd'
 
 import history from '../../history.js'
@@ -52,56 +56,45 @@ const HeaderBlock = props => {
           <Fragment>
             <Skeleton loading={isFetching} active paragraph={false}>
               <div className='header-data'>
-                <div className='header__setting'>
-
-                  <NavLink to={{ pathname: '/companies', state: { id: '/companies', fromHeader: true } }}>
-                    <Button type='primary' ghost>
-                      Верификация ЭЦП
-                    </Button>
-                  </NavLink>
-
-                  <div className='header-setting-item'>
-                    <Text>Тариф: </Text>
-                    <Tag color='blue' style={{ marginLeft: '1rem' }}>Старт</Tag>
-                  </div>
-
-                  <div className='header-setting-item'>
-                    <Text>Доступно действий: </Text>
-                    <Tag color='blue' style={{ marginLeft: '1rem' }}>500</Tag>
-                  </div>
-
-                  <div className='header-setting-item'>
-                    <Text>Баланс (BYN): </Text>
-                    <Tag color='blue' style={{ marginLeft: '1rem' }}>120.00</Tag>
-                    <NavLink to={{ pathname: `/companies/${data.active_company_id}`, state: { id: '/companies', fromBalance: true } }}>
-                      <Button
-                        type='link'
-                      >
-                        Пополнить
-                      </Button>
-                    </NavLink>
-                  </div>
-                  <div className='header-setting-item'>
-                    {(data && data.companies) && data.companies.map(i => {
-                      if (i.company_id === data.active_company_id) {
-                        return (
-                          <Tooltip arrowPointAtCenter title={i.company_name}>
-                            <Tag
-                              key={i.company_id}
-                              color='#87d068'
-                              style={{ width: '100%', maxWidth: '15rem', textOverflow: 'ellipsis', overflow: 'hidden' }}
-                            >
-                              {+i.company_number === 0 ? i.company_name : (`УНП: ${i.company_number}`)}
-                            </Tag>
-                          </Tooltip>
-                        )
-                      } else {
-                        return null
-                      }
-                    })}
-                  </div>
+                <div className='header-data--item'>
+                  Тариф:
+                  <span className='tag-span'>Легкий старт</span>
                 </div>
-                <div className='user header__user'>
+
+                {/*<div className='header-data--item'>*/}
+                {/*  Действителен до:*/}
+                {/*  <span className='tag-span'>31.11.2019</span>*/}
+                {/*</div>*/}
+
+                <div className='header-data--item'>
+                  Доступно действий:
+                  <span className='tag-span'>0092</span>
+                </div>
+
+                <div className='header-data--item'>
+                  Баланс (BYN):
+                  <span className='tag-span'>120.00</span>
+                </div>
+                <div className='header-data--item'>
+                  {(data && data.companies) && data.companies.map(i => {
+                    if (i.company_id === data.active_company_id) {
+                      return (
+                        <Tooltip key={i.company_id} arrowPointAtCenter title={i.company_name}>
+                          <Tag
+                            color='#87d068'
+                            style={{ width: '100%', maxWidth: '15rem', textOverflow: 'ellipsis', overflow: 'hidden' }}
+                          >
+                            {+i.company_number === 0 ? i.company_name : (`УНП: ${i.company_number}`)}
+                          </Tag>
+                        </Tooltip>
+                      )
+                    } else {
+                      return null
+                    }
+                  })}
+                </div>
+              </div>
+              <div className='user header__user'>
                   <Dropdown
                     overlay={
                       (
@@ -128,10 +121,13 @@ const HeaderBlock = props => {
                     }
                     trigger={['click']}
                   >
-                    <div>{data.email && data.email}</div>
+                    <a className='ant-dropdown-link user-link'>
+                      <Avatar className='user-avatar' icon='user' />
+                      <span className='user-email'>{data.email && data.email}</span>
+                      <Icon type='down' style={{ marginLeft: '.5rem' }} />
+                    </a>
                   </Dropdown>
                 </div>
-              </div>
             </Skeleton>
           </Fragment>
         }
