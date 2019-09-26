@@ -241,7 +241,7 @@ class RegistrationForm extends React.Component {
         <Option value='37544'>+375(44)</Option>
       </Select>
     )
-    console.log(this.state.phone)
+
     return (
       <Fragment>
         <div className='register' >
