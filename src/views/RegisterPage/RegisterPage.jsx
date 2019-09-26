@@ -22,6 +22,9 @@ const { Text, Title } = Typography
 const { Option } = Select
 const { Step } = Steps
 
+const publicContract = 'https://quidox.by/agreement/'
+const privacyPolicy = 'https://quidox.by/privacy_policy/'
+
 const steps = [
   {
     title: 'Шаг 1',
@@ -278,7 +281,9 @@ class RegistrationForm extends React.Component {
                       style={{ width: '100%' }}
                     />)}
                   </Form.Item>
-                  <Checkbox style={{ marginBottom: '1rem' }} onClick={this.handleCheck}>Я ознакомился и принимаю условия Публичного договора и Политику конфиденцальности.</Checkbox>
+                  <Checkbox style={{ marginBottom: '1rem' }} onClick={this.handleCheck}>
+                    Я ознакомился и принимаю условия <a style={{ textDecoration: 'underline' }} href={publicContract} target='_blank'>Публичного договора</a> и <a style={{ textDecoration: 'underline' }} href={privacyPolicy}>Политику конфиденцальности</a>.
+                  </Checkbox>
                   <div style={{ marginBottom: '1rem' }}>
                     <Text>
                       Для начала регистрации и обеспечения безопасной двухфакторной аутентификации, пожалуйста введите номер
