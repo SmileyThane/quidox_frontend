@@ -68,7 +68,6 @@ const AntdTable = props => {
   const [parameterState, setParameterState] = useState({ ...defaultParameterState })
 
   useEffect(() => {
-    console.log('First UseEffect')
     if (activeCompany && status && type) {
       setParameterState({
         ...parameterState,
@@ -81,7 +80,6 @@ const AntdTable = props => {
   }, [activeCompany, status, type])
 
   useEffect(() => {
-    console.log('Second UseEffect')
     if (parameterState.status) {
       getDocumentsWithParams(activeCompany, parameterState)
     }
@@ -94,7 +92,7 @@ const AntdTable = props => {
       render: record =>
         <Fragment>
           {(status === 1 || status === 3)
-            ? <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }}>
+            ? <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey } }}>
               <div>
                 {record.recipient &&
                     record.recipient['user_email']
@@ -105,7 +103,7 @@ const AntdTable = props => {
                 }
               </div>
             </Link>
-            : <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }}>
+            : <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey } }}>
               <div>
                 {record.sender &&
                     record.sender['user_email']
@@ -122,12 +120,12 @@ const AntdTable = props => {
     {
       title: 'Тема',
       key: 'descr',
-      render: record => <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }}>{record.document.name}</Link>
+      render: record => <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey } }}>{record.document.name}</Link>
     },
     {
       title: () => <Icon type='paper-clip' />,
       key: 'attachments',
-      render: record => <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname } }} style={{ textAlign: 'center' }} >{record.document.attachments.length === 0 ? 'Нет приложенных документов' : record.document.attachments.length }</Link>,
+      render: record => <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey } }} style={{ textAlign: 'center' }} >{record.document.attachments.length === 0 ? 'Нет приложенных документов' : record.document.attachments.length }</Link>,
       sorter: false
     },
     {
@@ -329,8 +327,7 @@ const AntdTable = props => {
     parameterState.sort_by,
     parameterState.sort_value
   ])
-  console.log(parameterState)
-  console.log('STATUS:', status)
+  console.log('History:', history)
   return (
     <Fragment>
       {tableState.showModal && <Modal

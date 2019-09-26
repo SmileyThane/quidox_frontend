@@ -11,7 +11,6 @@ const MenuItem = ({ url, id, icon, isInner = false, menuKey = '', iconColor = ''
   if (status) {
     to.search = `?status=${status}`
   }
-
   return (
     <Menu.Item {...rest}>
       <NavLink to={to}>

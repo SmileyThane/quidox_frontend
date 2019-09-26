@@ -11,13 +11,13 @@ import './Menu.scss'
 const AntMenu = props => {
   const [menuData, setMenuData] = useState({})
 
-  useEffect( () => {
+  useEffect(() => {
     const fetchData = async () => {
       const result = await api.documents.getDocumentsStatuses()
-      setMenuData(result.data);
+      setMenuData(result.data)
     }
     fetchData()
-  }, []);
+  }, [])
 
   const handleTitleClick = menuKey => {
     const { pathname, search, state: prevState } = props.location
@@ -30,7 +30,7 @@ const AntMenu = props => {
 
   const { SubMenu } = Menu
   const { data } = menuData
-
+  console.log('history from menu:', history)
   return (
     <Fragment>
       <Button
@@ -122,7 +122,7 @@ const AntMenu = props => {
           }
           onTitleClick={({ key: menuKey }) => handleTitleClick(menuKey)}
         >
-          {data &&  data.document_statuses.map(i => {
+          {data && data.document_statuses.map(i => {
             if (![1, 2, 3, 4].includes(i.id)) {
               return (
                 <MenuItem

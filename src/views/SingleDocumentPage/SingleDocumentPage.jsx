@@ -484,7 +484,7 @@ const SingleDocumentPage = props => {
       return acpCount.length
     }
   }
-  console.log('DOCUMENT:', singleDocument)
+
   return (
     <Fragment>
       <Spin spinning={isFetching}>

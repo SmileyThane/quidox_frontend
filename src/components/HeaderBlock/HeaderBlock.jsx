@@ -45,7 +45,7 @@ const HeaderBlock = props => {
         message.error(error.message)
       })
   }
-  console.log('User data:', data)
+
   return (
     <Header className='header'>
       <div className='header__content'>
@@ -60,11 +60,6 @@ const HeaderBlock = props => {
                   Тариф:
                   <span className='tag-span'>Легкий старт</span>
                 </div>
-
-                {/*<div className='header-data--item'>*/}
-                {/*  Действителен до:*/}
-                {/*  <span className='tag-span'>31.11.2019</span>*/}
-                {/*</div>*/}
 
                 <div className='header-data--item'>
                   Доступно действий:
