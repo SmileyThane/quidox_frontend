@@ -252,7 +252,8 @@ const SingleDocumentPage = props => {
             {
               id: item.id,
               hash: signedValue,
-              data: value
+              data: value,
+              status: 5
             }
           ]
         }]

@@ -118,8 +118,7 @@ const CompaniesPage = props => {
           })
       })
   }
-  location.fromHeader && console.log('123')
-  console.log('company location', location)
+
   const handleCreateCompany = () => {
     const newCompanyData = {
       name: companyState.newCompanyName,
