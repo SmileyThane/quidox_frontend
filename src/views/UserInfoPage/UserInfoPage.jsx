@@ -23,6 +23,7 @@ class UserInfoPage extends React.Component {
     activeCompanyId: null,
     isEditMode: false,
     isModalVisible: false,
+    phone: '',
     modalType: '',
     isCode: false
   }
@@ -63,6 +64,7 @@ class UserInfoPage extends React.Component {
 
   openModal = type => {
     this.setState({ isModalVisible: !this.state.isModalVisible })
+    this.setState({ isCode: false })
     this.setState({ modalType: type })
   }
 
@@ -92,8 +94,12 @@ class UserInfoPage extends React.Component {
   changeUserPhone = e => {
     e.preventDefault()
     this.props.form.validateFieldsAndScroll((err, values) => {
+      const phoneData = {
+        phone: this.state.phone,
+        code: values.code
+      }
       if (this.state.isCode) {
-        axios.post('https://api.quidox.by/api/sms/confirm', values)
+        axios.post('https://api.quidox.by/api/sms/confirm', phoneData)
           .then(({ data }) => {
             if (data.success) {
               message.success('СМС код введен правильно!')
@@ -106,7 +112,7 @@ class UserInfoPage extends React.Component {
             message.error(error.message)
           })
       } else {
-        axios.post('https://api.quidox.by/api/sms/send', values)
+        axios.post('https://api.quidox.by/api/sms/send', phoneData)
           .then(({ data }) => {
             if (data.success) {
               message.success('На указанный Вами номер отправлено SMS с кодом')
@@ -310,6 +316,7 @@ class UserInfoPage extends React.Component {
           </Button>
 
           <Button type='primary' style={{ marginLeft: '2rem' }} onClick={() => this.openModal('phone')}>
+            <Icon type='edit'/>
             Сменить номер телефона
           </Button>
         </div>
