@@ -1,4 +1,7 @@
 import React, { useState, useEffect, Fragment, useRef } from 'react'
+import { api } from '../../services'
+import axios from 'axios'
+import fileDownload from 'js-file-download'
 
 import _ from 'lodash'
 import { Link } from 'react-router-dom'
@@ -148,7 +151,7 @@ const AntdTable = props => {
       className: 'table-download',
       render: record => <Fragment>
         <Tooltip placement='topRight' title='Скачать квитанцию в формате pdf' arrowPointAtCenter>
-          <Icon type='file-pdf' style={{ marginRight: '0.5rem', fontSize: '1.8rem', cursor: 'pointer' }} />
+          <Icon onClick={() => download(record.id)} type='file-pdf' style={{ marginRight: '0.5rem', fontSize: '1.8rem', cursor: 'pointer' }} />
         </Tooltip>
 
         <Tooltip placement='topRight' title='Скачать квитанцию в формате xml' arrowPointAtCenter>
@@ -157,6 +160,19 @@ const AntdTable = props => {
       </Fragment>
     }
   ]
+
+  const download = id => {
+    axios.get(`https://api.quidox.by/api/receipt/pdf/${id}`, {
+      'responseType': 'arraybuffer',
+      headers: {
+        'Authorization': 'Bearer ' + window.localStorage.getItem('authToken'),
+        'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
+      }
+    })
+      .then(({ data }) => {
+        fileDownload(data, 'name.pdf')
+      })
+  }
 
   const onSelectChange = selectedRowKeys => {
     setTableState({

@@ -21,6 +21,13 @@ const downloadDocument = (id, withCert) => {
   })
 }
 
+const downloadReciept = id => {
+  return http({
+    url: `/receipt/pdf/${id}`,
+    method: 'GET'
+  })
+}
+
 const verifyDocument = data => {
   return http({
     url: 'documents/confirm',
@@ -51,5 +58,6 @@ export {
   downloadDocument,
   verifyDocument,
   agreeFile,
-  updateDocumentById
+  updateDocumentById,
+  downloadReciept
 }
