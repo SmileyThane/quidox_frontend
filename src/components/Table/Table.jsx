@@ -33,7 +33,8 @@ const defaultTableState = {
   fetching: false,
   data: [],
   showModal: false,
-  sorter: ''
+  sorter: '',
+  isFetching: false
 }
 
 const defaultParameterState = {
@@ -162,6 +163,10 @@ const AntdTable = props => {
   ]
 
   const download = id => {
+    setTableState({
+      ...tableState,
+      isFetching: true
+    })
     axios.get(`https://api.quidox.by/api/receipt/pdf/${id}`, {
       'responseType': 'arraybuffer',
       headers: {
@@ -170,7 +175,16 @@ const AntdTable = props => {
       }
     })
       .then(({ data }) => {
-        // fileDownload(data, 'name.pdf')
+        if (data) {
+          fileDownload(data, 'name.pdf')
+          setTableState({
+            ...tableState,
+            isFetching: false
+          })
+        }
+      })
+      .catch(error => {
+        message.error(error)
       })
   }
 
@@ -377,71 +391,74 @@ const AntdTable = props => {
         >Отмена</Button>
       </Modal>
       }
-      <Table
-        className='table'
-        columns={columns}
-        rowSelection={rowSelection}
-        dataSource={tableData.hasOwnProperty('data') ? tableData.data : []}
-        rowKey='id'
-        locale={{ emptyText: 'Нет данных' }}
-        rowClassName={record => record.is_read === 0 ? 'unread' : ''}
-        pagination={false}
-        onChange={handleTableChange}
-        title={() =>
-          (
-            <div className='table__header table-header'>
-              <div className='table-header__actions'>
-                <Tooltip title='Перенаправление документа(ов)' placement='topRight' arrowPointAtCenter>
-                  <Icon type='cloud-upload' onClick={() => openModal()} />
-                </Tooltip>
-                <Tooltip title='Удаление документа(ов)' placement='topRight' arrowPointAtCenter>
-                  <Popconfirm
-                    title='Вы уверены?'
-                    onConfirm={() => handleRemove(type)}
-                    okText='Удалить'
-                    cancelText='Отмена'
-                  >
-                    <Icon type='delete' style={{ color: '#FF7D1D' }} />
-                  </Popconfirm>
-                </Tooltip>
-              </div>
-              <div className='table-header__search'>
-                <AutoComplete onSearch={_.debounce(handleSearch, 500)} placeholder={`Введите тему, ${(status === 1 || status === 3) ? '  получателя' : 'отправителя'}...`} />
-              </div>
-              <Pagination
-                simple
-                current={parameterState.page}
-                hideOnSinglePage
-                total={!isNaN(Math.ceil(tableData.total / +tableData.per_page) * 10) ? Math.ceil(tableData.total / +tableData.per_page) * 10 : 0}
-                onChange={handleChangePage}
-              />
-            </div>
-          )}
-        footer={() =>
-          (
-            <div className='table__footer table-footer'>
-              <div className='table-footer-left'>
-                <div className='table-footer__item'>
-                  <Text>Отмечено: {tableState.selectedRowKeys.length}</Text>
+      <Spin spinning={tableState.isFetching}>
+        <Table
+          className='table'
+          columns={columns}
+          rowSelection={rowSelection}
+          dataSource={tableData.hasOwnProperty('data') ? tableData.data : []}
+          rowKey='id'
+          locale={{ emptyText: 'Нет данных' }}
+          rowClassName={record => record.is_read === 0 ? 'unread' : ''}
+          pagination={false}
+          onChange={handleTableChange}
+          title={() =>
+            (
+              <div className='table__header table-header'>
+                <div className='table-header__actions'>
+                  <Tooltip title='Перенаправление документа(ов)' placement='topRight' arrowPointAtCenter>
+                    <Icon type='cloud-upload' onClick={() => openModal()} />
+                  </Tooltip>
+                  <Tooltip title='Удаление документа(ов)' placement='topRight' arrowPointAtCenter>
+                    <Popconfirm
+                      title='Вы уверены?'
+                      onConfirm={() => handleRemove(type)}
+                      okText='Удалить'
+                      cancelText='Отмена'
+                    >
+                      <Icon type='delete' style={{ color: '#FF7D1D' }} />
+                    </Popconfirm>
+                  </Tooltip>
                 </div>
-                <div className='table-footer__item'>
-                  <Text>Всего: {tableData.hasOwnProperty('data') && tableData.data.length}</Text>
+                <div className='table-header__search'>
+                  <AutoComplete onSearch={_.debounce(handleSearch, 500)} placeholder={`Введите тему, ${(status === 1 || status === 3) ? '  получателя' : 'отправителя'}...`} />
+                </div>
+                <Pagination
+                  simple
+                  current={parameterState.page}
+                  hideOnSinglePage
+                  total={!isNaN(Math.ceil(tableData.total / +tableData.per_page) * 10) ? Math.ceil(tableData.total / +tableData.per_page) * 10 : 0}
+                  onChange={handleChangePage}
+                />
+              </div>
+            )}
+          footer={() =>
+            (
+              <div className='table__footer table-footer'>
+                <div className='table-footer-left'>
+                  <div className='table-footer__item'>
+                    <Text>Отмечено: {tableState.selectedRowKeys.length}</Text>
+                  </div>
+                  <div className='table-footer__item'>
+                    <Text>Всего: {tableData.hasOwnProperty('data') && tableData.data.length}</Text>
+                  </div>
+                </div>
+                <div>
+                  <Text>На странице:</Text>
+                  <Select onChange={handleChangePerPage} defaultValue={window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 15} style={{ width: 120, marginLeft: '1rem' }}>
+                    <Option value={15}>15</Option>
+                    <Option value={30}>30</Option>
+                    <Option value={60}>60</Option>
+                  </Select>
                 </div>
               </div>
-              <div>
-                <Text>На странице:</Text>
-                <Select onChange={handleChangePerPage} defaultValue={window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 15} style={{ width: 120, marginLeft: '1rem' }}>
-                  <Option value={15}>15</Option>
-                  <Option value={30}>30</Option>
-                  <Option value={60}>60</Option>
-                </Select>
-              </div>
-            </div>
-          )}
-        {...rest}
-      >
-        {children}
-      </Table>
+            )}
+          {...rest}
+        >
+          {children}
+        </Table>
+      </Spin>
+
     </Fragment>
   )
 }
