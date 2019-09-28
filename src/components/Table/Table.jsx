@@ -152,7 +152,7 @@ const AntdTable = props => {
       className: 'table-download',
       render: record => <Fragment>
         <Tooltip placement='topRight' title='Скачать квитанцию в формате pdf' arrowPointAtCenter>
-          <Icon onClick={() => download(record.id)} type='file-pdf' style={{ marginRight: '0.5rem', fontSize: '1.8rem', cursor: 'pointer' }} />
+          <Icon onClick={() => downloadReceipt(record.id, record.document.name)} type='file-pdf' style={{ marginRight: '0.5rem', fontSize: '1.8rem', cursor: 'pointer' }} />
         </Tooltip>
 
         <Tooltip placement='topRight' title='Скачать квитанцию в формате xml' arrowPointAtCenter>
@@ -162,7 +162,7 @@ const AntdTable = props => {
     }
   ]
 
-  const download = id => {
+  const downloadReceipt = (id, name) => {
     setTableState({
       ...tableState,
       isFetching: true
@@ -176,7 +176,7 @@ const AntdTable = props => {
     })
       .then(({ data }) => {
         if (data) {
-          fileDownload(data, 'name.pdf')
+          fileDownload(data, `${name}.pdf`)
           setTableState({
             ...tableState,
             isFetching: false
