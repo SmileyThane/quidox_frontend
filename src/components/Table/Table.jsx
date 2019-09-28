@@ -170,7 +170,7 @@ const AntdTable = props => {
       }
     })
       .then(({ data }) => {
-        fileDownload(data, 'name.pdf')
+        // fileDownload(data, 'name.pdf')
       })
   }
 
