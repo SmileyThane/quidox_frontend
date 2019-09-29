@@ -14,6 +14,7 @@ import {
   Form
 } from 'antd'
 import './UserInfoPage.scss'
+import { api } from '../../services'
 
 const { Option } = Select
 
@@ -103,7 +104,7 @@ class UserInfoPage extends React.Component {
         axios.post('https://api.quidox.by/api/sms/confirm', phoneData)
           .then(({ data }) => {
             if (data.success) {
-              axios.post('https://api.quidox.by/api/user/update', phoneData)
+              this.props.updateUser(phoneData)
                 .then(({ data }) => {
                   if (data) {
                     message.success('Номер успешно сохранен')
