@@ -1,7 +1,6 @@
 import React, { useRef, useState, Fragment, useEffect } from 'react'
 import axios from 'axios'
 import _ from 'lodash'
-import { Base64 } from 'js-base64'
 
 import { api } from '../../services'
 import {
@@ -11,8 +10,7 @@ import {
   Spin,
   Tag,
   Typography,
-  Input,
-  Checkbox
+  Input
 } from 'antd'
 import { Button } from '../../components'
 import './NewDocumentPage.scss'

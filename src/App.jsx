@@ -18,7 +18,8 @@ import {
   ExternalsPage,
   CompaniesPage,
   DocumentsPage,
-  AttachmentsPage
+  AttachmentsPage,
+  EcsCheckingPage
 } from './views'
 
 function App () {
@@ -31,6 +32,7 @@ function App () {
           <PrivateRoute path='/new-document' component={NewDocumentPage} />
 
           <PrivateRoute path='/externals' component={ExternalsPage} />
+          <PrivateRoute path='/esc-checking' component={EcsCheckingPage} />
 
           <PrivateRoute exact path='/companies' component={CompaniesPage} />
           <PrivateRoute path='/companies/:id' component={SingleCompanyPage} />

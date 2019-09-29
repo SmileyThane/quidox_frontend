@@ -54,6 +54,7 @@
   box-shadow: -9px 9px 5px -5px rgba(0, 0, 0, 0.1);
 }
 .user__dropdown__item {
+  cursor: pointer;
   height: 5rem;
   padding: 1rem 1rem 1rem 2rem;
   display: flex;
@@ -90,6 +91,7 @@
   display: inline-block;
   width: 100%;
   align-items: center;
+  cursor: pointer;
   i {
     color: rgba(0, 0, 0, 0.65);
   }

@@ -11,6 +11,7 @@ import ExternalsPage from './ExternalsPage'
 import ResetPasswordPage from './ResetPasswordPage'
 import DocumentsPage from './DocumentsPage'
 import AttachmentsPage from './AttachmentsPage'
+import EcsCheckingPage from './EcsCheckingPage'
 
 export {
   LoginPage,
@@ -25,5 +26,6 @@ export {
   ExternalsPage,
   CompaniesPage,
   DocumentsPage,
-  AttachmentsPage
+  AttachmentsPage,
+  EcsCheckingPage
 }

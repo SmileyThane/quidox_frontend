@@ -141,6 +141,12 @@ const AntMenu = props => {
           })}
         </SubMenu>
         <MenuItem
+          heading='Проверка ЭЦП'
+          url='/esc-checking'
+          key='/esc-checking'
+          icon='file-protect'
+        />
+        <MenuItem
           heading='Сторонние источники'
           url='/externals'
           key='/externals'
