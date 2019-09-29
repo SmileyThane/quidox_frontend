@@ -3,15 +3,11 @@ import React, { Fragment } from 'react'
 import { Table, PageDescription } from '../../components'
 
 const AttachmentsPage = props => {
-
   const {
+    getDocumentsByActiveCompanyId,
     user: { data },
-    match,
-    documents: { documents, isFetching },
-    getDocumentsByActiveCompanyId
+    documents: { documents, isFetching }
   } = props
-
-  console.log(window.location.search, props);
 
   const params = new URLSearchParams(props.location.search)
   const status = params.get('status')

@@ -6,7 +6,7 @@ import fileDownload from 'js-file-download'
 import _ from 'lodash'
 
 import { api } from '../../services'
-import { Spin, Icon, List, Tag, Modal, Select, message, Typography, Popover, Tooltip } from 'antd'
+import { Spin, Icon, List, Tag, Modal, Select, message, Typography, Tooltip } from 'antd'
 import history from '../../history'
 import { findUsersByParams } from '../../services/api/user'
 import { Button, PDFViewer } from '../../components'
@@ -92,17 +92,6 @@ const SingleDocumentPage = props => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [documentState.activeFileCert, documentState.fileCerts.length])
-
-  const chooseStatusAndSend = () => {
-    if (documentState.isSelectVisible) {
-      showUserData('send')
-    } else {
-      setDocumentState({
-        ...documentState,
-        isSelectVisible: !documentState.isSelectVisible
-      })
-    }
-  }
 
   const showModal = item => {
     axios.get(item['preview_path'], {
@@ -612,17 +601,6 @@ const SingleDocumentPage = props => {
                         {item.status &&
                           <Tag color={item.status.status_data.color}>{item.status.status_data.name}</Tag>
                         }
-
-                        {documentState.isSelectVisible &&
-                          <div className='doc-select'>
-                            <Text>Требуется:</Text>
-                            <Select defaultValue={1} style={{ marginLeft: 10, minWidth: '20rem' }}>
-                              <Option value={1}>Подпись получателя</Option>
-                              <Option value={2}>Согласование</Option>
-                              <Option value={3}>Простая доставка</Option>
-                            </Select>
-                          </div>
-                        }
                       </div>
                     </List.Item>
                   )}
@@ -648,9 +626,9 @@ const SingleDocumentPage = props => {
                     }
                   </div>
                   <div className='document__actions__right'>
-                    <Button disabled title='Введется разработка' onClick={() => chooseStatusAndSend()} type='primary'>
-                      <Icon type={documentState.isSelectVisible ? 'double-right' : 'redo'} />
-                      {documentState.isSelectVisible ? 'Продолжить' : 'Перенаправить'}
+                    <Button title='Введется разработка' onClick={() => showUserData('send')} type='primary'>
+                      <Icon type='redo' />
+                      Перенаправить
                     </Button>
                   </div>
                 </div>

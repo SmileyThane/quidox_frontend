@@ -191,6 +191,7 @@ const CompaniesPage = props => {
           locale={{ emptyText: 'Нет созданных компаний' }}
         />
       </div>
+
       {companyState.showInput &&
         <div className='invite-block'>
           <Row>
