@@ -102,8 +102,18 @@ class UserInfoPage extends React.Component {
         axios.post('https://api.quidox.by/api/sms/confirm', phoneData)
           .then(({ data }) => {
             if (data.success) {
-              message.success('СМС код введен правильно!')
-              this.setState({ isModalVisible: false })
+              axios.post('https://api.quidox.by/api/user/update/phone', phoneData.phone)
+                .then(({ data }) => {
+                  if (data) {
+                    message.success('Номер успешно сохранен')
+                    this.setState({ isModalVisible: false })
+                  } else {
+                    throw new Error(data.error())
+                  }
+                })
+                .catch(error => {
+                  message.error(error.message)
+                })
             } else {
               throw new Error(data.error)
             }
