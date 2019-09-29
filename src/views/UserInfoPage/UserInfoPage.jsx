@@ -96,13 +96,14 @@ class UserInfoPage extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       const phoneData = {
         phone: this.state.phone,
-        code: values.code
+        code: values.code,
+        // id:
       }
       if (this.state.isCode) {
         axios.post('https://api.quidox.by/api/sms/confirm', phoneData)
           .then(({ data }) => {
             if (data.success) {
-              axios.post('https://api.quidox.by/api/user/update/phone', phoneData.phone)
+              axios.post('https://api.quidox.by/api/user/update', phoneData)
                 .then(({ data }) => {
                   if (data) {
                     message.success('Номер успешно сохранен')
@@ -201,6 +202,7 @@ class UserInfoPage extends React.Component {
     const {
       user: { isFetching, data }
     } = this.props
+    console.log(data)
     return (
       <Fragment>
         <Form className='content content_user form-user'>
