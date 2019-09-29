@@ -1,10 +1,9 @@
-import React, { Fragment, useEffect, useState, useRef } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import moment from 'moment'
 import useForm from 'rc-form-hooks'
 
-import history from '../../history'
+import { Link } from 'react-router-dom'
 import { api } from '../../services'
-import { Button } from '../../components'
 import {
   Table,
   Tag,
@@ -17,11 +16,12 @@ import {
   Icon,
   Row,
   Col,
-  Input
+  Input,
+  Button
 } from 'antd'
 
+import history from '../../history'
 import './CompaniesPage.scss'
-import { Link } from 'react-router-dom'
 
 const defaultCompanyState = {
   selectedCompanyId: null,
@@ -49,8 +49,7 @@ const CompaniesPage = props => {
     createCompany,
     changeActiveCompanyById,
     companies: { isFetching, list },
-    user: { data },
-    location
+    user: { data }
   } = props
 
   const { getFieldDecorator, validateFields } = useForm()
@@ -143,26 +142,27 @@ const CompaniesPage = props => {
       })
   }
 
-  const columns = [{
-    title: 'Наименование',
-    key: 'name',
-    render: record => <Link to={{ pathname: `/companies/${+record.company_id}`, state: { from: history.location.pathname } }}>{record.company_data.name}</Link>
-  },
-  {
-    title: 'УНП',
-    key: 'number',
-    dataIndex: 'company_data.company_number'
-  },
-  {
-    title: 'Данные компании',
-    key: 'description',
-    dataIndex: 'company_data.description'
-  },
-  {
-    title: 'Статус',
-    render: record => (
-      <Fragment>
-        {data.active_company_id &&
+  const columns = [
+    {
+      title: 'Наименование',
+      key: 'name',
+      render: record => <Link to={{ pathname: `/companies/${+record.company_id}`, state: { from: history.location.pathname } }}>{record.company_data.name}</Link>
+    },
+    {
+      title: 'УНП',
+      key: 'number',
+      dataIndex: 'company_data.company_number'
+    },
+    {
+      title: 'Данные компании',
+      key: 'description',
+      dataIndex: 'company_data.description'
+    },
+    {
+      title: 'Статус',
+      render: record => (
+        <Fragment>
+          {data.active_company_id &&
           <Popconfirm
             placement='bottomLeft'
             title='Сделать компанию активной?'
@@ -174,10 +174,10 @@ const CompaniesPage = props => {
               {(record.company_data.id === data.active_company_id) ? 'Активная' : 'Не активная'}
             </Tag>
           </Popconfirm>
-        }
-      </Fragment>
-    )
-  }]
+          }
+        </Fragment>
+      )
+    }]
 
   return (
     <Fragment>
@@ -217,37 +217,65 @@ const CompaniesPage = props => {
                     />
                   )}
                 </Form.Item>
+
                 <Button type='primary' style={{ marginTop: '1rem' }} htmlType='submit'>
                   <Icon type='plus' />
                   Отправить приглашение
                 </Button>
-                <Button style={{ marginLeft: '1rem' }} ghost type='primary' onClick={() => setCompanyState({ ...companyState, newUserEmail: '', showInput: false })}>Отмена</Button>
+
+                <Button
+                  type='primary'
+                  ghost
+                  style={{ marginLeft: '1rem' }}
+                  onClick={() => setCompanyState({ ...companyState, newUserEmail: '', showInput: false })}
+                >
+                  Отмена
+                </Button>
               </Form>
             </Col>
           </Row>
         </div>
       }
-      <Button type='primary' disabled={!isIE} onClick={onClick}>Создать компанию</Button>
-      <Button type='primary' style={{ marginLeft: '1rem' }} onClick={() => setCompanyState({ ...companyState, showInput: true })}>
+
+      <Button
+        type='primary'
+        disabled={!isIE}
+        onClick={onClick}
+      >
+        Создать компанию
+      </Button>
+
+      <Button
+        type='primary'
+        style={{ marginLeft: '1rem' }}
+        onClick={() => setCompanyState({ ...companyState, showInput: true })}
+      >
         <Icon type='usergroup-add' />
         Добавить пользователя в компанию
       </Button>
+
       <div style={{ marginTop: '1rem' }}>
         {!isIE &&
         <Text type='secondary'>Создание компании возможно только в браузере Internet Explorer</Text>
         }
       </div>
+
       <input type='hidden' id='dataNewCompany' value={window.btoa(data.email)} />
+
       <input type='hidden' id='companyData' />
+
       <div id='attrCertSelectContainer' style={{ display: 'none' }}>
         <span id='certExtAbsent' />
+
         <select style={{ visibility: 'hidden' }} id='attrCertSelect' />
       </div>
+
       <input type='hidden' id='attrValue' size='80' disabled='disabled' />
+
       <Modal
+        title='Данные цифрового накопителя'
         visible={companyState.showModal}
         width={600}
-        title='Данные цифрового накопителя'
         closable={false}
         footer={null}
         onCancel={() => setCompanyState({ ...companyState, showModal: !companyState.showModal })}
@@ -259,30 +287,35 @@ const CompaniesPage = props => {
                 <div className='info__title'>Дата создания</div>
                 <div className='info__content'>{companyState.newCompanyDate}</div>
               </div>
+
               {companyState.newCompanyNumber &&
                 <div className='info__item'>
                   <div className='info__title'>УНП</div>
                   <div className='info__content'>{companyState.newCompanyNumber}</div>
                 </div>
               }
+
               {companyState.newCompanyName &&
                 <div className='info__item'>
                   <div className='info__title'>Имя компании</div>
                   <div className='info__content'>{companyState.newCompanyName}</div>
                 </div>
               }
+
               {companyState.newCompanyCity &&
                 <div className='info__item'>
                   <div className='info__title'>Место нахождения компании</div>
                   <div className='info__content'>{companyState.newCompanyCity}</div>
                 </div>
               }
+
               {companyState.yourPosition &&
                 <div className='info__item'>
                   <div className='info__title'>Должность сотруднка</div>
                   <div className='info__content'>{companyState.yourPosition}</div>
                 </div>
               }
+
               {companyState.newCompanyKey &&
                 <div className='info__item'>
                   <div className='info__title'>Цифровой ключ</div>
@@ -290,6 +323,7 @@ const CompaniesPage = props => {
                 </div>
               }
             </div>
+
             <Button style={{ margin: '20px 0 0 20px' }} onClick={handleCreateCompany} type='primary'>Создать</Button>
           </Spin>
         </div>
