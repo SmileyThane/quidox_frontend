@@ -485,7 +485,7 @@ const SingleDocumentPage = props => {
       return acpCount.length
     }
   }
-
+  console.log(history)
   return (
     <Fragment>
       <Spin spinning={isFetching}>
@@ -545,7 +545,7 @@ const SingleDocumentPage = props => {
                   dataSource={document && document.attachments}
                   renderItem={(item, index) => (
                     <List.Item key={index}
-                      actions={[
+                      actions={history.location.state.id === '/documents/2' && [
                         <Tooltip
                           arrowPointAtCenter
                           title={getButtonTooltipText(item.status.status_data.id, 'agree')}

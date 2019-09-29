@@ -30,7 +30,6 @@ const AntMenu = props => {
 
   const { SubMenu } = Menu
   const { data } = menuData
-  console.log('history from menu:', history)
   return (
     <Fragment>
       <Button
