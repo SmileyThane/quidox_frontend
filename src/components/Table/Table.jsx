@@ -357,7 +357,6 @@ const AntdTable = props => {
     parameterState.sort_by,
     parameterState.sort_value
   ])
-  console.log('History:', history)
   return (
     <Fragment>
       {tableState.showModal && <Modal

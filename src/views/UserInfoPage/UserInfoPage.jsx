@@ -94,23 +94,23 @@ class UserInfoPage extends React.Component {
 
   changeUserPhone = e => {
     e.preventDefault()
-    this.props.form.validateFieldsAndScroll((err, values) => {
+    this.props.form.validateFieldsAndScroll(['phone', 'code'], (err, values) => {
       const phoneData = {
         phone: this.state.phone,
         code: values.code,
-        // id:
       }
       if (this.state.isCode) {
         axios.post('https://api.quidox.by/api/sms/confirm', phoneData)
           .then(({ data }) => {
+            console.log(data)
             if (data.success) {
               this.props.updateUser(phoneData)
                 .then(({ data }) => {
-                  if (data) {
+                  if (data.success) {
                     message.success('Номер успешно сохранен')
                     this.setState({ isModalVisible: false })
                   } else {
-                    throw new Error(data.error())
+                    throw new Error(data.error)
                   }
                 })
                 .catch(error => {
@@ -203,7 +203,7 @@ class UserInfoPage extends React.Component {
     const {
       user: { isFetching, data }
     } = this.props
-    console.log(data)
+
     return (
       <Fragment>
         <Form className='content content_user form-user'>

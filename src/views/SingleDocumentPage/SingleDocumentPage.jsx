@@ -542,6 +542,7 @@ const SingleDocumentPage = props => {
               <div className='document__attached-doc attached-doc'>
                 <List
                   itemLayout='horizontal'
+                  locale={{ emptyText: 'Нет приложенных документов' }}
                   dataSource={document && document.attachments}
                   renderItem={(item, index) => (
                     <List.Item key={index}

@@ -37,6 +37,7 @@
   }
   .header-data {
     display: flex;
+    justify-content: center;
     align-items: center;
     height: 100%;
   }
@@ -49,7 +50,7 @@
   padding: 0;
   list-style: none;
   border: .1rem solid map_get($colors, gray);
-  background-color: #fff;
+  background-color: map_get($colors, white);
   z-index: 5;
   box-shadow: -9px 9px 5px -5px rgba(0, 0, 0, 0.1);
 }
@@ -88,10 +89,10 @@
 }
 .user-link {
   color: rgba(0, 0, 0, 0.65);
-  display: inline-block;
   width: 100%;
   align-items: center;
   cursor: pointer;
+  display: flex;
   i {
     color: rgba(0, 0, 0, 0.65);
   }
