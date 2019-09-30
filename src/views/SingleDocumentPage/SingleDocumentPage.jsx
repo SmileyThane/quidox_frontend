@@ -598,7 +598,7 @@ const SingleDocumentPage = props => {
                         </Tag>
                         }
                         {item.status &&
-                          <Tag color={item.status.status_data.color} style={{ color: `${item.status.status_data.color === '#FFFF00' && '#000'}` }}>{item.status.status_data.name}</Tag>
+                          <Tag color={item.status.status_data.color}>{item.status.status_data.name}</Tag>
                         }
                       </div>
                     </List.Item>
