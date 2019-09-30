@@ -142,7 +142,6 @@ const SingleDocumentPage = props => {
         validity_from: moment(+ecpData.date[0] * 1000).format('DD/MM/YYYY, hh:mm:ss'),
         validity_to: moment(+ecpData.date[1] * 1000).format('DD/MM/YYYY, hh:mm:ss')
       }
-      console.log(ecpInfo)
     }
 
     setDocumentState({
@@ -535,7 +534,7 @@ const SingleDocumentPage = props => {
                   dataSource={document && document.attachments}
                   renderItem={(item, index) => (
                     <List.Item key={index}
-                      actions={history.location.state.id === '/documents/2' && [
+                      actions={singleDocument.status_name !== 'Отправленные' && [
                         <Tooltip
                           arrowPointAtCenter
                           title={getButtonTooltipText(item.status.status_data.id, 'agree')}
