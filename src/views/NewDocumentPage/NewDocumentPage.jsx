@@ -90,7 +90,7 @@ const NewDocumentPage = props => {
     })
   }
 
-  const handleSendToDraft = (condition) => {
+  const handleSendToDraft = (isMessagesShow = true) => {
     setDocumentState({
       ...documentState,
       fetching: true
@@ -107,12 +107,10 @@ const NewDocumentPage = props => {
       documentState.description
     )
 
-    if (!condition.length) {
-      formData.append(
-        'user_company_id',
-        documentState.value.length ? JSON.stringify(documentState.value.map(i => i.key)) : JSON.stringify([])
-      )
-    }
+    formData.append(
+      'user_company_id',
+      documentState.value.length ? JSON.stringify(documentState.value.map(i => i.key)) : JSON.stringify([])
+    )
 
     documentState.files.forEach((file, index) => {
       formData.append(`second_documents[${index}]`, file)
@@ -125,7 +123,9 @@ const NewDocumentPage = props => {
     })
       .then(({ data }) => {
         if (data.success) {
-          message.success(`Документ ${documentState.name} успешно сохранен!`)
+          if (isMessagesShow) {
+            message.success(`Документ ${documentState.name} успешно сохранен!`)
+          }
           setDocumentState({
             ...documentState,
             fetching: false,
@@ -156,7 +156,9 @@ const NewDocumentPage = props => {
             }
           })
             .then(() => {
-              message.success(`файлы успешно подписаны!`)
+              if (isMessagesShow && documentState.fileHashes.length) {
+                message.success(`Файлы успешно подписаны!`)
+              }
               setDocumentState({ ...defaultDocumentData })
               return data
             })
@@ -169,8 +171,7 @@ const NewDocumentPage = props => {
       })
   }
 
-  const handleSendToUser = (type) => {
-    const typeCondition = type
+  const handleSendToUser = (isToUser = false) => {
     if (!documentState.value.length > 0) {
       message.error('Введите получателя!')
       setDocumentState({
@@ -179,7 +180,7 @@ const NewDocumentPage = props => {
       })
       return null
     }
-    handleSendToDraft(typeCondition)
+    handleSendToDraft(isToUser)
       .then(response => {
         if (response.success) {
           const docDataToUser = {
@@ -264,7 +265,7 @@ const NewDocumentPage = props => {
         const value = document.getElementById('verifiedData' + 'File-' + index).value
         const signedValue = document.getElementById('signedData' + 'File-' + index).value
         const flashData = JSON.parse(decodeURIComponent(value))
-        const key = flashData.cert['2.5.29.14'] //flashData.cert['1.2.112.1.2.1.1.1.1.2'] + flashData.cert['1.2.112.1.2.1.1.1.1.1']
+        const key = flashData.cert['2.5.29.14'] // flashData.cert['1.2.112.1.2.1.1.1.1.2'] + flashData.cert['1.2.112.1.2.1.1.1.1.1']
         api.documents.checkFlashKey({ key: key })
           .then(({ data }) => {
             if (data.success) {
@@ -392,7 +393,7 @@ const NewDocumentPage = props => {
             </Button>
             <Button
               type='primary'
-              onClick={() => handleSendToUser('toUser')}
+              onClick={() => handleSendToUser(false)}
             >
               <Icon type='cloud-upload' />
               Отправить
