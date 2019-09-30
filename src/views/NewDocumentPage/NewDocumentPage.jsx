@@ -156,9 +156,9 @@ const NewDocumentPage = props => {
             }
           })
             .then(() => {
-              if (isMessagesShow && documentState.fileHashes.length) {
-                message.success(`Файлы успешно подписаны!`)
-              }
+              // if (isMessagesShow && documentState.fileHashes.length) {
+              //   message.success(`Файлы успешно подписаны!`)
+              // }
               setDocumentState({ ...defaultDocumentData })
               return data
             })
