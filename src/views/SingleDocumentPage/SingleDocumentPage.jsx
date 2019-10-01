@@ -75,12 +75,12 @@ const defaultDocumentState = {
   isErrorWitchEcp: false
 }
 // eslint-disable-next-line spaced-comment
-const isIE = /*@cc_on!@*/false || !!window.document.documentMode
+const isIE = /*@cc_on!@*/!!window.document.documentMode
 
 const SingleDocumentPage = props => {
   const {
     documents: { isFetching, singleDocument },
-    user,
+    // user,
     match,
     getDocumentById,
     sendDocumentToUser,
@@ -106,14 +106,11 @@ const SingleDocumentPage = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [documentState.activeFileCert, documentState.fileCerts.length])
 
-
-
   const showModal = item => {
     setDocumentState({
       ...documentState,
       isErrorWitchEcp: false
     })
-
     axios.get(item['preview_path'], {
       'responseType': 'arraybuffer',
       headers: {
@@ -141,19 +138,16 @@ const SingleDocumentPage = props => {
   const hideModal = () => {
     setDocumentState({
       ...documentState,
-      isErrorWitchEcp: false,
       isVisible: false
     })
   }
 
   const showUserData = (type, arr = []) => {
     const dataArray = arr.filter(i => i.verification_hash)
-    console.log(dataArray)
     let ecpInfo = {}
 
     if (type === 'ecp') {
       const ecpData = JSON.parse(decodeURIComponent(dataArray[documentState.activeFileCert].verification_info))
-      console.log(ecpData.cert)
       ecpInfo = {
         unp: ecpData.cert['1.2.112.1.2.1.1.1.1.2'],
         org: ecpData.subject['2.5.4.3'],
@@ -243,18 +237,10 @@ const SingleDocumentPage = props => {
     })
   }
 
-  useEffect(() => {
-    if (documentState.isErrorWitchEcp) {
-      setTimeout(() => {
-        window.pluginLoaded()
-      }, 1000)
-    }
-  }, [documentState.isErrorWitchEcp])
-
   const verifyFile = (item, index) => {
-    if (!isIE || item.status.status_data.id !== 3) {
-      return null
-    }
+    // if (!isIE || item.status.status_data.id !== 3) {
+    //   return null
+    // }
     const base64 = item.encoded_file
     const input = window.document.createElement('input')
     input.type = 'hidden'
@@ -313,9 +299,9 @@ const SingleDocumentPage = props => {
       setDocumentState({
         ...documentState,
         showModal: true,
+        isErrorWitchEcp: false,
         modalType: 'error'
       })
-      console.log(error.message)
     }
   }
 
@@ -521,7 +507,17 @@ const SingleDocumentPage = props => {
     }
   }
 
-  console.log(user)
+  useEffect(() => {
+    if (documentState.isErrorWitchEcp) {
+      setTimeout(() => {
+        try {
+          window.pluginLoaded()
+        } catch (error) {
+          console.log(error)
+        }
+      }, 1000)
+    }
+  }, [documentState.isErrorWitchEcp])
   return (
     <Fragment>
       <Spin spinning={isFetching}>
@@ -806,6 +802,7 @@ const SingleDocumentPage = props => {
               <Text style={{ textAlign: 'center' }}>Произошла ошибка! Проверьте наличие флешки в компьютере и нажмите продолжить!</Text>
             </div>
             <Button style={{ marginTop: '2rem' }} type='primary' onClick={() => resolveEscError()}>Продолжить</Button>
+            <p>{documentState.isErrorWitchEcp}</p>
           </Fragment>
           }
 
