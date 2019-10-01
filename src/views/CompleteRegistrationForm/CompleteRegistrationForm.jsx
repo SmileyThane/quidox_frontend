@@ -166,6 +166,7 @@ class CompleteRegistrationForm extends React.Component {
       }
     }, 1000)
   }
+
   render () {
     const { currentStep, seconds } = this.state
     const { getFieldDecorator } = this.props.form
@@ -180,7 +181,7 @@ class CompleteRegistrationForm extends React.Component {
         <Option value='37544'>+375(44)</Option>
       </Select>
     )
-    console.log(this.props.match)
+
     return (
       <Fragment>
         <div className='register'>
@@ -188,6 +189,7 @@ class CompleteRegistrationForm extends React.Component {
             <Title level={3}>
               Регистрация в Quidox.by
             </Title>
+
             <Text>Обмен электронными документами с ЭЦП</Text>
           </div>
           <div className='steps'>
@@ -199,6 +201,7 @@ class CompleteRegistrationForm extends React.Component {
                 <Step key={item.title} title={item.title} />
               ))}
             </Steps>
+
             <Form className='form form-register' onSubmit={this.handleSubmit}>
               {currentStep === 0 &&
               <Fragment>
@@ -228,6 +231,7 @@ class CompleteRegistrationForm extends React.Component {
                 </div>
               </Fragment>
               }
+
               {currentStep === 1 &&
               <Form.Item label='Введите полученный код'>
                 {getFieldDecorator('code', {
@@ -248,11 +252,13 @@ class CompleteRegistrationForm extends React.Component {
                 />)}
               </Form.Item>
               }
+
               {currentStep === 2 &&
               <Fragment>
                 <p>Подтвердите регистрацию, пройдя по ссылке в сообщении, которое вы получите на указанный вами адрес электронной почты</p>
               </Fragment>
               }
+
               <Form.Item>
                 <div>
                   <div>

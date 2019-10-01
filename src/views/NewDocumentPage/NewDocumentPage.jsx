@@ -10,9 +10,10 @@ import {
   Spin,
   Tag,
   Typography,
+  Button,
   Input
 } from 'antd'
-import { Button } from '../../components'
+
 import './NewDocumentPage.scss'
 
 const defaultDocumentData = {
@@ -32,8 +33,9 @@ const defaultDocumentData = {
   verifyFetching: false,
   isClicked: false
 }
+
 // eslint-disable-next-line spaced-comment
-const isIE = /*@cc_on!@*/false || !!document.documentMode
+const isIE = /*@cc_on!@*/!!document.documentMode
 
 const { Option } = Select
 const { TextArea } = Input
@@ -74,12 +76,14 @@ const NewDocumentPage = props => {
     //   inputNode.current.value = ''
     // }, 100)
   }
+
   useEffect(() => {
     inputNode.current.value = ''
   }, [documentState.files])
 
   const removeFile = (index) => {
     delete inputNode.current.files[index]
+
     setDocumentState({
       ...documentState,
       files: documentState.files.filter((e, i) => i !== index),
@@ -115,26 +119,35 @@ const NewDocumentPage = props => {
     documentState.files.forEach((file, index) => {
       formData.append(`second_documents[${index}]`, file)
     })
-    return axios.post('https://api.quidox.by/api/document/create', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-        'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
-      }
-    })
+
+    // const createDocument = (formData, headers) => {
+    //   return https({
+    //     method: 'get',
+    //     url: '/',
+    //     data: formData,
+    //     headers
+    //   })
+    // 'Content-Type': 'multipart/form-data',
+    // }
+
+    return api.document.createDocument(formData, { 'Content-Type': 'multipart/form-data' })
       .then(({ data }) => {
         if (data.success) {
           if (isMessagesShow) {
             message.success(`Документ ${documentState.name} успешно сохранен!`)
           }
+
           setDocumentState({
             ...documentState,
             fetching: false,
             isClicked: true
           })
+
           setDocumentState({
             ...documentState,
             fetching: true
           })
+
           const newData = {
             documents: [
               {
@@ -149,18 +162,32 @@ const NewDocumentPage = props => {
               }
             ]
           }
-
-          return axios.post('https://api.quidox.by/api/documents/confirm', newData, {
-            headers: {
-              'Authorization': 'Bearer ' + window.localStorage.getItem('authToken')
-            }
-          })
-            .then(() => {
-              // if (isMessagesShow && documentState.fileHashes.length) {
-              //   message.success(`Файлы успешно подписаны!`)
-              // }
-              setDocumentState({ ...defaultDocumentData })
+          if (!documentState.files.length) {
+            setDocumentState({
+              ...documentState,
+              fetching: false
+            })
+            return null
+          }
+          api.document.confirmDocument(newData)
+            .then(({ data }) => {
+              console.log(data)
+              if (data.success) {
+                if (!isMessagesShow) {
+                  setDocumentState({ ...defaultDocumentData })
+                } else {
+                  setDocumentState({
+                    ...documentState,
+                    fetching: false
+                  })
+                }
+              } else {
+                throw new Error(data.error)
+              }
               return data
+            })
+            .catch(error => {
+              message.error(error.message)
             })
           return data
         }
@@ -313,12 +340,14 @@ const NewDocumentPage = props => {
     })
   }
 
+  console.log(documentState)
   return (
     <Fragment>
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>
         <Spin spinning={!!documentState.fetching}>
           <div className='input-group'>
             <label className='label'>Получатели</label>
+
             <Select
               mode='tags'
               labelInValue
@@ -334,41 +363,54 @@ const NewDocumentPage = props => {
               {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
             </Select>
           </div>
+
           <div className='input-group'>
             <label className='label'>Тема</label>
             <Input ref={inputRef} kind='text' type='text' value={documentState.name} onChange={e => updateField('name', e.target.value)} />
           </div>
+
           <div className='input-group'>
             <label className='label'>Комментарий</label>
             <TextArea autosize={{ minRows: 1, maxRows: 6 }} value={documentState.description} onChange={e => updateField('description', e.target.value)} />
           </div>
+
           <div className='buttons-group'>
             <input type='file' id='upload' hidden multiple onChange={event => getFiles(event)} ref={inputNode} />
+
             <label style={{ minWidth: 216 }} className='ant-btn ant-btn-primary ant-btn-background-ghost label-btn' htmlFor='upload'>
               <Icon type='upload' style={{ marginRight: 10 }} />
             Прикрепить файл(ы)
             </label>
           </div>
+
           <div className='files-group'>
             <ul className='attached-files'>
               {documentState.files && documentState.files.map((e, i) => (
                 <li className='attached-file' key={i}>
                   <Text type='secondary' style={{ marginRight: '1rem' }}>{i + 1}</Text>
+
                   <Text strong>{e.name}</Text>
-                  { documentState.fileHashes[i] && <Tag color='#3278fb'>ЭЦП</Tag> }
+
+                  { documentState.fileHashes[i] &&
+                  <Tag color='#3278fb'>ЭЦП</Tag>
+                  }
+
                   <div className='attached-file__actions'>
                     <div className='actions-left'>
                       <Text>Требуется:</Text>
+
                       <Select defaultValue={1} onChange={handleStatusChange(i)} style={{ marginLeft: 10, minWidth: '20rem' }}>
                         <Option value={1}>Простая доставка</Option>
                         <Option value={2}>Согласование</Option>
                         <Option value={3}>Подпись получателя</Option>
                       </Select>
                     </div>
+
                     <div className='actions-right'>
                       {isIE &&
                       <Icon onClick={() => verifyFile(i)} style={{ color: '#3278fb' }} type={documentState.verifyFetching ? 'loading' : 'edit'} />
                       }
+
                       <Icon
                         onClick={() => removeFile(i)}
                         style={{ color: '#FF7D1D' }}
@@ -380,6 +422,7 @@ const NewDocumentPage = props => {
               ))}
             </ul>
           </div>
+
           <div className='buttons-group'>
             <Button
               ghost
@@ -391,6 +434,7 @@ const NewDocumentPage = props => {
               <Icon type='file-text' />
               Сохранить в черновиках
             </Button>
+
             <Button
               type='primary'
               onClick={() => handleSendToUser(false)}
@@ -401,12 +445,15 @@ const NewDocumentPage = props => {
           </div>
         </Spin>
         <input type='hidden' id='attr' size='80' value='1.2.112.1.2.1.1.1.1.2' />
+
+        <input type='hidden' id='attrValue' size='80' disabled='disabled' />
+
         <div id='attrCertSelectContainer' style={{ display: 'none' }}>
           <span id='certExtAbsent' />
           <select style={{ visibility: 'hidden' }} id='attrCertSelect' />
         </div>
-        <input type='hidden' id='attrValue' size='80' disabled='disabled' />
       </div>
+
       {!isIE && <Text type='secondary'>
         Подпись файлов возможна только в браузере Internet Explorer
       </Text>

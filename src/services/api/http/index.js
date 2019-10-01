@@ -13,7 +13,7 @@ const instance = axios.create({
     'X-Frame-Options': 'sameorigin',
     'Access-Control-Allow-Origin': '*'
   },
-  data: {},
+  // data: {},
   timeout: 180000
 })
 token(instance)

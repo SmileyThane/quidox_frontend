@@ -7,6 +7,23 @@ const getDocumentById = id => {
   })
 }
 
+const createDocument = (data, headers) => {
+  return http({
+    url: 'document/create',
+    method: 'POST',
+    data,
+    headers
+  })
+}
+
+const confirmDocument = data => {
+  return http({
+    url: 'documents/confirm',
+    method: 'POST',
+    data
+  })
+}
+
 const removeDocumentById = id => {
   return http({
     url: `/document/delete/${id}`,
@@ -54,6 +71,8 @@ const updateDocumentById = (id, data) => {
 
 export {
   getDocumentById,
+  createDocument,
+  confirmDocument,
   removeDocumentById,
   downloadDocument,
   verifyDocument,

@@ -1,12 +1,22 @@
 import React from 'react'
 import { Base64 } from 'js-base64'
-
-import { Link } from 'react-router-dom'
 import generateHash from 'random-hash'
 import axios from 'axios'
+
 import history from '../../history.js'
-import { Form, Icon, Input, Button, Checkbox, message, Typography } from 'antd'
+import { Link } from 'react-router-dom'
+import {
+  Form,
+  Icon,
+  Input,
+  Button,
+  Checkbox,
+  message,
+  Typography
+} from 'antd'
+
 import './LoginPage.scss'
+
 const { Text, Title } = Typography
 
 class LoginPage extends React.Component {
@@ -42,6 +52,7 @@ class LoginPage extends React.Component {
 
   render () {
     const { getFieldDecorator } = this.props.form
+
     return (
       <Form onSubmit={this.handleSubmit} className='form form_login' style={{ minHeight: '40rem', maxWidth: '45rem' }}>
         <Form.Item>
@@ -54,6 +65,7 @@ class LoginPage extends React.Component {
             />
           )}
         </Form.Item>
+
         <Form.Item>
           {getFieldDecorator('password', {
             rules: [{
@@ -68,6 +80,7 @@ class LoginPage extends React.Component {
             />
           )}
         </Form.Item>
+
         <Form.Item>
           {getFieldDecorator('remember', {
             valuePropName: 'checked',

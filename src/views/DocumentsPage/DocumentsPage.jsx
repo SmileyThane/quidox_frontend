@@ -3,7 +3,6 @@ import React, { Fragment } from 'react'
 import { Table, PageDescription } from '../../components'
 
 const DocumentsPage = props => {
-
   const {
     user: { data },
     documents: { documents, isFetching },
