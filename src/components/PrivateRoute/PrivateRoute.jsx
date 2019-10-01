@@ -19,6 +19,7 @@ const PrivateRoute = ({ component: Component, getUser, ...rest }) => {
     }
   }, [getUser, isIE])
 
+  console.log(rest.location)
   return <Route {...rest}
     render={props =>
       window.localStorage.getItem('authToken')

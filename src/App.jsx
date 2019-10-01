@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { Router, Switch, Route } from 'react-router-dom'
+import { Router, Switch, Route, Redirect } from 'react-router-dom'
 import history from './history'
 import 'typeface-roboto'
 
@@ -27,7 +27,7 @@ function App () {
     <Fragment>
       <Router history={history}>
         <Switch>
-          <PrivateRoute exact path='/' component={Home} />
+          <PrivateRoute exact path='/'><Redirect to={{ pathname: '/documents', search: '?status=2', state: { id: '/documents/2' } }} /></PrivateRoute>
 
           <PrivateRoute path='/new-document' component={NewDocumentPage} />
 
