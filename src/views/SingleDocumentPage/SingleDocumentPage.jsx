@@ -107,10 +107,6 @@ const SingleDocumentPage = props => {
   }, [documentState.activeFileCert, documentState.fileCerts.length])
 
   const showModal = item => {
-    setDocumentState({
-      ...documentState,
-      isErrorWitchEcp: false
-    })
     axios.get(item['preview_path'], {
       'responseType': 'arraybuffer',
       headers: {
@@ -802,7 +798,6 @@ const SingleDocumentPage = props => {
               <Text style={{ textAlign: 'center' }}>Произошла ошибка! Проверьте наличие флешки в компьютере и нажмите продолжить!</Text>
             </div>
             <Button style={{ marginTop: '2rem' }} type='primary' onClick={() => resolveEscError()}>Продолжить</Button>
-            <p>{documentState.isErrorWitchEcp}</p>
           </Fragment>
           }
 
