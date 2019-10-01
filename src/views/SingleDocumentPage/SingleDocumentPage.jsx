@@ -80,7 +80,7 @@ const isIE = /*@cc_on!@*/!!window.document.documentMode
 const SingleDocumentPage = props => {
   const {
     documents: { isFetching, singleDocument },
-    // user,
+    user,
     match,
     getDocumentById,
     sendDocumentToUser,
@@ -246,9 +246,9 @@ const SingleDocumentPage = props => {
   }
 
   const verifyFile = (item, index) => {
-    if (!isIE || item.status.status_data.id !== 3) {
-      return null
-    }
+    // if (!isIE || item.status.status_data.id !== 3) {
+    //   return null
+    // }
     const base64 = item.encoded_file
     const input = window.document.createElement('input')
     input.type = 'hidden'
@@ -796,7 +796,17 @@ const SingleDocumentPage = props => {
           <Fragment>
             <div style={{ textAlign: 'center' }}>
               <Icon style={{ fontSize: '3rem' }} type='warning' theme='twoTone' twoToneColor='orange' /><br />
-              <Text style={{ textAlign: 'center' }}>Произошла ошибка! Проверьте наличие флешки в компьютере  и нажмите продолжить!</Text>
+              <Text style={{ textAlign: 'center' }}>Вставьте ключ ЭЦП компании</Text>
+              {user.data.companies.length &&
+                user.data.companies.map(i => {
+                  if (i.company_id === user.data.active_company_id) {
+                    return <Text strong> {i.company_name} </Text>
+                  } else {
+                    return null
+                  }
+                })
+              }
+              <Text>в компьютер.</Text>
             </div>
             <Button style={{ marginTop: '2rem' }} type='primary' onClick={() => resolveEscError()}>Продолжить</Button>
           </Fragment>
