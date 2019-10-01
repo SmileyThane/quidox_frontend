@@ -120,16 +120,6 @@ const NewDocumentPage = props => {
       formData.append(`second_documents[${index}]`, file)
     })
 
-    // const createDocument = (formData, headers) => {
-    //   return https({
-    //     method: 'get',
-    //     url: '/',
-    //     data: formData,
-    //     headers
-    //   })
-    // 'Content-Type': 'multipart/form-data',
-    // }
-
     return api.document.createDocument(formData, { 'Content-Type': 'multipart/form-data' })
       .then(({ data }) => {
         if (data.success) {
@@ -340,7 +330,6 @@ const NewDocumentPage = props => {
     })
   }
 
-  console.log(documentState)
   return (
     <Fragment>
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>

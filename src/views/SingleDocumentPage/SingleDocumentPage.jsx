@@ -5,12 +5,23 @@ import moment from 'moment'
 import fileDownload from 'js-file-download'
 import _ from 'lodash'
 
-import { api } from '../../services'
-import { Spin, Icon, List, Tag, Modal, Select, message, Typography, Tooltip } from 'antd'
 import history from '../../history'
+import PDFJSBACKEND from '../../backends/pdfjs'
+
+import { api } from '../../services'
+import {
+  Spin,
+  Icon,
+  List,
+  Tag,
+  Modal,
+  Select,
+  message,
+  Typography,
+  Tooltip
+} from 'antd'
 import { findUsersByParams } from '../../services/api/user'
 import { Button, PDFViewer } from '../../components'
-import PDFJSBACKEND from '../../backends/pdfjs'
 
 import { close } from './img'
 import './SingleDocumentPage.scss'
@@ -68,6 +79,7 @@ const isIE = /*@cc_on!@*/false || !!window.document.documentMode
 const SingleDocumentPage = props => {
   const {
     documents: { isFetching, singleDocument },
+    user,
     match,
     getDocumentById,
     sendDocumentToUser,
@@ -214,6 +226,13 @@ const SingleDocumentPage = props => {
       })
   }
 
+  const resolveEscError = () => {
+    setDocumentState({
+      showModal: false
+    })
+    window.pluginLoaded()
+  }
+
   const verifyFile = (item, index) => {
     if (!isIE || item.status.status_data.id !== 3) {
       return null
@@ -225,51 +244,61 @@ const SingleDocumentPage = props => {
     window.document.body.appendChild(input)
     window.document.getElementById('dataFile-' + index).value = base64
     // document.getElementById(`dataFile-${index}`).value = base64
-    window.sign('File-' + index)
-    setTimeout(() => {
-      const value = window.document.getElementById('verifiedData' + 'File-' + index).value
-      // const value = document.getElementById(`verifiedDataFile-${index}`).value
-      const signedValue = window.document.getElementById('signedData' + 'File-' + index).value
-      // const signedValue = document.getElementById(`signedDataFile-${index}`).value
-      const flashData = JSON.parse(decodeURIComponent(value))
-      const key = flashData.cert['2.5.29.14']
-      const newData = {
-        documents: [{
-          id: singleDocument.document.id,
-          attachments: [
-            {
-              id: item.id,
-              hash: signedValue,
-              data: value,
-              status: 5
+    try {
+      window.sign('File-' + index)
+
+      setTimeout(() => {
+        const value = window.document.getElementById('verifiedData' + 'File-' + index).value
+        // const value = document.getElementById(`verifiedDataFile-${index}`).value
+        const signedValue = window.document.getElementById('signedData' + 'File-' + index).value
+        // const signedValue = document.getElementById(`signedDataFile-${index}`).value
+        const flashData = JSON.parse(decodeURIComponent(value))
+        const key = flashData.cert['2.5.29.14']
+        const newData = {
+          documents: [{
+            id: singleDocument.document.id,
+            attachments: [
+              {
+                id: item.id,
+                hash: signedValue,
+                data: value,
+                status: 5
+              }
+            ]
+          }]
+        }
+        api.documents.checkFlashKey({ key: key, attachment_id: item.id })
+          .then(({ data }) => {
+            if (data.success) {
+              verifyDocument(newData)
+                .then((response) => {
+                  if (response.success) {
+                    message.success('Файл успешно подписан!')
+                    setDocumentState({ ...defaultDocumentState })
+                    getDocumentById(match.params.id)
+                  } else {
+                    throw new Error(response.error)
+                  }
+                })
+                .catch(error => {
+                  message.error(error.message)
+                })
+            } else {
+              throw new Error(data.error)
             }
-          ]
-        }]
-      }
-      api.documents.checkFlashKey({ key: key, attachment_id: item.id })
-        .then(({ data }) => {
-          if (data.success) {
-            verifyDocument(newData)
-              .then((response) => {
-                if (response.success) {
-                  message.success('Файл успешно подписан!')
-                  setDocumentState({ ...defaultDocumentState })
-                  getDocumentById(match.params.id)
-                } else {
-                  throw new Error(response.error)
-                }
-              })
-              .catch(error => {
-                message.error(error.message)
-              })
-          } else {
-            throw new Error(data.error)
-          }
-        })
-        .catch(error => {
-          message.error(error.message)
-        })
-    }, 1000)
+          })
+          .catch(error => {
+            message.error(error.message)
+          })
+      }, 1000)
+    } catch (error) {
+      setDocumentState({
+        ...documentState,
+        showModal: true,
+        modalType: 'error'
+      })
+      console.log(error.message)
+    }
   }
 
   const downloadDocumentContent = (item, withCert, isFile = false) => {
@@ -473,7 +502,7 @@ const SingleDocumentPage = props => {
       return acpCount.length
     }
   }
-  console.log(history)
+  console.log(user)
   return (
     <Fragment>
       <Spin spinning={isFetching}>
@@ -625,7 +654,7 @@ const SingleDocumentPage = props => {
                     }
                   </div>
                   <div className='document__actions__right'>
-                    <Button title='Введется разработка' onClick={() => showUserData('send')} type='primary'>
+                    <Button onClick={() => showUserData('send')} type='primary'>
                       <Icon type='redo' />
                       Перенаправить
                     </Button>
@@ -659,96 +688,108 @@ const SingleDocumentPage = props => {
           closable={false}
           footer={null}
         >
-          {documentState.modalType === 'ecp'
-            ? <Fragment>
-              <div className='modal-title'>
-                <Text strong>Просмотр ЭЦП, № {documentState.activeFileCert + 1} из {documentState.fileCerts.length} </Text>
-                <div className='arr-wrapp' onClick={prevCert}>
-                  <Icon type='left' />
+          {documentState.modalType === 'ecp' &&
+          <Fragment>
+            <div className='modal-title'>
+              <Text strong>Просмотр ЭЦП,
+                № {documentState.activeFileCert + 1} из {documentState.fileCerts.length} </Text>
+              <div className='arr-wrapp' onClick={prevCert}>
+                <Icon type='left' />
+              </div>
+              <div className='arr-wrapp' onClick={nextCert}>
+                <Icon type='right' />
+              </div>
+            </div>
+            <div className='cert-modal'>
+              <div className='cert-modal__item'>
+                <div className='cert-modal__item-left'>
+                  <Text type='secondary'>Данные из сертификата ЭЦП</Text>
                 </div>
-                <div className='arr-wrapp' onClick={nextCert}>
-                  <Icon type='right' />
+                <div className='cert-modal__item-right'>
+                  <div className='cert-item'>
+                    <Text type='secondary'>УНП: {documentState.ecpInfo.unp}</Text>
+                  </div>
+                  <div className='cert-item'>
+                    <Text type='secondary'>Организация: {documentState.ecpInfo.org}</Text>
+                  </div>
+                  <div className='cert-item'>
+                    <Text type='secondary'>Должность: {documentState.ecpInfo.position}</Text>
+                  </div>
+                  <div className='cert-item'>
+                    <Text type='secondary'>ФИО: {documentState.ecpInfo.name}</Text>
+                  </div>
+                  <div className='cert-item'>
+                    <Text type='secondary'>Адресс: {documentState.ecpInfo.address}</Text>
+                  </div>
                 </div>
               </div>
-              <div className='cert-modal'>
-                <div className='cert-modal__item'>
-                  <div className='cert-modal__item-left'>
-                    <Text type='secondary'>Данные из сертификата ЭЦП</Text>
-                  </div>
-                  <div className='cert-modal__item-right'>
-                    <div className='cert-item'>
-                      <Text type='secondary'>УНП: {documentState.ecpInfo.unp}</Text>
-                    </div>
-                    <div className='cert-item'>
-                      <Text type='secondary'>Организация: {documentState.ecpInfo.org}</Text>
-                    </div>
-                    <div className='cert-item'>
-                      <Text type='secondary'>Должность: {documentState.ecpInfo.position}</Text>
-                    </div>
-                    <div className='cert-item'>
-                      <Text type='secondary'>ФИО: {documentState.ecpInfo.name}</Text>
-                    </div>
-                    <div className='cert-item'>
-                      <Text type='secondary'>Адресс: {documentState.ecpInfo.address}</Text>
-                    </div>
-                    { false && <div className='cert-item'>
-                      <Text type='secondary'>OID 2.5.4.10=:</Text>
-                    </div>
-                    }
-                  </div>
+              <div className='cert-modal__item'>
+                <div className='cert-modal__item-left'>
+                  <Text type='secondary'>Срок действия сертификата</Text>
                 </div>
-                <div className='cert-modal__item'>
-                  <div className='cert-modal__item-left'>
-                    <Text type='secondary'>Срок действия сертификата</Text>
+                <div className='cert-modal__item-right'>
+                  <div className='cert-item'>
+                    <Text type='secondary'>с {documentState.ecpInfo.validity_from}</Text>
                   </div>
-                  <div className='cert-modal__item-right'>
-                    <div className='cert-item'>
-                      <Text type='secondary'>с {documentState.ecpInfo.validity_from}</Text>
-                    </div>
-                    <div className='cert-item'>
-                      <Text type='secondary'>по {documentState.ecpInfo.validity_to}</Text>
-                    </div>
+                  <div className='cert-item'>
+                    <Text type='secondary'>по {documentState.ecpInfo.validity_to}</Text>
                   </div>
-                </div>
-                <div className='cert-modal__item'>
-                  <div className='cert-modal__item-left'>
-                    <Text type='secondary'>Дата создания ЭЦП</Text>
-                  </div>
-                  <div className='cert-modal__item-right'>
-                    <div className='cert-item'>
-                      <Text type='secondary'>{moment.utc(documentState.fileCerts[documentState.activeFileCert].created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD/MM/YYYY HH:mm:ss')}</Text>
-                    </div>
-                  </div>
-                </div>
-                <div className='cert-modal-footer'>
-                  <Text>
-                    <strong>&#10003; Проверка Сертификата, СОС: Пройдена</strong>
-                  </Text><br />
-                  <Text>
-                    <strong>&#10003; Проверка Сигнатуры: Пройдена</strong>
-                  </Text>
                 </div>
               </div>
-              <Button style={{ marginTop: 20 }} onClick={() => setDocumentState({ ...documentState, showModal: !documentState.showModal })} type='primary'>Закрыть</Button>
-            </Fragment>
-            : <Fragment>
-              <Select
-                mode='tags'
-                labelInValue
-                tokenSeparators={[',']}
-                value={documentState.value}
-                filterOption={false}
-                notFoundContent={documentState.fetching ? <Spin size='small' /> : null}
-                onSearch={fetchUser}
-                onChange={handleSelect}
-                style={{ width: '100%' }}
-              >
-                {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
-              </Select>
-              <Button style={{ marginTop: 20 }} type='primary' onClick={sendToUser}>Отправить</Button>
-              <Button style={{ marginLeft: 20 }} type='primary' ghost onClick={() => setDocumentState({ ...documentState, showModal: false })}>Отмена</Button>
-            </Fragment>
+              <div className='cert-modal__item'>
+                <div className='cert-modal__item-left'>
+                  <Text type='secondary'>Дата создания ЭЦП</Text>
+                </div>
+                <div className='cert-modal__item-right'>
+                  <div className='cert-item'>
+                    <Text
+                      type='secondary'>{moment.utc(documentState.fileCerts[documentState.activeFileCert].created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD/MM/YYYY HH:mm:ss')}</Text>
+                  </div>
+                </div>
+              </div>
+              <div className='cert-modal-footer'>
+                <Text>
+                  <strong>&#10003; Проверка Сертификата, СОС: Пройдена</strong>
+                </Text><br />
+                <Text>
+                  <strong>&#10003; Проверка Сигнатуры: Пройдена</strong>
+                </Text>
+              </div>
+            </div>
+            <Button style={{ marginTop: 20 }}
+              onClick={() => setDocumentState({ ...documentState, showModal: !documentState.showModal })}
+              type='primary'>Закрыть</Button>
+          </Fragment>
           }
+          {documentState.modalType === 'send' &&
+          <Fragment>
+            <Select
+              mode='tags'
+              labelInValue
+              tokenSeparators={[',']}
+              value={documentState.value}
+              filterOption={false}
+              notFoundContent={documentState.fetching ? <Spin size='small' /> : null}
+              onSearch={fetchUser}
+              onChange={handleSelect}
+              style={{ width: '100%' }}
+            >
+              {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
+            </Select>
+            <Button style={{ marginTop: 20 }} type='primary' onClick={sendToUser}>Отправить</Button>
+            <Button style={{ marginLeft: 20 }} type='primary' ghost onClick={() => setDocumentState({ ...documentState, showModal: false })}>Отмена</Button>
+          </Fragment>
+          }
+          {documentState.modalType === 'error' &&
+          <Fragment>
+            <div style={{ textAlign: 'center' }}>
+              <Icon style={{ fontSize: '3rem' }} type='warning' theme='twoTone' twoToneColor='orange' /><br />
+              <Text style={{ textAlign: 'center' }}>Произошла ошибка! Проверьте наличие флешки в компьютере и нажмите продолжить!</Text>
+            </div>
+            <Button style={{ marginTop: '2rem' }} type='primary' onClick={() => resolveEscError()}>Продолжить</Button>
+          </Fragment>
+          }
+
         </Modal>
       }
       <input type='hidden' id='attr' size='80' value='1.2.112.1.2.1.1.1.1.2' />
