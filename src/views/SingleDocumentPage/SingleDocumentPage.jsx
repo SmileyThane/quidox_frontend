@@ -106,6 +106,18 @@ const SingleDocumentPage = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [documentState.activeFileCert, documentState.fileCerts.length])
 
+  useEffect(() => {
+    if (documentState.isErrorWitchEcp) {
+      setTimeout(() => {
+        try {
+          window.pluginLoaded()
+        } catch (error) {
+          console.log(error)
+        }
+      }, 1000)
+    }
+  }, [documentState.isErrorWitchEcp])
+
   const showModal = item => {
     axios.get(item['preview_path'], {
       'responseType': 'arraybuffer',
@@ -503,17 +515,6 @@ const SingleDocumentPage = props => {
     }
   }
 
-  useEffect(() => {
-    if (documentState.isErrorWitchEcp) {
-      setTimeout(() => {
-        try {
-          window.pluginLoaded()
-        } catch (error) {
-          console.log(error)
-        }
-      }, 1000)
-    }
-  }, [documentState.isErrorWitchEcp])
   return (
     <Fragment>
       <Spin spinning={isFetching}>
@@ -795,7 +796,7 @@ const SingleDocumentPage = props => {
           <Fragment>
             <div style={{ textAlign: 'center' }}>
               <Icon style={{ fontSize: '3rem' }} type='warning' theme='twoTone' twoToneColor='orange' /><br />
-              <Text style={{ textAlign: 'center' }}>Произошла ошибка! Проверьте наличие флешки в компьютере и нажмите продолжить!</Text>
+              <Text style={{ textAlign: 'center' }}>Произошла ошибка! Проверьте наличие флешки в компьютере  и нажмите продолжить!</Text>
             </div>
             <Button style={{ marginTop: '2rem' }} type='primary' onClick={() => resolveEscError()}>Продолжить</Button>
           </Fragment>
