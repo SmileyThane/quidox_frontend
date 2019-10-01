@@ -71,7 +71,8 @@ const defaultDocumentState = {
   fileCerts: [],
   activeFileCert: 0,
   ecpInfo: null,
-  isSelectVisible: false
+  isSelectVisible: false,
+  isErrorWitchEcp: false
 }
 // eslint-disable-next-line spaced-comment
 const isIE = /*@cc_on!@*/false || !!window.document.documentMode
@@ -105,7 +106,14 @@ const SingleDocumentPage = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [documentState.activeFileCert, documentState.fileCerts.length])
 
+
+
   const showModal = item => {
+    setDocumentState({
+      ...documentState,
+      isErrorWitchEcp: false
+    })
+
     axios.get(item['preview_path'], {
       'responseType': 'arraybuffer',
       headers: {
@@ -133,6 +141,7 @@ const SingleDocumentPage = props => {
   const hideModal = () => {
     setDocumentState({
       ...documentState,
+      isErrorWitchEcp: false,
       isVisible: false
     })
   }
@@ -228,10 +237,19 @@ const SingleDocumentPage = props => {
 
   const resolveEscError = () => {
     setDocumentState({
-      showModal: false
+      ...documentState,
+      showModal: false,
+      isErrorWitchEcp: true
     })
-    window.pluginLoaded()
   }
+
+  useEffect(() => {
+    if (documentState.isErrorWitchEcp) {
+      setTimeout(() => {
+        window.pluginLoaded()
+      }, 1000)
+    }
+  }, [documentState.isErrorWitchEcp])
 
   const verifyFile = (item, index) => {
     if (!isIE || item.status.status_data.id !== 3) {
@@ -502,6 +520,7 @@ const SingleDocumentPage = props => {
       return acpCount.length
     }
   }
+
   console.log(user)
   return (
     <Fragment>
