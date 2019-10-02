@@ -1,5 +1,4 @@
 import React, { useRef, useState, Fragment, useEffect } from 'react'
-import axios from 'axios'
 import _ from 'lodash'
 
 import { api } from '../../services'
@@ -122,6 +121,7 @@ const NewDocumentPage = props => {
 
     return api.document.createDocument(formData, { 'Content-Type': 'multipart/form-data' })
       .then(({ data }) => {
+        console.log(data)
         if (data.success) {
           if (isMessagesShow) {
             message.success(`Документ ${documentState.name} успешно сохранен!`)
@@ -131,11 +131,6 @@ const NewDocumentPage = props => {
             ...documentState,
             fetching: false,
             isClicked: true
-          })
-
-          setDocumentState({
-            ...documentState,
-            fetching: true
           })
 
           const newData = {
@@ -152,33 +147,33 @@ const NewDocumentPage = props => {
               }
             ]
           }
-          if (!documentState.files.length) {
+          if (documentState.files.length) {
+            console.log('wow')
             setDocumentState({
               ...documentState,
               fetching: false
             })
-            return null
-          }
-          api.document.confirmDocument(newData)
-            .then(({ data }) => {
-              console.log(data)
-              if (data.success) {
-                if (!isMessagesShow) {
-                  setDocumentState({ ...defaultDocumentData })
+            api.document.confirmDocument(newData)
+              .then(({ data }) => {
+                console.log(data)
+                if (data.success) {
+                  if (!isMessagesShow) {
+                    setDocumentState({ ...defaultDocumentData })
+                  } else {
+                    setDocumentState({
+                      ...documentState,
+                      fetching: false
+                    })
+                  }
                 } else {
-                  setDocumentState({
-                    ...documentState,
-                    fetching: false
-                  })
+                  throw new Error(data.error)
                 }
-              } else {
-                throw new Error(data.error)
-              }
-              return data
-            })
-            .catch(error => {
-              message.error(error.message)
-            })
+                return data
+              })
+              .catch(error => {
+                message.error(error.message)
+              })
+          }
           return data
         }
       })
