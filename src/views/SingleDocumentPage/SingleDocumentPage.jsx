@@ -246,9 +246,9 @@ const SingleDocumentPage = props => {
   }
 
   const verifyFile = (item, index) => {
-    // if (!isIE || item.status.status_data.id !== 3) {
-    //   return null
-    // }
+    if (!isIE || item.status.status_data.id !== 3) {
+      return null
+    }
     const base64 = item.encoded_file
     const input = window.document.createElement('input')
     input.type = 'hidden'
