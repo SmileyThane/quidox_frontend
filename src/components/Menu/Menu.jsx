@@ -1,7 +1,7 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import { Menu, Icon } from 'antd'
 
-import api  from '../../services/api'
+import api from '../../services/api'
 import history from '../../history.js'
 
 import { Button } from '../'
@@ -139,12 +139,16 @@ const AntMenu = props => {
             }
           })}
         </SubMenu>
-        <MenuItem
-          heading='Проверка ЭЦП'
-          url='/esc-checking'
-          key='/esc-checking'
-          icon='file-protect'
-        />
+        {/*<MenuItem*/}
+        {/*  heading='Проверка ЭЦП'*/}
+        {/*  url='/esc-checking'*/}
+        {/*  key='/esc-checking'*/}
+        {/*  icon='file-protect'*/}
+        {/*/>*/}
+        <Menu.Item style={{ color: 'rgba(0, 0, 0, 0.65)' }} className='custom-link' onClick={() => window.open('https://api.quidox.by/user/avest/verify/', '_blank')}>
+          <Icon style={{ fontSize: 18 }} type='file-protect' />
+          Проверка ЭЦП
+        </Menu.Item>
         <MenuItem
           heading='Сторонние источники'
           url='/externals'
