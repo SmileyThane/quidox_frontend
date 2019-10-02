@@ -84,6 +84,18 @@ const NewDocumentPage = props => {
     inputNode.current.value = ''
   }, [documentState.files])
 
+  useEffect(() => {
+    if (documentState.isErrorWitchEcp) {
+      setTimeout(() => {
+        try {
+          window.pluginLoaded()
+        } catch (error) {
+          console.log(error)
+        }
+      }, 1000)
+    }
+  }, [documentState.isErrorWitchEcp])
+
   const removeFile = (index) => {
     delete inputNode.current.files[index]
 

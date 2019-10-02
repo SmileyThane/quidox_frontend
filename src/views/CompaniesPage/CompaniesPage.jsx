@@ -24,7 +24,6 @@ import history from '../../history'
 import './CompaniesPage.scss'
 
 const defaultCompanyState = {
-  selectedCompanyId: null,
   newUserEmail: '',
   yourPosition: '',
   showInput: false,
@@ -54,11 +53,11 @@ const CompaniesPage = props => {
 
   const { getFieldDecorator, validateFields } = useForm()
 
+  const [companyState, setCompanyState] = useState({ ...defaultCompanyState })
+
   useEffect(() => {
     getCompanies()
   }, [])
-
-  const [companyState, setCompanyState] = useState({ ...defaultCompanyState })
 
   const onClick = () => {
     window.sign('NewCompany')
@@ -85,6 +84,13 @@ const CompaniesPage = props => {
       changeActiveCompanyById(company.company_data.id)
         .then(() => {
           message.success('Активная компания изменена успешно!')
+          setTimeout(() => {
+            try {
+              window.pluginLoaded()
+            } catch (error) {
+              console.log(error)
+            }
+          }, 1000)
         })
         .catch(error => {
           message.error(error.message)
