@@ -10,7 +10,8 @@ import {
   Tag,
   Typography,
   Button,
-  Input
+  Input,
+  Modal
 } from 'antd'
 
 import './NewDocumentPage.scss'
@@ -30,7 +31,9 @@ const defaultDocumentData = {
   fetching: false,
   ids: [],
   verifyFetching: false,
-  isClicked: false
+  isClicked: false,
+  isErrorWitchEcp: false,
+  showModal: false
 }
 
 // eslint-disable-next-line spaced-comment
@@ -44,7 +47,8 @@ const NewDocumentPage = props => {
   const inputRef = useRef(null)
   const inputNode = useRef(null)
   const {
-    sendDocumentToUser
+    sendDocumentToUser,
+    user
   } = props
 
   const [documentState, setDocumentState] = useState({ ...defaultDocumentData })
@@ -257,6 +261,14 @@ const NewDocumentPage = props => {
     })
   }
 
+  const resolveEscError = () => {
+    setDocumentState({
+      ...documentState,
+      showModal: false,
+      isErrorWitchEcp: true
+    })
+  }
+
   const verifyFile = index => {
     setDocumentState({
       ...documentState,
@@ -271,43 +283,51 @@ const NewDocumentPage = props => {
       document.body.appendChild(input)
       document.getElementById('dataFile-' + index).value = reader.result.split(',').pop()
 
-      window.sign('File-' + index)
+      try {
+        window.sign('File-' + index)
 
-      setTimeout(() => {
-        const value = document.getElementById('verifiedData' + 'File-' + index).value
-        const signedValue = document.getElementById('signedData' + 'File-' + index).value
-        const flashData = JSON.parse(decodeURIComponent(value))
-        const key = flashData.cert['2.5.29.14'] // flashData.cert['1.2.112.1.2.1.1.1.1.2'] + flashData.cert['1.2.112.1.2.1.1.1.1.1']
-        api.documents.checkFlashKey({ key: key })
-          .then(({ data }) => {
-            if (data.success) {
-              setDocumentState({
-                ...documentState,
-                verifyFetching: false,
-                base64files: [
-                  ...documentState.base64files.slice(0, index),
-                  reader.result,
-                  ...documentState.base64files.slice(index + 1)
-                ],
-                fileHashes: [
-                  ...documentState.fileHashes.slice(0, index),
-                  signedValue,
-                  ...documentState.fileHashes.slice(index + 1)
-                ],
-                fileData: [
-                  ...documentState.fileData.slice(0, index),
-                  value,
-                  ...documentState.fileData.slice(index + 1)
-                ]
-              })
-            } else {
-              throw new Error(data.error)
-            }
-          })
-          .catch(error => {
-            message.error(error.message)
-          })
-      }, 1000)
+        setTimeout(() => {
+          const value = document.getElementById('verifiedData' + 'File-' + index).value
+          const signedValue = document.getElementById('signedData' + 'File-' + index).value
+          const flashData = JSON.parse(decodeURIComponent(value))
+          const key = flashData.cert['2.5.29.14'] // flashData.cert['1.2.112.1.2.1.1.1.1.2'] + flashData.cert['1.2.112.1.2.1.1.1.1.1']
+          api.documents.checkFlashKey({ key: key })
+            .then(({ data }) => {
+              if (data.success) {
+                setDocumentState({
+                  ...documentState,
+                  verifyFetching: false,
+                  base64files: [
+                    ...documentState.base64files.slice(0, index),
+                    reader.result,
+                    ...documentState.base64files.slice(index + 1)
+                  ],
+                  fileHashes: [
+                    ...documentState.fileHashes.slice(0, index),
+                    signedValue,
+                    ...documentState.fileHashes.slice(index + 1)
+                  ],
+                  fileData: [
+                    ...documentState.fileData.slice(0, index),
+                    value,
+                    ...documentState.fileData.slice(index + 1)
+                  ]
+                })
+              } else {
+                throw new Error(data.error)
+              }
+            })
+            .catch(error => {
+              message.error(error.message)
+            })
+        }, 1000)
+      } catch (error) {
+        setDocumentState({
+          ...documentState,
+          isErrorWitchEcp: false,
+          showModal: true
+        })
+      }
     }
     reader.onerror = function (error) {
       message.error(error.message)
@@ -441,6 +461,45 @@ const NewDocumentPage = props => {
       {!isIE && <Text type='secondary'>
         Подпись файлов возможна только в браузере Internet Explorer
       </Text>
+      }
+
+      {documentState.showModal &&
+      <Modal
+        visible
+        closable={false}
+        footer={null}
+      >
+        <div style={{ textAlign: 'center' }}>
+          <Icon
+            type='warning'
+            theme='twoTone'
+            twoToneColor='orange'
+            style={{ fontSize: '3rem' }}
+          /><br />
+
+          <Text style={{ textAlign: 'center' }}>Вставьте ключ ЭЦП компании</Text>
+
+          {user.data.companies.length &&
+          user.data.companies.map(i => {
+            if (i.company_id === user.data.active_company_id) {
+              return <Text strong> {i.company_name} </Text>
+            } else {
+              return null
+            }
+          })
+          }
+
+          <Text>в компьютер.</Text>
+        </div>
+
+        <Button
+          type='primary'
+          style={{ marginTop: '2rem' }}
+          onClick={() => resolveEscError()}
+        >
+          Продолжить
+        </Button>
+      </Modal>
       }
     </Fragment>
   )

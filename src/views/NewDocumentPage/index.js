@@ -3,7 +3,8 @@ import actions from '../../store/actions'
 import NewDocumentPage from './NewDocumentPage'
 
 const mapStateToProps = state => ({
-  documents: state.documents
+  documents: state.documents,
+  user: state.user
 })
 
 const mapDispatchToProps = dispatch => ({
