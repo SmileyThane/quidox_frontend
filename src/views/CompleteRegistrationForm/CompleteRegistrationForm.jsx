@@ -90,7 +90,7 @@ class CompleteRegistrationForm extends React.Component {
         }
         switch (this.state.currentStep) {
           case 0:
-            axios.post('https://api.quidox.by/api/sms/send', registerData)
+            axios.post(`${process.env.REACT_APP_BASE_URL}/sms/send`, registerData)
               .then(({ data }) => {
                 if (data.success) {
                   message.success('На указанный Вами номер отправлено SMS с кодом. Введите его в окно ниже для ' +
@@ -109,11 +109,11 @@ class CompleteRegistrationForm extends React.Component {
               })
             break
           case 1:
-            axios.post('https://api.quidox.by/api/sms/confirm', registerData)
+            axios.post(`${process.env.REACT_APP_BASE_URL}/sms/confirm`, registerData)
               .then(({ data }) => {
                 if (data.success) {
                   message.success('СМС код введен правильно!')
-                  axios.post('https://api.quidox.by/api/user/update/phone', registerData)
+                  axios.post(`${process.env.REACT_APP_BASE_URL}/user/update/phone`, registerData)
                     .then(({ data }) => {
                       if (data) {
                         history.push('/login')
@@ -141,7 +141,7 @@ class CompleteRegistrationForm extends React.Component {
     const phone = {
       phone: this.state.phone
     }
-    axios.post('https://api.quidox.by/api/sms/send', phone)
+    axios.post(`${process.env.REACT_APP_BASE_URL}/sms/send`, phone)
       .then(({ data }) => {
         if (data.success) {
           message.success('Номер телефона успешно отправлен')

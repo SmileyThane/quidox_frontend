@@ -100,7 +100,7 @@ class UserInfoPage extends React.Component {
         code: values.code,
       }
       if (this.state.isCode) {
-        axios.post('https://api.quidox.by/api/sms/confirm', phoneData)
+        axios.post(`${process.env.REACT_APP_BASE_URL}/sms/confirm`, phoneData)
           .then(({ data }) => {
             console.log(data)
             if (data.success) {
@@ -124,7 +124,7 @@ class UserInfoPage extends React.Component {
             message.error(error.message)
           })
       } else {
-        axios.post('https://api.quidox.by/api/sms/send', phoneData)
+        axios.post(`${process.env.REACT_APP_BASE_URL}/sms/send`, phoneData)
           .then(({ data }) => {
             if (data.success) {
               message.success('На указанный Вами номер отправлено SMS с кодом')

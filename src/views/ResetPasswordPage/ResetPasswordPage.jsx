@@ -20,7 +20,7 @@ class LoginPage extends React.Component {
   sendEmail = e => {
     e.preventDefault()
     const email = this.state.email
-    axios.get(`https://api.quidox.by/api/password/reset/${email}`)
+    axios.get(`${process.env.REACT_APP_BASE_URL}/password/reset/${email}`)
       .then(({ data }) => {
         if (data.success) {
           message.success('Заявка на восстановление пароля успешно отправлена!')

@@ -34,7 +34,7 @@ class LoginPage extends React.Component {
         delete values.email
         delete values.password
         delete values.secret_key
-        axios.post('https://api.quidox.by/api/login', values)
+        axios.post(`${process.env.REACT_APP_BASE_URL}/login`, values)
           .then(({ data }) => {
             if (data.success) {
               window.localStorage.setItem('authToken', data.data.token)

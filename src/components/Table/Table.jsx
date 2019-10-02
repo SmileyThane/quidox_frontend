@@ -167,7 +167,7 @@ const AntdTable = props => {
       ...tableState,
       isFetching: true
     })
-    axios.get(`https://api.quidox.by/api/receipt/pdf/${id}`, {
+    axios.get(`${process.env.REACT_APP_BASE_URL}/receipt/pdf/${id}`, {
       'responseType': 'arraybuffer',
       headers: {
         'Authorization': 'Bearer ' + window.localStorage.getItem('authToken'),
