@@ -23,8 +23,8 @@ import {
 import { findUsersByParams } from '../../services/api/user'
 import { Button, PDFViewer } from '../../components'
 
-import { close } from './img'
 import './SingleDocumentPage.scss'
+import { close } from './img'
 
 const { Text, Paragraph } = Typography
 const { Option } = Select
@@ -525,13 +525,22 @@ const SingleDocumentPage = props => {
                 <div className='back' onClick={() => history.goBack()} >
                   <Icon type='left' />
                 </div>
+
                 {(statuses && statuses.length && statuses[0].user_company_document_list_id === 1)
-                  ? <Paragraph className='document-title' editable={{ onChange: handleEditDocumentName }}>{document && document.name}</Paragraph>
+                  ? <Paragraph
+                    className='document-title'
+                    editable={{ onChange: handleEditDocumentName }}
+                  >
+                    {document && document.name}
+                  </Paragraph>
                   : <h2 className='document__title'>{document && document.name}</h2>
                 }
               </div>
+
               <div className='document__header_right'>
-                <p className='document__date'>{moment.utc(singleDocument.created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD/MM/YYYY HH:mm:ss')}</p>
+                <p className='document__date'>
+                  {moment.utc(singleDocument.created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD/MM/YYYY HH:mm:ss')}
+                </p>
               </div>
             </div>
             <div className='document__content'>
@@ -548,6 +557,7 @@ const SingleDocumentPage = props => {
                     }
                   </div>
                 </div>
+
                 <div className='info__item'>
                   <div className='info__title'>Отправители</div>
                   <div className='info__content'>
@@ -560,10 +570,16 @@ const SingleDocumentPage = props => {
                     }
                   </div>
                 </div>
+
                 <div className='info__item'>
                   <div className='info__title'>Комментарий</div>
                   {(statuses && statuses.length && statuses[0].user_company_document_list_id === 1)
-                    ? <Paragraph editable={{ onChange: handleEditDocumentDescription }} className='info__content'>{document && document.description}</Paragraph>
+                    ? <Paragraph
+                      editable={{ onChange: handleEditDocumentDescription }}
+                      className='info__content'
+                    >
+                      {document && document.description}
+                    </Paragraph>
                     : <div className='info__content'>{document && document.description}</div>
                   }
                 </div>
@@ -592,6 +608,7 @@ const SingleDocumentPage = props => {
                             onClick={() => handleAgreeFile(item)}
                           />
                         </Tooltip>,
+
                         <Tooltip
                           title={getButtonTooltipText(item.status.status_data.id, 'decline')}
                           arrowPointAtCenter>
@@ -607,6 +624,7 @@ const SingleDocumentPage = props => {
                             })()}
                             onClick={() => handleDeclineFile(item)} />
                         </Tooltip>,
+
                         <Tooltip title='Подписать документ' arrowPointAtCenter>
                           <Icon
                             type='edit'
@@ -620,24 +638,46 @@ const SingleDocumentPage = props => {
                               })() : disabled}
                             onClick={() => verifyFile(item, index)} />
                         </Tooltip>,
-                        <Tooltip title={`Скачать документ`} placement='topRight' arrowPointAtCenter>
-                          <Icon style={{ color: '#3278fb', fontSize: '1.6rem' }} onClick={() => downloadDocumentContent(item, false, true)} type='download' />
+
+                        <Tooltip
+                          title='Скачать документ'
+                          placement='topRight'
+                          arrowPointAtCenter
+                        >
+                          <Icon
+                            style={{ color: '#3278fb', fontSize: '1.6rem' }}
+                            onClick={() => downloadDocumentContent(item, false, true)}
+                            type='download'
+                          />
                         </Tooltip>
                       ]
                       }
                     >
                       <div className='single-document'>
-                        <Tooltip title={`Просмотреть содержиоме файла`} placement='top' arrowPointAtCenter>
-                          <Icon style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }} type='eye' onClick={() => showModal(item)} />
+                        <Tooltip
+                          title='Просмотреть содержиоме файла'
+                          placement='top'
+                          arrowPointAtCenter
+                        >
+                          <Icon
+                            type='eye'
+                            style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }}
+                            onClick={() => showModal(item)}
+                          />
                         </Tooltip>
+
                         <p style={{ marginRight: 10 }} className='single-document__name'>{item.name}</p>
+
                         {getEcpCount(item.users_companies) > 0 &&
                         <Tag
+                          color='#3278fb'
+                          style={{ cursor: 'pointer' }}
                           onClick={() => showUserData('ecp', item.users_companies)}
-                          style={{ cursor: 'pointer' }} color='#3278fb'>
+                        >
                           ЭЦП {getEcpCount(item.users_companies)}
                         </Tag>
                         }
+
                         {item.status &&
                           <Tag color={item.status.status_data.color}>{item.status.status_data.name}</Tag>
                         }
@@ -647,17 +687,26 @@ const SingleDocumentPage = props => {
                 />
               </div>
             </div>
+
             { (document && document.attachments) &&
               <Fragment>
                 <div className='document__actions'>
                   <div className='document__actions__left'>
                     {document.attachments.length
                       ? <Fragment>
-                        <Button style={{ marginRight: 15 }} type='primary' onClick={() => downloadDocumentContent(document, false)}>
+                        <Button
+                          type='primary'
+                          style={{ marginRight: 15 }}
+                          onClick={() => downloadDocumentContent(document, false)}
+                        >
                           <Icon type='file-zip' />
                             Скачать всё
                         </Button>
-                        <Button type='primary' onClick={() => downloadDocumentContent(document, true)}>
+
+                        <Button
+                          type='primary'
+                          onClick={() => downloadDocumentContent(document, true)}
+                        >
                           <Icon type='file-zip' />
                             Скачать всё с сигнатурами
                         </Button>
@@ -665,6 +714,7 @@ const SingleDocumentPage = props => {
                       : ''
                     }
                   </div>
+
                   <div className='document__actions__right'>
                     <Button onClick={() => showUserData('send')} type='primary'>
                       <Icon type='redo' />
@@ -717,19 +767,24 @@ const SingleDocumentPage = props => {
                 <div className='cert-modal__item-left'>
                   <Text type='secondary'>Данные из сертификата ЭЦП</Text>
                 </div>
+
                 <div className='cert-modal__item-right'>
                   <div className='cert-item'>
                     <Text type='secondary'>УНП: {documentState.ecpInfo.unp}</Text>
                   </div>
+
                   <div className='cert-item'>
                     <Text type='secondary'>Организация: {documentState.ecpInfo.org}</Text>
                   </div>
+
                   <div className='cert-item'>
                     <Text type='secondary'>Должность: {documentState.ecpInfo.position}</Text>
                   </div>
+
                   <div className='cert-item'>
                     <Text type='secondary'>ФИО: {documentState.ecpInfo.name}</Text>
                   </div>
+
                   <div className='cert-item'>
                     <Text type='secondary'>Адресс: {documentState.ecpInfo.address}</Text>
                   </div>
@@ -739,19 +794,23 @@ const SingleDocumentPage = props => {
                 <div className='cert-modal__item-left'>
                   <Text type='secondary'>Срок действия сертификата</Text>
                 </div>
+
                 <div className='cert-modal__item-right'>
                   <div className='cert-item'>
                     <Text type='secondary'>с {documentState.ecpInfo.validity_from}</Text>
                   </div>
+
                   <div className='cert-item'>
                     <Text type='secondary'>по {documentState.ecpInfo.validity_to}</Text>
                   </div>
                 </div>
               </div>
+
               <div className='cert-modal__item'>
                 <div className='cert-modal__item-left'>
                   <Text type='secondary'>Дата создания ЭЦП</Text>
                 </div>
+
                 <div className='cert-modal__item-right'>
                   <div className='cert-item'>
                     <Text
@@ -759,18 +818,25 @@ const SingleDocumentPage = props => {
                   </div>
                 </div>
               </div>
+
               <div className='cert-modal-footer'>
                 <Text>
                   <strong>&#10003; Проверка Сертификата, СОС: Пройдена</strong>
                 </Text><br />
+
                 <Text>
                   <strong>&#10003; Проверка Сигнатуры: Пройдена</strong>
                 </Text>
               </div>
             </div>
-            <Button style={{ marginTop: 20 }}
+
+            <Button
+              style={{ marginTop: 20 }}
               onClick={() => setDocumentState({ ...documentState, showModal: !documentState.showModal })}
-              type='primary'>Закрыть</Button>
+              type='primary'
+            >
+              Закрыть
+            </Button>
           </Fragment>
           }
           {documentState.modalType === 'send' &&
@@ -788,15 +854,38 @@ const SingleDocumentPage = props => {
             >
               {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
             </Select>
-            <Button style={{ marginTop: 20 }} type='primary' onClick={sendToUser}>Отправить</Button>
-            <Button style={{ marginLeft: 20 }} type='primary' ghost onClick={() => setDocumentState({ ...documentState, showModal: false })}>Отмена</Button>
+
+            <Button
+              type='primary'
+              style={{ marginTop: 20 }}
+              onClick={sendToUser}
+            >
+              Отправить
+            </Button>
+
+            <Button
+              type='primary'
+              style={{ marginLeft: 20 }}
+              onClick={() => setDocumentState({ ...documentState, showModal: false })}
+              ghost
+            >
+              Отмена
+            </Button>
           </Fragment>
           }
+
           {documentState.modalType === 'error' &&
           <Fragment>
             <div style={{ textAlign: 'center' }}>
-              <Icon style={{ fontSize: '3rem' }} type='warning' theme='twoTone' twoToneColor='orange' /><br />
+              <Icon
+                type='warning'
+                theme='twoTone'
+                twoToneColor='orange'
+                style={{ fontSize: '3rem' }}
+              /><br />
+
               <Text style={{ textAlign: 'center' }}>Вставьте ключ ЭЦП компании</Text>
+
               {user.data.companies.length &&
                 user.data.companies.map(i => {
                   if (i.company_id === user.data.active_company_id) {
@@ -806,20 +895,32 @@ const SingleDocumentPage = props => {
                   }
                 })
               }
+
               <Text>в компьютер.</Text>
             </div>
-            <Button style={{ marginTop: '2rem' }} type='primary' onClick={() => resolveEscError()}>Продолжить</Button>
+
+            <Button
+              type='primary'
+              style={{ marginTop: '2rem' }}
+              onClick={() => resolveEscError()}
+            >
+              Продолжить
+            </Button>
           </Fragment>
           }
 
         </Modal>
       }
       <input type='hidden' id='attr' size='80' value='1.2.112.1.2.1.1.1.1.2' />
+
       <input type='hidden' id='companyData' />
+
       <div id='attrCertSelectContainer' style={{ display: 'none' }}>
         <span id='certExtAbsent' />
+
         <select style={{ visibility: 'hidden' }} id='attrCertSelect' />
       </div>
+
       <input type='hidden' id='attrValue' size='80' disabled='disabled' />
     </Fragment>
   )

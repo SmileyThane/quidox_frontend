@@ -19,10 +19,12 @@ const CompanyBalance = props => {
         <Title level={3}>
           Пополнить баланс
         </Title>
+
         <Title level={3}>
           Текущее состояние баланса: 120 BYN
         </Title>
       </div>
+
       <div style={{ marginTop: '1rem' }}>
         <Text>
           Активация заказанной услуги происходит одновременно со списанием ее стоимости с баланса Заказчика. По окончании
@@ -50,32 +52,43 @@ const CompanyBalance = props => {
 
           <div className='balance-links-item'>
             <Text>Пополнить на 100 BYN</Text>
+
             <Button
               type='link'
               onClick={() => window.open(pdf100, '_blank')}
-            >Скачать счет</Button>
+            >
+              Скачать счет
+            </Button>
           </div>
 
           <div className='balance-links-item'>
             <Text>Пополнить на 500 BYN</Text>
+
             <Button
               type='link'
               onClick={() => window.open(pdf500, '_blank')}
-            >Скачать счет</Button>
+            >
+              Скачать счет
+            </Button>
           </div>
 
           <div className='balance-links-item'>
             <Text>Пополнить на 1000 BYN</Text>
+
             <Button
               type='link'
               onClick={() => window.open(pdf1000, '_blank')}
-            >Скачать счет</Button>
+            >
+              Скачать счет
+            </Button>
           </div>
         </div><br />
+
         <Text>
           После зачисления платежа на наш расчетный счет служба поддержки проверит его назначение и откорректирует состояние
           баланса Вашей организации.
         </Text><br />
+
         <Text>
           Благодарим Вас за сотрудничество!
         </Text>

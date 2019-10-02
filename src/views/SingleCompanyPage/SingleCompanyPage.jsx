@@ -1,17 +1,16 @@
 import React, { Fragment, useEffect } from 'react'
 
+import history from '../../history'
 import {
   Spin,
   Tabs,
   Icon
 } from 'antd'
-
 import {
   CompanyUsers,
   CompanyDescription,
   CompanyBalance
 } from './internal'
-import history from '../../history'
 
 const { TabPane } = Tabs
 
@@ -29,7 +28,6 @@ const SingleCompanyPage = props => {
     }
   }, [match, getCompanyById])
 
-  console.log(location)
   return (
     <Fragment>
       <Spin spinning={isFetching}>
