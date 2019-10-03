@@ -67,7 +67,9 @@ const HeaderBlock = props => {
 
                 <div className='header-data--item'>
                   Баланс (BYN):
-                  <span className='tag-span'>120.00</span>
+                  <span className='tag-span'>
+                    {activeCompany && activeCompany.company_data.balance}
+                  </span>
                 </div>
                 <div className='header-data--item'>
                   {activeCompany &&
