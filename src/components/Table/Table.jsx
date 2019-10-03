@@ -393,6 +393,7 @@ const AntdTable = props => {
       <Spin spinning={tableState.isFetching}>
         <Table
           className='table'
+          scroll={{ x: true }}
           columns={columns}
           rowSelection={rowSelection}
           dataSource={tableData.hasOwnProperty('data') ? tableData.data : []}
