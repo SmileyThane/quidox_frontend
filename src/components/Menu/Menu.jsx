@@ -111,6 +111,7 @@ const AntMenu = props => {
             />
           ))}
         </SubMenu>
+        {0 &&
         <SubMenu
           key='sub2'
           title={
@@ -139,12 +140,7 @@ const AntMenu = props => {
             }
           })}
         </SubMenu>
-        {/*<MenuItem*/}
-        {/*  heading='Проверка ЭЦП'*/}
-        {/*  url='/esc-checking'*/}
-        {/*  key='/esc-checking'*/}
-        {/*  icon='file-protect'*/}
-        {/*/>*/}
+        }
         <Menu.Item style={{ color: 'rgba(0, 0, 0, 0.65)' }} className='custom-link' onClick={() => window.open('https://api.quidox.by/user/avest/verify/', '_blank')}>
           <Icon style={{ fontSize: 18 }} type='file-protect' />
           Проверка ЭЦП

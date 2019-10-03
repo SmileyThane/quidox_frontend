@@ -5,24 +5,17 @@ import {
   Icon,
   Skeleton,
   Tag,
-  Typography,
-  Button,
   Dropdown,
   message,
   Tooltip,
-  Statistic,
-  Row,
-  Col,
   Avatar
 } from 'antd'
 
 import history from '../../history.js'
-import { NavLink } from 'react-router-dom'
 import { logo } from '../../resources/img'
 import './HeaderBlock.scss'
 
 const { Header } = Layout
-const { Text } = Typography
 
 const HeaderBlock = props => {
   const {
@@ -46,6 +39,8 @@ const HeaderBlock = props => {
       })
   }
 
+  const activeCompany = data.hasOwnProperty('companies') && data.companies.find(i => i.company_id === data.active_company_id)
+  console.log(activeCompany)
   return (
     <Header className='header'>
       <div className='header__content'>
@@ -58,12 +53,16 @@ const HeaderBlock = props => {
               <div className='header-data'>
                 <div className='header-data--item'>
                   Тариф:
-                  <span className='tag-span'>Легкий старт</span>
+                  <span className='tag-span'>
+                    {activeCompany && activeCompany.tarification.tarification_data.name}
+                  </span>
                 </div>
 
                 <div className='header-data--item'>
                   Доступно действий:
-                  <span className='tag-span'>0092</span>
+                  <span className='tag-span'>
+                    {activeCompany && activeCompany.tarification.max_actions}
+                  </span>
                 </div>
 
                 <div className='header-data--item'>
@@ -71,22 +70,19 @@ const HeaderBlock = props => {
                   <span className='tag-span'>120.00</span>
                 </div>
                 <div className='header-data--item'>
-                  {(data && data.companies) && data.companies.map(i => {
-                    if (i.company_id === data.active_company_id) {
-                      return (
-                        <Tooltip key={i.company_id} arrowPointAtCenter title={i.company_name}>
-                          <Tag
-                            color='#87d068'
-                            style={{ width: '100%', maxWidth: '15rem', textOverflow: 'ellipsis', overflow: 'hidden' }}
-                          >
-                            {+i.company_number === 0 ? i.company_name : (`УНП: ${i.company_number}`)}
-                          </Tag>
-                        </Tooltip>
-                      )
-                    } else {
-                      return null
-                    }
-                  })}
+                  {activeCompany &&
+                  <Tooltip arrowPointAtCenter title={activeCompany.company_data.company_name}>
+                    <Tag
+                      color='#87d068'
+                      style={{ width: '100%', maxWidth: '15rem', textOverflow: 'ellipsis', overflow: 'hidden' }}
+                    >
+                      {+activeCompany.company_data.company_number === 0
+                        ? activeCompany.company_data.name
+                        : activeCompany.company_data.company_number
+                      }
+                    </Tag>
+                  </Tooltip>
+                  }
                 </div>
               </div>
               <div className='user header__user'>
