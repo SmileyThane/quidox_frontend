@@ -86,6 +86,7 @@ const SingleDocumentPage = props => {
     sendDocumentToUser,
     updateDocumentById,
     agreeFile,
+    getUser,
     verifyDocument
   } = props
 
@@ -214,13 +215,14 @@ const SingleDocumentPage = props => {
 
   const sendToUser = () => {
     const docDataToUser = {
-      document_ids: document.attachments.map(i => i.document_id),
+      document_ids: [document.id],
       user_company_id: JSON.stringify(documentState.value.map(i => i.key))
     }
     sendDocumentToUser(docDataToUser)
       .then(response => {
         if (response.success) {
           message.success('Сообщение успешно отправлено!')
+          getUser()
           setDocumentState({
             ...documentState,
             fetching: false,
@@ -841,6 +843,7 @@ const SingleDocumentPage = props => {
           }
           {documentState.modalType === 'send' &&
           <Fragment>
+            <Text>Получатели:</Text>
             <Select
               mode='tags'
               labelInValue
@@ -850,7 +853,7 @@ const SingleDocumentPage = props => {
               notFoundContent={documentState.fetching ? <Spin size='small' /> : null}
               onSearch={fetchUser}
               onChange={handleSelect}
-              style={{ width: '100%' }}
+              style={{ width: '100%', margin: '2rem 0 5rem 0' }}
             >
               {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
             </Select>

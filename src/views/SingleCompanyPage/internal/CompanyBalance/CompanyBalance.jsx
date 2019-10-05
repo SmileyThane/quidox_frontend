@@ -12,7 +12,7 @@ import './CompanyBalance.scss'
 
 const { Title, Text } = Typography
 
-const CompanyBalance = props => {
+const CompanyBalance = ({ balance }) => {
   return (
     <Fragment>
       <div className='balance-header'>
@@ -21,7 +21,7 @@ const CompanyBalance = props => {
         </Title>
 
         <Title level={3}>
-          Текущее состояние баланса: 120 BYN
+          {`Текущее состояние баланса: ${balance} BYN`}
         </Title>
       </div>
 

@@ -40,7 +40,7 @@ const HeaderBlock = props => {
   }
 
   const activeCompany = data.hasOwnProperty('companies') && data.companies.find(i => i.company_id === data.active_company_id)
-  console.log(activeCompany)
+
   return (
     <Header className='header'>
       <div className='header__content'>

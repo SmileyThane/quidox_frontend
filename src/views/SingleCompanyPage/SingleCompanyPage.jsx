@@ -28,6 +28,7 @@ const SingleCompanyPage = props => {
     }
   }, [match, getCompanyById])
 
+  console.log(singleCompany)
   return (
     <Fragment>
       <Spin spinning={isFetching}>
@@ -71,7 +72,7 @@ const SingleCompanyPage = props => {
                 </Fragment>
               }
             >
-              <CompanyBalance />
+              <CompanyBalance balance={singleCompany.balance} />
             </TabPane>
 
             <TabPane

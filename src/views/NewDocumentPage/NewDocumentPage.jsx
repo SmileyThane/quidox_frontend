@@ -44,10 +44,12 @@ const { TextArea } = Input
 const { Text } = Typography
 
 const NewDocumentPage = props => {
+
   const inputRef = useRef(null)
   const inputNode = useRef(null)
   const {
     sendDocumentToUser,
+    getUser,
     user
   } = props
 
@@ -137,7 +139,6 @@ const NewDocumentPage = props => {
 
     return api.document.createDocument(formData, { 'Content-Type': 'multipart/form-data' })
       .then(({ data }) => {
-        console.log(data)
         if (data.success) {
           if (isMessagesShow) {
             message.success(`Документ ${documentState.name} успешно сохранен!`)
@@ -164,7 +165,6 @@ const NewDocumentPage = props => {
             ]
           }
           if (documentState.files.length) {
-            console.log('wow')
             setDocumentState({
               ...documentState,
               fetching: false
@@ -219,6 +219,7 @@ const NewDocumentPage = props => {
           sendDocumentToUser(docDataToUser)
             .then(response => {
               message.success('Сообщение успешно отправлено!')
+              getUser()
               setDocumentState({ ...defaultDocumentData })
             })
             .catch(error => {
