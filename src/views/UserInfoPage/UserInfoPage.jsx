@@ -102,10 +102,9 @@ class UserInfoPage extends React.Component {
       if (this.state.isCode) {
         axios.post(`${process.env.REACT_APP_BASE_URL}/sms/confirm`, phoneData)
           .then(({ data }) => {
-            console.log(data)
             if (data.success) {
               this.props.updateUser(phoneData)
-                .then(({ data }) => {
+                .then(data => {
                   if (data.success) {
                     message.success('Номер успешно сохранен')
                     this.setState({ isModalVisible: false })
@@ -204,13 +203,17 @@ class UserInfoPage extends React.Component {
       user: { isFetching, data }
     } = this.props
 
+    const ActiveCompany = data.hasOwnProperty('companies') && data.companies.find(i => i.company_id === data.active_company_id)
+
+    console.log(data)
+    console.log('ActiveCompany', ActiveCompany)
     return (
       <Fragment>
         <Form className='content content_user form-user'>
           <Spin spinning={isFetching} style={{ maxWidth: '50rem', margin: '0 auto' }}>
             <Row gutter={30}>
-              <Col span={12}>
-                <Form.Item label='Адрес электронной почты'>
+              <Col span={24}>
+                <Form.Item style={{ width: '50%' }} label='Адрес электронной почты'>
                   {getFieldDecorator('email', {
                     initialValue: data.email,
                     rules: [
@@ -226,8 +229,27 @@ class UserInfoPage extends React.Component {
                   })(<Input disabled />)}
                 </Form.Item>
               </Col>
-              <Col span={12}>
-                <Form.Item label='Имя:'>
+
+              <Col span={24}>
+                <Form.Item style={{ width: '50%' }} label='Мобильный телефон:'>
+                  {getFieldDecorator('phone', {
+                    initialValue: data.phone,
+                    rules: [
+                      {
+                        type: 'string',
+                        message: 'Не похоже, что это имя!'
+                      },
+                      {
+                        required: true,
+                        message: 'Пожалуйста, введите ваше имя!'
+                      }
+                    ]
+                  })(<Input disabled />)}
+                </Form.Item>
+              </Col>
+
+              <Col span={24}>
+                <Form.Item style={{ width: '50%' }} label='Имя:'>
                   {getFieldDecorator('name', {
                     initialValue: data.name,
                     rules: [
@@ -243,8 +265,9 @@ class UserInfoPage extends React.Component {
                   })(<Input disabled={!isEditMode} />)}
                 </Form.Item>
               </Col>
-              <Col span={12}>
-                <Form.Item label='Отчество:'>
+
+              <Col span={24}>
+                <Form.Item style={{ width: '50%' }} label='Отчество:'>
                   {getFieldDecorator('patronymic', {
                     initialValue: data.patronymic,
                     rules: [
@@ -256,8 +279,9 @@ class UserInfoPage extends React.Component {
                   })(<Input disabled={!isEditMode} />)}
                 </Form.Item>
               </Col>
-              <Col span={12}>
-                <Form.Item label='Фамилия:'>
+
+              <Col span={24}>
+                <Form.Item style={{ width: '50%' }} label='Фамилия:'>
                   {getFieldDecorator('lastname', {
                     initialValue: data.lastname,
                     rules: [
@@ -273,8 +297,9 @@ class UserInfoPage extends React.Component {
                   })(<Input disabled={!isEditMode} />)}
                 </Form.Item>
               </Col>
-              <Col span={12}>
-                <Form.Item label='Активаная компания:'>
+
+              <Col span={24}>
+                <Form.Item style={{ width: '50%' }} label='Активаная компания:'>
                   {getFieldDecorator('active_company_id', {
                     initialValue: data.active_company_id,
                     rules: [
@@ -296,24 +321,23 @@ class UserInfoPage extends React.Component {
                   </Select>)}
                 </Form.Item>
               </Col>
-              {data.position &&
-                <Col span={12}>
-                  <Form.Item label='Должность:'>
-                    {getFieldDecorator('position', {
-                      initialValue: data.position
-                    })(<Input disabled/>)}
-                  </Form.Item>
-                </Col>
-              }
-              {data.role &&
-                <Col span={12}>
-                  <Form.Item label='Роль:'>
-                    {getFieldDecorator('role', {
-                      initialValue: data.role
-                    })(<Input disabled/>)}
-                  </Form.Item>
-                </Col>
-              }
+
+              <Col span={24}>
+                <Form.Item style={{ width: '50%' }} label='Должность:'>
+                  {getFieldDecorator('position', {
+                    initialValue: ActiveCompany.position ? ActiveCompany.position : 'Отсутствует'
+                  })(<Input disabled />)}
+                </Form.Item>
+              </Col>
+
+
+              {/*<Col span={24}>*/}
+              {/*  <Form.Item style={{ width: '50%' }} label='Роль:'>*/}
+              {/*    {getFieldDecorator('role_name', {*/}
+              {/*      initialValue: ActiveCompany.role_name ? ActiveCompany.role_name : 'Отсутствует'*/}
+              {/*    })(<Input disabled/>)}*/}
+              {/*  </Form.Item>*/}
+              {/*</Col>*/}
             </Row>
           </Spin>
         </Form>

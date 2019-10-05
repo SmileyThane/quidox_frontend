@@ -56,6 +56,7 @@ const AntdTable = props => {
     activeCompany,
     children,
     type,
+    getUser,
     removeDocumentById,
     removeDocumentsByIds,
     documents,
@@ -299,8 +300,8 @@ const AntdTable = props => {
   const sendToUser = () => {
     const docsDataToUser = {
       document_ids: tableData.data
-        .filter(i => tableState.selectedRowKeys.includes(i.id))
-        .map(i => i.id),
+        .filter(i => tableState.selectedRowKeys.includes(i.document_id))
+        .map(i => i.document_id),
       user_company_id: JSON.stringify(tableState.value.map(i => i.key))
     }
     sendDocumentToUser(docsDataToUser)
@@ -308,6 +309,7 @@ const AntdTable = props => {
       .then(response => {
         if (response.success) {
           message.success('Сообщение успешно отправлено!')
+          getUser()
           setTableState({
             ...tableState,
             fetching: false,
@@ -358,6 +360,7 @@ const AntdTable = props => {
     parameterState.sort_by,
     parameterState.sort_value
   ])
+  console.log(tableState)
   return (
     <Fragment>
       {tableState.showModal && <Modal
@@ -398,7 +401,7 @@ const AntdTable = props => {
           columns={columns}
           rowSelection={rowSelection}
           dataSource={tableData.hasOwnProperty('data') ? tableData.data : []}
-          rowKey='id'
+          rowKey='document_id'
           locale={{ emptyText: 'Нет данных' }}
           rowClassName={record => record.is_read === 0 ? 'unread' : ''}
           pagination={false}

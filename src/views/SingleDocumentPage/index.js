@@ -12,7 +12,8 @@ const mapDispatchToProps = dispatch => ({
   sendDocumentToUser: data => dispatch(actions.documents.sendDocumentToUser(data)),
   verifyDocument: data => dispatch(actions.document.verifyDocument(data)),
   agreeFile: data => dispatch(actions.document.agreeFile(data)),
-  updateDocumentById: (id, data) => dispatch(actions.document.updateDocumentById(id, data))
+  updateDocumentById: (id, data) => dispatch(actions.document.updateDocumentById(id, data)),
+  getUser: () => dispatch(actions.user.getUser())
 })
 
 export default connect(
