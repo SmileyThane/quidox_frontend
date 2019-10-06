@@ -95,7 +95,7 @@ const HeaderBlock = props => {
                         <li className='user__dropdown__item' style={{ textAlign: 'center' }}>
                           {(data && data.companies) && data.companies.map(i => {
                             if (i.company_id === data.active_company_id) {
-                              return <Tag key={i.company_id} color='#87d068' style={{ width: '100%' }}>{+i.company_number === 0 ? i.company_name : (`УНП: ${i.company_number}`)}</Tag>
+                              return <Tag key={i.company_id} color='#87d068' style={{ width: '100%', overflow: 'hidden', textOverflow: 'ellipsis' }}>{+i.company_number === 0 ? i.company_name : (`УНП: ${i.company_number}`)}</Tag>
                             } else {
                               return null
                             }

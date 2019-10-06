@@ -53,7 +53,7 @@ const AntMenu = props => {
           url='/documents'
           status={2}
           key='/documents/2'
-          icon='export'
+          icon='import'
           id={'/documents/2'}
         />
         <MenuItem
@@ -61,7 +61,7 @@ const AntMenu = props => {
           url='/documents'
           status={3}
           key='/documents/3'
-          icon='import'
+          icon='export'
           id={'/documents/3'}
         />
         <MenuItem

@@ -1,5 +1,4 @@
 import React, { useState, useEffect, Fragment, useRef } from 'react'
-import { api } from '../../services'
 import axios from 'axios'
 import fileDownload from 'js-file-download'
 
@@ -153,7 +152,7 @@ const AntdTable = props => {
       className: 'table-download',
       render: record => <Fragment>
         <Tooltip placement='topRight' title='Скачать квитанцию в формате pdf (Скоро...)' arrowPointAtCenter>
-          {/*<Icon onClick={() => downloadReceipt(record.id, record.document.name)} type='file-pdf' style={{ marginRight: '0.5rem', fontSize: '1.8rem', cursor: 'pointer' }} />*/}
+          {/* <Icon onClick={() => downloadReceipt(record.id, record.document.name)} type='file-pdf' style={{ marginRight: '0.5rem', fontSize: '1.8rem', cursor: 'pointer' }} /> */}
           <Icon type='file-pdf' style={{ marginRight: '0.5rem', fontSize: '1.8rem', cursor: 'pointer' }} />
         </Tooltip>
 
@@ -202,11 +201,14 @@ const AntdTable = props => {
       message.error('Нет выбраных документов!')
       return null
     }
+    const archiveArray = {
+      ids: tableData.data
+        .filter(i => tableState.selectedRowKeys.includes(i.document_id))
+        .map(i => i.id)
+    }
     if (tableState.selectedRowKeys.length > 1) {
-      const obj = {
-        ids: tableState.selectedRowKeys
-      }
-      removeDocumentsByIds(obj)
+      console.log(archiveArray)
+      removeDocumentsByIds(archiveArray)
         .then(response => {
           if (response.success) {
             message.success('Документы перемещены в архив')
@@ -219,7 +221,8 @@ const AntdTable = props => {
           message.error(error.message)
         })
     } else {
-      removeDocumentById(tableState.selectedRowKeys[0], type)
+      console.log(archiveArray)
+      removeDocumentById(archiveArray.ids[0], type)
         .then(response => {
           if (response.success) {
             message.success('Документ перемещен в архив')
@@ -350,7 +353,6 @@ const AntdTable = props => {
   }
 
   useEffect(() => {
-    console.log('Last useEffect')
     if (parameterState.status) {
       getDocumentsWithParams(activeCompany, parameterState)
     }
@@ -360,7 +362,7 @@ const AntdTable = props => {
     parameterState.sort_by,
     parameterState.sort_value
   ])
-  console.log(tableState)
+  console.log(tableData.data)
   return (
     <Fragment>
       {tableState.showModal && <Modal
