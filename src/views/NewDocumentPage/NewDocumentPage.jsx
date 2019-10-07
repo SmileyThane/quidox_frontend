@@ -69,17 +69,21 @@ const NewDocumentPage = props => {
   const getFiles = e => {
     const files = [...e.target.files]
 
-    setDocumentState({
-      ...documentState,
-      files: [...documentState.files, ...files],
-      base64files: [...documentState.base64files, null],
-      fileHashes: [...documentState.fileHashes, null],
-      fileData: [...documentState.fileData, null],
-      statuses: [...documentState.statuses, ...files.map(() => 1)]
+    files.forEach(i => {
+      if ((i.size / (1024 * 1024)) > 10) {
+        message.error('Недопустимый размер файла для данного тарифа!')
+        return null
+      } else {
+        setDocumentState({
+          ...documentState,
+          base64files: [...documentState.base64files, ...files.map(() => null)],
+          fileHashes: [...documentState.fileHashes, ...files.map(() => null)],
+          fileData: [...documentState.fileData, ...files.map(() => null)],
+          statuses: [...documentState.statuses, ...files.map(() => 1)],
+          files: [...documentState.files, ...files]
+        })
+      }
     })
-    // setTimeout(() => {
-    //   inputNode.current.value = ''
-    // }, 100)
   }
 
   useEffect(() => {
@@ -357,7 +361,7 @@ const NewDocumentPage = props => {
       ]
     })
   }
-
+  console.log(documentState)
   return (
     <Fragment>
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>

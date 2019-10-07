@@ -201,14 +201,11 @@ const AntdTable = props => {
       message.error('Нет выбраных документов!')
       return null
     }
-    const archiveArray = {
-      ids: tableData.data
-        .filter(i => tableState.selectedRowKeys.includes(i.document_id))
-        .map(i => i.id)
-    }
     if (tableState.selectedRowKeys.length > 1) {
-      console.log(archiveArray)
-      removeDocumentsByIds(archiveArray)
+      const obj = {
+        ids: tableState.selectedRowKeys
+      }
+      removeDocumentsByIds(obj)
         .then(response => {
           if (response.success) {
             message.success('Документы перемещены в архив')
@@ -221,8 +218,7 @@ const AntdTable = props => {
           message.error(error.message)
         })
     } else {
-      console.log(archiveArray)
-      removeDocumentById(archiveArray.ids[0], type)
+      removeDocumentById(tableState.selectedRowKeys[0], type)
         .then(response => {
           if (response.success) {
             message.success('Документ перемещен в архив')
@@ -302,20 +298,22 @@ const AntdTable = props => {
 
   const sendToUser = () => {
     const docsDataToUser = {
-      document_ids: tableData.data
-        .filter(i => tableState.selectedRowKeys.includes(i.document_id))
-        .map(i => i.document_id),
+      document_ids: [...new Set(tableData.data
+        .filter(i => tableState.selectedRowKeys.includes(i.id))
+        .map(i => i.document_id))],
       user_company_id: JSON.stringify(tableState.value.map(i => i.key))
     }
+    console.log(docsDataToUser)
     sendDocumentToUser(docsDataToUser)
-      .then(getDocumentsWithParams(activeCompany, { status: status }))
       .then(response => {
         if (response.success) {
           message.success('Сообщение успешно отправлено!')
+          getDocumentsWithParams(activeCompany, parameterState)
           getUser()
           setTableState({
             ...tableState,
             fetching: false,
+            selectedRowKeys: [],
             showModal: false
           })
         } else {
@@ -362,7 +360,7 @@ const AntdTable = props => {
     parameterState.sort_by,
     parameterState.sort_value
   ])
-  console.log(tableData.data)
+
   return (
     <Fragment>
       {tableState.showModal && <Modal
@@ -403,7 +401,7 @@ const AntdTable = props => {
           columns={columns}
           rowSelection={rowSelection}
           dataSource={tableData.hasOwnProperty('data') ? tableData.data : []}
-          rowKey='document_id'
+          rowKey='id'
           locale={{ emptyText: 'Нет данных' }}
           rowClassName={record => record.is_read === 0 ? 'unread' : ''}
           pagination={false}

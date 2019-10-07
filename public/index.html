@@ -194,6 +194,7 @@
       var input = document.createElement('input')
       input.type = 'hidden'
       input.id = 'verifiedData' + file
+      input.classList.add('verifiedData')
       input.value = encodeURIComponent((JSON.stringify(result)))
 
       document.body.appendChild(input)
