@@ -87,9 +87,9 @@ const CompaniesPage = props => {
 
           const inputVerifiedDataArray = Array.from(document.querySelectorAll('.verifiedData'))
 
-          if (inputVerifiedDataArray.length) {
-            inputVerifiedDataArray.forEach(i => i.remove())
-          }
+          // if (inputVerifiedDataArray.length) {
+          //   inputVerifiedDataArray.forEach(i => i.remove())
+          // }
           setTimeout(() => {
             try {
               window.pluginLoaded()
