@@ -86,7 +86,7 @@ const CompaniesPage = props => {
           message.success('Активная компания изменена успешно!')
 
           const inputVerifiedDataArray = Array.from(document.getElementsByClassName('verifiedData'))
-
+          console.log('verified input', inputVerifiedDataArray)
           inputVerifiedDataArray.forEach(i => {
             i.parentNode.removeChild(i)
           })
