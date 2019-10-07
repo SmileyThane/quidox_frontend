@@ -85,11 +85,11 @@ const CompaniesPage = props => {
         .then(() => {
           message.success('Активная компания изменена успешно!')
 
-          const inputVerifiedDataArray = Array.from(document.querySelectorAll('.verifiedData'))
+          const inputVerifiedDataArray = Array.from(document.getElementsByClassName('verifiedData'))
 
-          // if (inputVerifiedDataArray.length) {
-          //   inputVerifiedDataArray.forEach(i => i.remove())
-          // }
+          inputVerifiedDataArray.forEach(i => {
+            i.parentNode.removeChild(i)
+          })
           setTimeout(() => {
             try {
               window.pluginLoaded()
