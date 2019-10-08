@@ -1,5 +1,8 @@
 import React, { useRef, useState, Fragment, useEffect } from 'react'
+import AddToCalendar from 'react-add-to-calendar'
 import _ from 'lodash'
+import iplocation from 'iplocation'
+import moment from 'moment'
 
 import { api } from '../../services'
 import {
@@ -33,7 +36,8 @@ const defaultDocumentData = {
   verifyFetching: false,
   isClicked: false,
   isErrorWitchEcp: false,
-  showModal: false
+  showModal: false,
+  userAddress: ''
 }
 
 // eslint-disable-next-line spaced-comment
@@ -361,7 +365,15 @@ const NewDocumentPage = props => {
       ]
     })
   }
-  console.log(documentState)
+
+  // eslint-disable-next-line handle-callback-err
+  iplocation('public', [], (err, res) => {
+    console.log(res)
+    setDocumentState({
+      ...documentState,
+      userAddress: res.city
+    })
+  })
   return (
     <Fragment>
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>
@@ -479,6 +491,21 @@ const NewDocumentPage = props => {
         Подпись файлов возможна только в браузере Internet Explorer
       </Text>
       }
+      <AddToCalendar
+        buttonLabel='Добавить к календарь'
+        listItems={[
+          { apple: 'Apple Calendar' },
+          { google: 'Google' },
+          { outlook: 'Outlook' }
+        ]}
+        event={{
+          title: documentState.name ? documentState.name : '',
+          description: documentState.description ? documentState.description : '',
+          location: documentState.userAddress,
+          startTime: moment().format('DD/MM/YYYY HH:MM'),
+          endTime: moment().subtract(1, 'days').format('DD/MM/YYYY HH:MM')
+        }}
+      />
 
       {documentState.showModal &&
       <Modal
