@@ -347,7 +347,7 @@ const SingleDocumentPage = props => {
             })
               .then(({ data }) => {
                 if (data) {
-                  fileDownload(data, `${generateHash({ length: 10 })}.zip`)
+                  fileDownload(data, getFileName())
                   message.success('Архив успешно загружен!')
                 }
               })
@@ -515,6 +515,15 @@ const SingleDocumentPage = props => {
       let acpCount = arr.filter(i => i.verification_hash !== null)
       return acpCount.length
     }
+  }
+
+  const getFileName = () => {
+    const activeCompanyNumber = user.data.hasOwnProperty('companies') && +user.data.companies.find(i => i.company_id === user.data.active_company_id).company_number
+    const senderEmail = sender && sender.user_email
+    const documentData = moment.utc(singleDocument.created_at, 'YYYY-MM-DD_HH:mm:ss').local().format('DD/MM/YYYY_HH:mm:ss')
+    const documentName = document && document.name
+    const fullName = `${activeCompanyNumber}_${senderEmail}_${documentData}_${documentName}.zip`
+    return fullName
   }
 
   return (

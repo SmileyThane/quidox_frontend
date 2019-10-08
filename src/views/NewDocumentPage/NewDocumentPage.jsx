@@ -368,13 +368,13 @@ const NewDocumentPage = props => {
   }
 
   // eslint-disable-next-line handle-callback-err
-  iplocation(localIpUrl('public'), [], (err, res) => {
-    console.log(res)
-    setDocumentState({
-      ...documentState,
-      userAddress: res.hasOwnProperty('city') ? res.city : ''
-    })
-  })
+  // iplocation(localIpUrl('public'), [], (err, res) => {
+  //   console.log(res)
+  //   setDocumentState({
+  //     ...documentState,
+  //     userAddress: res.hasOwnProperty('city') ? res.city : ''
+  //   })
+  // })
   return (
     <Fragment>
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>
