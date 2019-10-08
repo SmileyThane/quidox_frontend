@@ -2,6 +2,7 @@ import React, { useRef, useState, Fragment, useEffect } from 'react'
 import AddToCalendar from 'react-add-to-calendar'
 import _ from 'lodash'
 import iplocation from 'iplocation'
+import localIpUrl from 'local-ip-url'
 import moment from 'moment'
 
 import { api } from '../../services'
@@ -367,11 +368,11 @@ const NewDocumentPage = props => {
   }
 
   // eslint-disable-next-line handle-callback-err
-  iplocation('public', [], (err, res) => {
+  iplocation(localIpUrl('public'), [], (err, res) => {
     console.log(res)
     setDocumentState({
       ...documentState,
-      userAddress: res.city
+      userAddress: res.hasOwnProperty('city') ? res.city : ''
     })
   })
   return (
