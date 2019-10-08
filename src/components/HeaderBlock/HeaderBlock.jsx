@@ -73,7 +73,7 @@ const HeaderBlock = props => {
                 </div>
                 <div className='header-data--item'>
                   {activeCompany &&
-                  <Tooltip arrowPointAtCenter title={activeCompany.company_data.company_name}>
+                  <Tooltip arrowPointAtCenter title={activeCompany.company_data.name}>
                     <Tag
                       color='#87d068'
                       style={{ width: '100%', maxWidth: '15rem', textOverflow: 'ellipsis', overflow: 'hidden' }}
