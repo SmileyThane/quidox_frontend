@@ -520,7 +520,7 @@ const SingleDocumentPage = props => {
   const getFileName = () => {
     const activeCompanyNumber = user.data.hasOwnProperty('companies') && +user.data.companies.find(i => i.company_id === user.data.active_company_id).company_number
     const senderEmail = sender && sender.user_email
-    const documentData = moment.utc(singleDocument.created_at, 'YYYY-MM-DD_HH:mm:ss').local().format('DD/MM/YYYY_HH:mm:ss')
+    const documentData = moment.utc(singleDocument.created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DDMMYYYYHHmmss')
     const documentName = document && document.name
     const fullName = `${activeCompanyNumber}_${senderEmail}_${documentData}_${documentName}.zip`
     return fullName
