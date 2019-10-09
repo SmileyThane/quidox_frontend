@@ -375,6 +375,7 @@ const NewDocumentPage = props => {
   //     userAddress: res.hasOwnProperty('city') ? res.city : ''
   //   })
   // })
+
   return (
     <Fragment>
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>
@@ -469,13 +470,32 @@ const NewDocumentPage = props => {
               Сохранить в черновиках
             </Button>
 
-            <Button
-              type='primary'
-              onClick={() => handleSendToUser(false)}
-            >
-              <Icon type='cloud-upload' />
-              Отправить
-            </Button>
+            <div style={{ display: 'flex' }}>
+              <AddToCalendar
+                buttonLabel='Добавить в календарь'
+                listItems={[
+                  { apple: 'Apple Calendar' },
+                  { google: 'Google' },
+                  { outlook: 'Outlook' }
+                ]}
+                event={{
+                  title: 'Контроль сообщения',
+                  description: '',
+                  location: 'Minsk',
+                  startTime: moment().add(1, 'days').startOf('day').hour('10').minute('00'),
+                  endTime: moment().add(1, 'days').startOf('day').hour('11').minute('00')
+                }}
+              />
+
+              <Button
+                style={{ marginLeft: '2rem' }}
+                type='primary'
+                onClick={() => handleSendToUser(false)}
+              >
+                <Icon type='cloud-upload' />
+                Отправить
+              </Button>
+            </div>
           </div>
         </Spin>
         <input type='hidden' id='attr' size='80' value='1.2.112.1.2.1.1.1.1.2' />
@@ -492,21 +512,6 @@ const NewDocumentPage = props => {
         Подпись файлов возможна только в браузере Internet Explorer
       </Text>
       }
-      <AddToCalendar
-        buttonLabel='Добавить к календарь'
-        listItems={[
-          { apple: 'Apple Calendar' },
-          { google: 'Google' },
-          { outlook: 'Outlook' }
-        ]}
-        event={{
-          title: documentState.name ? documentState.name : '',
-          description: documentState.description ? documentState.description : '',
-          location: documentState.userAddress,
-          startTime: moment().format('DD/MM/YYYY HH:MM'),
-          endTime: moment().subtract(1, 'days').format('DD/MM/YYYY HH:MM')
-        }}
-      />
 
       {documentState.showModal &&
       <Modal
