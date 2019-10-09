@@ -190,18 +190,18 @@ const SingleDocumentPage = props => {
 
   const showDeclineModal = (type, item) => {
     switch (item.status.status_data.id) {
-      // case 1: {
-      //   return null
-      // }
-      // case 4: {
-      //   return null
-      // }
-      // case 5: {
-      //   return null
-      // }
-      // case 6: {
-      //   return null
-      // }
+      case 1: {
+        return null
+      }
+      case 4: {
+        return null
+      }
+      case 5: {
+        return null
+      }
+      case 6: {
+        return null
+      }
       default: {
         setDocumentState({
           ...documentState,
