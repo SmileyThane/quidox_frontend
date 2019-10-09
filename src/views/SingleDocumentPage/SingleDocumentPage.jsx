@@ -1,6 +1,5 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import axios from 'axios'
-import generateHash from 'random-hash'
 import moment from 'moment'
 import fileDownload from 'js-file-download'
 import _ from 'lodash'
@@ -18,7 +17,8 @@ import {
   Select,
   message,
   Typography,
-  Tooltip
+  Tooltip,
+  Input
 } from 'antd'
 import { findUsersByParams } from '../../services/api/user'
 import { Button, PDFViewer } from '../../components'
@@ -28,6 +28,7 @@ import { close } from './img'
 
 const { Text, Paragraph } = Typography
 const { Option } = Select
+const { TextArea } = Input
 
 const disabled = {
   color: '#E0E0E0',
@@ -72,7 +73,9 @@ const defaultDocumentState = {
   activeFileCert: 0,
   ecpInfo: null,
   isSelectVisible: false,
-  isErrorWitchEcp: false
+  isErrorWitchEcp: false,
+  declineMessage: '',
+  singleFile: null
 }
 // eslint-disable-next-line spaced-comment
 const isIE = /*@cc_on!@*/!!window.document.documentMode
@@ -118,6 +121,13 @@ const SingleDocumentPage = props => {
       }, 1000)
     }
   }, [documentState.isErrorWitchEcp])
+
+  const updateField = (field, v) => {
+    setDocumentState({
+      ...documentState,
+      [field]: v
+    })
+  }
 
   const showModal = item => {
     axios.get(item['preview_path'], {
@@ -176,6 +186,31 @@ const SingleDocumentPage = props => {
       fileCerts: dataArray,
       ecpInfo
     })
+  }
+
+  const showDeclineModal = (type, item) => {
+    switch (item.status.status_data.id) {
+      // case 1: {
+      //   return null
+      // }
+      // case 4: {
+      //   return null
+      // }
+      // case 5: {
+      //   return null
+      // }
+      // case 6: {
+      //   return null
+      // }
+      default: {
+        setDocumentState({
+          ...documentState,
+          showModal: true,
+          modalType: type,
+          singleFile: item
+        })
+      }
+    }
   }
 
   const fetchUser = _.debounce(v => {
@@ -453,43 +488,34 @@ const SingleDocumentPage = props => {
     }
   }
 
-  const handleDeclineFile = item => {
-    switch (item.status.status_data.id) {
-      case 1: {
-        return null
-      }
-      case 4: {
-        return null
-      }
-      case 5: {
-        return null
-      }
-      case 6: {
-        return null
-      }
-      default: {
-        const declineObject = {
-          attachments: [
-            {
-              id: item.id,
-              status: 6
-            }
-          ]
-        }
-        agreeFile(declineObject)
-          .then(({ data }) => {
-            if (data.success) {
-              message.success('Документ отклонен')
-              getDocumentById(match.params.id)
-            } else {
-              throw new Error(data.error)
-            }
-          })
-          .catch(error => {
-            message.error(error.message)
-          })
-      }
+  const handleDeclineFile = () => {
+    if (!documentState.declineMessage.length) {
+      message.error('Введите причину отклонения!')
+      return null
     }
+    const item = documentState.singleFile
+    const declineObject = {
+      attachments: [
+        {
+          id: item.id,
+          status: 6,
+          comment: documentState.declineMessage
+        }
+      ]
+    }
+    agreeFile(declineObject)
+      .then(({ data }) => {
+        if (data.success) {
+          message.success('Документ отклонен')
+          getDocumentById(match.params.id)
+          setDocumentState({ ...defaultDocumentState })
+        } else {
+          throw new Error(data.error)
+        }
+      })
+      .catch(error => {
+        message.error(error.message)
+      })
   }
 
   const getButtonTooltipText = (id, type) => {
@@ -525,7 +551,7 @@ const SingleDocumentPage = props => {
     const fullName = `${activeCompanyNumber}_${senderEmail}_${documentData}_${documentName}.zip`
     return fullName
   }
-
+  console.log(documentState)
   return (
     <Fragment>
       <Spin spinning={isFetching}>
@@ -633,7 +659,8 @@ const SingleDocumentPage = props => {
                                 default: return disabled
                               }
                             })()}
-                            onClick={() => handleDeclineFile(item)} />
+                            // onClick={() => handleDeclineFile(item)} />
+                            onClick={() => showDeclineModal('decline', item)} />
                         </Tooltip>,
 
                         <Tooltip title='Подписать документ' arrowPointAtCenter>
@@ -919,6 +946,19 @@ const SingleDocumentPage = props => {
               Продолжить
             </Button>
           </Fragment>
+          }
+          {documentState.modalType === 'decline' &&
+          <Fragment>
+            <Text>Введи причину отклонения:</Text>
+            <TextArea
+              autosize={{ minRows: 2, maxRows: 6 }}
+              style={{ margin: '2rem 0' }}
+              onChange={e => updateField('declineMessage', e.target.value)}
+            />
+            <Button type='primary' onClick={() => handleDeclineFile()} style={{ marginRight: '2rem' }}>Отклонить</Button>
+            <Button type='primary' ghost onClick={() => setDocumentState({ ...defaultDocumentState })}>Отмена</Button>
+          </Fragment>
+
           }
 
         </Modal>
