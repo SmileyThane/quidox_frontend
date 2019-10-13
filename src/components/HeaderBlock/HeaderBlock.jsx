@@ -26,7 +26,6 @@ const HeaderBlock = props => {
   const handleLogout = () => {
     userLogout()
       .then(({ data }) => {
-        console.log(data)
         if (data.success) {
           window.localStorage.clear()
           history.push('/login')
