@@ -111,7 +111,6 @@ const AntMenu = props => {
             />
           ))}
         </SubMenu>
-        {0 &&
         <SubMenu
           key='sub2'
           title={
@@ -140,7 +139,6 @@ const AntMenu = props => {
             }
           })}
         </SubMenu>
-        }
         <MenuItem
           heading='Проверка ЭЦП'
           url='/esc-checking'
