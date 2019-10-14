@@ -10,7 +10,7 @@ const EscCheckingPage = () => {
         width='100%'
         height='100%'
         url={quidoxLink}
-        loading='true'
+        frameBorder={1}
       />
     </div>
   )
