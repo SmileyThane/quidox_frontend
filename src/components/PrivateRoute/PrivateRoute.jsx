@@ -5,7 +5,6 @@ import { Layout } from 'antd'
 import { LayoutBlock, HeaderBlock, SiderBlock, ContentBlock, FooterBlock } from '../'
 
 const PrivateRoute = ({ component: Component, getUser, ...rest }) => {
-
   // eslint-disable-next-line spaced-comment
   const isIE = /*@cc_on!@*/false || !!document.documentMode
   useEffect(() => {

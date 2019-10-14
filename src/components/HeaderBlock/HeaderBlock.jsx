@@ -1,4 +1,5 @@
 import React, { Fragment, useState } from 'react'
+import moment from 'moment'
 
 import {
   Layout,
@@ -11,12 +12,12 @@ import {
   Avatar,
   Button,
   Modal,
+  Typography
 } from 'antd'
 
 import history from '../../history.js'
 import { logo } from '../../resources/img'
 import './HeaderBlock.scss'
-import moment from 'moment'
 
 const defaultState = {
   isModalVisible: false,
@@ -31,6 +32,8 @@ const defaultState = {
 
 const { Header } = Layout
 
+const { Text } = Typography
+
 const HeaderBlock = props => {
   const {
     user: { isFetching, data },
@@ -38,6 +41,8 @@ const HeaderBlock = props => {
     createCompany,
     getUser
   } = props
+
+  const isIE = /*@cc_on!@*/false || !!document.documentMode
 
   const [state, setState] = useState({ ...defaultState })
 
@@ -55,20 +60,25 @@ const HeaderBlock = props => {
   }
 
   const handleGetCompanyData = () => {
-    window.sign('NewCompany')
-    setTimeout(() => {
-      const flashData = JSON.parse(decodeURIComponent(document.getElementById('verifiedDataNewCompany').value))
-      setState({
-        ...state,
-        companyContent: true,
-        newCompanyDate: moment().format('DD/MM/YYYY HH:mm'),
-        newCompanyName: flashData.subject['2.5.4.3'] ? flashData.subject['2.5.4.3'] : 'Данные отсутствуют',
-        newCompanyKey: flashData.cert['2.5.29.14'] ? flashData.cert['2.5.29.14'] : 'Невозможно создать цифровой ключ',
-        newCompanyCity: (flashData.subject['2.5.4.7'] || flashData.subject['2.5.4.9']) ? flashData.subject['2.5.4.7'] + ', ' + flashData.subject['2.5.4.9'] : 'Данные отсутствуют',
-        newCompanyNumber: flashData.cert['1.2.112.1.2.1.1.1.1.2'] ? +flashData.cert['1.2.112.1.2.1.1.1.1.2'] : 'Данные отсутствуют',
-        yourPosition: flashData.cert['1.2.112.1.2.1.1.5.1'] ? flashData.cert['1.2.112.1.2.1.1.5.1'] : 'Данные отсутствуют'
-      })
-    }, 1000)
+    try {
+      window.sign('NewCompany')
+      setTimeout(() => {
+        const flashData = JSON.parse(decodeURIComponent(document.getElementById('verifiedDataNewCompany').value))
+        setState({
+          ...state,
+          companyContent: true,
+          newCompanyDate: moment().format('DD/MM/YYYY HH:mm'),
+          newCompanyName: flashData.subject['2.5.4.3'] ? flashData.subject['2.5.4.3'] : 'Данные отсутствуют',
+          newCompanyKey: flashData.cert['2.5.29.14'] ? flashData.cert['2.5.29.14'] : 'Невозможно создать цифровой ключ',
+          newCompanyCity: (flashData.subject['2.5.4.7'] || flashData.subject['2.5.4.9']) ? flashData.subject['2.5.4.7'] + ', ' + flashData.subject['2.5.4.9'] : 'Данные отсутствуют',
+          newCompanyNumber: flashData.cert['1.2.112.1.2.1.1.1.1.2'] ? +flashData.cert['1.2.112.1.2.1.1.1.1.2'] : 'Данные отсутствуют',
+          yourPosition: flashData.cert['1.2.112.1.2.1.1.5.1'] ? flashData.cert['1.2.112.1.2.1.1.5.1'] : 'Данные отсутствуют'
+        })
+      }, 1000)
+    } catch (e) {
+      console.log(e)
+      window.pluginLoaded()
+    }
   }
 
   const handleCreateCompany = () => {
@@ -210,6 +220,8 @@ const HeaderBlock = props => {
         title={state.companyContent ? 'Данные цифрового накопителя' : 'Мы готовы подключить ЭЦП к Вашей учетной записи!'}
         footer={[
           <Button
+            disabled={!isIE}
+            title={!isIE && 'Возможность создания компании возможно только в браузере Internet Explorer'}
             type='primary'
             onClick={
               !state.companyContent
@@ -233,9 +245,9 @@ const HeaderBlock = props => {
           <Fragment>
             <p>Убедитесь в том, что:</p>
             <ol>
-              <li>У Вас установлен комплект абонента ГосСУОК</li>
-              <li>Текущий браузер MS Internet Explorer</li>
-              <li>Ключ ЭЦП вставлен в компьютер</li>
+              <li><Text>У Вас установлен комплект абонента ГосСУОК</Text></li>
+              <li><Text type={!isIE && 'danger'}>Текущий браузер MS Internet Explorer</Text></li>
+              <li><Text>Ключ ЭЦП вставлен в компьютер</Text></li>
             </ol>
           </Fragment>
         }
