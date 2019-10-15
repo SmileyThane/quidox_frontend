@@ -42,7 +42,7 @@ const HeaderBlock = props => {
     getUser
   } = props
 
-  const isIE = /*@cc_on!@*/false || !!document.documentMode
+  const isIE = /* @cc_on!@ */!!document.documentMode
 
   const [state, setState] = useState({ ...defaultState })
 

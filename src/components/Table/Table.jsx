@@ -303,7 +303,6 @@ const AntdTable = props => {
         .map(i => i.document_id))],
       user_company_id: JSON.stringify(tableState.value.map(i => i.key))
     }
-    console.log(docsDataToUser)
     sendDocumentToUser(docsDataToUser)
       .then(response => {
         if (response.success) {
@@ -347,6 +346,20 @@ const AntdTable = props => {
       ...parameterState,
       sort_by: sorter.columnKey,
       sort_value: sorter.order
+    })
+  }
+
+  const multipleVerify = () => {
+    const selectedDocuments = tableData.data.filter(i => tableState.selectedRowKeys.includes(i.id))
+    selectedDocuments.forEach(message => {
+      console.log(message)
+      const document = message.document
+      if (!document.attachments.length) {
+        return null
+      }
+      const attachemnts = document.attachments
+      attachemnts.forEach(file => {
+      })
     })
   }
 
@@ -408,32 +421,53 @@ const AntdTable = props => {
           onChange={handleTableChange}
           title={() =>
             (
-              <div className='table__header table-header'>
-                <div className='table-header__actions'>
-                  <Tooltip title='Перенаправление документа(ов)' placement='topRight' arrowPointAtCenter>
-                    <Icon type='cloud-upload' onClick={() => openModal()} />
-                  </Tooltip>
-                  <Tooltip title='Удаление документа(ов)' placement='topRight' arrowPointAtCenter>
-                    <Popconfirm
-                      title='Вы уверены?'
-                      onConfirm={() => handleRemove(type)}
-                      okText='Удалить'
-                      cancelText='Отмена'
-                    >
-                      <Icon type='delete' style={{ color: '#FF7D1D' }} />
-                    </Popconfirm>
-                  </Tooltip>
+              <div>
+                <div className='table__header table-header'>
+                  <div className='table-header__actions'>
+                    <Tooltip title='Удаление документа(ов)' placement='topRight' arrowPointAtCenter>
+                      <Popconfirm
+                        title='Вы уверены?'
+                        onConfirm={() => handleRemove(type)}
+                        okText='Удалить'
+                        cancelText='Отмена'
+                      >
+                        <Icon type='delete' style={{ color: '#FF7D1D' }} />
+                      </Popconfirm>
+                    </Tooltip>
+                  </div>
+                  <div className='table-header__search'>
+                    <AutoComplete onSearch={_.debounce(handleSearch, 500)} placeholder={`Введите тему, ${(status === 1 || status === 3) ? '  получателя' : 'отправителя'}...`} />
+                  </div>
+                  <Pagination
+                    simple
+                    current={parameterState.page}
+                    hideOnSinglePage
+                    total={!isNaN(Math.ceil(tableData.total / +tableData.per_page) * 10) ? Math.ceil(tableData.total / +tableData.per_page) * 10 : 0}
+                    onChange={handleChangePage}
+                  />
                 </div>
-                <div className='table-header__search'>
-                  <AutoComplete onSearch={_.debounce(handleSearch, 500)} placeholder={`Введите тему, ${(status === 1 || status === 3) ? '  получателя' : 'отправителя'}...`} />
+                <div className='table__header table-header table-header-bottom' style={{ marginTop: '.5rem' }}>
+                  {0 &&
+                  <Button
+                    type='primary'
+                    onClick={multipleVerify}
+                    disabled={!tableState.selectedRowKeys.length}
+                    style={{ marginRight: '.5rem' }}
+                  >
+                    <Icon type='check' />
+                    Подписать выбранные
+                  </Button>
+                  }
+
+                  <Button
+                    type='primary'
+                    onClick={() => openModal()}
+                    disabled={!tableState.selectedRowKeys.length}
+                  >
+                    <Icon type='cloud-upload' />
+                    Отправить выбранные
+                  </Button>
                 </div>
-                <Pagination
-                  simple
-                  current={parameterState.page}
-                  hideOnSinglePage
-                  total={!isNaN(Math.ceil(tableData.total / +tableData.per_page) * 10) ? Math.ceil(tableData.total / +tableData.per_page) * 10 : 0}
-                  onChange={handleChangePage}
-                />
               </div>
             )}
           footer={() =>
