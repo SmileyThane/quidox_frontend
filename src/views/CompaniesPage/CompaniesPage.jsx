@@ -1,8 +1,10 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import moment from 'moment'
 import useForm from 'rc-form-hooks'
-
 import { Link } from 'react-router-dom'
+
+import {
+  getCompanyData
+} from '../../utils'
 import { api } from '../../services'
 import {
   Table,
@@ -29,12 +31,7 @@ const defaultCompanyState = {
   showInput: false,
   showModal: false,
   modalFetching: false,
-  newCompanyDate: '', // Дата создания
-  newCompanyNumber: null, // УНП компании
-  newCompanyName: '', // Полное имя компании
-  newCompanyCity: '', // Место регистрации компании
-  newCompanyFullName: '', // Полное имя компании?
-  newCompanyKey: null // Ключ компании
+  newCompany: {}
 }
 
 const { Text } = Typography
@@ -60,20 +57,11 @@ const CompaniesPage = props => {
   }, [])
 
   const onClick = () => {
-    window.sign('NewCompany')
-    setTimeout(() => {
-      const flashData = JSON.parse(decodeURIComponent(document.getElementById('verifiedDataNewCompany').value))
-      setCompanyState({
-        ...companyState,
-        showModal: true,
-        newCompanyDate: moment().format('DD/MM/YYYY HH:mm'),
-        newCompanyName: flashData.subject['2.5.4.3'] ? flashData.subject['2.5.4.3'] : 'Данные отсутствуют',
-        newCompanyKey: flashData.cert['2.5.29.14'] ? flashData.cert['2.5.29.14'] : 'Невозможно создать цифровой ключ',
-        newCompanyCity: (flashData.subject['2.5.4.7'] || flashData.subject['2.5.4.9']) ? flashData.subject['2.5.4.7'] + ', ' + flashData.subject['2.5.4.9'] : 'Данные отсутствуют',
-        newCompanyNumber: flashData.cert['1.2.112.1.2.1.1.1.1.2'] ? +flashData.cert['1.2.112.1.2.1.1.1.1.2'] : 'Данные отсутствуют',
-        yourPosition: flashData.cert['1.2.112.1.2.1.1.5.1'] ? flashData.cert['1.2.112.1.2.1.1.5.1'] : 'Данные отсутствуют'
-      })
-    }, 1000)
+    setCompanyState({
+      ...companyState,
+      showModal: true,
+      newCompany: getCompanyData()
+    })
   }
 
   const changeActiveCompany = company => {
@@ -191,6 +179,7 @@ const CompaniesPage = props => {
       )
     }]
 
+  console.log(companyState)
   return (
     <Fragment>
       <div className='content content_small-margin'>
@@ -293,53 +282,53 @@ const CompaniesPage = props => {
         footer={null}
         onCancel={() => setCompanyState({ ...companyState, showModal: !companyState.showModal })}
       >
-        <div className='document document_modal'>
-          <Spin spinning={companyState.modalFetching}>
-            <div className='info'>
-              <div className='info__item'>
-                <div className='info__title'>Дата создания</div>
-                <div className='info__content'>{companyState.newCompanyDate}</div>
-              </div>
+        {/*<div className='document document_modal'>*/}
+        {/*  <Spin spinning={companyState.modalFetching}>*/}
+        {/*    <div className='info'>*/}
+        {/*      <div className='info__item'>*/}
+        {/*        <div className='info__title'>Дата создания</div>*/}
+        {/*        <div className='info__content'>{companyState.newCompanyDate}</div>*/}
+        {/*      </div>*/}
 
-              {companyState.newCompanyNumber &&
-                <div className='info__item'>
-                  <div className='info__title'>УНП</div>
-                  <div className='info__content'>{companyState.newCompanyNumber}</div>
-                </div>
-              }
+        {/*      {companyState.newCompanyNumber &&*/}
+        {/*        <div className='info__item'>*/}
+        {/*          <div className='info__title'>УНП</div>*/}
+        {/*          <div className='info__content'>{companyState.newCompanyNumber}</div>*/}
+        {/*        </div>*/}
+        {/*      }*/}
 
-              {companyState.newCompanyName &&
-                <div className='info__item'>
-                  <div className='info__title'>Имя компании</div>
-                  <div className='info__content'>{companyState.newCompanyName}</div>
-                </div>
-              }
+        {/*      {companyState.newCompanyName &&*/}
+        {/*        <div className='info__item'>*/}
+        {/*          <div className='info__title'>Имя компании</div>*/}
+        {/*          <div className='info__content'>{companyState.newCompanyName}</div>*/}
+        {/*        </div>*/}
+        {/*      }*/}
 
-              {companyState.newCompanyCity &&
-                <div className='info__item'>
-                  <div className='info__title'>Место нахождения компании</div>
-                  <div className='info__content'>{companyState.newCompanyCity}</div>
-                </div>
-              }
+        {/*      {companyState.newCompanyCity &&*/}
+        {/*        <div className='info__item'>*/}
+        {/*          <div className='info__title'>Место нахождения компании</div>*/}
+        {/*          <div className='info__content'>{companyState.newCompanyCity}</div>*/}
+        {/*        </div>*/}
+        {/*      }*/}
 
-              {companyState.yourPosition &&
-                <div className='info__item'>
-                  <div className='info__title'>Должность сотруднка</div>
-                  <div className='info__content'>{companyState.yourPosition}</div>
-                </div>
-              }
+        {/*      {companyState.yourPosition &&*/}
+        {/*        <div className='info__item'>*/}
+        {/*          <div className='info__title'>Должность сотруднка</div>*/}
+        {/*          <div className='info__content'>{companyState.yourPosition}</div>*/}
+        {/*        </div>*/}
+        {/*      }*/}
 
-              {companyState.newCompanyKey &&
-                <div className='info__item'>
-                  <div className='info__title'>Цифровой ключ</div>
-                  <div className='info__content'>{companyState.newCompanyKey}</div>
-                </div>
-              }
-            </div>
+        {/*      {companyState.newCompanyKey &&*/}
+        {/*        <div className='info__item'>*/}
+        {/*          <div className='info__title'>Цифровой ключ</div>*/}
+        {/*          <div className='info__content'>{companyState.newCompanyKey}</div>*/}
+        {/*        </div>*/}
+        {/*      }*/}
+        {/*    </div>*/}
 
-            <Button style={{ margin: '20px 0 0 20px' }} onClick={handleCreateCompany} type='primary'>Создать</Button>
-          </Spin>
-        </div>
+        {/*    <Button style={{ margin: '20px 0 0 20px' }} onClick={handleCreateCompany} type='primary'>Создать</Button>*/}
+        {/*  </Spin>*/}
+        {/*</div>*/}
 
       </Modal>
     </Fragment>
