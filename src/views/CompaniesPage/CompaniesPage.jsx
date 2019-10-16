@@ -118,29 +118,29 @@ const CompaniesPage = props => {
       })
   }
 
-  const handleCreateCompany = () => {
-    const newCompanyData = {
-      name: companyState.newCompanyName,
-      company_number: companyState.newCompanyNumber,
-      description: companyState.newCompanyCity,
-      registration_date: companyState.newCompanyDate,
-      your_position: companyState.yourPosition,
-      key: companyState.newCompanyKey
-    }
-    createCompany(newCompanyData)
-      .then(response => {
-        if (response.success) {
-          setCompanyState({ ...defaultCompanyState })
-          message.success('Компания создана успешно!!')
-        } else {
-          throw new Error(response.error)
-        }
-      })
-      .catch(error => {
-        message.error(error.message)
-        setCompanyState({ ...defaultCompanyState })
-      })
-  }
+  // const handleCreateCompany = () => {
+  //   const newCompanyData = {
+  //     name: companyState.newCompanyName,
+  //     company_number: companyState.newCompanyNumber,
+  //     description: companyState.newCompanyCity,
+  //     registration_date: companyState.newCompanyDate,
+  //     your_position: companyState.yourPosition,
+  //     key: companyState.newCompanyKey
+  //   }
+  //   createCompany(newCompanyData)
+  //     .then(response => {
+  //       if (response.success) {
+  //         setCompanyState({ ...defaultCompanyState })
+  //         message.success('Компания создана успешно!!')
+  //       } else {
+  //         throw new Error(response.error)
+  //       }
+  //     })
+  //     .catch(error => {
+  //       message.error(error.message)
+  //       setCompanyState({ ...defaultCompanyState })
+  //     })
+  // }
 
   const columns = [
     {

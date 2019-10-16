@@ -1,7 +1,7 @@
 import moment from 'moment'
 
 /**
- * Get data from avest USB flash drive
+ * Retrieving data from an avest USB flash drive
  */
 export const getCompanyData = () => {
   window.sign('NewCompany')
