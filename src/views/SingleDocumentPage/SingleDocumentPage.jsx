@@ -59,7 +59,6 @@ const defaultDocumentState = {
   isVisible: false,
   fileLink: '',
   fileType: '',
-  userData: [],
   showModal: false,
   data: [],
   value: [],
@@ -102,13 +101,6 @@ const SingleDocumentPage = props => {
       getDocumentById(match.params.id)
     }
   }, [])
-
-  useEffect(() => {
-    if (documentState.fileCerts[documentState.activeFileCert]) {
-      showUserData('ecp', documentState.fileCerts, documentState.activeFileCert)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [documentState.activeFileCert, documentState.fileCerts.length])
 
   useEffect(() => {
     if (documentState.isErrorWitchEcp) {
@@ -161,31 +153,22 @@ const SingleDocumentPage = props => {
     })
   }
 
+  const handleCloseModal = () => {
+    setDocumentState({
+      ...defaultDocumentState
+    })
+  }
+
   const showUserData = (type, arr = []) => {
     const dataArray = arr.filter(i => i.verification_hash)
-    let ecpInfo = {}
-
     if (type === 'ecp') {
-      const ecpData = JSON.parse(decodeURIComponent(dataArray[documentState.activeFileCert].verification_info))
-      ecpInfo = {
-        unp: ecpData.cert['1.2.112.1.2.1.1.1.1.2'],
-        org: ecpData.subject['2.5.4.3'],
-        position: ecpData.cert['1.2.112.1.2.1.1.5.1'],
-        address: ecpData.subject['2.5.4.7'] + ' ' + ecpData.subject['2.5.4.9'],
-        name: ecpData.subject['2.5.4.4'] + ' ' + ecpData.subject['2.5.4.41'],
-        validity_from: moment(+ecpData.date[0] * 1000).format('DD/MM/YYYY, hh:mm:ss'),
-        validity_to: moment(+ecpData.date[1] * 1000).format('DD/MM/YYYY, hh:mm:ss')
-      }
+      setDocumentState({
+        ...documentState,
+        showModal: true,
+        modalType: type,
+        fileCerts: dataArray
+      })
     }
-
-    setDocumentState({
-      ...documentState,
-      showModal: true,
-      userData: document,
-      modalType: type,
-      fileCerts: dataArray,
-      ecpInfo
-    })
   }
 
   const showDeclineModal = (type, item) => {
@@ -399,28 +382,6 @@ const SingleDocumentPage = props => {
     }
   }
 
-  const nextCert = () => {
-    if (documentState.activeFileCert === documentState.fileCerts.length - 1) {
-      return
-    }
-
-    setDocumentState({
-      ...documentState,
-      activeFileCert: documentState.activeFileCert + 1
-    })
-  }
-
-  const prevCert = () => {
-    if (documentState.activeFileCert === 0) {
-      return
-    }
-
-    setDocumentState({
-      ...documentState,
-      activeFileCert: documentState.activeFileCert - 1
-    })
-  }
-
   const handleEditDocumentName = str => {
     if (str === '') {
       message.error('Поле не может быть пустым')
@@ -551,7 +512,6 @@ const SingleDocumentPage = props => {
     const fullName = `${activeCompanyNumber}_${senderEmail}_${documentData}_${documentName}.zip`
     return fullName
   }
-
   console.log(documentState)
   return (
     <Fragment>
@@ -766,6 +726,7 @@ const SingleDocumentPage = props => {
           </div>
         </div>
       </Spin>
+
       {documentState.isVisible &&
         <div className='pdf-container'>
           <div className='pdf-container__close'>
@@ -790,7 +751,7 @@ const SingleDocumentPage = props => {
           footer={null}
         >
           {documentState.modalType === 'ecp' &&
-          <EscDataSlider data={documentState.fileCerts} />
+          <EscDataSlider onCancel={handleCloseModal} data={documentState.fileCerts} />
           }
           {documentState.modalType === 'send' &&
           <Fragment>
@@ -894,91 +855,3 @@ const SingleDocumentPage = props => {
 }
 
 export default SingleDocumentPage
-
-// <Fragment>
-// <div className='modal-title'>
-//   <Text strong>Просмотр ЭЦП,
-//                 № {documentState.activeFileCert + 1} из {documentState.fileCerts.length} </Text>
-// <div className='arr-wrapp' onClick={prevCert}>
-// <Icon type='left' />
-// </div>
-// <div className='arr-wrapp' onClick={nextCert}>
-// <Icon type='right' />
-// </div>
-// </div>
-// <div className='cert-modal'>
-// <div className='cert-modal__item'>
-// <div className='cert-modal__item-left'>
-// <Text type='secondary'>Данные из сертификата ЭЦП</Text>
-// </div>
-//
-// <div className='cert-modal__item-right'>
-// <div className='cert-item'>
-// <Text type='secondary'>УНП: {documentState.ecpInfo.unp}</Text>
-// </div>
-//
-// <div className='cert-item'>
-// <Text type='secondary'>Организация: {documentState.ecpInfo.org}</Text>
-// </div>
-//
-// <div className='cert-item'>
-// <Text type='secondary'>Должность: {documentState.ecpInfo.position}</Text>
-// </div>
-//
-// <div className='cert-item'>
-// <Text type='secondary'>ФИО: {documentState.ecpInfo.name}</Text>
-// </div>
-//
-// <div className='cert-item'>
-// <Text type='secondary'>Адрес: {documentState.ecpInfo.address}</Text>
-// </div>
-// </div>
-// </div>
-// <div className='cert-modal__item'>
-// <div className='cert-modal__item-left'>
-// <Text type='secondary'>Срок действия сертификата</Text>
-// </div>
-//
-// <div className='cert-modal__item-right'>
-// <div className='cert-item'>
-// <Text type='secondary'>с {documentState.ecpInfo.validity_from}</Text>
-// </div>
-//
-// <div className='cert-item'>
-// <Text type='secondary'>по {documentState.ecpInfo.validity_to}</Text>
-// </div>
-// </div>
-// </div>
-//
-// <div className='cert-modal__item'>
-// <div className='cert-modal__item-left'>
-// <Text type='secondary'>Дата создания ЭЦП</Text>
-// </div>
-
-// <div className='cert-modal__item-right'>
-// <div className='cert-item'>
-// <Text
-// type='secondary'>{moment.utc(documentState.fileCerts[documentState.activeFileCert].created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD/MM/YYYY HH:mm:ss')}</Text>
-// </div>
-// </div>
-// </div>
-//
-// <div className='cert-modal-footer'>
-// <Text>
-// <strong>&#10003; Проверка Сертификата, СОС: Пройдена</strong>
-// </Text><br />
-//
-// <Text>
-// <strong>&#10003; Проверка Сигнатуры: Пройдена</strong>
-// </Text>
-// </div>
-// </div>
-//
-// <Button
-// style={{ marginTop: 20 }}
-// onClick={() => setDocumentState({ ...documentState, showModal: !documentState.showModal })}
-// type='primary'
-// >
-// Закрыть
-// </Button>
-// </Fragment>

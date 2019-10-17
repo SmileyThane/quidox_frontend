@@ -1,43 +1,63 @@
 import React, { useEffect, useState } from 'react'
-
-import { Typography, Icon } from 'antd'
-import {
-  EscData
-} from './styled'
 import moment from 'moment'
+
+import { decryptionData } from '../../utils'
+import { Typography, Icon, Button } from 'antd'
+import { EscData } from './styled'
 
 const { Text } = Typography
 
 const defaultState = {
-  escDataArray: [],
   singleEscData: {},
-  activeEscData: 0
+  activeEscSlide: 0
 }
 
-const EscDataSlider = ({ data }) => {
+const EscDataSlider = ({ data = [], onCancel }) => {
   const [state, setState] = useState({ ...defaultState })
+
+  const { singleEscData, activeEscSlide } = state
 
   useEffect(() => {
     setState({
       ...state,
-      escDataArray: data
+      singleEscData: decryptionData(data[activeEscSlide])
     })
-  }, [])
+  }, [activeEscSlide])
 
-  const { singleEscData } = state
-  console.log('state', state)
+  const getPrevCert = () => {
+    if (activeEscSlide === 0) {
+      return null
+    }
+
+    setState({
+      ...state,
+      activeEscSlide: activeEscSlide - 1
+    })
+  }
+
+  const getNextCert = () => {
+    if (activeEscSlide === data.length - 1) {
+      return
+    }
+
+    setState({
+      ...state,
+      activeEscSlide: activeEscSlide + 1
+    })
+  }
+
   return (
     <EscData>
       <EscData.Head>
         <Text strong> Просмотр ЭЦП,
-          № {1} из {1}
+          {activeEscSlide + 1} из {data.length}
         </Text>
 
-        <EscData.Arrow>
+        <EscData.Arrow onClick={getPrevCert}>
           <Icon type='left' />
         </EscData.Arrow>
 
-        <EscData.Arrow>
+        <EscData.Arrow onClick={getNextCert}>
           <Icon type='right' />
         </EscData.Arrow>
       </EscData.Head>
@@ -51,31 +71,31 @@ const EscDataSlider = ({ data }) => {
           <EscData.BodyItemRight>
             <EscData.BodyItemRightCert>
               <Text type='secondary'>
-                УНП: {singleEscData.unp ? singleEscData.unp : 'Данные отсутствуют'}
+                УНП: {singleEscData.unp && singleEscData.unp}
               </Text>
             </EscData.BodyItemRightCert>
 
             <EscData.BodyItemRightCert>
               <Text type='secondary'>
-                Организация: {singleEscData.org ? singleEscData.org : 'Данные отсутствуют'}
+                Организация: {singleEscData.org && singleEscData.org}
               </Text>
             </EscData.BodyItemRightCert>
 
             <EscData.BodyItemRightCert>
               <Text type='secondary'>
-                Должность: {singleEscData.position ? singleEscData.position : 'Данные отсутствуют'}
+                Должность: {singleEscData.position && singleEscData.position}
               </Text>
             </EscData.BodyItemRightCert>
 
             <EscData.BodyItemRightCert>
               <Text type='secondary'>
-                ФИО: {singleEscData.name ? singleEscData.name : 'Данные отсутствуют'}
+                ФИО: {singleEscData.name && singleEscData.name}
               </Text>
             </EscData.BodyItemRightCert>
 
             <EscData.BodyItemRightCert>
               <Text type='secondary'>
-                Адрес: {singleEscData.address ? singleEscData.address : 'Данные отсутствуют'}
+                Адрес: {singleEscData.address && singleEscData.address}
               </Text>
             </EscData.BodyItemRightCert>
           </EscData.BodyItemRight>
@@ -88,17 +108,15 @@ const EscDataSlider = ({ data }) => {
 
           <EscData.BodyItemRight>
             <EscData.BodyItemRightCert>
-              {singleEscData.validity_from
-                ? <Text type='secondary'>{singleEscData.validity_from}</Text>
-                : <Text type='secondary'>Нет данных</Text>
-              }
+              <Text type='secondary'>
+                {singleEscData.validity_from && singleEscData.validity_from}
+              </Text>
             </EscData.BodyItemRightCert>
 
             <EscData.BodyItemRightCert>
-              {singleEscData.validity_to
-                ? <Text type='secondary'>{singleEscData.validity_to}</Text>
-                : <Text type='secondary'>Нет данных</Text>
-              }
+              <Text type='secondary'>
+                {singleEscData.validity_to && singleEscData.validity_to}
+              </Text>
             </EscData.BodyItemRightCert>
           </EscData.BodyItemRight>
         </EscData.BodyItem>
@@ -110,7 +128,10 @@ const EscDataSlider = ({ data }) => {
 
           <EscData.BodyItemRight>
             <EscData.BodyItemRightCert>
-              <Text type='secondary'>123</Text>
+              <Text type='secondary'>
+                {moment.utc(data[activeEscSlide].created_at, 'YYYY-MM-DD HH:mm:ss')
+                  .local().format('DD/MM/YYYY HH:mm:ss')}
+              </Text>
             </EscData.BodyItemRightCert>
           </EscData.BodyItemRight>
         </EscData.BodyItem>
@@ -125,6 +146,13 @@ const EscDataSlider = ({ data }) => {
           <strong>&#10003; Проверка Сигнатуры: Пройдена</strong>
         </Text>
       </EscData.Footer>
+
+      <Button
+        type='primary'
+        ghost
+        onClick={onCancel}
+      >Закрыть
+      </Button>
     </EscData>
   )
 }

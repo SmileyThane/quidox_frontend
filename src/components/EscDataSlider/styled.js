@@ -10,7 +10,7 @@ const EscData = styled.div`
 EscData.Head = styled.div`
   display: flex;
   align-content: center;
-  justify-content: center;
+  justify-content: flex-start;
   padding-bottom: 2rem;
   margin-bottom: 2rem;
   border-bottom: .1rem solid ${colors.alto};
@@ -19,7 +19,7 @@ EscData.Head = styled.div`
 EscData.Arrow = styled.div`
   display: flex;
   justify-content: center;
-  align-content: center;
+  align-items: center;
   width: 2rem;
   height: 2rem;
   border-radius: .4rem;
@@ -61,7 +61,7 @@ EscData.BodyItemRightCert = styled.div`
 `
 
 EscData.Footer = styled.div`
-
+  margin-bottom: 2rem;
 `
 
 export {

@@ -20,3 +20,21 @@ export const getCompanyData = () => {
     }
   }, 1000)
 }
+
+/**
+ * Returns an object with data about the active company from verification hash
+ * @param object
+ * @returns {{address: string, org: string, unp: string, validity_to: string, name: string, validity_from: string, position: string}}
+ */
+export const decryptionData = object => {
+  const verificationData = JSON.parse(decodeURIComponent(object.verification_info))
+  return {
+    unp: verificationData.cert['1.2.112.1.2.1.1.1.1.2'] ? verificationData.cert['1.2.112.1.2.1.1.1.1.2'] : 'Нет данных',
+    org: verificationData.subject['2.5.4.3'] ? verificationData.subject['2.5.4.3'] : 'Нет данных',
+    position: verificationData.cert['1.2.112.1.2.1.1.5.1'] ? verificationData.cert['1.2.112.1.2.1.1.5.1'] : 'Нет данных',
+    address: (verificationData.subject['2.5.4.7'] && verificationData.subject['2.5.4.9']) ? verificationData.subject['2.5.4.7'] + ' ' + verificationData.subject['2.5.4.9'] : 'Нет данных',
+    name: (verificationData.subject['2.5.4.4'] && verificationData.subject['2.5.4.41']) ? verificationData.subject['2.5.4.4'] + ' ' + verificationData.subject['2.5.4.41'] : 'Нет данных',
+    validity_from: moment(+verificationData.date[0] * 1000).format('DD/MM/YYYY, hh:mm:ss'),
+    validity_to: moment(+verificationData.date[1] * 1000).format('DD/MM/YYYY, hh:mm:ss')
+  }
+}
