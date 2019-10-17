@@ -13,6 +13,7 @@ import Table from './Table'
 import PDFViewer from './PDFViewer'
 import PageDescription from './PageDescription'
 import EscDataSlider from './EscDataSlider'
+import CompanyCreate from './CompanyCreate'
 
 export {
   PrivateRoute,
@@ -29,5 +30,6 @@ export {
   Table,
   PDFViewer,
   PageDescription,
-  EscDataSlider
+  EscDataSlider,
+  CompanyCreate
 }

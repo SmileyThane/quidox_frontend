@@ -1,8 +1,6 @@
 import React, { useRef, useState, Fragment, useEffect } from 'react'
 import AddToCalendar from 'react-add-to-calendar'
 import _ from 'lodash'
-import iplocation from 'iplocation'
-import localIpUrl from 'local-ip-url'
 import moment from 'moment'
 
 import { api } from '../../services'
@@ -17,6 +15,10 @@ import {
   Input,
   Modal
 } from 'antd'
+
+import {
+  CompanyCreate
+} from '../../components'
 
 import './NewDocumentPage.scss'
 
@@ -379,6 +381,7 @@ const NewDocumentPage = props => {
   return (
     <Fragment>
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>
+        <CompanyCreate />
         <Spin spinning={!!documentState.fetching}>
           <div className='input-group'>
             <label className='label'>Получатели</label>
