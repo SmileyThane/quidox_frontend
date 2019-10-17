@@ -21,7 +21,7 @@ import {
   Input
 } from 'antd'
 import { findUsersByParams } from '../../services/api/user'
-import { Button, PDFViewer, EscDataSlider } from '../../components'
+import { Button, PDFViewer, EscDataSlider, AvestErrorHandling } from '../../components'
 
 import './SingleDocumentPage.scss'
 import { close } from './img'
@@ -266,9 +266,9 @@ const SingleDocumentPage = props => {
   }
 
   const verifyFile = (item, index) => {
-    if (!isIE || item.status.status_data.id !== 3) {
-      return null
-    }
+    // if (!isIE || item.status.status_data.id !== 3) {
+    //   return null
+    // }
     const base64 = item.encoded_file
     const input = window.document.createElement('input')
     input.type = 'hidden'
@@ -790,38 +790,7 @@ const SingleDocumentPage = props => {
           }
 
           {documentState.modalType === 'error' &&
-          <Fragment>
-            <div style={{ textAlign: 'center' }}>
-              <Icon
-                type='warning'
-                theme='twoTone'
-                twoToneColor='orange'
-                style={{ fontSize: '3rem' }}
-              /><br />
-
-              <Text style={{ textAlign: 'center' }}>Вставьте ключ ЭЦП компании</Text>
-
-              {user.data.companies.length &&
-                user.data.companies.map(i => {
-                  if (i.company_id === user.data.active_company_id) {
-                    return <Text strong> {i.company_name} </Text>
-                  } else {
-                    return null
-                  }
-                })
-              }
-
-              <Text>в компьютер.</Text>
-            </div>
-
-            <Button
-              type='primary'
-              style={{ marginTop: '2rem' }}
-              onClick={() => resolveEscError()}
-            >
-              Продолжить
-            </Button>
-          </Fragment>
+            <AvestErrorHandling onCancel={handleCloseModal} />
           }
           {documentState.modalType === 'decline' &&
           <Fragment>
@@ -855,3 +824,5 @@ const SingleDocumentPage = props => {
 }
 
 export default SingleDocumentPage
+
+

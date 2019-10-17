@@ -38,3 +38,13 @@ export const decryptionData = object => {
     validity_to: moment(+verificationData.date[1] * 1000).format('DD/MM/YYYY, hh:mm:ss')
   }
 }
+
+/**
+ * Retrieving active company
+ * @param data
+ * @returns {string}
+ */
+export const getActiveCompany = data => {
+  console.log(data)
+  return data.companies.find(i => i.company_id === data.active_company_id)
+}

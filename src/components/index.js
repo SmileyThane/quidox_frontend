@@ -14,6 +14,7 @@ import PDFViewer from './PDFViewer'
 import PageDescription from './PageDescription'
 import EscDataSlider from './EscDataSlider'
 import CompanyCreate from './CompanyCreate'
+import AvestErrorHandling from './AvestErrorHandling'
 
 export {
   PrivateRoute,
@@ -31,5 +32,6 @@ export {
   PDFViewer,
   PageDescription,
   EscDataSlider,
-  CompanyCreate
+  CompanyCreate,
+  AvestErrorHandling
 }
