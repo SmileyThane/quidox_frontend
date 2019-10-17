@@ -5,7 +5,6 @@ import {
 } from './styled'
 
 const CompanyCreate = ({ escData }) => {
-
   return (
     <CompanyData>
       <CompanyData.Item>

@@ -381,7 +381,6 @@ const NewDocumentPage = props => {
   return (
     <Fragment>
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>
-        <CompanyCreate />
         <Spin spinning={!!documentState.fetching}>
           <div className='input-group'>
             <label className='label'>Получатели</label>

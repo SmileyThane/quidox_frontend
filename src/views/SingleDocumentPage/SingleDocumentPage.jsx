@@ -21,7 +21,7 @@ import {
   Input
 } from 'antd'
 import { findUsersByParams } from '../../services/api/user'
-import { Button, PDFViewer } from '../../components'
+import { Button, PDFViewer, EscDataSlider } from '../../components'
 
 import './SingleDocumentPage.scss'
 import { close } from './img'
@@ -551,6 +551,7 @@ const SingleDocumentPage = props => {
     const fullName = `${activeCompanyNumber}_${senderEmail}_${documentData}_${documentName}.zip`
     return fullName
   }
+
   console.log(documentState)
   return (
     <Fragment>
@@ -631,34 +632,34 @@ const SingleDocumentPage = props => {
                       actions={singleDocument.status_name !== 'Отправленные' && [
                         <Tooltip
                           arrowPointAtCenter
-                          title={getButtonTooltipText(item.status.status_data.id, 'agree')}
+                          // title={getButtonTooltipText(item.status.status_data.id, 'agree')}
                         >
                           <Icon
                             type='check-circle'
-                            style={(() => {
-                              switch (item.status.status_data.id) {
-                                case 2: return normal
-                                case 4: return active
-                                default: return disabled
-                              }
-                            })()}
+                            // style={(() => {
+                            //   switch (item.status.status_data.id) {
+                            //     case 2: return normal
+                            //     case 4: return active
+                            //     default: return disabled
+                            //   }
+                            // })()}
                             onClick={() => handleAgreeFile(item)}
                           />
                         </Tooltip>,
 
                         <Tooltip
-                          title={getButtonTooltipText(item.status.status_data.id, 'decline')}
+                          // title={getButtonTooltipText(item.status.status_data.id, 'decline')}
                           arrowPointAtCenter>
                           <Icon
                             type='stop'
-                            style={(() => {
-                              switch (item.status.status_data.id) {
-                                case 2: return normal
-                                case 3: return normal
-                                case 6: return decline
-                                default: return disabled
-                              }
-                            })()}
+                            // style={(() => {
+                            //   switch (item.status.status_data.id) {
+                            //     case 2: return normal
+                            //     case 3: return normal
+                            //     case 6: return decline
+                            //     default: return disabled
+                            //   }
+                            // })()}
                             // onClick={() => handleDeclineFile(item)} />
                             onClick={() => showDeclineModal('decline', item)} />
                         </Tooltip>,
@@ -666,14 +667,14 @@ const SingleDocumentPage = props => {
                         <Tooltip title='Подписать документ' arrowPointAtCenter>
                           <Icon
                             type='edit'
-                            style={isIE
-                              ? (() => {
-                                switch (item.status.status_data.id) {
-                                  case 3: return normal
-                                  case 5: return active
-                                  default: return disabled
-                                }
-                              })() : disabled}
+                            // style={isIE
+                            //   ? (() => {
+                            //     switch (item.status.status_data.id) {
+                            //       case 3: return normal
+                            //       case 5: return active
+                            //       default: return disabled
+                            //     }
+                            //   })() : disabled}
                             onClick={() => verifyFile(item, index)} />
                         </Tooltip>,
 
@@ -789,93 +790,7 @@ const SingleDocumentPage = props => {
           footer={null}
         >
           {documentState.modalType === 'ecp' &&
-          <Fragment>
-            <div className='modal-title'>
-              <Text strong>Просмотр ЭЦП,
-                № {documentState.activeFileCert + 1} из {documentState.fileCerts.length} </Text>
-              <div className='arr-wrapp' onClick={prevCert}>
-                <Icon type='left' />
-              </div>
-              <div className='arr-wrapp' onClick={nextCert}>
-                <Icon type='right' />
-              </div>
-            </div>
-            <div className='cert-modal'>
-              <div className='cert-modal__item'>
-                <div className='cert-modal__item-left'>
-                  <Text type='secondary'>Данные из сертификата ЭЦП</Text>
-                </div>
-
-                <div className='cert-modal__item-right'>
-                  <div className='cert-item'>
-                    <Text type='secondary'>УНП: {documentState.ecpInfo.unp}</Text>
-                  </div>
-
-                  <div className='cert-item'>
-                    <Text type='secondary'>Организация: {documentState.ecpInfo.org}</Text>
-                  </div>
-
-                  <div className='cert-item'>
-                    <Text type='secondary'>Должность: {documentState.ecpInfo.position}</Text>
-                  </div>
-
-                  <div className='cert-item'>
-                    <Text type='secondary'>ФИО: {documentState.ecpInfo.name}</Text>
-                  </div>
-
-                  <div className='cert-item'>
-                    <Text type='secondary'>Адресс: {documentState.ecpInfo.address}</Text>
-                  </div>
-                </div>
-              </div>
-              <div className='cert-modal__item'>
-                <div className='cert-modal__item-left'>
-                  <Text type='secondary'>Срок действия сертификата</Text>
-                </div>
-
-                <div className='cert-modal__item-right'>
-                  <div className='cert-item'>
-                    <Text type='secondary'>с {documentState.ecpInfo.validity_from}</Text>
-                  </div>
-
-                  <div className='cert-item'>
-                    <Text type='secondary'>по {documentState.ecpInfo.validity_to}</Text>
-                  </div>
-                </div>
-              </div>
-
-              <div className='cert-modal__item'>
-                <div className='cert-modal__item-left'>
-                  <Text type='secondary'>Дата создания ЭЦП</Text>
-                </div>
-
-                <div className='cert-modal__item-right'>
-                  <div className='cert-item'>
-                    <Text
-                      type='secondary'>{moment.utc(documentState.fileCerts[documentState.activeFileCert].created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD/MM/YYYY HH:mm:ss')}</Text>
-                  </div>
-                </div>
-              </div>
-
-              <div className='cert-modal-footer'>
-                <Text>
-                  <strong>&#10003; Проверка Сертификата, СОС: Пройдена</strong>
-                </Text><br />
-
-                <Text>
-                  <strong>&#10003; Проверка Сигнатуры: Пройдена</strong>
-                </Text>
-              </div>
-            </div>
-
-            <Button
-              style={{ marginTop: 20 }}
-              onClick={() => setDocumentState({ ...documentState, showModal: !documentState.showModal })}
-              type='primary'
-            >
-              Закрыть
-            </Button>
-          </Fragment>
+          <EscDataSlider data={documentState.fileCerts} />
           }
           {documentState.modalType === 'send' &&
           <Fragment>
@@ -979,3 +894,91 @@ const SingleDocumentPage = props => {
 }
 
 export default SingleDocumentPage
+
+// <Fragment>
+// <div className='modal-title'>
+//   <Text strong>Просмотр ЭЦП,
+//                 № {documentState.activeFileCert + 1} из {documentState.fileCerts.length} </Text>
+// <div className='arr-wrapp' onClick={prevCert}>
+// <Icon type='left' />
+// </div>
+// <div className='arr-wrapp' onClick={nextCert}>
+// <Icon type='right' />
+// </div>
+// </div>
+// <div className='cert-modal'>
+// <div className='cert-modal__item'>
+// <div className='cert-modal__item-left'>
+// <Text type='secondary'>Данные из сертификата ЭЦП</Text>
+// </div>
+//
+// <div className='cert-modal__item-right'>
+// <div className='cert-item'>
+// <Text type='secondary'>УНП: {documentState.ecpInfo.unp}</Text>
+// </div>
+//
+// <div className='cert-item'>
+// <Text type='secondary'>Организация: {documentState.ecpInfo.org}</Text>
+// </div>
+//
+// <div className='cert-item'>
+// <Text type='secondary'>Должность: {documentState.ecpInfo.position}</Text>
+// </div>
+//
+// <div className='cert-item'>
+// <Text type='secondary'>ФИО: {documentState.ecpInfo.name}</Text>
+// </div>
+//
+// <div className='cert-item'>
+// <Text type='secondary'>Адрес: {documentState.ecpInfo.address}</Text>
+// </div>
+// </div>
+// </div>
+// <div className='cert-modal__item'>
+// <div className='cert-modal__item-left'>
+// <Text type='secondary'>Срок действия сертификата</Text>
+// </div>
+//
+// <div className='cert-modal__item-right'>
+// <div className='cert-item'>
+// <Text type='secondary'>с {documentState.ecpInfo.validity_from}</Text>
+// </div>
+//
+// <div className='cert-item'>
+// <Text type='secondary'>по {documentState.ecpInfo.validity_to}</Text>
+// </div>
+// </div>
+// </div>
+//
+// <div className='cert-modal__item'>
+// <div className='cert-modal__item-left'>
+// <Text type='secondary'>Дата создания ЭЦП</Text>
+// </div>
+
+// <div className='cert-modal__item-right'>
+// <div className='cert-item'>
+// <Text
+// type='secondary'>{moment.utc(documentState.fileCerts[documentState.activeFileCert].created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD/MM/YYYY HH:mm:ss')}</Text>
+// </div>
+// </div>
+// </div>
+//
+// <div className='cert-modal-footer'>
+// <Text>
+// <strong>&#10003; Проверка Сертификата, СОС: Пройдена</strong>
+// </Text><br />
+//
+// <Text>
+// <strong>&#10003; Проверка Сигнатуры: Пройдена</strong>
+// </Text>
+// </div>
+// </div>
+//
+// <Button
+// style={{ marginTop: 20 }}
+// onClick={() => setDocumentState({ ...documentState, showModal: !documentState.showModal })}
+// type='primary'
+// >
+// Закрыть
+// </Button>
+// </Fragment>
