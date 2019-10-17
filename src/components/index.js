@@ -12,6 +12,7 @@ import FormGroup from './FormGroup'
 import Table from './Table'
 import PDFViewer from './PDFViewer'
 import PageDescription from './PageDescription'
+import EscDataSlider from './EscDataSlider'
 
 export {
   PrivateRoute,
@@ -27,5 +28,6 @@ export {
   FormGroup,
   Table,
   PDFViewer,
-  PageDescription
+  PageDescription,
+  EscDataSlider
 }
