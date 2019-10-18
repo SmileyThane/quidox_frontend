@@ -151,7 +151,6 @@ const AntMenu = props => {
           url='/externals'
           key='/externals'
           icon='file-text'
-          disabled
         />
         <MenuItem
           heading='Панель администратора'
