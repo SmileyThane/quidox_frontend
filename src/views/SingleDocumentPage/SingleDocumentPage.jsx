@@ -20,6 +20,7 @@ import {
   Tooltip,
   Input
 } from 'antd'
+import { FileActions } from './internal'
 import { findUsersByParams } from '../../services/api/user'
 import { Button, PDFViewer, EscDataSlider, AvestErrorHandling } from '../../components'
 
@@ -29,31 +30,6 @@ import { close } from './img'
 const { Text, Paragraph } = Typography
 const { Option } = Select
 const { TextArea } = Input
-
-const disabled = {
-  color: '#E0E0E0',
-  marginRight: 5,
-  fontSize: '1.6rem',
-  cursor: 'not-allowed'
-}
-
-const normal = {
-  color: '#3278fb',
-  marginRight: 5,
-  fontSize: '1.6rem'
-}
-
-const active = {
-  color: 'green',
-  marginRight: 5,
-  fontSize: '1.6rem'
-}
-
-const decline = {
-  color: 'red',
-  marginRight: 5,
-  fontSize: '1.6rem'
-}
 
 const defaultDocumentState = {
   isVisible: false,
@@ -168,31 +144,6 @@ const SingleDocumentPage = props => {
         modalType: type,
         fileCerts: dataArray
       })
-    }
-  }
-
-  const showDeclineModal = (type, item) => {
-    switch (item.status.status_data.id) {
-      case 1: {
-        return null
-      }
-      case 4: {
-        return null
-      }
-      case 5: {
-        return null
-      }
-      case 6: {
-        return null
-      }
-      default: {
-        setDocumentState({
-          ...documentState,
-          showModal: true,
-          modalType: type,
-          singleFile: item
-        })
-      }
     }
   }
 
@@ -418,37 +369,6 @@ const SingleDocumentPage = props => {
       })
   }
 
-  const handleAgreeFile = item => {
-    switch (item.status.status_data.id) {
-      case 2: {
-        const agreeObject = {
-          attachments: [
-            {
-              id: item.id,
-              status: 4
-            }
-          ]
-        }
-        agreeFile(agreeObject)
-          .then(({ data }) => {
-            if (data.success) {
-              message.success('Документ согласован')
-              getDocumentById(match.params.id)
-            } else {
-              throw new Error(data.error)
-            }
-          })
-          .catch(error => {
-            message.error(error.message)
-          })
-        break
-      }
-      default: {
-        return null
-      }
-    }
-  }
-
   const handleDeclineFile = () => {
     if (!documentState.declineMessage.length) {
       message.error('Введите причину отклонения!')
@@ -477,24 +397,6 @@ const SingleDocumentPage = props => {
       .catch(error => {
         message.error(error.message)
       })
-  }
-
-  const getButtonTooltipText = (id, type) => {
-    if (type === 'agree') {
-      switch (id) {
-        case 2: return 'Согласовать документ'
-        case 4: return 'Документ согласован'
-        case 6: return 'В согласовании отказано'
-        default: return 'Документ не требует согласования'
-      }
-    } else {
-      switch (id) {
-        case 2: return 'Отклонить в согласовании'
-        case 4: return 'Нельзя отклонить согласованный документ'
-        case 6: return 'Документ отклонен'
-        default: return 'Документ не требует согласования'
-      }
-    }
   }
 
   const getEcpCount = arr => {
@@ -589,67 +491,14 @@ const SingleDocumentPage = props => {
                   dataSource={document && document.attachments}
                   renderItem={(item, index) => (
                     <List.Item key={index}
-                      actions={singleDocument.status_name !== 'Отправленные' && [
-                        <Tooltip
-                          arrowPointAtCenter
-                          // title={getButtonTooltipText(item.status.status_data.id, 'agree')}
-                        >
-                          <Icon
-                            type='check-circle'
-                            // style={(() => {
-                            //   switch (item.status.status_data.id) {
-                            //     case 2: return normal
-                            //     case 4: return active
-                            //     default: return disabled
-                            //   }
-                            // })()}
-                            onClick={() => handleAgreeFile(item)}
+                      extra={
+                        (singleDocument.status_name !== 'Отправленные' &&
+                          item.status.status_data.id !== 5) &&
+                          <FileActions
+                            file={item}
+                            index={index}
+                            documentId={singleDocument.document.id}
                           />
-                        </Tooltip>,
-
-                        <Tooltip
-                          // title={getButtonTooltipText(item.status.status_data.id, 'decline')}
-                          arrowPointAtCenter>
-                          <Icon
-                            type='stop'
-                            // style={(() => {
-                            //   switch (item.status.status_data.id) {
-                            //     case 2: return normal
-                            //     case 3: return normal
-                            //     case 6: return decline
-                            //     default: return disabled
-                            //   }
-                            // })()}
-                            // onClick={() => handleDeclineFile(item)} />
-                            onClick={() => showDeclineModal('decline', item)} />
-                        </Tooltip>,
-
-                        <Tooltip title='Подписать документ' arrowPointAtCenter>
-                          <Icon
-                            type='edit'
-                            // style={isIE
-                            //   ? (() => {
-                            //     switch (item.status.status_data.id) {
-                            //       case 3: return normal
-                            //       case 5: return active
-                            //       default: return disabled
-                            //     }
-                            //   })() : disabled}
-                            onClick={() => verifyFile(item, index)} />
-                        </Tooltip>,
-
-                        <Tooltip
-                          title='Скачать документ'
-                          placement='topRight'
-                          arrowPointAtCenter
-                        >
-                          <Icon
-                            style={{ color: '#3278fb', fontSize: '1.6rem' }}
-                            onClick={() => downloadDocumentContent(item, false, true)}
-                            type='download'
-                          />
-                        </Tooltip>
-                      ]
                       }
                     >
                       <div className='single-document'>

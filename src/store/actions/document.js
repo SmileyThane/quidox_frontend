@@ -64,21 +64,21 @@ const verifyDocument = data => dispatch => {
     })
 }
 
-const agreeFile = data => dispatch => {
+const changeStatus = status => dispatch => {
   dispatch({
-    type: t.AGREE_FILE_FETCHING,
+    type: t.CHANGE_FILE_STATUS_FETCHING,
     payload: true
   })
-  return api.document.agreeFile(data)
+  return api.document.changeStatus(status)
     .then(data => {
       if (data) {
         dispatch({
-          type: t.AGREE_FILE_SUCCESS,
-          payload: data
+          type: t.CHANGE_FILE_STATUS_SUCCESS,
+          payload: status
         })
       }
       dispatch({
-        type: t.AGREE_FILE_FETCHING,
+        type: t.CHANGE_FILE_STATUS_FETCHING,
         payload: false
       })
       return data
@@ -110,6 +110,6 @@ export {
   getDocumentById,
   removeDocumentById,
   updateDocumentById,
-  agreeFile,
+  changeStatus,
   verifyDocument
 }

@@ -105,40 +105,50 @@ export default (state = initialState, action) => {
       }
     }
 
-    case t.AGREE_FILE_FETCHING: {
+    case t.CHANGE_FILE_STATUS_FETCHING: {
       return {
         ...state,
         isFetching: action.payload
       }
     }
 
-    // case t.AGREE_FILE_SUCCESS: {
-    //   return {
-    //     ...state,
-    //     singleDocument: {
-    //       ...state.singleDocument,
-    //       document: {
-    //         ...state.singleDocument.document,
-    //         attachments: [
-    //           ...state.singleDocument.document.attachments.slice(0, action.payload.id),
-    //           {
-    //             ...state.singleDocument.document.attachments[action.payload.id],
-    //             status: {
-    //               ...state.singleDocument.document.attachments[action.payload.id].status,
-    //               status_data: {
-    //                 ...state.singleDocument.document.attachments[action.payload.id].status.status_data,
-    //                 status: action.payload.status,
-    //                 name: 'Согласовано'
-    //               }
-    //             }
-    //           },
-    //           ...state.singleDocument.document.attachments.slice(action.payload.id + 1)
-    //         ]
-    //       }
-    //     }
-    //   }
-    // }
-
+    case t.CHANGE_FILE_STATUS_SUCCESS: {
+      const payloadStatus = action.payload.attachments[0].status
+      console.log(payloadStatus, 22222)
+      const payloadId = action.payload.attachments[0].id
+      const color = action.payload.attachments[0].color
+      const name = action.payload.attachments[0].name
+      console.log(payloadId, 3333)
+      return {
+        ...state,
+        singleDocument: {
+          ...state.singleDocument,
+          document: {
+            ...state.singleDocument.document,
+            attachments: state.singleDocument.document.attachments.map(i => {
+              // eslint-disable-next-line no-lone-blocks
+              {
+                if (i.id === payloadId) {
+                  return {
+                    ...i,
+                    status: {
+                      ...i.status,
+                      status_data: {
+                        ...i.status.status_data,
+                        id: payloadStatus,
+                        color: color,
+                        name: name
+                      }
+                    }
+                  }
+                }
+                return i
+              }
+            })
+          }
+        }
+      }
+    }
     default:
       return state
   }

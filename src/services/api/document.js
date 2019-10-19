@@ -53,7 +53,7 @@ const verifyDocument = data => {
   })
 }
 
-const agreeFile = data => {
+const changeStatus = data => {
   return http({
     url: 'attachment/status/update',
     method: 'POST',
@@ -76,7 +76,7 @@ export {
   removeDocumentById,
   downloadDocument,
   verifyDocument,
-  agreeFile,
+  changeStatus,
   updateDocumentById,
   downloadReciept
 }

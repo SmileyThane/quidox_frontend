@@ -62,9 +62,11 @@ const NewDocumentPage = props => {
 
   const [documentState, setDocumentState] = useState({ ...defaultDocumentData })
 
-  const focusInput = () => {
-    inputRef.current.focus()
-  }
+  useEffect(() => {
+    if (!documentState.fetching) {
+      inputRef.current.focus()
+    }
+  }, [documentState.fetching])
 
   const updateField = (field, v) => {
     setDocumentState({
@@ -277,11 +279,27 @@ const NewDocumentPage = props => {
     }
   }, 800)
 
+  const validateEmail = label => {
+    const email = label.split(' ')[0]
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    return re.test(String(email).toLowerCase())
+  }
+
   const handleSelect = v => {
+    if (documentState.fetching) {
+      return
+    }
+
+    const validEmails = v.filter(i => validateEmail(i.label))
+
+    if (v.length !== validEmails.length) {
+      message.error('Email is not valid')
+    }
+
     setDocumentState({
       ...documentState,
-      data: v,
-      value: v
+      data: [],
+      value: validEmails
     })
   }
 
@@ -378,6 +396,8 @@ const NewDocumentPage = props => {
   //   })
   // })
 
+  console.log(documentState.data)
+
   return (
     <Fragment>
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>
@@ -386,6 +406,7 @@ const NewDocumentPage = props => {
             <label className='label'>Получатели</label>
 
             <Select
+              ref={inputRef}
               mode='tags'
               labelInValue
               tokenSeparators={[',']}
@@ -394,16 +415,16 @@ const NewDocumentPage = props => {
               notFoundContent={documentState.fetching ? <Spin size='small' /> : null}
               onSearch={fetchUser}
               onChange={handleSelect}
-              onSelect={focusInput}
+              disabled={documentState.fetching}
               style={{ width: '100%' }}
             >
-              {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
+              {documentState.data.map(element => <Option key={element.label}>{element.label}</Option>)}
             </Select>
           </div>
 
           <div className='input-group'>
             <label className='label'>Тема</label>
-            <Input ref={inputRef} kind='text' type='text' value={documentState.name} onChange={e => updateField('name', e.target.value)} />
+            <Input kind='text' type='text' value={documentState.name} onChange={e => updateField('name', e.target.value)} />
           </div>
 
           <div className='input-group'>

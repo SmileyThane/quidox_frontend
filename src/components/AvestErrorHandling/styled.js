@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { styleguide } from '../../constants'
 
-const { colors } = styleguide
+// const { colors } = styleguide
 
 const AvestError = styled.div`
   padding: 1rem;
