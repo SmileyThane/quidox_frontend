@@ -673,5 +673,3 @@ const SingleDocumentPage = props => {
 }
 
 export default SingleDocumentPage
-
-

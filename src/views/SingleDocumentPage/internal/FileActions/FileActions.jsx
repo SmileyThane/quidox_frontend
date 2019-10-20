@@ -89,65 +89,65 @@ const FileActions = props => {
     }
   }
 
-  const handleVerifyFile = (file, status, index) => {
-    // if (!isIE || item.status.status_data.id !== 3) {
-    //   return null
-    // }
-
-    const base64 = file.encoded_file
-    const input = window.document.createElement('input')
-    input.type = 'hidden'
-    input.id = `dataFile-${index}`
-    window.document.body.appendChild(input)
-    window.document.getElementById('dataFile-' + index).value = base64
-
-    try {
-      window.sign('File-' + index)
-
-      setTimeout(() => {
-        const value = document.getElementById(`verifiedDataFile-${index}`).value
-        const signedValue = document.getElementById(`signedDataFile-${index}`).value
-        const flashData = JSON.parse(decodeURIComponent(value))
-        const key = flashData.cert['2.5.29.14']
-        const newData = {
-          documents: [{
-            id: documentId,
-            attachments: [
-              {
-                id: file.id,
-                hash: signedValue,
-                data: value,
-                status: 5
-              }
-            ]
-          }]
-        }
-        api.documents.checkFlashKey({ key: key, attachment_id: file.id })
-          .then(({ data }) => {
-            if (data.success) {
-              verifyDocument(newData)
-                .then(({ success, error }) => {
-                  if (success) {
-                    message.success('Файл успешно подписан!')
-                  } else {
-                    throw new Error(error)
-                  }
-                })
-                .catch(error => {
-                  message.error(error.message)
-                })
-            } else {
-              throw new Error(data.error)
-            }
-          })
-          .catch(error => {
-            message.error(error.message)
-          })
-      }, 1000)
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  // const handleVerifyFile = (file, status, index) => {
+  //   // if (!isIE || item.status.status_data.id !== 3) {
+  //   //   return null
+  //   // }
+  //
+  //   const base64 = file.encoded_file
+  //   const input = window.document.createElement('input')
+  //   input.type = 'hidden'
+  //   input.id = `dataFile-${index}`
+  //   window.document.body.appendChild(input)
+  //   window.document.getElementById('dataFile-' + index).value = base64
+  //
+  //   try {
+  //     window.sign('File-' + index)
+  //
+  //     setTimeout(() => {
+  //       const value = document.getElementById(`verifiedDataFile-${index}`).value
+  //       const signedValue = document.getElementById(`signedDataFile-${index}`).value
+  //       const flashData = JSON.parse(decodeURIComponent(value))
+  //       const key = flashData.cert['2.5.29.14']
+  //       const newData = {
+  //         documents: [{
+  //           id: documentId,
+  //           attachments: [
+  //             {
+  //               id: file.id,
+  //               hash: signedValue,
+  //               data: value,
+  //               status: 5
+  //             }
+  //           ]
+  //         }]
+  //       }
+  //       api.documents.checkFlashKey({ key: key, attachment_id: file.id })
+  //         .then(({ data }) => {
+  //           if (data.success) {
+  //             verifyDocument(newData)
+  //               .then(({ success, error }) => {
+  //                 if (success) {
+  //                   message.success('Файл успешно подписан!')
+  //                 } else {
+  //                   throw new Error(error)
+  //                 }
+  //               })
+  //               .catch(error => {
+  //                 message.error(error.message)
+  //               })
+  //           } else {
+  //             throw new Error(data.error)
+  //           }
+  //         })
+  //         .catch(error => {
+  //           message.error(error.message)
+  //         })
+  //     }, 1000)
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
 
   const statusId = file.status.status_data.id
   return [
@@ -186,7 +186,6 @@ const FileActions = props => {
       <ActionIcon
         type='edit'
         style={receivingIconColor(statusId, verifyStyle)}
-        onClick={() => handleVerifyFile(file, statusId, index)}
       />
     </ActionTooltip>,
 
