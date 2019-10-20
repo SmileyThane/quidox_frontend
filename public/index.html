@@ -30,6 +30,9 @@
     var AVCMR_SIGN_INVALID = AVCMR_BASE + 0x27;
     var AVCMF_DETACHED = 0x2000000;
     var AVCMF_ADD_SIGN_CERT = 0x100000;
+    var AVCMF_OPEN_FOR_SIGN = 0x1000;
+    var AVCMF_OPEN_FOR_VERIFYSIGN = 0x2000;
+    var signedData, verifiedData, data;
 
     function handleError(e) {
       var lastError = avcmx.GetLastError();
@@ -56,32 +59,29 @@
       }
     }
 
-    function sign(file) {
-      try {
+    function hashData(base64) {
+    	try {
+	        var data = avcmx.CreateBlob(0);
+	        data.SetAsBase64(base64, 0);
+          res = avcmx.Hash(data, "1.2.112.0.2.0.34.101.31.81", 0).GetAsHex(0);
+          return res;
+    	} catch (e) {
+    		handleError(e);
+    	}
+    }
+
+    function sign(base64) {
         var blob = avcmx.CreateBlob(0);
-        blob.SetAsBase64(document.getElementById('data' + file).value, 0);
-
-        var dataMessage = conn.CreateMessage(blob, 0);
-        dataMessage.SignAsync(AVCMF_DETACHED | AVCMF_ADD_SIGN_CERT, function (e, signed) {
-          if (e) {
-            alert(avcmx.GetErrorInformation(e, 0));
-            return;
-          }
-          try {
-            var input = document.createElement("input");
-            input.type = "hidden";
-            input.id = "signedData" + file;
-            document.body.appendChild(input);
-            document.getElementById("signedData" + file).value = signed.Blob.GetAsBase64(0);
-
-            const ver =  verify(file);
-          } catch (e) {
-            handleError(e);
-          }
-        });
-      } catch (e) {
-        handleError(e);
-      }
+        blob.SetAsBase64(base64, 0);
+        var hex = hashData(base64);
+        var msg = conn.CreateMessage(avcmx.CreateBlob(0), AVCMF_OPEN_FOR_SIGN | AVCMF_DETACHED);
+        var hashBlob = avcmx.CreateBlob(0);
+        hashBlob.SetAsHex(hex, 0);
+        var signed = msg.FinalHashed(hashBlob);
+        signedData = signed.Blob.GetAsBase64(0); 
+        verifiedData = verify(hex, signed.Blob.GetAsBase64(0));
+        return {hex : hex, signedData: signedData, verifiedData : verifiedData};
+ 
     }
 
     function lastErrorIs(error) {
@@ -89,23 +89,19 @@
       return lastError && (error == lastError || (error == (AVCMR_BASE + (lastError & 0xFFFF))));
     }
 
-    function verify(file) {
+    function verify(hex, signedData) {
+
       try {
         var blob = avcmx.CreateBlob(0);
-        blob.SetAsBase64(document.getElementById("signedData" + file).value, 0);
-
-        console.log(4444);
-
-        msg = conn.CreateMessage(blob, 0);
-        if (!msg.IsSigned()) {
-          alert("Сообщение не является подписанным сообщением");
-          return;
-        }
-
-        var content = avcmx.CreateBlob(0);
-        content.SetAsBase64(document.getElementById('data' + file).value, 0);
-        msg.Content = content;
-
+            blob.SetAsBase64(signedData, 0);
+            var msg = conn.CreateMessage(blob, AVCMF_OPEN_FOR_VERIFYSIGN | AVCMF_DETACHED);
+            if (!msg.IsSigned()) {
+                alert("Сообщение не является подписанным сообщением");
+                return;
+            }
+        var hashBlob = avcmx.CreateBlob(0);
+            hashBlob.SetAsHex(hex, 0);
+            msg.FinalHashed(hashBlob);
         try {
           msg.Verify(0);
         } catch (e) {
@@ -119,15 +115,9 @@
 
         var sign = msg.Signs(0);
         cert = sign.SignerCertificate;
-        console.log('its a cert:', cert);
-        console.log('its a conn:', conn);
-  
         var date = new Date(sign.SignDateTimeSec * 1000).toString();
-        // console.log('date:' + date);
         var key = cert.AuthorityKeyIdentifier;
-        // console.log('key:' + key);
 
-        // conn
         var connCertCount = conn.OwnCertificate.SubjectNameAttributesCount;
         var connSubjectCount = conn.OwnCertificate.SubjectNameAttributesCount;
         var connIssuerCount = conn.OwnCertificate.IssuerNameAttributesCount;
@@ -173,16 +163,8 @@
       } catch (e) {
         handleError(e);
       }
-      console.log('Data from conn')
-      console.log(connIssuerObject)
-      console.log(connSubjectObject)
-      console.log(connCertObj)
-      console.log('_______________')
-      console.log('Data from cert')
-      console.log(certArr);
-      console.log(subjectArr);
-      console.log(issuerArr);
-      console.log('_______________')
+
+      
       var result = {
         cert: certArr,
         subject: subjectArr,
@@ -191,15 +173,7 @@
         date: [cert.ValidityNotBeforeSec, cert.ValidityNotAfterSec]
       }
 
-      var input = document.createElement('input')
-      input.type = 'hidden'
-      input.id = 'verifiedData' + file
-      input.classList.add('verifiedData')
-      input.value = encodeURIComponent((JSON.stringify(result)))
-
-      document.body.appendChild(input)
-
-      // document.getElementById('companyData').value = encodeURIComponent(JSON.stringify(result))
+      return result;
     }
   </script>
   <script>

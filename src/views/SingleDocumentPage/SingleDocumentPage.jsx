@@ -221,59 +221,60 @@ const SingleDocumentPage = props => {
     //   return null
     // }
     const base64 = item.encoded_file
-    const input = window.document.createElement('input')
-    input.type = 'hidden'
-    input.id = `dataFile-${index}`
-    window.document.body.appendChild(input)
-    window.document.getElementById('dataFile-' + index).value = base64
-    // document.getElementById(`dataFile-${index}`).value = base64
+    const  result = window.sign(base64)
     try {
-      window.sign('File-' + index)
+      
+      
+      console.log('result:', result)
+      // setTimeout(() => {
+      //   // const value = window.document.getElementById('verifiedData' + 'File-' + index).value
 
-      setTimeout(() => {
-        const value = window.document.getElementById('verifiedData' + 'File-' + index).value
-        // const value = document.getElementById(`verifiedDataFile-${index}`).value
-        const signedValue = window.document.getElementById('signedData' + 'File-' + index).value
-        // const signedValue = document.getElementById(`signedDataFile-${index}`).value
-        const flashData = JSON.parse(decodeURIComponent(value))
-        const key = flashData.cert['2.5.29.14']
-        const newData = {
-          documents: [{
-            id: singleDocument.document.id,
-            attachments: [
-              {
-                id: item.id,
-                hash: signedValue,
-                data: value,
-                status: 5
-              }
-            ]
-          }]
-        }
-        api.documents.checkFlashKey({ key: key, attachment_id: item.id })
-          .then(({ data }) => {
-            if (data.success) {
-              verifyDocument(newData)
-                .then((response) => {
-                  if (response.success) {
-                    message.success('Файл успешно подписан!')
-                    setDocumentState({ ...defaultDocumentState })
-                    getDocumentById(match.params.id)
-                  } else {
-                    throw new Error(response.error)
-                  }
-                })
-                .catch(error => {
-                  message.error(error.message)
-                })
-            } else {
-              throw new Error(data.error)
-            }
-          })
-          .catch(error => {
-            message.error(error.message)
-          })
-      }, 1000)
+      //   // const value = document.getElementById(`verifiedDataFile-${index}`).value
+
+
+      //   // const signedValue = window.document.getElementById('signedData' + 'File-' + index).value
+
+
+      //   // const signedValue = document.getElementById(`signedDataFile-${index}`).value
+      //   // const flashData = JSON.parse(decodeURIComponent(value))
+      //   // const key = flashData.cert['2.5.29.14']
+      //   const newData = {
+      //     documents: [{
+      //       id: singleDocument.document.id,
+      //       attachments: [
+      //         {
+      //           id: item.id,
+      //           // hash: signedValue,
+      //           // data: value,
+      //           status: 5
+      //         }
+      //       ]
+      //     }]
+      //   }
+      //   api.documents.checkFlashKey({ key: key, attachment_id: item.id })
+      //     .then(({ data }) => {
+      //       if (data.success) {
+      //         verifyDocument(newData)
+      //           .then((response) => {
+      //             if (response.success) {
+      //               message.success('Файл успешно подписан!')
+      //               setDocumentState({ ...defaultDocumentState })
+      //               getDocumentById(match.params.id)
+      //             } else {
+      //               throw new Error(response.error)
+      //             }
+      //           })
+      //           .catch(error => {
+      //             message.error(error.message)
+      //           })
+      //       } else {
+      //         throw new Error(data.error)
+      //       }
+      //     })
+      //     .catch(error => {
+      //       message.error(error.message)
+      //     })
+      // }, 1000)
     } catch (error) {
       setDocumentState({
         ...documentState,
@@ -414,7 +415,7 @@ const SingleDocumentPage = props => {
     const fullName = `${activeCompanyNumber}_${senderEmail}_${documentData}_${documentName}.zip`
     return fullName
   }
-  console.log(documentState)
+
   return (
     <Fragment>
       <Spin spinning={isFetching}>
@@ -498,7 +499,8 @@ const SingleDocumentPage = props => {
                             file={item}
                             index={index}
                             documentId={singleDocument.document.id}
-                          />
+                          />,
+                          <Button onClick={() => verifyFile(item, index)}>123</Button>
                       }
                     >
                       <div className='single-document'>
