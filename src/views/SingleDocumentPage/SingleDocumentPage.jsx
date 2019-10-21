@@ -477,12 +477,10 @@ const SingleDocumentPage = props => {
                   renderItem={(item, index) => (
                     <List.Item key={index}
                       extra={
-                        (singleDocument.status_name !== 'Отправленные' &&
-                          item.status.status_data.id !== 5) &&
-                          <FileActions
-                            file={item}
-                            documentId={singleDocument.document.id}
-                          />
+                        <FileActions
+                          file={item}
+                          documentId={singleDocument.document.id}
+                        />
                       }
                     >
                       <div className='single-document'>
