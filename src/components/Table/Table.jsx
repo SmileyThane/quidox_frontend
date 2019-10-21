@@ -176,7 +176,7 @@ const AntdTable = props => {
     })
       .then(({ data }) => {
         if (data) {
-          fileDownload(data, `${name}.pdf`)
+          fileDownload(data, `${name}.${type}`)
           setTableState({
             ...tableState,
             isFetching: false

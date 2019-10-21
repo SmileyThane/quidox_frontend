@@ -293,7 +293,7 @@ const NewDocumentPage = props => {
     const validEmails = v.filter(i => validateEmail(i.label))
 
     if (v.length !== validEmails.length) {
-      message.error('Email is not valid')
+      message.error('Не правильный электронный адрес')
     }
 
     setDocumentState({
@@ -387,16 +387,7 @@ const NewDocumentPage = props => {
     })
   }
 
-  // eslint-disable-next-line handle-callback-err
-  // iplocation(localIpUrl('public'), [], (err, res) => {
-  //   console.log(res)
-  //   setDocumentState({
-  //     ...documentState,
-  //     userAddress: res.hasOwnProperty('city') ? res.city : ''
-  //   })
-  // })
-
-  console.log(documentState.data)
+  console.log(documentState)
 
   return (
     <Fragment>
