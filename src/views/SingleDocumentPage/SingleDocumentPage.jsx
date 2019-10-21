@@ -221,60 +221,52 @@ const SingleDocumentPage = props => {
     //   return null
     // }
     const base64 = item.encoded_file
-    const  result = window.sign(base64)
+
     try {
-      
-      
-      console.log('result:', result)
-      // setTimeout(() => {
-      //   // const value = window.document.getElementById('verifiedData' + 'File-' + index).value
 
-      //   // const value = document.getElementById(`verifiedDataFile-${index}`).value
+      const  sertificationObject = window.sign(base64)
 
+      console.log(sertificationObject.verifiedData.key)
 
-      //   // const signedValue = window.document.getElementById('signedData' + 'File-' + index).value
+        const newData = {
+          documents: [{
+            id: singleDocument.document.id,
+            attachments: [
+              {
+                id: item.id,
+                hash: sertificationObject.signedData,
+                data: sertificationObject.verifiedData,
+                status: 5
+              }
+            ]
+          }]
+        }
 
+        console.log(sertificationObject)
 
-      //   // const signedValue = document.getElementById(`signedDataFile-${index}`).value
-      //   // const flashData = JSON.parse(decodeURIComponent(value))
-      //   // const key = flashData.cert['2.5.29.14']
-      //   const newData = {
-      //     documents: [{
-      //       id: singleDocument.document.id,
-      //       attachments: [
-      //         {
-      //           id: item.id,
-      //           // hash: signedValue,
-      //           // data: value,
-      //           status: 5
-      //         }
-      //       ]
-      //     }]
-      //   }
-      //   api.documents.checkFlashKey({ key: key, attachment_id: item.id })
-      //     .then(({ data }) => {
-      //       if (data.success) {
-      //         verifyDocument(newData)
-      //           .then((response) => {
-      //             if (response.success) {
-      //               message.success('Файл успешно подписан!')
-      //               setDocumentState({ ...defaultDocumentState })
-      //               getDocumentById(match.params.id)
-      //             } else {
-      //               throw new Error(response.error)
-      //             }
-      //           })
-      //           .catch(error => {
-      //             message.error(error.message)
-      //           })
-      //       } else {
-      //         throw new Error(data.error)
-      //       }
-      //     })
-      //     .catch(error => {
-      //       message.error(error.message)
-      //     })
-      // }, 1000)
+        api.documents.checkFlashKey({ key: sertificationObject.verifiedData.key, attachment_id: item.id })
+          .then(({ data }) => {
+            if (data.success) {
+              verifyDocument(newData)
+                .then((response) => {
+                  if (response.success) {
+                    message.success('Файл успешно подписан!')
+                    setDocumentState({ ...defaultDocumentState })
+                    getDocumentById(match.params.id)
+                  } else {
+                    throw new Error(response.error)
+                  }
+                })
+                .catch(error => {
+                  message.error(error.message)
+                })
+            } else {
+              throw new Error(data.error)
+            }
+          })
+          .catch(error => {
+            message.error(error.message)
+          })
     } catch (error) {
       setDocumentState({
         ...documentState,

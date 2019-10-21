@@ -70,10 +70,15 @@
     	}
     }
 
-    function sign(base64) {
+    function sign(base64, hexValue) {
+      if (base64) {
         var blob = avcmx.CreateBlob(0);
         blob.SetAsBase64(base64, 0);
         var hex = hashData(base64);
+      } else {
+        var hex = hexValue
+      }
+        
         var msg = conn.CreateMessage(avcmx.CreateBlob(0), AVCMF_OPEN_FOR_SIGN | AVCMF_DETACHED);
         var hashBlob = avcmx.CreateBlob(0);
         hashBlob.SetAsHex(hex, 0);
@@ -116,7 +121,7 @@
         var sign = msg.Signs(0);
         cert = sign.SignerCertificate;
         var date = new Date(sign.SignDateTimeSec * 1000).toString();
-        var key = cert.AuthorityKeyIdentifier;
+        // var key = cert.AuthorityKeyIdentifier;
 
         var connCertCount = conn.OwnCertificate.SubjectNameAttributesCount;
         var connSubjectCount = conn.OwnCertificate.SubjectNameAttributesCount;
@@ -164,7 +169,7 @@
         handleError(e);
       }
 
-      
+      key = certArr['2.5.29.14']
       var result = {
         cert: certArr,
         subject: subjectArr,

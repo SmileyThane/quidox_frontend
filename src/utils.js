@@ -27,7 +27,7 @@ export const getCompanyData = () => {
  * @returns {{address: string, org: string, unp: string, validity_to: string, name: string, validity_from: string, position: string}}
  */
 export const decryptionData = object => {
-  const verificationData = JSON.parse(decodeURIComponent(object.verification_info))
+  const verificationData = JSON.parse(object.verification_info)
   return {
     unp: verificationData.cert['1.2.112.1.2.1.1.1.1.2'] ? verificationData.cert['1.2.112.1.2.1.1.1.1.2'] : 'Нет данных',
     org: verificationData.subject['2.5.4.3'] ? verificationData.subject['2.5.4.3'] : 'Нет данных',
