@@ -111,6 +111,7 @@ const FileActions = props => {
         }]
       }
 
+      console.log('key:', sertificationObject.verifiedData.key)
       api.documents.checkFlashKey({ key: sertificationObject.verifiedData.key, attachment_id: item.id })
         .then(({ data }) => {
           if (data.success) {

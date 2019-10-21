@@ -2,9 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import useForm from 'rc-form-hooks'
 import { Link } from 'react-router-dom'
 
-import {
-  getCompanyData
-} from '../../utils'
+
 import { api } from '../../services'
 import { CompanyCreate } from '../../components'
 import {
@@ -60,7 +58,7 @@ const CompaniesPage = props => {
     setCompanyState({
       ...companyState,
       showModal: true,
-      newCompany: getCompanyData()
+      // newCompany: getCompanyData()
     })
   }
 
