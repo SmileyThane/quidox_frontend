@@ -1,10 +1,20 @@
 import React from 'react'
 
 import {
+  Button
+} from 'antd'
+import {
   CompanyData
 } from './styled'
 
-const CompanyCreate = ({ escData }) => {
+const CompanyCreate = ({ user: { data }, createCompany }) => {
+
+  console.log('User data', data)
+
+  const handleCreateCompany = () => {
+    window.sign()
+  }
+
   return (
     <CompanyData>
       <CompanyData.Item>
@@ -60,6 +70,7 @@ const CompanyCreate = ({ escData }) => {
         <CompanyData.ItemContent>
         </CompanyData.ItemContent>
       </CompanyData.Item>
+      <Button type='primary'>Create</Button>
     </CompanyData>
   )
 }

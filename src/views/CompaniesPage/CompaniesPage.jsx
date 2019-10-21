@@ -6,6 +6,7 @@ import {
   getCompanyData
 } from '../../utils'
 import { api } from '../../services'
+import { CompanyCreate } from '../../components'
 import {
   Table,
   Tag,
@@ -42,7 +43,6 @@ const isIE = /*@cc_on!@*/false || !!document.documentMode
 const CompaniesPage = props => {
   const {
     getCompanies,
-    createCompany,
     changeActiveCompanyById,
     companies: { isFetching, list },
     user: { data }
@@ -117,30 +117,6 @@ const CompaniesPage = props => {
           })
       })
   }
-
-  // const handleCreateCompany = () => {
-  //   const newCompanyData = {
-  //     name: companyState.newCompanyName,
-  //     company_number: companyState.newCompanyNumber,
-  //     description: companyState.newCompanyCity,
-  //     registration_date: companyState.newCompanyDate,
-  //     your_position: companyState.yourPosition,
-  //     key: companyState.newCompanyKey
-  //   }
-  //   createCompany(newCompanyData)
-  //     .then(response => {
-  //       if (response.success) {
-  //         setCompanyState({ ...defaultCompanyState })
-  //         message.success('Компания создана успешно!!')
-  //       } else {
-  //         throw new Error(response.error)
-  //       }
-  //     })
-  //     .catch(error => {
-  //       message.error(error.message)
-  //       setCompanyState({ ...defaultCompanyState })
-  //     })
-  // }
 
   const columns = [
     {
@@ -262,17 +238,7 @@ const CompaniesPage = props => {
         }
       </div>
 
-      <input type='hidden' id='dataNewCompany' value={window.btoa(data.email)} />
-
-      <input type='hidden' id='companyData' />
-
-      <div id='attrCertSelectContainer' style={{ display: 'none' }}>
-        <span id='certExtAbsent' />
-
-        <select style={{ visibility: 'hidden' }} id='attrCertSelect' />
-      </div>
-
-      <input type='hidden' id='attrValue' size='80' disabled='disabled' />
+      <CompanyCreate />
 
       <Modal
         title='Данные цифрового накопителя'
