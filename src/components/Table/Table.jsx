@@ -152,23 +152,22 @@ const AntdTable = props => {
       className: 'table-download',
       render: record => <Fragment>
         <Tooltip placement='topRight' title='Скачать квитанцию в формате pdf (Скоро...)' arrowPointAtCenter>
-          {/* <Icon onClick={() => downloadReceipt(record.id, record.document.name)} type='file-pdf' style={{ marginRight: '0.5rem', fontSize: '1.8rem', cursor: 'pointer' }} /> */}
-          <Icon type='file-pdf' style={{ marginRight: '0.5rem', fontSize: '1.8rem', cursor: 'pointer' }} />
+          <Icon onClick={() => downloadReceipt(record.id, record.document.name, 'pdf')} type='file-pdf' style={{ marginRight: '0.5rem', fontSize: '1.8rem', cursor: 'pointer' }} />
         </Tooltip>
 
         <Tooltip placement='topRight' title='Скачать квитанцию в формате xml  (Скоро...)' arrowPointAtCenter>
-          <Icon type='file-text' style={{ fontSize: '1.8rem', cursor: 'pointer' }} />
+          <Icon onClick={() => downloadReceipt(record.id, record.document.name, 'xml')} type='file-text' style={{ marginRight: '0.5rem', fontSize: '1.8rem', cursor: 'pointer' }} />
         </Tooltip>
       </Fragment>
     }
   ]
 
-  const downloadReceipt = (id, name) => {
+  const downloadReceipt = (id, name, type) => {
     setTableState({
       ...tableState,
       isFetching: true
     })
-    axios.get(`${process.env.REACT_APP_BASE_URL}/receipt/pdf/${id}`, {
+    axios.get(`${process.env.REACT_APP_BASE_URL}/receipt/${type}/${id}`, {
       'responseType': 'arraybuffer',
       headers: {
         'Authorization': 'Bearer ' + window.localStorage.getItem('authToken'),

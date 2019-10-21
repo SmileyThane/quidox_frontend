@@ -216,64 +216,56 @@ const SingleDocumentPage = props => {
     })
   }
 
-  const verifyFile = (item, index) => {
+  const verifyFile = (item) => {
     // if (!isIE || item.status.status_data.id !== 3) {
     //   return null
     // }
     const base64 = item.encoded_file
 
     try {
-
-      const  sertificationObject = window.sign(base64)
+      const sertificationObject = window.sign(base64)
 
       console.log(sertificationObject.verifiedData.key)
 
-        const newData = {
-          documents: [{
-            id: singleDocument.document.id,
-            attachments: [
-              {
-                id: item.id,
-                hash: sertificationObject.signedData,
-                data: sertificationObject.verifiedData,
-                status: 5
-              }
-            ]
-          }]
-        }
-
-        console.log(sertificationObject)
-
-        api.documents.checkFlashKey({ key: sertificationObject.verifiedData.key, attachment_id: item.id })
-          .then(({ data }) => {
-            if (data.success) {
-              verifyDocument(newData)
-                .then((response) => {
-                  if (response.success) {
-                    message.success('Файл успешно подписан!')
-                    setDocumentState({ ...defaultDocumentState })
-                    getDocumentById(match.params.id)
-                  } else {
-                    throw new Error(response.error)
-                  }
-                })
-                .catch(error => {
-                  message.error(error.message)
-                })
-            } else {
-              throw new Error(data.error)
+      const newData = {
+        documents: [{
+          id: singleDocument.document.id,
+          attachments: [
+            {
+              id: item.id,
+              hash: sertificationObject.signedData,
+              data: sertificationObject.verifiedData,
+              status: 5
             }
-          })
-          .catch(error => {
-            message.error(error.message)
-          })
+          ]
+        }]
+      }
+
+      api.documents.checkFlashKey({ key: sertificationObject.verifiedData.key, attachment_id: item.id })
+        .then(({ data }) => {
+          if (data.success) {
+            verifyDocument(newData)
+              .then((response) => {
+                if (response.success) {
+                  message.success('Файл успешно подписан!')
+                  setDocumentState({ ...defaultDocumentState })
+                  getDocumentById(match.params.id)
+                } else {
+                  throw new Error(response.error)
+                }
+              })
+              .catch(error => {
+                message.error(error.message)
+              })
+          } else {
+            throw new Error(data.error)
+          }
+        })
+        .catch(error => {
+          message.error(error.message)
+        })
     } catch (error) {
-      setDocumentState({
-        ...documentState,
-        showModal: true,
-        isErrorWitchEcp: false,
-        modalType: 'error'
-      })
+      console.log(error)
     }
   }
 
@@ -489,10 +481,8 @@ const SingleDocumentPage = props => {
                           item.status.status_data.id !== 5) &&
                           <FileActions
                             file={item}
-                            index={index}
                             documentId={singleDocument.document.id}
-                          />,
-                          <Button onClick={() => verifyFile(item, index)}>123</Button>
+                          />
                       }
                     >
                       <div className='single-document'>
@@ -651,17 +641,6 @@ const SingleDocumentPage = props => {
 
         </Modal>
       }
-      <input type='hidden' id='attr' size='80' value='1.2.112.1.2.1.1.1.1.2' />
-
-      <input type='hidden' id='companyData' />
-
-      <div id='attrCertSelectContainer' style={{ display: 'none' }}>
-        <span id='certExtAbsent' />
-
-        <select style={{ visibility: 'hidden' }} id='attrCertSelect' />
-      </div>
-
-      <input type='hidden' id='attrValue' size='80' disabled='disabled' />
     </Fragment>
   )
 }
