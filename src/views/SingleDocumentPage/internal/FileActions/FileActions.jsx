@@ -19,7 +19,8 @@ const FileActions = props => {
   const {
     file,
     documentId,
-    changeStatus
+    changeStatus,
+    verifyDocument
   } = props
 
   const receivingTooltipText = (status, array = []) => {
@@ -173,7 +174,7 @@ const FileActions = props => {
       <ActionIcon
         type='edit'
         style={receivingIconColor(statusId, verifyStyle)}
-        onClick={verifyFile(file)}
+        onClick={() => verifyFile(file, documentId)}
       />
     </ActionTooltip>,
 
