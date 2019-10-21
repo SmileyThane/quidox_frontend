@@ -264,6 +264,7 @@ const NewDocumentPage = props => {
                 key: `${user.id}`
               }))
               .filter(i => !dataIds.includes(i.key))
+
             setDocumentState({
               ...documentState,
               data: [...documentState.data, ...dataArray],
@@ -289,8 +290,13 @@ const NewDocumentPage = props => {
     if (documentState.fetching) {
       return
     }
+    console.log('v:', v)
 
-    const validEmails = v.filter(i => validateEmail(i.label))
+    const validEmails = v.filter(i => {
+      if (validateEmail(i.label)) {
+        return i.key
+      }
+    })
 
     if (v.length !== validEmails.length) {
       message.error('Не правильный электронный адрес')
@@ -298,7 +304,6 @@ const NewDocumentPage = props => {
 
     setDocumentState({
       ...documentState,
-      data: [],
       value: validEmails
     })
   }
@@ -387,7 +392,7 @@ const NewDocumentPage = props => {
     })
   }
 
-  console.log(documentState)
+  console.log(documentState.data)
 
   return (
     <Fragment>
@@ -409,7 +414,7 @@ const NewDocumentPage = props => {
               disabled={documentState.fetching}
               style={{ width: '100%' }}
             >
-              {documentState.data.map(element => <Option key={element.label}>{element.label}</Option>)}
+              {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
             </Select>
           </div>
 
@@ -420,7 +425,7 @@ const NewDocumentPage = props => {
 
           <div className='input-group'>
             <label className='label'>Комментарий</label>
-            <TextArea autosize={{ minRows: 1, maxRows: 6 }} value={documentState.description} onChange={e => updateField('description', e.target.value)} />
+            <TextArea autosize={{ minRows: 4, maxRows: 10 }} value={documentState.description} onChange={e => updateField('description', e.target.value)} />
           </div>
 
           <div className='buttons-group'>
