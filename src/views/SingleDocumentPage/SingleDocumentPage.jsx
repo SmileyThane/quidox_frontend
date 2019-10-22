@@ -480,7 +480,7 @@ const SingleDocumentPage = props => {
                         <FileActions
                           file={item}
                           documentId={singleDocument.document.id}
-                          getDocument={getDocumentById(match.params.id)}
+                          getDocument={() => getDocumentById(match.params.id)}
                         />
                       }
                     >
