@@ -3,6 +3,7 @@ import React, { useState, Fragment } from 'react'
 import { Button, Typography, notification, message } from 'antd'
 import { CompanyData } from './styled'
 import { decryptionCompanyData, checkBrowser } from '../../utils'
+import history from '../../history'
 
 const defaultState = {
   companyData: null,
@@ -12,10 +13,10 @@ const defaultState = {
 const { Text } = Typography
 const CompanyCreate = props => {
   const {
-    user: { data },
     createCompany,
     onCancel
   } = props
+
   const [state, setState] = useState({ ...defaultState })
 
   const handleAgreeCheck = () => {
@@ -50,6 +51,7 @@ const CompanyCreate = props => {
           setState({ ...defaultState })
           message.success('ЭЦП подключена успешно')
           onCancel()
+          history.push('/companies')
         } else {
           throw new Error(error)
         }

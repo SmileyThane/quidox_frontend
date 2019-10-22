@@ -15,6 +15,7 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "node-sass": "^4.12.0",
+    "polished": "^3.4.1",
     "random-hash": "^4.0.1",
     "rc-form-hooks": "^0.0.1-alpha.14",
     "react": "^16.8.6",

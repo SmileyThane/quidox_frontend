@@ -1,0 +1,76 @@
+import React from 'react'
+
+import { Dropdown, Typography, message } from 'antd'
+import { User } from './styled'
+import { getActiveCompany } from '../../../../utils'
+import history from '../../../../history'
+
+const { Text } = Typography
+const HeaderUser = ({ user: { data }, userLogout }) => {
+  const handleLogout = () => {
+    userLogout()
+      .then(({ data }) => {
+        if (data.success) {
+          window.localStorage.clear()
+          history.push('/login')
+        } else {
+          throw new Error(data.error)
+        }
+      })
+      .catch(error => {
+        message.error(error.message())
+      })
+  }
+
+  const activeCompany = data.hasOwnProperty('companies') && getActiveCompany(data)
+  console.log(activeCompany)
+  return (
+    <User>
+      <Dropdown
+        trigger={['click']}
+        overlay={(
+          <User.Dropdown>
+            <User.DropdownItem>
+              <User.DropdownTag
+                color='#87d068'
+              >
+                { +activeCompany.company_number === 0
+                  ? activeCompany.company_name
+                  : (`УНП: ${activeCompany.company_number}`)
+                }
+              </User.DropdownTag>
+            </User.DropdownItem>
+
+            <User.DropdownItem
+              onClick={() => history.push('/user-me')}
+            >
+              <User.DropdownIcon type='profile' />
+
+              <Text>Профиль</Text>
+            </User.DropdownItem>
+
+            <User.DropdownItem
+              onClick={handleLogout}
+            >
+              <User.DropdownIcon type='logout' />
+
+              <Text>Выйти</Text>
+            </User.DropdownItem>
+          </User.Dropdown>
+        )}
+      >
+        <User.Info>
+          <User.InfoAvatar icon='user' />
+
+          <Text>
+            { data.email && data.email }
+          </Text>
+
+          <User.InfoArrow type='down' />
+        </User.Info>
+      </Dropdown>
+    </User>
+  )
+}
+
+export default HeaderUser

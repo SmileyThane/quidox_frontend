@@ -14,6 +14,7 @@ import {
   Modal,
   Typography
 } from 'antd'
+import { HeaderUser } from './internal'
 import { CompanyCreate } from '../'
 
 import history from '../../history.js'
@@ -121,40 +122,7 @@ const HeaderBlock = props => {
 
               <Button type='primary' ghost onClick={handleOpenModal}>Подключить ЭЦП</Button>
 
-              <div className='user header__user'>
-                <Dropdown
-                  overlay={
-                    (
-                      <ul className='user__dropdown'>
-                        <li className='user__dropdown__item' style={{ textAlign: 'center' }}>
-                          {(data && data.companies) && data.companies.map(i => {
-                            if (i.company_id === data.active_company_id) {
-                              return <Tag key={i.company_id} color='#87d068' style={{ width: '100%', overflow: 'hidden', textOverflow: 'ellipsis' }}>{+i.company_number === 0 ? i.company_name : (`УНП: ${i.company_number}`)}</Tag>
-                            } else {
-                              return null
-                            }
-                          })}
-                        </li>
-                        <li className='user__dropdown__item' onClick={() => history.push('/user-me')}>
-                          <Icon type='profile' style={{ marginRight: 10 }} />
-                          <span>Профиль</span>
-                        </li>
-                        <li className='user__dropdown__item' onClick={() => handleLogout()}>
-                          <Icon type='logout' style={{ marginRight: 10 }} />
-                          <span>Выйти</span>
-                        </li>
-                      </ul>
-                    )
-                  }
-                  trigger={['click']}
-                >
-                  <a className='ant-dropdown-link user-link'>
-                    <Avatar className='user-avatar' icon='user' />
-                    <span className='user-email'>{data.email && data.email}</span>
-                    <Icon type='down' style={{ marginLeft: '.5rem' }} />
-                  </a>
-                </Dropdown>
-              </div>
+              <HeaderUser />
             </Skeleton>
           </Fragment>
           }
