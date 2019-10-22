@@ -1,9 +1,6 @@
 import React from 'react'
 
 import { message } from 'antd'
-import {
-  AvestErrorHandling
-} from '../../../../components'
 import { ActionTooltip, ActionIcon } from './styled'
 import {
   agreeText,
@@ -14,11 +11,13 @@ import {
   verifyStyle
 } from './static'
 import { api } from '../../../../services'
+import { checkBrowser } from '../../../../utils'
 
 const FileActions = props => {
   const {
     file,
     documentId,
+    getDocument,
     changeStatus,
     verifyDocument
   } = props
@@ -88,10 +87,10 @@ const FileActions = props => {
     }
   }
 
-  const verifyFile = (item, documentId) => {
-    // if (!isIE || item.status.status_data.id !== 3) {
-    //   return null
-    // }
+  const verifyFile = (item, documentId, status) => {
+    if (checkBrowser('ie') || status !== 3) {
+      return null
+    }
     const base64 = item.encoded_file
 
     try {
@@ -111,7 +110,6 @@ const FileActions = props => {
         }]
       }
 
-      console.log('key:', sertificationObject.verifiedData.key)
       api.documents.checkFlashKey({ key: sertificationObject.verifiedData.key, attachment_id: item.id })
         .then(({ data }) => {
           if (data.success) {
@@ -119,6 +117,7 @@ const FileActions = props => {
               .then((response) => {
                 if (response.success) {
                   message.success('Файл успешно подписан!')
+                  getDocument()
                 } else {
                   throw new Error(response.error)
                 }
@@ -139,6 +138,7 @@ const FileActions = props => {
   }
 
   const statusId = file.status.status_data.id
+  console.log(statusId)
   return [
     <ActionTooltip
       arrowPointAtCenter
@@ -175,7 +175,7 @@ const FileActions = props => {
       <ActionIcon
         type='edit'
         style={receivingIconColor(statusId, verifyStyle)}
-        onClick={() => verifyFile(file, documentId)}
+        onClick={() => verifyFile(file, documentId, statusId)}
       />
     </ActionTooltip>,
 

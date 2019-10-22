@@ -476,10 +476,11 @@ const SingleDocumentPage = props => {
                   dataSource={document && document.attachments}
                   renderItem={(item, index) => (
                     <List.Item key={index}
-                      extra={
+                      extra={singleDocument.status_name !== 'Отправленные' && item.status.status_data.id !== 5 &&
                         <FileActions
                           file={item}
                           documentId={singleDocument.document.id}
+                          getDocument={getDocumentById(match.params.id)}
                         />
                       }
                     >
