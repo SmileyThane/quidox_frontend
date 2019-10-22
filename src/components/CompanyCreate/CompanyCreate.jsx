@@ -11,12 +11,7 @@ const defaultState = {
 }
 
 const { Text } = Typography
-const CompanyCreate = props => {
-  const {
-    createCompany,
-    onCancel
-  } = props
-
+const CompanyCreate = ({ createCompany, onCancel }) => {
   const [state, setState] = useState({ ...defaultState })
 
   const handleAgreeCheck = () => {
@@ -36,7 +31,7 @@ const CompanyCreate = props => {
   }
 
   const handleCreateCompany = () => {
-    const data = {
+    const body = {
       name: companyData.name,
       company_number: companyData.number,
       description: companyData.city,
@@ -45,7 +40,8 @@ const CompanyCreate = props => {
       key: companyData.key
     }
 
-    createCompany(data)
+    console.log(body)
+    createCompany(body)
       .then(({ success, error }) => {
         if (success) {
           setState({ ...defaultState })

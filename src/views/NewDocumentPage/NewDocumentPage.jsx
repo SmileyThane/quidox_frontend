@@ -324,21 +324,11 @@ const NewDocumentPage = props => {
     const reader = new window.FileReader()
     reader.readAsDataURL(documentState.files[index])
     reader.onload = function () {
-      const input = document.createElement('input')
-      input.type = 'hidden'
-      input.id = 'dataFile-' + index
-      document.body.appendChild(input)
-      document.getElementById('dataFile-' + index).value = reader.result.split(',').pop()
+      const base64 = reader.result.split(',').pop()
 
       try {
-        window.sign('File-' + index)
-
-        setTimeout(() => {
-          const value = document.getElementById('verifiedData' + 'File-' + index).value
-          const signedValue = document.getElementById('signedData' + 'File-' + index).value
-          const flashData = JSON.parse(decodeURIComponent(value))
-          const key = flashData.cert['2.5.29.14'] // flashData.cert['1.2.112.1.2.1.1.1.1.2'] + flashData.cert['1.2.112.1.2.1.1.1.1.1']
-          api.documents.checkFlashKey({ key: key })
+        const sertificationObject = window.sign(base64)
+          api.documents.checkFlashKey({ key: sertificationObject.verifiedData.key })
             .then(({ data }) => {
               if (data.success) {
                 setDocumentState({
@@ -351,12 +341,12 @@ const NewDocumentPage = props => {
                   ],
                   fileHashes: [
                     ...documentState.fileHashes.slice(0, index),
-                    signedValue,
+                    sertificationObject.signedData,
                     ...documentState.fileHashes.slice(index + 1)
                   ],
                   fileData: [
                     ...documentState.fileData.slice(0, index),
-                    value,
+                    sertificationObject.verifiedData,
                     ...documentState.fileData.slice(index + 1)
                   ]
                 })
@@ -367,13 +357,8 @@ const NewDocumentPage = props => {
             .catch(error => {
               message.error(error.message)
             })
-        }, 1000)
       } catch (error) {
-        setDocumentState({
-          ...documentState,
-          isErrorWitchEcp: false,
-          showModal: true
-        })
+        console.log(error)
       }
     }
     reader.onerror = function (error) {
