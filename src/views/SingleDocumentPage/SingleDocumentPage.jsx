@@ -216,59 +216,6 @@ const SingleDocumentPage = props => {
     })
   }
 
-  const verifyFile = (item) => {
-    // if (!isIE || item.status.status_data.id !== 3) {
-    //   return null
-    // }
-    const base64 = item.encoded_file
-
-    try {
-      const sertificationObject = window.sign(base64)
-
-      console.log(sertificationObject.verifiedData.key)
-
-      const newData = {
-        documents: [{
-          id: singleDocument.document.id,
-          attachments: [
-            {
-              id: item.id,
-              hash: sertificationObject.signedData,
-              data: sertificationObject.verifiedData,
-              status: 5
-            }
-          ]
-        }]
-      }
-
-      api.documents.checkFlashKey({ key: sertificationObject.verifiedData.key, attachment_id: item.id })
-        .then(({ data }) => {
-          if (data.success) {
-            verifyDocument(newData)
-              .then((response) => {
-                if (response.success) {
-                  message.success('Файл успешно подписан!')
-                  setDocumentState({ ...defaultDocumentState })
-                  getDocumentById(match.params.id)
-                } else {
-                  throw new Error(response.error)
-                }
-              })
-              .catch(error => {
-                message.error(error.message)
-              })
-          } else {
-            throw new Error(data.error)
-          }
-        })
-        .catch(error => {
-          message.error(error.message)
-        })
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
   const downloadDocumentContent = (item, withCert, isFile = false) => {
     if (isFile) {
       axios.get(item.original_path, {

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { message } from 'antd'
+import { message, notification } from 'antd'
 import { ActionTooltip, ActionIcon } from './styled'
 import {
   agreeText,
@@ -88,57 +88,59 @@ const FileActions = props => {
   }
 
   const verifyFile = (item, documentId, status) => {
-    if (checkBrowser('ie') || status !== 3) {
-      return null
-    }
-    const base64 = item.encoded_file
+    if (checkBrowser('ie') && status === 3) {
+      const base64 = item.encoded_file
 
-    try {
-      const sertificationObject = window.sign(base64)
+      try {
+        const sertificationObject = window.sign(base64)
 
-      const newData = {
-        documents: [{
-          id: documentId,
-          attachments: [
-            {
-              id: item.id,
-              hash: sertificationObject.signedData,
-              data: sertificationObject.verifiedData,
-              status: 5
+        const newData = {
+          documents: [{
+            id: documentId,
+            attachments: [
+              {
+                id: item.id,
+                hash: sertificationObject.signedData,
+                data: sertificationObject.verifiedData,
+                status: 5
+              }
+            ]
+          }]
+        }
+
+        api.documents.checkFlashKey({ key: sertificationObject.verifiedData.key, attachment_id: item.id })
+          .then(({ data }) => {
+            if (data.success) {
+              verifyDocument(newData)
+                .then((response) => {
+                  if (response.success) {
+                    message.success('Файл успешно подписан!')
+                    getDocument()
+                  } else {
+                    throw new Error(response.error)
+                  }
+                })
+                .catch(error => {
+                  message.error(error.message)
+                })
+            } else {
+              throw new Error(data.error)
             }
-          ]
-        }]
+          })
+          .catch(error => {
+            message.error(error.message)
+          })
+      } catch (error) {
+        console.log(error)
+        notification['error']({
+          message: 'Ошибка флешки',
+          description: 'Проверьте наличие ЭЦП флешки'
+        })
       }
-
-      api.documents.checkFlashKey({ key: sertificationObject.verifiedData.key, attachment_id: item.id })
-        .then(({ data }) => {
-          if (data.success) {
-            verifyDocument(newData)
-              .then((response) => {
-                if (response.success) {
-                  message.success('Файл успешно подписан!')
-                  getDocument()
-                } else {
-                  throw new Error(response.error)
-                }
-              })
-              .catch(error => {
-                message.error(error.message)
-              })
-          } else {
-            throw new Error(data.error)
-          }
-        })
-        .catch(error => {
-          message.error(error.message)
-        })
-    } catch (error) {
-      console.log(error)
     }
   }
 
   const statusId = file.status.status_data.id
-  console.log(statusId)
   return [
     <ActionTooltip
       arrowPointAtCenter
