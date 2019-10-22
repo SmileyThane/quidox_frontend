@@ -1,8 +1,8 @@
 import React, { useState, Fragment } from 'react'
 
-import { Button, Typography, notification } from 'antd'
+import { Button, Typography, notification, message } from 'antd'
 import { CompanyData } from './styled'
-import { decryptionCompanyData } from '../../utils'
+import { decryptionCompanyData, checkBrowser } from '../../utils'
 
 const defaultState = {
   companyData: null,
@@ -35,7 +35,28 @@ const CompanyCreate = props => {
   }
 
   const handleCreateCompany = () => {
+    const data = {
+      name: companyData.name,
+      company_number: companyData.number,
+      description: companyData.city,
+      registration_date: companyData.date,
+      your_position: companyData.position,
+      key: companyData.key
+    }
 
+    createCompany(data)
+      .then(({ success, error }) => {
+        if (success) {
+          setState({ ...defaultState })
+          message.success('ЭЦП подключена успешно')
+          onCancel()
+        } else {
+          throw new Error(error)
+        }
+      })
+      .catch(error => {
+        message.error(error.message)
+      })
   }
 
   const { companyData, isCreate } = state
@@ -114,8 +135,10 @@ const CompanyCreate = props => {
       }
       <Button
         type='primary'
+        disabled={!checkBrowser('ie')}
+        style={{ marginRight: '2rem' }}
         onClick={isCreate ? handleCreateCompany : handleAgreeCheck}>
-        {isCreate ? 'Создать компанию' : 'Продолжить'}
+        {isCreate ? 'Подключить ЭЦП' : 'Продолжить'}
       </Button>
       <Button
         type='primary'

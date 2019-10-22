@@ -1,8 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import useForm from 'rc-form-hooks'
 import { Link } from 'react-router-dom'
-
-
 import { api } from '../../services'
 import { CompanyCreate } from '../../components'
 import {
@@ -36,7 +34,7 @@ const defaultCompanyState = {
 const { Text } = Typography
 
 // eslint-disable-next-line spaced-comment
-const isIE = /*@cc_on!@*/false || !!document.documentMode
+  const isIE = /*@cc_on!@*/!!document.documentMode
 
 const CompaniesPage = props => {
   const {
@@ -235,7 +233,7 @@ const CompaniesPage = props => {
         }
       </div>
       <Modal
-        title='Данные цифрового накопителя'
+        title='Подключение ЭЦП'
         visible={companyState.showModal}
         width={600}
         closable={false}

@@ -42,3 +42,17 @@ export const getActiveCompany = data => {
   console.log(data)
   return data.companies.find(i => i.company_id === data.active_company_id)
 }
+
+/**
+ * Getting a Boolean value when checking the browser
+ * @param browser
+ * @returns {boolean}
+ */
+export const checkBrowser = browser => {
+  switch (browser) {
+    case 'ie': {
+      return /* @cc_on!@ */!!document.documentMode
+    }
+    default: return true
+  }
+}
