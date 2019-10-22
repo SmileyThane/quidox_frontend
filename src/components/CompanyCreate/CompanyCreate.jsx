@@ -1,6 +1,6 @@
 import React, { useState, Fragment } from 'react'
 
-import { Button, Typography } from 'antd'
+import { Button, Typography, notification } from 'antd'
 import { CompanyData } from './styled'
 import { decryptionCompanyData } from '../../utils'
 
@@ -10,16 +10,28 @@ const defaultState = {
 }
 
 const { Text } = Typography
-const CompanyCreate = ({ user: { data }, createCompany }) => {
+const CompanyCreate = props => {
+  const {
+    user: { data },
+    createCompany,
+    onCancel
+  } = props
   const [state, setState] = useState({ ...defaultState })
 
   const handleAgreeCheck = () => {
-    const companyData = window.sign('123', '123')
-    setState({
-      ...state,
-      companyData: decryptionCompanyData(companyData),
-      isCreate: true
-    })
+    try {
+      const companyData = window.sign('123', '123')
+      setState({
+        ...state,
+        companyData: decryptionCompanyData(companyData),
+        isCreate: true
+      })
+    } catch (e) {
+      notification['error']({
+        message: 'Ошибка флешки',
+        description: 'Проверьте наличие флешки'
+      })
+    }
   }
 
   const handleCreateCompany = () => {
@@ -105,7 +117,11 @@ const CompanyCreate = ({ user: { data }, createCompany }) => {
         onClick={isCreate ? handleCreateCompany : handleAgreeCheck}>
         {isCreate ? 'Создать компанию' : 'Продолжить'}
       </Button>
-      <Button type='primary' ghost>Отмена</Button>
+      <Button
+        type='primary'
+        ghost
+        onClick={onCancel}
+      >Отмена</Button>
     </Fragment>
   )
 }

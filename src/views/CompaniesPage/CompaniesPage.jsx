@@ -215,10 +215,9 @@ const CompaniesPage = props => {
 
       <Button
         type='primary'
-        disabled={!isIE}
         onClick={onClick}
       >
-        Создать компанию
+        Подключить ЭЦП
       </Button>
 
       <Button
@@ -235,65 +234,14 @@ const CompaniesPage = props => {
         <Text type='secondary'>Создание компании возможно только в браузере Internet Explorer</Text>
         }
       </div>
-
-      <CompanyCreate />
-
       <Modal
         title='Данные цифрового накопителя'
         visible={companyState.showModal}
         width={600}
         closable={false}
         footer={null}
-        onCancel={() => setCompanyState({ ...companyState, showModal: !companyState.showModal })}
       >
-        {/*<div className='document document_modal'>*/}
-        {/*  <Spin spinning={companyState.modalFetching}>*/}
-        {/*    <div className='info'>*/}
-        {/*      <div className='info__item'>*/}
-        {/*        <div className='info__title'>Дата создания</div>*/}
-        {/*        <div className='info__content'>{companyState.newCompanyDate}</div>*/}
-        {/*      </div>*/}
-
-        {/*      {companyState.newCompanyNumber &&*/}
-        {/*        <div className='info__item'>*/}
-        {/*          <div className='info__title'>УНП</div>*/}
-        {/*          <div className='info__content'>{companyState.newCompanyNumber}</div>*/}
-        {/*        </div>*/}
-        {/*      }*/}
-
-        {/*      {companyState.newCompanyName &&*/}
-        {/*        <div className='info__item'>*/}
-        {/*          <div className='info__title'>Имя компании</div>*/}
-        {/*          <div className='info__content'>{companyState.newCompanyName}</div>*/}
-        {/*        </div>*/}
-        {/*      }*/}
-
-        {/*      {companyState.newCompanyCity &&*/}
-        {/*        <div className='info__item'>*/}
-        {/*          <div className='info__title'>Место нахождения компании</div>*/}
-        {/*          <div className='info__content'>{companyState.newCompanyCity}</div>*/}
-        {/*        </div>*/}
-        {/*      }*/}
-
-        {/*      {companyState.yourPosition &&*/}
-        {/*        <div className='info__item'>*/}
-        {/*          <div className='info__title'>Должность сотруднка</div>*/}
-        {/*          <div className='info__content'>{companyState.yourPosition}</div>*/}
-        {/*        </div>*/}
-        {/*      }*/}
-
-        {/*      {companyState.newCompanyKey &&*/}
-        {/*        <div className='info__item'>*/}
-        {/*          <div className='info__title'>Цифровой ключ</div>*/}
-        {/*          <div className='info__content'>{companyState.newCompanyKey}</div>*/}
-        {/*        </div>*/}
-        {/*      }*/}
-        {/*    </div>*/}
-
-        {/*    <Button style={{ margin: '20px 0 0 20px' }} onClick={handleCreateCompany} type='primary'>Создать</Button>*/}
-        {/*  </Spin>*/}
-        {/*</div>*/}
-
+        <CompanyCreate onCancel={() => setCompanyState({ ...companyState, showModal: !companyState.showModal })} />
       </Modal>
     </Fragment>
   )
