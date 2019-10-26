@@ -20,7 +20,7 @@ import {
   Tooltip,
   Input
 } from 'antd'
-import { FileActions } from './internal'
+import { FileActions, DownloadButtons } from './internal'
 import { findUsersByParams } from '../../services/api/user'
 import { Button, PDFViewer, EscDataSlider, AvestErrorHandling } from '../../components'
 
@@ -63,9 +63,7 @@ const SingleDocumentPage = props => {
     getDocumentById,
     sendDocumentToUser,
     updateDocumentById,
-    agreeFile,
-    getUser,
-    verifyDocument
+    getUser
   } = props
 
   const { document, sender, recipient, statuses } = singleDocument
@@ -208,63 +206,6 @@ const SingleDocumentPage = props => {
       })
   }
 
-  const resolveEscError = () => {
-    setDocumentState({
-      ...documentState,
-      showModal: false,
-      isErrorWitchEcp: true
-    })
-  }
-
-  const downloadDocumentContent = (item, withCert, isFile = false) => {
-    if (isFile) {
-      axios.get(item.original_path, {
-        'responseType': 'arraybuffer',
-        headers: {
-          'Authorization': 'Bearer ' + window.localStorage.getItem('authToken'),
-          'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
-        }
-      })
-        .then(({ data }) => {
-          if (data) {
-            fileDownload(data, item.name)
-            message.success('Файл успешно загружен!')
-          }
-        })
-        .catch(error => {
-          message.error(error.message)
-        })
-    } else {
-      api.document.downloadDocument(item.id, withCert)
-        .then(({ data }) => {
-          console.log(data)
-          if (data.success) {
-            axios.get(data.data, {
-              'responseType': 'arraybuffer',
-              headers: {
-                'Authorization': 'Bearer ' + window.localStorage.getItem('authToken'),
-                'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
-              }
-            })
-              .then(({ data }) => {
-                if (data) {
-                  fileDownload(data, getFileName())
-                  message.success('Архив успешно загружен!')
-                }
-              })
-              .catch(error => {
-                message.error(error.message)
-              })
-          } else {
-            throw new Error(data.error)
-          }
-        })
-        .catch(error => {
-          message.error(error.message)
-        })
-    }
-  }
-
   const handleEditDocumentName = str => {
     if (str === '') {
       message.error('Поле не может быть пустым')
@@ -301,50 +242,11 @@ const SingleDocumentPage = props => {
       })
   }
 
-  const handleDeclineFile = () => {
-    if (!documentState.declineMessage.length) {
-      message.error('Введите причину отклонения!')
-      return null
-    }
-    const item = documentState.singleFile
-    const declineObject = {
-      attachments: [
-        {
-          id: item.id,
-          status: 6,
-          comment: documentState.declineMessage
-        }
-      ]
-    }
-    agreeFile(declineObject)
-      .then(({ data }) => {
-        if (data.success) {
-          message.success('Документ отклонен')
-          getDocumentById(match.params.id)
-          setDocumentState({ ...defaultDocumentState })
-        } else {
-          throw new Error(data.error)
-        }
-      })
-      .catch(error => {
-        message.error(error.message)
-      })
-  }
-
   const getEcpCount = arr => {
     if (arr.length) {
       let acpCount = arr.filter(i => i.verification_hash !== null)
       return acpCount.length
     }
-  }
-
-  const getFileName = () => {
-    const activeCompanyNumber = user.data.hasOwnProperty('companies') && +user.data.companies.find(i => i.company_id === user.data.active_company_id).company_number
-    const senderEmail = sender && sender.user_email
-    const documentData = moment.utc(singleDocument.created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DDMMYYYYHHmmss')
-    const documentName = document && document.name
-    const fullName = `${activeCompanyNumber}_${senderEmail}_${documentData}_${documentName}.zip`
-    return fullName
   }
 
   return (
@@ -423,11 +325,12 @@ const SingleDocumentPage = props => {
                   dataSource={document && document.attachments}
                   renderItem={(item, index) => (
                     <List.Item key={index}
-                      extra={singleDocument.status_name !== 'Отправленные' && item.status.status_data.id !== 5 &&
+                      extra={
                         <FileActions
                           file={item}
                           documentId={singleDocument.document.id}
                           getDocument={() => getDocumentById(match.params.id)}
+                          isHidden={singleDocument.status_name !== 'Отправленные'}
                         />
                       }
                     >
@@ -470,26 +373,8 @@ const SingleDocumentPage = props => {
               <Fragment>
                 <div className='document__actions'>
                   <div className='document__actions__left'>
-                    {document.attachments.length
-                      ? <Fragment>
-                        <Button
-                          type='primary'
-                          style={{ marginRight: 15 }}
-                          onClick={() => downloadDocumentContent(document, false)}
-                        >
-                          <Icon type='file-zip' />
-                            Скачать всё
-                        </Button>
-
-                        <Button
-                          type='primary'
-                          onClick={() => downloadDocumentContent(document, true)}
-                        >
-                          <Icon type='file-zip' />
-                            Скачать всё с сигнатурами
-                        </Button>
-                      </Fragment>
-                      : ''
+                    {!!document.attachments.length &&
+                      <DownloadButtons document={document} />
                     }
                   </div>
 
@@ -571,20 +456,6 @@ const SingleDocumentPage = props => {
           {documentState.modalType === 'error' &&
             <AvestErrorHandling onCancel={handleCloseModal} />
           }
-          {documentState.modalType === 'decline' &&
-          <Fragment>
-            <Text>Введи причину отклонения:</Text>
-            <TextArea
-              autosize={{ minRows: 2, maxRows: 6 }}
-              style={{ margin: '2rem 0' }}
-              onChange={e => updateField('declineMessage', e.target.value)}
-            />
-            <Button type='primary' onClick={() => handleDeclineFile()} style={{ marginRight: '2rem' }}>Отклонить</Button>
-            <Button type='primary' ghost onClick={() => setDocumentState({ ...defaultDocumentState })}>Отмена</Button>
-          </Fragment>
-
-          }
-
         </Modal>
       }
     </Fragment>

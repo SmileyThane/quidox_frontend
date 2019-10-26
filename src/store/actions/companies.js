@@ -63,8 +63,7 @@ const changeActiveCompanyById = id => dispatch => {
     })
 }
 
-const createCompany = body => (dispatch, getState) => {
-  const state = getState()
+const createCompany = body => (dispatch) => {
   dispatch({
     type: t.CREATE_COMPANY_FETCHING,
     payload: true

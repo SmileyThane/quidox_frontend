@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Typography, Tooltip, Tag } from 'antd'
 import { Tariff } from './styled'
@@ -6,8 +6,25 @@ import { getActiveCompany } from '../../../../utils'
 import { User } from '../HeaderUser/styled'
 
 const { Text } = Typography
+const defaultState = {
+  activeCompany: null
+}
+
 const HeaderTariff = ({ user: { data } }) => {
-  const activeCompany = data.hasOwnProperty('companies') && getActiveCompany(data)
+  const [state, setState] = useState({ ...defaultState })
+
+  useEffect(() => {
+
+    if (data) {
+      setState({
+        ...state,
+        activeCompany: data.hasOwnProperty('companies') && getActiveCompany(data)
+      })
+    }
+  }, [data])
+
+  const { activeCompany } = state
+  console.log('activeCompany', activeCompany)
   return (
     <Tariff>
       <Tariff.Item>
@@ -38,14 +55,16 @@ const HeaderTariff = ({ user: { data } }) => {
         title={activeCompany && activeCompany.company_data.name}
         arrowPointAtCenter
       >
-        <Tariff.Tag
-          color='#87d068'
-        >
-          { +activeCompany.company_number === 0
-            ? activeCompany.company_name
-            : (`УНП: ${activeCompany.company_number}`)
-          }
-        </Tariff.Tag>
+        {activeCompany &&
+          <Tariff.Tag
+            color='#87d068'
+          >
+            { activeCompany && +activeCompany.company_number === 0
+              ? activeCompany.company_name
+              : (`УНП: ${activeCompany.company_number}`)
+            }
+          </Tariff.Tag>
+        }
       </Tooltip>
     </Tariff>
   )

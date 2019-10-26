@@ -54,7 +54,7 @@ const CompaniesPage = props => {
   const onClick = () => {
     setCompanyState({
       ...companyState,
-      showModal: true,
+      showModal: true
       // newCompany: getCompanyData()
     })
   }
@@ -69,7 +69,6 @@ const CompaniesPage = props => {
           message.success('Активная компания изменена успешно!')
 
           const inputVerifiedDataArray = Array.from(document.getElementsByClassName('verifiedData'))
-          console.log('verified input', inputVerifiedDataArray)
           inputVerifiedDataArray.forEach(i => {
             i.parentNode.removeChild(i)
           })
@@ -150,7 +149,6 @@ const CompaniesPage = props => {
       )
     }]
 
-  console.log(companyState)
   return (
     <Fragment>
       <div className='content content_small-margin'>

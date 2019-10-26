@@ -39,7 +39,6 @@ export const decryptionData = object => {
  * @returns {string}
  */
 export const getActiveCompany = data => {
-  console.log(data)
   return data.companies.find(i => i.company_id === data.active_company_id)
 }
 

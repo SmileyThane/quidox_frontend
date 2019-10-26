@@ -11,7 +11,7 @@ const defaultState = {
 }
 
 const { Text } = Typography
-const CompanyCreate = ({ createCompany, onCancel }) => {
+const CompanyCreate = ({ createCompany, onCancel, getUser, redirect = false }) => {
   const [state, setState] = useState({ ...defaultState })
 
   const handleAgreeCheck = () => {
@@ -24,8 +24,8 @@ const CompanyCreate = ({ createCompany, onCancel }) => {
       })
     } catch (e) {
       notification['error']({
-        message: 'Ошибка флешки',
-        description: 'Проверьте наличие флешки'
+        message: 'Ключ ЭЦП не найден',
+        description: 'Проверьте наличие ключа ЭЦП в USB'
       })
     }
   }
@@ -40,16 +40,19 @@ const CompanyCreate = ({ createCompany, onCancel }) => {
       key: companyData.key
     }
 
-    console.log(body)
     createCompany(body)
-      .then(({ success, error }) => {
-        if (success) {
+      .then(response => {
+        console.log(response)
+        if (response.success) {
           setState({ ...defaultState })
           message.success('ЭЦП подключена успешно')
+          getUser()
           onCancel()
-          history.push('/companies')
+          if (redirect) {
+            history.push('/companies')
+          }
         } else {
-          throw new Error(error)
+          throw new Error(response.error)
         }
       })
       .catch(error => {
@@ -133,7 +136,7 @@ const CompanyCreate = ({ createCompany, onCancel }) => {
       }
       <Button
         type='primary'
-        disabled={!checkBrowser('ie')}
+        // disabled={!checkBrowser('ie')}
         style={{ marginRight: '2rem' }}
         onClick={isCreate ? handleCreateCompany : handleAgreeCheck}>
         {isCreate ? 'Подключить ЭЦП' : 'Продолжить'}

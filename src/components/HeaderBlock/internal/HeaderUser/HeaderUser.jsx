@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Dropdown, Typography, message } from 'antd'
 import { User } from './styled'
@@ -6,7 +6,21 @@ import { getActiveCompany } from '../../../../utils'
 import history from '../../../../history'
 
 const { Text } = Typography
+const defaultState = {
+  activeCompany: null
+}
 const HeaderUser = ({ user: { data }, userLogout }) => {
+  const [state, setState] = useState({ ...defaultState })
+
+  useEffect(() => {
+    if (data) {
+      setState({
+        ...state,
+        activeCompany: data.hasOwnProperty('companies') && getActiveCompany(data)
+      })
+    }
+  }, [data])
+
   const handleLogout = () => {
     userLogout()
       .then(({ data }) => {
@@ -22,24 +36,25 @@ const HeaderUser = ({ user: { data }, userLogout }) => {
       })
   }
 
-  const activeCompany = data.hasOwnProperty('companies') && getActiveCompany(data)
-  console.log(activeCompany)
+  const { activeCompany } = state
   return (
     <User>
       <Dropdown
         trigger={['click']}
         overlay={(
           <User.Dropdown>
-            <User.DropdownItem>
-              <User.DropdownTag
-                color='#87d068'
-              >
-                { +activeCompany.company_number === 0
-                  ? activeCompany.company_name
-                  : (`УНП: ${activeCompany.company_number}`)
-                }
-              </User.DropdownTag>
-            </User.DropdownItem>
+            {activeCompany &&
+              <User.DropdownItem>
+                <User.DropdownTag
+                  color='#87d068'
+                >
+                  { activeCompany.company_number && +activeCompany.company_number === 0
+                    ? activeCompany.company_name
+                    : (`УНП: ${activeCompany.company_number}`)
+                  }
+                </User.DropdownTag>
+              </User.DropdownItem>
+            }
 
             <User.DropdownItem
               onClick={() => history.push('/user-me')}

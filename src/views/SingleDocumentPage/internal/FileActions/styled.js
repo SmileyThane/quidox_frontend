@@ -13,6 +13,17 @@ const ActionTooltip = styled(Tooltip)`
 
 const ActionIcon = styled(Icon)`
   margin-right: 1rem;
+  position: relative;
+  &:after {
+    display: block;
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 10px;
+    width: 10px;
+    height: 10px;
+    background-color: #fff;
+  }
 `
 
 export {

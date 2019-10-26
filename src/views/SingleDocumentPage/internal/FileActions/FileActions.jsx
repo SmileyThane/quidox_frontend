@@ -1,4 +1,6 @@
-import React from 'react'
+import React, { Fragment } from 'react'
+import axios from 'axios'
+import fileDownload from 'js-file-download'
 
 import { message, notification } from 'antd'
 import { ActionTooltip, ActionIcon } from './styled'
@@ -17,16 +19,23 @@ const FileActions = props => {
   const {
     file,
     documentId,
+    isHidden = false,
     getDocument,
     changeStatus,
-    verifyDocument
+    verifyDocument,
   } = props
 
   const receivingTooltipText = (status, array = []) => {
+    if (status === 5) {
+      return null
+    }
     return array.find(i => i.status === status).text
   }
 
   const receivingIconColor = (status, array = []) => {
+    if (status === 5) {
+      return null
+    }
     return array.find(i => i.status === status).style
   }
 
@@ -140,46 +149,78 @@ const FileActions = props => {
     }
   }
 
+  const downloadFile = file => {
+    axios.get(file.original_path, {
+      'responseType': 'arraybuffer',
+      headers: {
+        'Authorization': 'Bearer ' + window.localStorage.getItem('authToken'),
+        'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
+      }
+    })
+      .then(({ data }) => {
+        if (data) {
+          fileDownload(data, file.name)
+          message.success('Файл успешно загружен!')
+        }
+      })
+      .catch(error => {
+        console.log(123)
+        message.error(error.message)
+      })
+  }
+
   const statusId = file.status.status_data.id
   return [
-    <ActionTooltip
-      arrowPointAtCenter
-      placement='topRight'
-      key={1}
-      title={receivingTooltipText(statusId, agreeText)}
-    >
-      <ActionIcon
-        type='check-circle'
-        style={receivingIconColor(statusId, agreeStyle)}
-        onClick={() => handleAgreeFile(file, statusId)}
-      />
-    </ActionTooltip>,
+    <Fragment>
+      { statusId !== 5 && isHidden &&
+        <ActionTooltip
+          arrowPointAtCenter
+          placement='topRight'
+          key={1}
+          title={receivingTooltipText(statusId, agreeText)}
+        >
+          <ActionIcon
+            type='check-circle'
+            style={receivingIconColor(statusId, agreeStyle)}
+            onClick={() => handleAgreeFile(file, statusId)}
+          />
+        </ActionTooltip>
+      },
+    </Fragment>,
 
-    <ActionTooltip
-      arrowPointAtCenter
-      placement='topRight'
-      key={2}
-      title={receivingTooltipText(statusId, declineText)}
-    >
-      <ActionIcon
-        type='stop'
-        style={receivingIconColor(statusId, declineStyle)}
-        onClick={() => handleDeclineFile(file, statusId)}
-      />
-    </ActionTooltip>,
+    <Fragment>
+      {statusId !== 5 && isHidden &&
+        <ActionTooltip
+          arrowPointAtCenter
+          placement='topRight'
+          key={2}
+          title={receivingTooltipText(statusId, declineText)}
+        >
+          <ActionIcon
+            type='stop'
+            style={receivingIconColor(statusId, declineStyle)}
+            onClick={() => handleDeclineFile(file, statusId)}
+          />
+        </ActionTooltip>
+      }
+    </Fragment>,
 
-    <ActionTooltip
-      arrowPointAtCenter
-      placement='topRight'
-      key={3}
-      title={receivingTooltipText(statusId, verifyText)}
-    >
-      <ActionIcon
-        type='edit'
-        style={receivingIconColor(statusId, verifyStyle)}
-        onClick={() => verifyFile(file, documentId, statusId)}
-      />
-    </ActionTooltip>,
+    <Fragment>
+      {statusId !== 5 && isHidden &&
+        <ActionTooltip
+          arrowPointAtCenter
+          placement='topRight'
+          key={3}
+          title={receivingTooltipText(statusId, verifyText)}
+        >
+          <ActionIcon
+            type='edit'
+            style={receivingIconColor(statusId, verifyStyle)}
+            onClick={() => verifyFile(file, documentId, statusId)}
+          />
+        </ActionTooltip>
+      }
+    </Fragment>,
 
     <ActionTooltip
       arrowPointAtCenter
@@ -190,6 +231,7 @@ const FileActions = props => {
       <ActionIcon
         type='download'
         style={{ color: '#3278fb', fontSize: '1.7rem' }}
+        onClick={() => downloadFile(file)}
       />
     </ActionTooltip>
   ]
