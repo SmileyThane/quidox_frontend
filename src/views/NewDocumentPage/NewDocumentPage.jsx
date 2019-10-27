@@ -13,7 +13,8 @@ import {
   Typography,
   Button,
   Input,
-  Modal
+  Modal,
+  List
 } from 'antd'
 
 
@@ -111,6 +112,19 @@ const NewDocumentPage = props => {
             'file',
             i
           )
+
+          api.document.createFile(formData, { 'Content-Type': 'multipart/form-data' })
+            .then(({ data }) => {
+              if (data.success) {
+                setDocumentState({
+                  ...documentState,
+                  filesArray: [...documentState.filesArray, data.data]
+                })
+              } else throw new Error(data.error)
+            })
+            .catch(error => {
+              message.error(error.message())
+            })
         } catch (error) {
           formData.append(
             'hash_for_sign',
@@ -134,7 +148,10 @@ const NewDocumentPage = props => {
                   ...documentState,
                   filesArray: [...documentState.filesArray, data.data]
                 })
-              }
+              } else throw new Error(data.error)
+            })
+            .catch(error => {
+              message.error(error.message())
             })
         }
       }
