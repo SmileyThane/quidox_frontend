@@ -1,6 +1,8 @@
 import React, { Fragment } from 'react'
 import axios from 'axios'
 import MaskedInput from 'antd-mask-input'
+import { Base64 } from 'js-base64'
+import generateHash from 'random-hash'
 
 import history from '../../history'
 import {
@@ -113,7 +115,8 @@ class CompleteRegistrationForm extends React.Component {
               .then(({ data }) => {
                 if (data.success) {
                   message.success('СМС код введен правильно!')
-                  axios.post(`${process.env.REACT_APP_BASE_URL}/user/update/phone`, registerData)
+                  const secretData = generateHash({ length: 10 }) + Base64.encode( JSON.stringify(registerData)) + generateHash({ length: 5 })
+                  axios.post(`${process.env.REACT_APP_BASE_URL}/user/update/phone`, secretData)
                     .then(({ data }) => {
                       if (data) {
                         history.push('/login')

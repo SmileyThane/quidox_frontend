@@ -12,17 +12,10 @@ const DownloadButtons = ({ document }) => {
   const [state, setState] = useState({ ...defaultState })
 
   const downloadArchive = (document, withCert = false) => {
-    if (withCert) {
-      setState({
-        ...state,
-        fetching: [false, true]
-      })
-    } else {
-      setState({
-        ...state,
-        fetching: [true, false]
-      })
-    }
+    setState({
+      ...state,
+      fetching: [!withCert, withCert]
+    })
     api.document.downloadDocument(document.id, withCert)
       .then(({ data }) => {
         if (data.success) {

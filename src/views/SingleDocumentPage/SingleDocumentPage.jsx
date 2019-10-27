@@ -336,7 +336,7 @@ const SingleDocumentPage = props => {
                     >
                       <div className='single-document'>
                         <Tooltip
-                          title='Просмотреть содержиоме файла'
+                          title='Просмотреть содержимое файла'
                           placement='top'
                           arrowPointAtCenter
                         >

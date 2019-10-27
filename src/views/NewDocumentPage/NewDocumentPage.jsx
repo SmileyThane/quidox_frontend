@@ -51,7 +51,6 @@ const { TextArea } = Input
 const { Text } = Typography
 
 const NewDocumentPage = props => {
-
   const inputRef = useRef(null)
   const inputNode = useRef(null)
   const {
@@ -328,35 +327,35 @@ const NewDocumentPage = props => {
 
       try {
         const sertificationObject = window.sign(base64)
-          api.documents.checkFlashKey({ key: sertificationObject.verifiedData.key })
-            .then(({ data }) => {
-              if (data.success) {
-                setDocumentState({
-                  ...documentState,
-                  verifyFetching: false,
-                  base64files: [
-                    ...documentState.base64files.slice(0, index),
-                    reader.result,
-                    ...documentState.base64files.slice(index + 1)
-                  ],
-                  fileHashes: [
-                    ...documentState.fileHashes.slice(0, index),
-                    sertificationObject.signedData,
-                    ...documentState.fileHashes.slice(index + 1)
-                  ],
-                  fileData: [
-                    ...documentState.fileData.slice(0, index),
-                    sertificationObject.verifiedData,
-                    ...documentState.fileData.slice(index + 1)
-                  ]
-                })
-              } else {
-                throw new Error(data.error)
-              }
-            })
-            .catch(error => {
-              message.error(error.message)
-            })
+        api.documents.checkFlashKey({ key: sertificationObject.verifiedData.key })
+          .then(({ data }) => {
+            if (data.success) {
+              setDocumentState({
+                ...documentState,
+                verifyFetching: false,
+                base64files: [
+                  ...documentState.base64files.slice(0, index),
+                  reader.result,
+                  ...documentState.base64files.slice(index + 1)
+                ],
+                fileHashes: [
+                  ...documentState.fileHashes.slice(0, index),
+                  sertificationObject.signedData,
+                  ...documentState.fileHashes.slice(index + 1)
+                ],
+                fileData: [
+                  ...documentState.fileData.slice(0, index),
+                  sertificationObject.verifiedData,
+                  ...documentState.fileData.slice(index + 1)
+                ]
+              })
+            } else {
+              throw new Error(data.error)
+            }
+          })
+          .catch(error => {
+            message.error(error.message)
+          })
       } catch (error) {
         console.log(error)
       }
