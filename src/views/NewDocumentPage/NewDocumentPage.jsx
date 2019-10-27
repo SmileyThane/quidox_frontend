@@ -16,9 +16,6 @@ import {
   Modal
 } from 'antd'
 
-import {
-  CompanyCreate
-} from '../../components'
 
 import './NewDocumentPage.scss'
 
@@ -40,7 +37,9 @@ const defaultDocumentData = {
   isClicked: false,
   isErrorWitchEcp: false,
   showModal: false,
-  userAddress: ''
+  userAddress: '', /// started new logic
+  message: null,
+  filesArray: []
 }
 
 // eslint-disable-next-line spaced-comment
@@ -62,6 +61,18 @@ const NewDocumentPage = props => {
   const [documentState, setDocumentState] = useState({ ...defaultDocumentData })
 
   useEffect(() => {
+    api.document.createDocument({ name: '[Без темы]', description: '' })
+      .then(({ data }) => {
+        if (data.success) {
+          setDocumentState({
+            ...documentState,
+            message: data.data
+          })
+        }
+      })
+  }, [])
+
+  useEffect(() => {
     if (!documentState.fetching) {
       inputRef.current.focus()
     }
@@ -76,6 +87,58 @@ const NewDocumentPage = props => {
 
   const getFiles = e => {
     const files = [...e.target.files]
+
+    files.forEach(i => {
+      const reader = new window.FileReader()
+      const formData = new window.FormData()
+      reader.readAsDataURL(i)
+      reader.onload = function () {
+        const base64 = reader.result.split(',').pop()
+        try {
+          const hashForSign = window.sign(base64).hex
+
+          formData.append(
+            'hash_for_sign',
+            hashForSign
+          )
+
+          formData.append(
+            'document_id',
+            documentState.message.id
+          )
+
+          formData.append(
+            'file',
+            i
+          )
+        } catch (error) {
+          formData.append(
+            'hash_for_sign',
+            ''
+          )
+
+          formData.append(
+            'document_id',
+            documentState.message.id
+          )
+
+          formData.append(
+            'file',
+            i
+          )
+
+          api.document.createFile(formData, { 'Content-Type': 'multipart/form-data' })
+            .then(({ data }) => {
+              if (data.success) {
+                setDocumentState({
+                  ...documentState,
+                  filesArray: [...documentState.filesArray, data.data]
+                })
+              }
+            })
+        }
+      }
+    })
 
     files.forEach(i => {
       if ((i.size / (1024 * 1024)) > 10) {
@@ -376,7 +439,7 @@ const NewDocumentPage = props => {
     })
   }
 
-  console.log(documentState.data)
+  console.log('message:', documentState.filesArray)
 
   return (
     <Fragment>

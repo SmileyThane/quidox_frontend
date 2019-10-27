@@ -1,19 +1,23 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 
 import { Tooltip, Icon } from 'antd'
+import { PDF } from './styled'
 
-const FileView = () => {
+const FileView = ({ file }) => {
   return (
-    <Tooltip
-      title='Просмотреть содержимое файла'
-      placement='top'
-      arrowPointAtCenter
-    >
-      <Icon
-        type='eye'
-        style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }}
-      />
-    </Tooltip>
+    <Fragment>
+      <Tooltip
+        title='Просмотреть содержимое файла'
+        placement='top'
+        arrowPointAtCenter
+      >
+        <Icon
+          type='eye'
+          style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }}
+        />
+      </Tooltip>
+      <PDF />
+    </Fragment>
   )
 }
 

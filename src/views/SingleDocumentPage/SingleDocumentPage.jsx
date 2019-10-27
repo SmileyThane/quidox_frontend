@@ -1,13 +1,11 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import axios from 'axios'
 import moment from 'moment'
-import fileDownload from 'js-file-download'
 import _ from 'lodash'
 
 import history from '../../history'
 import PDFJSBACKEND from '../../backends/pdfjs'
 
-import { api } from '../../services'
 import {
   Spin,
   Icon,
@@ -20,12 +18,12 @@ import {
   Tooltip,
   Input
 } from 'antd'
-import { FileActions, DownloadButtons } from './internal'
+import { FileActions, DownloadButtons, FileView } from './internal'
 import { findUsersByParams } from '../../services/api/user'
 import { Button, PDFViewer, EscDataSlider, AvestErrorHandling } from '../../components'
+import { close } from '../../resources/img'
 
 import './SingleDocumentPage.scss'
-import { close } from './img'
 
 const { Text, Paragraph } = Typography
 const { Option } = Select
@@ -335,6 +333,7 @@ const SingleDocumentPage = props => {
                       }
                     >
                       <div className='single-document'>
+                        <FileView file={item} />
                         <Tooltip
                           title='Просмотреть содержимое файла'
                           placement='top'

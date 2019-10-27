@@ -24,7 +24,6 @@ const HeaderTariff = ({ user: { data } }) => {
   }, [data])
 
   const { activeCompany } = state
-  console.log('activeCompany', activeCompany)
   return (
     <Tariff>
       <Tariff.Item>

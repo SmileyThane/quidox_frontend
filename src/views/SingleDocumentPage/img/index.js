@@ -1,4 +1,4 @@
-import close from './close.svg'
+import close from '../../../resources/img/close.svg'
 
 export {
   close
