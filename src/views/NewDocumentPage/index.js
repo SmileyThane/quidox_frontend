@@ -14,7 +14,9 @@ const mapDispatchToProps = dispatch => ({
   getUser: () => dispatch(actions.user.getUser()),
   uploadFile: (data, headers) => dispatch(actions.files.uploadFile(data, headers)),
   removeFile: id => dispatch(actions.files.removeFile(id)),
-  verifyFile: data => dispatch(actions.files.verifyFile(data))
+  verifyFile: data => dispatch(actions.files.verifyFile(data)),
+  changeFileStatus: data => dispatch(actions.files.changeFileStatus(data)),
+  updateDocumentById: (id, data) => dispatch(actions.document.updateDocumentById(id, data)),
 })
 
 export default connect(

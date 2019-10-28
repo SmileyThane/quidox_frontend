@@ -39,6 +39,7 @@ const removeFile = id => dispatch => {
         type: t.REMOVE_FILE_FETCHING,
         payload: false
       })
+      return data
     })
 }
 
@@ -52,7 +53,7 @@ const verifyFile = body => dispatch => {
       if (data) {
         dispatch({
           type: t.VERIFY_DOCUMENT_SUCCESS,
-          payload: data
+          payload: body
         })
       }
       dispatch({
@@ -62,8 +63,30 @@ const verifyFile = body => dispatch => {
     })
 }
 
+const changeFileStatus = body => dispatch => {
+  dispatch({
+    type: t.CHANGE_FILE_STATUS_FETCHING,
+    payload: true
+  })
+  return api.files.changeFileStatus(body)
+    .then(({ data }) => {
+      if (data) {
+        dispatch({
+          type: t.CHANGE_FILE_STATUS_SUCCESS,
+          payload: body
+        })
+      }
+      dispatch({
+        type: t.CHANGE_FILE_STATUS_FETCHING,
+        payload: true
+      })
+      return data
+    })
+}
+
 export {
   uploadFile,
   removeFile,
-  verifyFile
+  verifyFile,
+  changeFileStatus
 }

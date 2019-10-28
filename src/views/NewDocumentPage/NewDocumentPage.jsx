@@ -5,7 +5,6 @@ import moment from 'moment'
 
 import { api } from '../../services'
 import {
-  message,
   Icon,
   Select,
   Spin,
@@ -14,9 +13,11 @@ import {
   Button,
   Input,
   Modal,
-  List
+  List, Tag
 } from 'antd'
+import { EscDataSlider } from '../../components'
 import { checkBrowser } from '../../utils'
+import history from '../../history'
 import './NewDocumentPage.scss'
 
 const defaultDocumentData = {
@@ -40,7 +41,9 @@ const defaultDocumentData = {
   userAddress: '', /// started new logic
   message: null,
   filesArray: [],
-  fileFetch: false
+  fileFetch: [],
+  fileInfo: [],
+  isNewMessage: false
 }
 
 const getSignedHex = (base64) => {
@@ -64,15 +67,17 @@ const NewDocumentPage = props => {
   const inputNode = useRef(null)
   const {
     sendDocumentToUser,
-    getUser,
     uploadFile,
     removeFile,
     verifyFile,
+    changeFileStatus,
+    updateDocumentById,
     user,
     files: { list }
   } = props
 
   const [documentState, setDocumentState] = useState({ ...defaultDocumentData })
+  const [message, setMessage] = useState(false)
 
   useEffect(() => {
     api.document.createDocument({ name: '[Без темы]', description: '' })
@@ -84,7 +89,7 @@ const NewDocumentPage = props => {
           })
         }
       })
-  }, [])
+  }, [message])
 
   useEffect(() => {
     if (!documentState.fetching) {
@@ -114,13 +119,36 @@ const NewDocumentPage = props => {
         uploadFile(formData, { 'Content-Type': 'multipart/form-data' })
       }
     })
+
+    setDocumentState({
+      ...documentState,
+      fileFetch: [...documentState.fileFetch, ...[...target.files].map(() => false)]
+    })
   }
 
-  const handleRemoveFile = id => {
+  const handleRemoveFile = (id, index) => {
     removeFile(id)
+      .then(response => {
+        if (response.success) {
+          notification['success']({
+            message: 'Файл успешно удален'
+          })
+          setDocumentState({
+            ...documentState,
+            fileFetch: documentState.files.filter((e, i) => i !== index)
+          })
+        } else {
+          throw new Error(response.error)
+        }
+      })
+      .catch(error => {
+        notification['error']({
+          message: error.message
+        })
+      })
   }
 
-  const handleVerifyFile = item => {
+  const handleVerifyFile = (item, index) => {
     if (!checkBrowser('ie')) {
       notification['error']({
         message: 'Ошибка подписания',
@@ -128,6 +156,16 @@ const NewDocumentPage = props => {
       })
       return null
     }
+
+    setDocumentState({
+      ...documentState,
+      fileFetch: [
+        ...documentState.fileFetch.slice(0, index),
+        true,
+        ...documentState.fileFetch.slice(index + 1)
+      ]
+    })
+
     api.files.getBase64File(item.id)
       .then(({ data }) => {
         if (data.success) {
@@ -136,22 +174,48 @@ const NewDocumentPage = props => {
 
             const verifiedData = {
               documents: [{
-                id: message.id,
+                id: documentState.message.id,
                 attachments: [
                   {
                     id: item.id,
                     hash: sertificationObject.signedData,
                     data: sertificationObject.verifiedData,
-                    hash_for_sign: sertificationObject.hex,
-                    status: 5
+                    hash_for_sign: sertificationObject.hex
                   }
                 ]
               }]
             }
 
             verifyFile(verifiedData)
+              .then(response => {
+                if (response.success) {
+                  notification['success']({
+                    message: 'Файл успешно подписан'
+                  })
+                  setDocumentState({
+                    ...documentState,
+                    fileFetch: [
+                      ...documentState.fileFetch.slice(0, index),
+                      false,
+                      ...documentState.fileFetch.slice(index + 1)
+                    ]
+                  })
+                } else {
+                  throw new Error(response.error)
+                }
+              })
           } catch (error) {
-            console.error(error)
+            notification['error']({
+              message: error.message()
+            })
+            setDocumentState({
+              ...documentState,
+              fileFetch: [
+                ...documentState.fileFetch.slice(0, index),
+                false,
+                ...documentState.fileFetch.slice(index + 1)
+              ]
+            })
           }
         } else {
           throw new Error(data.error)
@@ -162,128 +226,43 @@ const NewDocumentPage = props => {
       })
   }
 
-  const handleSendToDraft = (isMessagesShow = true) => {
-    setDocumentState({
-      ...documentState,
-      fetching: true
+  const handleChangeStatus = id => value => {
+    changeFileStatus({ attachment_id: id, status: value })
+      .then(response => {
+        console.log(response)
+      })
+  }
+
+  const save2DraftDMessage = is2Draft => {
+    updateDocumentById(documentState.message.id, {
+      name: documentState.name ? documentState.name : 'Без темы',
+      description: documentState.description
     })
-    const formData = new window.FormData()
-
-    formData.append(
-      'name',
-      documentState.name.length ? documentState.name : '[Без темы]'
-    )
-
-    formData.append(
-      'description',
-      documentState.description
-    )
-
-    formData.append(
-      'user_company_id',
-      documentState.value.length ? JSON.stringify(documentState.value.map(i => i.key)) : JSON.stringify([])
-    )
-
-    documentState.files.forEach((file, index) => {
-      formData.append(`second_documents[${index}]`, file)
-    })
-
-    return api.document.createDocument(formData, { 'Content-Type': 'multipart/form-data' })
       .then(({ data }) => {
-        if (data.success) {
-          if (isMessagesShow) {
-            message.success(`Документ ${documentState.name} успешно сохранен!`)
-          }
-
-          setDocumentState({
-            ...documentState,
-            fetching: false,
-            isClicked: true
-          })
-
-          const newData = {
-            documents: [
-              {
-                id: data.data.id,
-                attachments: documentState.statuses
-                  .map((item, i) => ({
-                    id: data.data.attachments[i].id,
-                    hash: documentState.fileHashes[i] ? documentState.fileHashes[i] : null,
-                    data: documentState.fileData[i] ? documentState.fileData[i] : null,
-                    status: documentState.statuses[i]
-                  }))
-              }
-            ]
-          }
-          if (documentState.files.length) {
+        if (is2Draft) {
+          history.push({ pathname: '/documents', search: '?status=1', state: { id: '/documents/1' } })
+        } else {
+          if (!documentState.value.length > 0) {
+            message.error('Введите получателя!')
             setDocumentState({
               ...documentState,
               fetching: false
             })
-            api.document.confirmDocument(newData)
-              .then(({ data }) => {
-                console.log(data)
-                if (data.success) {
-                  if (!isMessagesShow) {
-                    setDocumentState({ ...defaultDocumentData })
-                  } else {
-                    setDocumentState({
-                      ...documentState,
-                      fetching: false
-                    })
-                  }
-                } else {
-                  throw new Error(data.error)
-                }
-                return data
-              })
-              .catch(error => {
-                message.error(error.message)
-              })
+            return null
           }
-          return data
-        }
-      })
-      .catch(error => {
-        message.error(error.message)
-        setDocumentState({ ...defaultDocumentData })
-      })
-  }
-
-  const handleSendToUser = (isToUser = false) => {
-    if (!documentState.value.length > 0) {
-      message.error('Введите получателя!')
-      setDocumentState({
-        ...documentState,
-        fetching: false
-      })
-      return null
-    }
-    handleSendToDraft(isToUser)
-      .then(response => {
-        if (response.success) {
-          const docDataToUser = {
-            document_ids: [response.data.id],
-            user_company_id: JSON.stringify(documentState.value.map(i => i.key)),
-            status: documentState.status
-          }
-          sendDocumentToUser(docDataToUser)
-            .then(response => {
-              message.success('Сообщение успешно отправлено!')
-              getUser()
+          sendDocumentToUser({
+            document_ids: [documentState.message.id],
+            user_company_id: JSON.stringify(documentState.value.map(i => i.key))
+          }).then(({ success }) => {
+            if (success) {
               setDocumentState({ ...defaultDocumentData })
-            })
-            .catch(error => {
-              message.error(error.message)
-              setDocumentState({ ...defaultDocumentData })
-            })
-        } else {
-          throw new Error(response.error)
+              setMessage(!message)
+            }
+          })
         }
+        return data
       })
-      .catch(error => {
-        message.error(error.message)
-      })
+      .catch(error => console.error(error))
   }
 
   const fetchUser = _.debounce(v => {
@@ -354,6 +333,7 @@ const NewDocumentPage = props => {
     })
   }
 
+  console.log(documentState)
   return (
     <Fragment>
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>
@@ -406,15 +386,26 @@ const NewDocumentPage = props => {
               <List.Item
                 key={idx}
                 actions={[
-                  <Icon type='edit' onClick={() => handleVerifyFile(i)} />,
-                  <Icon type='delete' onClick={() => handleRemoveFile(i.id)} />
+                  <Icon type={documentState.fileFetch[idx] ? 'loading' : 'edit'} onClick={() => handleVerifyFile(i, idx)} />,
+                  <Icon type='delete' onClick={() => handleRemoveFile(i.id)} />,
                 ]}
               >
                 <div className='file-item'>
                   <Text type='secondary' style={{ marginRight: '1rem' }}>{idx + 1}</Text>
 
-                  <Text strong>{i.name}</Text>
+                  <Text strong>{i.original_name}</Text>
                 </div>
+                {i.verification_info &&
+                  <Tag
+                    color='#3278fb'
+                    style={{ cursor: 'pointer' }}
+                  >ЭЦП</Tag>
+                }
+                <Select value={i.status.status_data.id} onChange={handleChangeStatus(i.id)} style={{ marginLeft: 10, minWidth: '20rem' }}>
+                  <Option value={1}>Простая доставка</Option>
+                  <Option value={2}>Согласование</Option>
+                  <Option value={3}>Подпись получателя</Option>
+                </Select>
               </List.Item>
             )}
           />
@@ -423,7 +414,7 @@ const NewDocumentPage = props => {
             <Button
               ghost
               type='primary'
-              onClick={handleSendToDraft}
+              onClick={() => save2DraftDMessage(true)}
               style={{ minWidth: 216 }}
               disabled={documentState.isClicked}
             >
@@ -451,7 +442,7 @@ const NewDocumentPage = props => {
               <Button
                 style={{ marginLeft: '2rem' }}
                 type='primary'
-                onClick={() => handleSendToUser(false)}
+                onClick={() => save2DraftDMessage(false)}
               >
                 <Icon type='cloud-upload' />
                 Отправить

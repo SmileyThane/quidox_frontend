@@ -66,19 +66,19 @@ const verifyDocument = data => dispatch => {
 
 const changeStatus = status => dispatch => {
   dispatch({
-    type: t.CHANGE_FILE_STATUS_FETCHING,
+    type: t.CHANGE_FILEE_STATUS_FETCHING,
     payload: true
   })
   return api.document.changeStatus(status)
     .then(data => {
       if (data) {
         dispatch({
-          type: t.CHANGE_FILE_STATUS_SUCCESS,
+          type: t.CHANGE_FILEE_STATUS_SUCCESS,
           payload: status
         })
       }
       dispatch({
-        type: t.CHANGE_FILE_STATUS_FETCHING,
+        type: t.CHANGE_FILEE_STATUS_FETCHING,
         payload: false
       })
       return data

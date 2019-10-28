@@ -31,9 +31,18 @@ const verifyFile = data => {
   })
 }
 
+const changeFileStatus = data => {
+  return http({
+    url: 'attachment/status/update',
+    method: 'POST',
+    data
+  })
+}
+
 export {
   uploadFile,
   removeFile,
   verifyFile,
+  changeFileStatus,
   getBase64File
 }

@@ -140,6 +140,14 @@ const SingleDocumentPage = props => {
     }
   }
 
+  const openModal = type => {
+    setDocumentState({
+      ...documentState,
+      modalType: type,
+      showModal: true
+    })
+  }
+
   const fetchUser = _.debounce(v => {
     if (v.length > 2) {
       setDocumentState({
@@ -374,7 +382,7 @@ const SingleDocumentPage = props => {
                   </div>
 
                   <div className='document__actions__right'>
-                    <Button onClick={() => showUserData('send')} type='primary'>
+                    <Button onClick={() => openModal('send')} type='primary'>
                       <Icon type='redo' />
                       Перенаправить
                     </Button>

@@ -105,14 +105,14 @@ export default (state = initialState, action) => {
       }
     }
 
-    case t.CHANGE_FILE_STATUS_FETCHING: {
+    case t.CHANGE_FILEE_STATUS_FETCHING: {
       return {
         ...state,
         isFetching: action.payload
       }
     }
 
-    case t.CHANGE_FILE_STATUS_SUCCESS: {
+    case t.CHANGE_FILEE_STATUS_SUCCESS: {
       const payloadStatus = action.payload.attachments[0].status
       console.log(payloadStatus, 22222)
       const payloadId = action.payload.attachments[0].id
