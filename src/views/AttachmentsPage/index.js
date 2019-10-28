@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import AttachmentsPage from './AttachmentsPage'
-import actions from '../../store/actions';
+import actions from '../../store/actions'
 
 const mapStateToProps = state => ({
   user: state.user,

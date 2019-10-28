@@ -50,13 +50,10 @@ const defaultDocumentState = {
   declineMessage: '',
   singleFile: null
 }
-// eslint-disable-next-line spaced-comment
-const isIE = /*@cc_on!@*/!!window.document.documentMode
 
 const SingleDocumentPage = props => {
   const {
     documents: { isFetching, singleDocument },
-    user,
     match,
     getDocumentById,
     sendDocumentToUser,
@@ -333,7 +330,6 @@ const SingleDocumentPage = props => {
                       }
                     >
                       <div className='single-document'>
-                        <FileView file={item} />
                         <Tooltip
                           title='Просмотреть содержимое файла'
                           placement='top'

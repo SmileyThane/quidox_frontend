@@ -3,17 +3,14 @@ import moment from 'moment'
 /**
  * Retrieving data from an avest USB flash drive
  */
-export const decryptionCompanyData = (data) => {
-
-    return {
-      date: moment().format('DD/MM/YYYY HH:mm'),
-      name: data.verifiedData.subject['2.5.4.3'] ? data.verifiedData.subject['2.5.4.3'] : 'Данные отсутствуют',
-      key: data.verifiedData.cert['2.5.29.14'] ? data.verifiedData.cert['2.5.29.14'] : 'Невозможно создать цифровой ключ',
-      city: (data.verifiedData.subject['2.5.4.7'] || data.verifiedData.subject['2.5.4.9']) ? data.verifiedData.subject['2.5.4.7'] + ', ' + data.verifiedData.subject['2.5.4.9'] : 'Данные отсутствуют',
-      number: data.verifiedData.cert['1.2.112.1.2.1.1.1.1.2'] ? +data.verifiedData.cert['1.2.112.1.2.1.1.1.1.2'] : 'Данные отсутствуют',
-      position: data.verifiedData.cert['1.2.112.1.2.1.1.5.1'] ? data.verifiedData.cert['1.2.112.1.2.1.1.5.1'] : 'Данные отсутствуют'
-    }
-}
+export const decryptionCompanyData = (data) => ({
+  date: moment().format('DD/MM/YYYY HH:mm'),
+  name: data.verifiedData.subject['2.5.4.3'] ? data.verifiedData.subject['2.5.4.3'] : 'Данные отсутствуют',
+  key: data.verifiedData.cert['2.5.29.14'] ? data.verifiedData.cert['2.5.29.14'] : 'Невозможно создать цифровой ключ',
+  city: (data.verifiedData.subject['2.5.4.7'] || data.verifiedData.subject['2.5.4.9']) ? data.verifiedData.subject['2.5.4.7'] + ', ' + data.verifiedData.subject['2.5.4.9'] : 'Данные отсутствуют',
+  number: data.verifiedData.cert['1.2.112.1.2.1.1.1.1.2'] ? +data.verifiedData.cert['1.2.112.1.2.1.1.1.1.2'] : 'Данные отсутствуют',
+  position: data.verifiedData.cert['1.2.112.1.2.1.1.5.1'] ? data.verifiedData.cert['1.2.112.1.2.1.1.5.1'] : 'Данные отсутствуют'
+})
 
 /**
  * Returns an object with data about the active company from verification hash

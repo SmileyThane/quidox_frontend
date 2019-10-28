@@ -9,15 +9,14 @@ import {
   Icon,
   Select,
   Spin,
-  Tag,
+  notification,
   Typography,
   Button,
   Input,
   Modal,
   List
 } from 'antd'
-
-
+import { checkBrowser } from '../../utils'
 import './NewDocumentPage.scss'
 
 const defaultDocumentData = {
@@ -40,7 +39,17 @@ const defaultDocumentData = {
   showModal: false,
   userAddress: '', /// started new logic
   message: null,
-  filesArray: []
+  filesArray: [],
+  fileFetch: false
+}
+
+const getSignedHex = (base64) => {
+  try {
+    return window.sign(base64).hex
+  } catch (error) {
+    console.error(error)
+    return ''
+  }
 }
 
 // eslint-disable-next-line spaced-comment
@@ -56,7 +65,11 @@ const NewDocumentPage = props => {
   const {
     sendDocumentToUser,
     getUser,
-    user
+    uploadFile,
+    removeFile,
+    verifyFile,
+    user,
+    files: { list }
   } = props
 
   const [documentState, setDocumentState] = useState({ ...defaultDocumentData })
@@ -86,121 +99,67 @@ const NewDocumentPage = props => {
     })
   }
 
-  const getFiles = e => {
-    const files = [...e.target.files]
+  const getFiles = ({ target }) => {
+    [...target.files].forEach(file => {
+      const fileReader = new window.FileReader()
 
-    files.forEach(i => {
-      const reader = new window.FileReader()
-      const formData = new window.FormData()
-      reader.readAsDataURL(i)
-      reader.onload = function () {
-        const base64 = reader.result.split(',').pop()
-        try {
-          const hashForSign = window.sign(base64).hex
-
-          formData.append(
-            'hash_for_sign',
-            hashForSign
-          )
-
-          formData.append(
-            'document_id',
-            documentState.message.id
-          )
-
-          formData.append(
-            'file',
-            i
-          )
-
-          api.document.createFile(formData, { 'Content-Type': 'multipart/form-data' })
-            .then(({ data }) => {
-              if (data.success) {
-                setDocumentState({
-                  ...documentState,
-                  filesArray: [...documentState.filesArray, data.data]
-                })
-              } else throw new Error(data.error)
-            })
-            .catch(error => {
-              message.error(error.message())
-            })
-        } catch (error) {
-          formData.append(
-            'hash_for_sign',
-            ''
-          )
-
-          formData.append(
-            'document_id',
-            documentState.message.id
-          )
-
-          formData.append(
-            'file',
-            i
-          )
-
-          api.document.createFile(formData, { 'Content-Type': 'multipart/form-data' })
-            .then(({ data }) => {
-              if (data.success) {
-                setDocumentState({
-                  ...documentState,
-                  filesArray: [...documentState.filesArray, data.data]
-                })
-              } else throw new Error(data.error)
-            })
-            .catch(error => {
-              message.error(error.message())
-            })
-        }
-      }
-    })
-
-    files.forEach(i => {
-      if ((i.size / (1024 * 1024)) > 10) {
-        message.error('Недопустимый размер файла для данного тарифа!')
-        return null
-      } else {
-        setDocumentState({
-          ...documentState,
-          base64files: [...documentState.base64files, ...files.map(() => null)],
-          fileHashes: [...documentState.fileHashes, ...files.map(() => null)],
-          fileData: [...documentState.fileData, ...files.map(() => null)],
-          statuses: [...documentState.statuses, ...files.map(() => 1)],
-          files: [...documentState.files, ...files]
+      fileReader.readAsDataURL(file)
+      fileReader.onload = function () {
+        const base64 = fileReader.result.split(',').pop()
+        const formData = api.helpers.buildForm({
+          'hash_for_sign': getSignedHex(base64),
+          'document_id': documentState.message.id,
+          'file': file
         })
+        uploadFile(formData, { 'Content-Type': 'multipart/form-data' })
       }
     })
   }
 
-  useEffect(() => {
-    inputNode.current.value = ''
-  }, [documentState.files])
+  const handleRemoveFile = id => {
+    removeFile(id)
+  }
 
-  useEffect(() => {
-    if (documentState.isErrorWitchEcp) {
-      setTimeout(() => {
-        try {
-          window.pluginLoaded()
-        } catch (error) {
-          console.log(error)
-        }
-      }, 1000)
+  const handleVerifyFile = item => {
+    if (!checkBrowser('ie')) {
+      notification['error']({
+        message: 'Ошибка подписания',
+        description: 'Подписание файла возможно только в браузере IE'
+      })
+      return null
     }
-  }, [documentState.isErrorWitchEcp])
+    api.files.getBase64File(item.id)
+      .then(({ data }) => {
+        if (data.success) {
+          try {
+            const sertificationObject = window.sign(data.data, item.hash_for_sign)
 
-  const removeFile = (index) => {
-    delete inputNode.current.files[index]
+            const verifiedData = {
+              documents: [{
+                id: message.id,
+                attachments: [
+                  {
+                    id: item.id,
+                    hash: sertificationObject.signedData,
+                    data: sertificationObject.verifiedData,
+                    hash_for_sign: sertificationObject.hex,
+                    status: 5
+                  }
+                ]
+              }]
+            }
 
-    setDocumentState({
-      ...documentState,
-      files: documentState.files.filter((e, i) => i !== index),
-      base64files: documentState.base64files.filter((e, i) => i !== index),
-      fileHashes: documentState.fileHashes.filter((e, i) => i !== index),
-      fileData: documentState.fileData.filter((e, i) => i !== index),
-      statuses: documentState.statuses.filter((e, i) => i !== index)
-    })
+            verifyFile(verifiedData)
+          } catch (error) {
+            console.error(error)
+          }
+        } else {
+          throw new Error(data.error)
+        }
+      })
+      .catch(error => {
+        message.error(error.message)
+      })
   }
 
   const handleSendToDraft = (isMessagesShow = true) => {
@@ -395,69 +354,6 @@ const NewDocumentPage = props => {
     })
   }
 
-  const verifyFile = index => {
-    setDocumentState({
-      ...documentState,
-      verifyFetching: true
-    })
-    const reader = new window.FileReader()
-    reader.readAsDataURL(documentState.files[index])
-    reader.onload = function () {
-      const base64 = reader.result.split(',').pop()
-
-      try {
-        const sertificationObject = window.sign(base64)
-        api.documents.checkFlashKey({ key: sertificationObject.verifiedData.key })
-          .then(({ data }) => {
-            if (data.success) {
-              setDocumentState({
-                ...documentState,
-                verifyFetching: false,
-                base64files: [
-                  ...documentState.base64files.slice(0, index),
-                  reader.result,
-                  ...documentState.base64files.slice(index + 1)
-                ],
-                fileHashes: [
-                  ...documentState.fileHashes.slice(0, index),
-                  sertificationObject.signedData,
-                  ...documentState.fileHashes.slice(index + 1)
-                ],
-                fileData: [
-                  ...documentState.fileData.slice(0, index),
-                  sertificationObject.verifiedData,
-                  ...documentState.fileData.slice(index + 1)
-                ]
-              })
-            } else {
-              throw new Error(data.error)
-            }
-          })
-          .catch(error => {
-            message.error(error.message)
-          })
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    reader.onerror = function (error) {
-      message.error(error.message)
-    }
-  }
-
-  const handleStatusChange = index => value => {
-    setDocumentState({
-      ...documentState,
-      statuses: [
-        ...documentState.statuses.slice(0, index),
-        value,
-        ...documentState.statuses.slice(index + 1)
-      ]
-    })
-  }
-
-  console.log('message:', documentState.filesArray)
-
   return (
     <Fragment>
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>
@@ -501,45 +397,27 @@ const NewDocumentPage = props => {
             </label>
           </div>
 
-          <div className='files-group'>
-            <ul className='attached-files'>
-              {documentState.files && documentState.files.map((e, i) => (
-                <li className='attached-file' key={i}>
-                  <Text type='secondary' style={{ marginRight: '1rem' }}>{i + 1}</Text>
+          <List
+            itemLayout='horizontal'
+            dataSource={list && list}
+            locale={{ emptyText: 'Нет прикрепленных файлов' }}
+            style={{ padding: '1rem' }}
+            renderItem={(i, idx) => (
+              <List.Item
+                key={idx}
+                actions={[
+                  <Icon type='edit' onClick={() => handleVerifyFile(i)} />,
+                  <Icon type='delete' onClick={() => handleRemoveFile(i.id)} />
+                ]}
+              >
+                <div className='file-item'>
+                  <Text type='secondary' style={{ marginRight: '1rem' }}>{idx + 1}</Text>
 
-                  <Text strong>{e.name}</Text>
-
-                  { documentState.fileHashes[i] &&
-                  <Tag color='#3278fb'>ЭЦП</Tag>
-                  }
-
-                  <div className='attached-file__actions'>
-                    <div className='actions-left'>
-                      <Text>Требуется:</Text>
-
-                      <Select defaultValue={1} onChange={handleStatusChange(i)} style={{ marginLeft: 10, minWidth: '20rem' }}>
-                        <Option value={1}>Простая доставка</Option>
-                        <Option value={2}>Согласование</Option>
-                        <Option value={3}>Подпись получателя</Option>
-                      </Select>
-                    </div>
-
-                    <div className='actions-right'>
-                      {isIE &&
-                      <Icon onClick={() => verifyFile(i)} style={{ color: '#3278fb' }} type={documentState.verifyFetching ? 'loading' : 'edit'} />
-                      }
-
-                      <Icon
-                        onClick={() => removeFile(i)}
-                        style={{ color: '#FF7D1D' }}
-                        type='close'
-                      />
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+                  <Text strong>{i.name}</Text>
+                </div>
+              </List.Item>
+            )}
+          />
 
           <div className='buttons-group'>
             <Button

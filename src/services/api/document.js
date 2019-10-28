@@ -15,11 +15,19 @@ const createDocument = data => {
   })
 }
 
-const createFile = data => {
+const uploadFile = (data, headers) => {
   return http({
     url: '/document/attachment/create',
     method: 'POST',
-    data
+    data,
+    headers
+  })
+}
+
+const removeFile = id => {
+  return http({
+    url: `/attachment/delete/${id}`,
+    method: 'GET'
   })
 }
 
@@ -79,7 +87,6 @@ const updateDocumentById = (id, data) => {
 export {
   getDocumentById,
   createDocument,
-  createFile,
   confirmDocument,
   removeDocumentById,
   downloadDocument,

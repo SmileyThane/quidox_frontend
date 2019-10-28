@@ -37,19 +37,6 @@ class UserInfoPage extends React.Component {
     }
   }
 
-  getOneMinuteTimer = () => {
-    const timeInterval = setInterval(() => {
-      if (this.state.seconds > 0) {
-        this.setState(prevState => {
-          return { seconds: prevState.seconds - 1 }
-        })
-      } else {
-        clearInterval(timeInterval)
-        return null
-      }
-    }, 1000)
-  }
-
   handleChange = (value, field) => {
     const prefix = this.props.form.getFieldValue('prefix')
     if (field === 'phone') {
@@ -70,9 +57,7 @@ class UserInfoPage extends React.Component {
   }
 
   changeMode = () => {
-    if (!this.state.isEditMode) {
-      this.setState({ isEditMode: true })
-    }
+    this.setState({ isEditMode: true })
   }
 
   validateToNextPassword = (rule, value, callback) => {

@@ -111,6 +111,7 @@ const FileActions = props => {
                 id: item.id,
                 hash: sertificationObject.signedData,
                 data: sertificationObject.verifiedData,
+                hash_for_sign: 'hex',
                 status: 5
               }
             ]

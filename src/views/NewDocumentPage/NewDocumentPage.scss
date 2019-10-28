@@ -85,3 +85,11 @@
     }
   }
 }
+.file-item {
+  width: 70%;
+}
+.ant-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
