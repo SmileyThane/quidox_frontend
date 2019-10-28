@@ -445,28 +445,6 @@ const AntdTable = props => {
                     onChange={handleChangePage}
                   />
                 </div>
-                <div className='table__header table-header table-header-bottom' style={{ marginTop: '.5rem' }}>
-                  {0 &&
-                  <Button
-                    type='primary'
-                    onClick={multipleVerify}
-                    disabled={!tableState.selectedRowKeys.length}
-                    style={{ marginRight: '.5rem' }}
-                  >
-                    <Icon type='check' />
-                    Подписать выбранные
-                  </Button>
-                  }
-
-                  <Button
-                    type='primary'
-                    onClick={() => openModal()}
-                    disabled={!tableState.selectedRowKeys.length}
-                  >
-                    <Icon type='cloud-upload' />
-                    Отправить выбранные
-                  </Button>
-                </div>
               </div>
             )}
           footer={() =>
