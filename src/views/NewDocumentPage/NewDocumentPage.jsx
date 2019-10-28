@@ -255,6 +255,9 @@ const NewDocumentPage = props => {
             user_company_id: JSON.stringify(documentState.value.map(i => i.key))
           }).then(({ success }) => {
             if (success) {
+              notification['success']({
+                message: 'Сообещние успешно доставлено'
+              })
               setDocumentState({ ...defaultDocumentData })
               setMessage(!message)
             }
@@ -292,7 +295,9 @@ const NewDocumentPage = props => {
           }
         })
         .catch(error => {
-          message.error(error.message)
+          notification['error']({
+            message: error.message()
+          })
         })
     }
   }, 800)
@@ -316,7 +321,9 @@ const NewDocumentPage = props => {
     })
 
     if (v.length !== validEmails.length) {
-      message.error('Не правильный электронный адрес')
+      notification['error']({
+        message: 'Не правильный электронный адрес'
+      })
     }
 
     setDocumentState({
