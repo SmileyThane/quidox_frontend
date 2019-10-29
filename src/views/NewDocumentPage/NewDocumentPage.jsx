@@ -15,7 +15,7 @@ import {
   Modal,
   List, Tag
 } from 'antd'
-import { EscDataSlider } from '../../components'
+
 import { checkBrowser } from '../../utils'
 import history from '../../history'
 import './NewDocumentPage.scss'
@@ -43,7 +43,8 @@ const defaultDocumentData = {
   filesArray: [],
   fileFetch: [],
   fileInfo: [],
-  isNewMessage: false
+  isNewMessage: false,
+  uploadFetch: false
 }
 
 const getSignedHex = (base64) => {
@@ -66,6 +67,7 @@ const NewDocumentPage = props => {
   const inputRef = useRef(null)
   const inputNode = useRef(null)
   const {
+    createMessage,
     sendDocumentToUser,
     uploadFile,
     removeFile,
@@ -73,19 +75,19 @@ const NewDocumentPage = props => {
     changeFileStatus,
     updateDocumentById,
     user,
-    files: { list }
+    files: { list, isFetching }
   } = props
 
   const [documentState, setDocumentState] = useState({ ...defaultDocumentData })
   const [message, setMessage] = useState(false)
 
   useEffect(() => {
-    api.document.createDocument({ name: '[Без темы]', description: '' })
-      .then(({ data }) => {
-        if (data.success) {
+    createMessage({ name: '[Без темы]', description: '' })
+      .then(({ success, data }) => {
+        if (success) {
           setDocumentState({
             ...documentState,
-            message: data.data
+            message: data
           })
         }
       })
@@ -124,6 +126,7 @@ const NewDocumentPage = props => {
       ...documentState,
       fileFetch: [...documentState.fileFetch, ...[...target.files].map(() => false)]
     })
+    inputNode.current.value = ''
   }
 
   const handleRemoveFile = (id, index) => {
@@ -312,7 +315,6 @@ const NewDocumentPage = props => {
     if (documentState.fetching) {
       return
     }
-    console.log('v:', v)
 
     const validEmails = v.filter(i => {
       if (validateEmail(i.label)) {
@@ -387,14 +389,15 @@ const NewDocumentPage = props => {
           <List
             itemLayout='horizontal'
             dataSource={list && list}
+            loading={isFetching}
             locale={{ emptyText: 'Нет прикрепленных файлов' }}
             style={{ padding: '1rem' }}
             renderItem={(i, idx) => (
               <List.Item
                 key={idx}
                 actions={[
-                  <Icon type={documentState.fileFetch[idx] ? 'loading' : 'edit'} onClick={() => handleVerifyFile(i, idx)} />,
-                  <Icon type='delete' onClick={() => handleRemoveFile(i.id)} />,
+                  <Icon style={{ color: '#3278fb' }} type={documentState.fileFetch[idx] ? 'loading' : 'edit'} onClick={() => handleVerifyFile(i, idx)} />,
+                  <Icon style={{ color: '#3278fb' }} type='delete' onClick={() => handleRemoveFile(i.id)} />,
                 ]}
               >
                 <div className='file-item'>
@@ -457,14 +460,6 @@ const NewDocumentPage = props => {
             </div>
           </div>
         </Spin>
-        <input type='hidden' id='attr' size='80' value='1.2.112.1.2.1.1.1.1.2' />
-
-        <input type='hidden' id='attrValue' size='80' disabled='disabled' />
-
-        <div id='attrCertSelectContainer' style={{ display: 'none' }}>
-          <span id='certExtAbsent' />
-          <select style={{ visibility: 'hidden' }} id='attrCertSelect' />
-        </div>
       </div>
 
       {!isIE && <Text type='secondary'>

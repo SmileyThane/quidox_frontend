@@ -7,6 +7,11 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case t.CREATE_MESSAGE_FETCHING:
+      return {
+        ...state,
+        list: []
+      }
     case t.UPLOAD_FILE_FETCHING:
       return {
         ...state,

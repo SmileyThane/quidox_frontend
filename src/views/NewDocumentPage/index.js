@@ -9,6 +9,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  createMessage: data => dispatch(actions.document.createMessage(data)),
   createDocument: data => dispatch(actions.documents.createDocument(data)),
   sendDocumentToUser: data => dispatch(actions.documents.sendDocumentToUser(data)),
   getUser: () => dispatch(actions.user.getUser()),

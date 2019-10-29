@@ -2,6 +2,27 @@ import * as t from '../types'
 
 import { api } from '../../services'
 
+const createMessage = data => dispatch => {
+  dispatch({
+    type: t.CREATE_MESSAGE_FETCHING,
+    payload: true
+  })
+  return api.document.createDocument(data)
+    .then(({ data }) => {
+      if (data) {
+        dispatch({
+          type: t.CREATE_MESSAGE_SUCCESS,
+          payload: data
+        })
+      }
+      dispatch({
+        type: t.CREATE_MESSAGE_FETCHING,
+        payload: false
+      })
+      return data
+    })
+}
+
 const getDocumentById = id => dispatch => {
   dispatch({
     type: t.GET_DOCUMENT_BY_ID_FETCHING,
@@ -107,6 +128,7 @@ const removeDocumentById = id => dispatch => {
 }
 
 export {
+  createMessage,
   getDocumentById,
   removeDocumentById,
   updateDocumentById,
