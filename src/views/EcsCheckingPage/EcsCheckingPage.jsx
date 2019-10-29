@@ -1,7 +1,7 @@
 import React from 'react'
 import Iframe from 'react-iframe'
 
-const quidoxLink = 'https://api.quidox.by/user/avest/verify/'
+const quidoxLink = `${process.env.REACT_APP_VERIFY_URL}/user/avest/verify`
 
 const EscCheckingPage = () => {
   return (
