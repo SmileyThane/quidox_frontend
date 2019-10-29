@@ -52,7 +52,7 @@ const verifyFile = body => dispatch => {
     .then(({ data }) => {
       if (data) {
         dispatch({
-          type: t.VERIFY_DOCUMENT_SUCCESS,
+          type: t.VERIFY_FILE_SUCCESS,
           payload: body
         })
       }
@@ -60,6 +60,7 @@ const verifyFile = body => dispatch => {
         type: t.VERIFY_FILE_FETCHING,
         payload: false
       })
+        return data
     })
 }
 

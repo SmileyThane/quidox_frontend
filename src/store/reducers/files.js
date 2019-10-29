@@ -21,6 +21,7 @@ export default (state = initialState, action) => {
         ]
       }
     case t.VERIFY_FILE_SUCCESS:
+      console.log('action:', action.payload)
       return {
         ...state,
         list: state.list.map(i => {
