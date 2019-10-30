@@ -22,7 +22,7 @@ const FileActions = props => {
     isHidden = false,
     getDocument,
     changeStatus,
-    verifyDocument,
+    verifyDocument
   } = props
 
   const receivingTooltipText = (status, array = []) => {
@@ -45,14 +45,10 @@ const FileActions = props => {
     }
 
     const data = {
-      attachments: [
-        {
-          id: file.id,
-          status: 4,
-          color: '#808000',
-          name: 'Согласовано'
-        }
-      ]
+      attachment_id: file.id,
+      status: 4,
+      color: '#808000',
+      name: 'Согласовано'
     }
 
     changeStatus(data)
@@ -71,14 +67,10 @@ const FileActions = props => {
   const handleDeclineFile = (file, status) => {
     if (status === 2 || status === 3) {
       const data = {
-        attachments: [
-          {
-            id: file.id,
-            status: 6,
-            color: '#800000',
-            name: 'Отклонен'
-          }
-        ]
+        attachment_id: file.id,
+        status: 6,
+        color: '#800000',
+        name: 'Отклонен'
       }
       changeStatus(data)
         .then(({ data }) => {

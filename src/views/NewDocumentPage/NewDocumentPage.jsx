@@ -243,7 +243,8 @@ const NewDocumentPage = props => {
   const save2DraftDMessage = is2Draft => {
     updateDocumentById(documentState.message.id, {
       name: documentState.name ? documentState.name : 'Без темы',
-      description: documentState.description
+      description: documentState.description,
+      user_company_ids: documentState.value.length ? JSON.stringify(documentState.value.map(i => i.key)) : JSON.stringify([])
     })
       .then(({ data }) => {
         if (is2Draft) {
@@ -259,7 +260,7 @@ const NewDocumentPage = props => {
           }
           sendDocumentToUser({
             document_ids: [documentState.message.id],
-            user_company_id: JSON.stringify(documentState.value.map(i => i.key))
+            user_company_id: documentState.value.length ? JSON.stringify(documentState.value.map(i => i.key)) : JSON.stringify([])
           }).then(({ success }) => {
             if (success) {
               notification['success']({
