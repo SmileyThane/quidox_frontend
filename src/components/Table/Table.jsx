@@ -17,7 +17,7 @@ import {
   Button,
   Spin,
   Pagination,
-  Tooltip
+  Tooltip, notification
 } from 'antd'
 
 import './Table.scss'
@@ -86,6 +86,13 @@ const AntdTable = props => {
   useEffect(() => {
     if (parameterState.status) {
       getDocumentsWithParams(activeCompany, parameterState)
+        .then(response => {
+          if (response.error) {
+            notification['error']({
+              message: response.error
+            })
+          }
+        })
     }
   }, [parameterState.status])
 
@@ -412,7 +419,7 @@ const AntdTable = props => {
           scroll={{ x: true }}
           columns={columns}
           rowSelection={rowSelection}
-          dataSource={tableData.hasOwnProperty('data') ? tableData.data : []}
+          dataSource={tableData ? tableData.data : []}
           rowKey='id'
           locale={{ emptyText: 'Нет данных' }}
           rowClassName={record => record.is_read === 0 ? 'unread' : ''}
@@ -441,7 +448,7 @@ const AntdTable = props => {
                     simple
                     current={parameterState.page}
                     hideOnSinglePage
-                    total={!isNaN(Math.ceil(tableData.total / +tableData.per_page) * 10) ? Math.ceil(tableData.total / +tableData.per_page) * 10 : 0}
+                    total={tableData && !isNaN(Math.ceil(tableData.total / +tableData.per_page) * 10) ? Math.ceil(tableData.total / +tableData.per_page) * 10 : 0}
                     onChange={handleChangePage}
                   />
                 </div>
@@ -455,7 +462,7 @@ const AntdTable = props => {
                     <Text>Отмечено: {tableState.selectedRowKeys.length}</Text>
                   </div>
                   <div className='table-footer__item'>
-                    <Text>Всего: {tableData.hasOwnProperty('data') && tableData.data.length}</Text>
+                    <Text>Всего: {tableData && tableData.hasOwnProperty('data') && tableData.data.length}</Text>
                   </div>
                 </div>
                 <div>

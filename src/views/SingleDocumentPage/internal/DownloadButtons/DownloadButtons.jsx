@@ -28,7 +28,7 @@ const DownloadButtons = ({ document }) => {
           })
             .then(({ data }) => {
               if (data) {
-                fileDownload(data, `${document.author.company_number}_${document.created_at.split(' ')[0].split('-').join('')}_document.name.zip`)
+                fileDownload(data, `${document.author.company_number}_${document.created_at.split(' ')[0].split('-').join('')}_${document.name}.zip`)
                 message.success('Архив успешно загружен!')
                 setState({ ...defaultState })
               }

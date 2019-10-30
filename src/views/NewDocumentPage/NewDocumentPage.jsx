@@ -68,6 +68,7 @@ const NewDocumentPage = props => {
   const inputNode = useRef(null)
   const {
     createMessage,
+    getUser,
     sendDocumentToUser,
     uploadFile,
     removeFile,
@@ -268,6 +269,7 @@ const NewDocumentPage = props => {
               })
               setDocumentState({ ...defaultDocumentData })
               setMessage(!message)
+              getUser()
             }
           })
         }

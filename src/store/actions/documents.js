@@ -65,6 +65,7 @@ const getDocumentsByActiveCompanyId = (id, params) => dispatch => {
         type: t.GET_DOCUMENTS_BY_ACTIVE_COMPANY_ID_REQUEST_SUCCESS,
         payload: false
       })
+      return data
     })
 }
 

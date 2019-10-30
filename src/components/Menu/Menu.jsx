@@ -149,8 +149,11 @@ const AntMenu = props => {
         <MenuItem
           heading='Сторонние источники'
           url='/externals'
-          key='/externals'
+          key='/documents/9'
           icon='file-text'
+          status={9}
+          id={'/documents/9'}
+
         />
         <MenuItem
           heading='Панель администратора'

@@ -31,7 +31,7 @@ function App () {
 
           <PrivateRoute path='/new-document' component={NewDocumentPage} />
 
-          <PrivateRoute path='/externals' component={ExternalsPage} />
+          <PrivateRoute path='/externals' component={DocumentsPage} />
           <PrivateRoute path='/esc-checking' component={EcsCheckingPage} />
 
           <PrivateRoute exact path='/companies' component={CompaniesPage} />
