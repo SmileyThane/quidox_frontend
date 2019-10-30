@@ -107,25 +107,29 @@ const NewDocumentPage = props => {
   }
 
   const getFiles = ({ target }) => {
-    [...target.files].forEach(file => {
+    for (let file of [...target.files]) {
       const fileReader = new window.FileReader()
 
       fileReader.readAsDataURL(file)
+
       fileReader.onload = function () {
         const base64 = fileReader.result.split(',').pop()
+
         const formData = api.helpers.buildForm({
           'hash_for_sign': getSignedHex(base64),
           'document_id': documentState.message.id,
           'file': file
         })
+
         uploadFile(formData, { 'Content-Type': 'multipart/form-data' })
       }
-    })
+    }
 
     setDocumentState({
       ...documentState,
       fileFetch: [...documentState.fileFetch, ...[...target.files].map(() => false)]
     })
+
     inputNode.current.value = ''
   }
 

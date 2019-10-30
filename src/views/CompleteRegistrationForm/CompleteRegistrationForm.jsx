@@ -88,7 +88,8 @@ class CompleteRegistrationForm extends React.Component {
         const registerData = {
           phone: this.state.phone,
           code: this.state.code,
-          id: this.props.match.params.id
+          id: this.props.match.params.id,
+          secret_key: process.env.REACT_APP_SECRET_KEY
         }
         switch (this.state.currentStep) {
           case 0:
@@ -115,12 +116,18 @@ class CompleteRegistrationForm extends React.Component {
               .then(({ data }) => {
                 if (data.success) {
                   message.success('СМС код введен правильно!')
-                  const secretData = generateHash({ length: 10 }) + Base64.encode( JSON.stringify(registerData)) + generateHash({ length: 5 })
-                  axios.post(`${process.env.REACT_APP_BASE_URL}/user/update/phone`, secretData)
+                  console.log('REGISTER DATA:', registerData)
+                  const secretData = generateHash({ length: 10 }) + Base64.encode( JSON.stringify(registerData) ) + generateHash({ length: 5 })
+                  axios.post(`${process.env.REACT_APP_BASE_URL}/user/update/phone`, { phone_data: secretData })
                     .then(({ data }) => {
-                      if (data) {
+                      if (data.success) {
                         history.push('/login')
+                      } else {
+                        throw new Error(data.error)
                       }
+                    })
+                    .catch(error => {
+                      message.error(error.message)
                     })
                 } else {
                   throw new Error(data.error)

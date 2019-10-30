@@ -60,7 +60,7 @@ const verifyFile = body => dispatch => {
         type: t.VERIFY_FILE_FETCHING,
         payload: false
       })
-        return data
+      return data
     })
 }
 
@@ -79,7 +79,7 @@ const changeFileStatus = body => dispatch => {
       }
       dispatch({
         type: t.CHANGE_FILE_STATUS_FETCHING,
-        payload: true
+        payload: false
       })
       return data
     })
