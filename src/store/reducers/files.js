@@ -58,26 +58,14 @@ export default (state = initialState, action) => {
         isFetching: action.payload
       }
     case t.CHANGE_FILE_STATUS_SUCCESS:
+      const fileIndex = state.list.findIndex(i => i.id === action.payload.data.id)
       return {
         ...state,
-        list: state.list.map(i => {
-          // eslint-disable-next-line no-lone-blocks
-          {
-            if (i.id === action.payload.attachment_id) {
-              return {
-                ...i,
-                status: {
-                  ...i.status,
-                  status_data: {
-                    ...i.status.status_data,
-                    id: action.payload.status
-                  }
-                }
-              }
-            }
-            return i
-          }
-        })
+        list: [
+          ...state.list.slice(0, fileIndex),
+          action.payload.data,
+          ...state.list.slice(fileIndex + 1)
+        ]
       }
     case t.SEND_DOCUMENT_TO_USER_SUCCESS:
       return {

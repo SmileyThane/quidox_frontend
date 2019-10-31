@@ -74,7 +74,7 @@ const changeFileStatus = body => dispatch => {
       if (data) {
         dispatch({
           type: t.CHANGE_FILE_STATUS_SUCCESS,
-          payload: body
+          payload: data
         })
       }
       dispatch({

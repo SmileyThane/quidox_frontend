@@ -234,8 +234,8 @@ const NewDocumentPage = props => {
       })
   }
 
-  const handleChangeStatus = id => value => {
-    changeFileStatus({ attachment_id: id, status: value })
+  const handleChangeStatus = (file, index) => value => {
+    changeFileStatus({ attachment_id: file.id, status: value, index: index })
       .then(response => {
         console.log(response)
       })
@@ -418,7 +418,7 @@ const NewDocumentPage = props => {
                     style={{ cursor: 'pointer' }}
                   >ЭЦП</Tag>
                 }
-                <Select value={i.status.status_data.id} onChange={handleChangeStatus(i.id)} style={{ marginLeft: 10, minWidth: '20rem' }}>
+                <Select value={i.status.status_data.id} onChange={handleChangeStatus(i, idx)} style={{ marginLeft: 10, minWidth: '20rem' }}>
                   <Option value={1}>Простая доставка</Option>
                   <Option value={2}>Согласование</Option>
                   <Option value={3}>Подпись получателя</Option>
