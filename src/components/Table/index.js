@@ -6,6 +6,7 @@ const mapDispatchToProps = dispatch => ({
   sendDocumentToUser: data => dispatch(actions.documents.sendDocumentToUser(data)),
   removeDocumentById: (id, type) => dispatch(actions.document.removeDocumentById(id, type)),
   removeDocumentsByIds: (ids, type) => dispatch(actions.documents.removeDocumentsByIds(ids, type)),
+  verifyFile: data => dispatch(actions.files.verifyFile(data)),
   getUser: () => dispatch(actions.user.getUser())
 })
 

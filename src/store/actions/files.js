@@ -53,7 +53,7 @@ const verifyFile = body => dispatch => {
       if (data) {
         dispatch({
           type: t.VERIFY_FILE_SUCCESS,
-          payload: body
+          payload: data
         })
       }
       dispatch({

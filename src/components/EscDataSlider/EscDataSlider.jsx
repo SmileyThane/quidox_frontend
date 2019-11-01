@@ -12,7 +12,7 @@ const defaultState = {
   activeEscSlide: 0
 }
 
-const EscDataSlider = ({ data = [], onCancel }) => {
+const EscDataSlider = ({ data = [], onCancel, }) => {
   const [state, setState] = useState({ ...defaultState })
 
   const { singleEscData, activeEscSlide } = state

@@ -26,21 +26,14 @@ export default (state = initialState, action) => {
         ]
       }
     case t.VERIFY_FILE_SUCCESS:
-      console.log('action:', action.payload)
+      const index =  state.list.findIndex(i => i.id === action.payload.data.id)
       return {
         ...state,
-        list: state.list.map(i => {
-          // eslint-disable-next-line no-lone-blocks
-          {
-            if (i.id === action.payload.documents[0].attachments[0].id) {
-              return {
-                ...i,
-                verification_info: action.payload.documents[0].attachments[0].data
-              }
-            }
-            return i
-          }
-        })
+        list: [
+          ...state.list.slice(0, index),
+          action.payload.data,
+          ...state.list.slice(index + 1)
+        ]
       }
     case t.REMOVE_FILE_FETCHING:
       return {

@@ -16,6 +16,8 @@ import {
   List, Tag
 } from 'antd'
 
+import { EscDataSlider } from '../../components'
+
 import { checkBrowser } from '../../utils'
 import history from '../../history'
 import './NewDocumentPage.scss'
@@ -156,6 +158,56 @@ const NewDocumentPage = props => {
       })
   }
 
+  const handleVerifyAll = () => {
+    if (!checkBrowser('ie')) {
+      notification['error']({
+        message: 'Ошибка подписания',
+        description: 'Подписание файла возможно только в браузере IE'
+      })
+      return null
+    }
+
+    for (let file of list) {
+      api.files.getBase64File(file.id)
+          .then(({ data }) => {
+            if (data.success) {
+              try {
+                const sertificationObject = window.sign(data.data, file.hash_for_sign)
+
+                const verifiedData = {
+                  id: file.id,
+                  hash: sertificationObject.signedData,
+                  data: sertificationObject.verifiedData,
+                  hash_for_sign: sertificationObject.hex,
+                  status: file.status.status_data.id ? file.status.status_data.id : null
+                }
+
+                verifyFile(verifiedData)
+                    .then(response => {
+                      if (response.success) {
+                        notification['success']({
+                          message: 'Файл успешно подписан'
+                        })
+                      } else {
+                        throw new Error(response.error)
+                      }
+                    })
+              } catch (error) {
+                notification['error']({
+                  message: error.message
+                })
+              }
+            } else {
+              throw new Error(data.error)
+            }
+          })
+          .catch(error => {
+            message.error(error.message)
+          })
+    }
+
+  }
+
   const handleVerifyFile = (item, index) => {
     if (!checkBrowser('ie')) {
       notification['error']({
@@ -184,7 +236,8 @@ const NewDocumentPage = props => {
               id: item.id,
               hash: sertificationObject.signedData,
               data: sertificationObject.verifiedData,
-              hash_for_sign: sertificationObject.hex
+              hash_for_sign: sertificationObject.hex,
+              status: item.status.status_data.id ? item.status.status_data.id : null
             }
 
             verifyFile(verifiedData)
@@ -228,10 +281,26 @@ const NewDocumentPage = props => {
   }
 
   const handleChangeStatus = (file, index) => value => {
-    changeFileStatus({ attachment_id: file.id, status: value, index: index, comment: '123' })
+    changeFileStatus({ attachment_id: file.id, status: value, index: index })
       .then(response => {
         console.log(response)
       })
+  }
+
+  const showEscInfo = info => {
+    setDocumentState({
+      ...documentState,
+      showModal: true,
+      fileInfo: info
+    })
+  }
+
+  const hideEscInfo = () => {
+    setDocumentState({
+      ...documentState,
+      showModal: false,
+      fileInfo: []
+    })
   }
 
   const save2DraftDMessage = is2Draft => {
@@ -342,7 +411,6 @@ const NewDocumentPage = props => {
     })
   }
 
-  console.log(documentState)
   return (
     <Fragment>
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>
@@ -405,10 +473,11 @@ const NewDocumentPage = props => {
 
                   <Text strong>{i.original_name}</Text>
                 </div>
-                {i.verification_info &&
+                {!!i.users_companies.length &&
                   <Tag
                     color='#3278fb'
                     style={{ cursor: 'pointer' }}
+                    onClick={() => showEscInfo(i.users_companies)}
                   >ЭЦП</Tag>
                 }
                 <Select value={i.status.status_data.id} onChange={handleChangeStatus(i, idx)} style={{ marginLeft: 10, minWidth: '20rem' }}>
@@ -457,6 +526,14 @@ const NewDocumentPage = props => {
                 <Icon type='cloud-upload' />
                 Отправить
               </Button>
+              {list && list.length > 2 &&
+              <Button
+                  style={{ marginLeft: '2rem' }}
+                  type='primary'
+                  onClick={handleVerifyAll}
+              >Подписать все
+              </Button>
+              }
             </div>
           </div>
         </Spin>
@@ -473,36 +550,7 @@ const NewDocumentPage = props => {
         closable={false}
         footer={null}
       >
-        <div style={{ textAlign: 'center' }}>
-          <Icon
-            type='warning'
-            theme='twoTone'
-            twoToneColor='orange'
-            style={{ fontSize: '3rem' }}
-          /><br />
-
-          <Text style={{ textAlign: 'center' }}>Вставьте ключ ЭЦП компании</Text>
-
-          {user.data.companies.length &&
-          user.data.companies.map(i => {
-            if (i.company_id === user.data.active_company_id) {
-              return <Text strong> {i.company_name} </Text>
-            } else {
-              return null
-            }
-          })
-          }
-
-          <Text>в компьютер.</Text>
-        </div>
-
-        <Button
-          type='primary'
-          style={{ marginTop: '2rem' }}
-          onClick={() => resolveEscError()}
-        >
-          Продолжить
-        </Button>
+        <EscDataSlider data={documentState.fileInfo} onCancel={hideEscInfo} />
       </Modal>
       }
     </Fragment>

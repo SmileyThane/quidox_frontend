@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Fragment, useRef } from 'react'
 import axios from 'axios'
 import fileDownload from 'js-file-download'
+import { api } from '../../services'
 
 import _ from 'lodash'
 import { Link } from 'react-router-dom'
@@ -17,7 +18,8 @@ import {
   Button,
   Spin,
   Pagination,
-  Tooltip, notification
+  Tooltip,
+  notification,
 } from 'antd'
 
 import './Table.scss'
@@ -53,6 +55,7 @@ const AntdTable = props => {
   const {
     getDocumentsWithParams,
     activeCompany,
+    verifyFile,
     children,
     type,
     getUser,
@@ -358,14 +361,29 @@ const AntdTable = props => {
   const multipleVerify = () => {
     const selectedDocuments = tableData.data.filter(i => tableState.selectedRowKeys.includes(i.id))
     selectedDocuments.forEach(message => {
-      console.log(message)
       const document = message.document
       if (!document.attachments.length) {
         return null
       }
-      const attachemnts = document.attachments
-      attachemnts.forEach(file => {
-      })
+      for (let file of document.attachments) {
+        // console.log(file)
+        if (file.status.status_data.id === 3) {
+          api.files.getBase64File(file.id)
+              .then(({ data }) => {
+                if (data.success) {
+                  console.log(file)
+                  try {
+                    const verifiedData = window.sign(data.data, file.hash_for_sign)
+                    console.log(verifiedData)
+                  } catch (error) {
+                    notification['error']({
+                      message: error.message
+                    })
+                  }
+                }
+              })
+        }
+      }
     })
   }
 
@@ -440,6 +458,11 @@ const AntdTable = props => {
                         <Icon type='delete' style={{ color: '#FF7D1D' }} />
                       </Popconfirm>
                     </Tooltip>
+                  </div>
+                  <div>
+                    {!!tableState.selectedRowKeys.length &&
+                      <Button type='primary' onClick={multipleVerify}>Verify</Button>
+                    }
                   </div>
                   <div className='table-header__search'>
                     <AutoComplete onSearch={_.debounce(handleSearch, 500)} placeholder={`Введите тему, ${(status === 1 || status === 3) ? '  получателя' : 'отправителя'}...`} />

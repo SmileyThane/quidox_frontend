@@ -96,18 +96,11 @@ const FileActions = props => {
         const sertificationObject = window.sign(base64)
 
         const newData = {
-          documents: [{
-            id: documentId,
-            attachments: [
-              {
-                id: item.id,
-                hash: sertificationObject.signedData,
-                data: sertificationObject.verifiedData,
-                hash_for_sign: 'hex',
-                status: 5
-              }
-            ]
-          }]
+          id: item.data,
+          hash: sertificationObject.signedData,
+          data: sertificationObject.verifiedData,
+          hash_for_sign: sertificationObject.hex,
+          status: 5
         }
 
         api.documents.checkFlashKey({ key: sertificationObject.verifiedData.key, attachment_id: item.id })

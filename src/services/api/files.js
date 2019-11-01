@@ -25,7 +25,7 @@ const getBase64File = id => {
 
 const verifyFile = data => {
   return http({
-    url: 'documents/confirm',
+    url: '/attachment/sign/store',
     method: 'POST',
     data
   })
