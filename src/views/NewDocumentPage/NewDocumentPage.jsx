@@ -181,17 +181,10 @@ const NewDocumentPage = props => {
             const sertificationObject = window.sign(data.data, item.hash_for_sign)
 
             const verifiedData = {
-              documents: [{
-                id: documentState.message.id,
-                attachments: [
-                  {
-                    id: item.id,
-                    hash: sertificationObject.signedData,
-                    data: sertificationObject.verifiedData,
-                    hash_for_sign: sertificationObject.hex
-                  }
-                ]
-              }]
+              id: item.id,
+              hash: sertificationObject.signedData,
+              data: sertificationObject.verifiedData,
+              hash_for_sign: sertificationObject.hex
             }
 
             verifyFile(verifiedData)
@@ -235,7 +228,7 @@ const NewDocumentPage = props => {
   }
 
   const handleChangeStatus = (file, index) => value => {
-    changeFileStatus({ attachment_id: file.id, status: value, index: index })
+    changeFileStatus({ attachment_id: file.id, status: value, index: index, comment: '123' })
       .then(response => {
         console.log(response)
       })
