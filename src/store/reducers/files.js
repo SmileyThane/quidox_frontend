@@ -2,7 +2,8 @@ import * as t from '../types'
 
 const initialState = {
   list: [],
-  isFetching: false
+  isFetching: false,
+  status: null
 }
 
 export default (state = initialState, action) => {
@@ -24,6 +25,11 @@ export default (state = initialState, action) => {
           ...state.list,
           { fetching: false, ...action.payload.data }
         ]
+      }
+    case t.UPLOAD_FILE_STATUS:
+      return {
+        ...state,
+        status: action.payload
       }
     case t.VERIFY_FILE_SUCCESS:
       const index =  state.list.findIndex(i => i.id === action.payload.data.id)

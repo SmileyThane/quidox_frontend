@@ -9,11 +9,16 @@ const uploadFile = (data, headers) => dispatch => {
   })
   return api.files.uploadFile(data, headers)
     .then(({ data }) => {
-      if (data) {
+      if (data.success) {
         dispatch({
           type: t.UPLOAD_FILE_SUCCESS,
           payload: data
         })
+      } else {
+          dispatch({
+              type: t.UPLOAD_FILE_STATUS,
+              payload: data.error
+          })
       }
       dispatch({
         type: t.UPLOAD_FILE_FETCHING,

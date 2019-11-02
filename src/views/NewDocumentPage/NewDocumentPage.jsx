@@ -77,7 +77,7 @@ const NewDocumentPage = props => {
     changeFileStatus,
     updateDocumentById,
     user,
-    files: { list, isFetching }
+    files: { list, isFetching, status }
   } = props
 
   const [documentState, setDocumentState] = useState({ ...defaultDocumentData })
@@ -412,6 +412,9 @@ const NewDocumentPage = props => {
 
   return (
     <Fragment>
+      {!!status &&
+          <p>Пополни баланс</p>
+      }
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>
         <Spin spinning={!!documentState.fetching}>
           <div className='input-group'>
