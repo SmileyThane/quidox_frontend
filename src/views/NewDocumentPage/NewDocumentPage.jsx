@@ -413,7 +413,7 @@ const NewDocumentPage = props => {
   return (
     <Fragment>
       {!!status &&
-          <p>Пополни баланс</p>
+          <p>{status}</p>
       }
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>
         <Spin spinning={!!documentState.fetching}>
@@ -475,7 +475,7 @@ const NewDocumentPage = props => {
 
                   <Text strong>{i.original_name}</Text>
                 </div>
-                {i.users_companies && !!i.users_companies.length &&
+                {!!i.users_companies.length &&
                   <Tag
                     color='#3278fb'
                     style={{ cursor: 'pointer' }}
