@@ -53,7 +53,6 @@ const getSignedHex = (base64) => {
   try {
     return window.sign(base64).hex
   } catch (error) {
-    console.error(error)
     return ''
   }
 }

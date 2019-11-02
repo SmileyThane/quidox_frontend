@@ -2,6 +2,10 @@ import { connect } from 'react-redux'
 import actions from '../../store/actions'
 import Table from './Table'
 
+const mapStateToProps = state => ({
+  files: state.files
+})
+
 const mapDispatchToProps = dispatch => ({
   sendDocumentToUser: data => dispatch(actions.documents.sendDocumentToUser(data)),
   removeDocumentById: (id, type) => dispatch(actions.document.removeDocumentById(id, type)),
@@ -11,6 +15,6 @@ const mapDispatchToProps = dispatch => ({
 })
 
 export default connect(
-  null,
+    mapStateToProps,
   mapDispatchToProps
 )(Table)

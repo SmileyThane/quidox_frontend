@@ -61,6 +61,11 @@ export default (state = initialState, action) => {
         isFetching: action.payload.isFetching,
         documents: action.payload.data
       }
+    case t.VERIFY_FILE_FETCHING:
+      return {
+        ...state,
+        isFetching: action.payload
+      }
     case t.GET_DOCUMENTS_BY_ACTIVE_COMPANY_ID_REQUEST_SUCCESS:
       return {
         ...state,

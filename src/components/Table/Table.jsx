@@ -65,6 +65,7 @@ const AntdTable = props => {
     sendDocumentToUser,
     tableData,
     status,
+    files: { isFetching },
     ...rest
   } = props
 
@@ -361,6 +362,10 @@ const AntdTable = props => {
   const multipleVerify = () => {
     const selectedDocuments = tableData.data.filter(i => tableState.selectedRowKeys.includes(i.id))
     selectedDocuments.forEach(message => {
+      setTableState({
+        ...tableState,
+        isFetching: true
+      })
       const document = message.document
       if (!document.attachments.length) {
         return null
@@ -373,8 +378,16 @@ const AntdTable = props => {
                 if (data.success) {
                   console.log(file)
                   try {
-                    const verifiedData = window.sign(data.data, file.hash_for_sign)
-                    console.log(verifiedData)
+                    const sertificationObject = window.sign(data.data, file.hash_for_sign)
+                    const verifiedData = {
+                      id: file.id,
+                      hash: sertificationObject.signedData,
+                      data: sertificationObject.verifiedData,
+                      hash_for_sign: sertificationObject.hex,
+                      status: file.status.status_data.id ? file.status.status_data.id : null
+                    }
+
+                    verifyFile(verifiedData)
                   } catch (error) {
                     notification['error']({
                       message: error.message
@@ -384,6 +397,10 @@ const AntdTable = props => {
               })
         }
       }
+      setTableState({
+        ...tableState,
+        isFetching: false
+      })
     })
   }
 
@@ -398,6 +415,7 @@ const AntdTable = props => {
     parameterState.sort_value
   ])
 
+  console.log(tableState.isFetching)
   return (
     <Fragment>
       {tableState.showModal && <Modal
