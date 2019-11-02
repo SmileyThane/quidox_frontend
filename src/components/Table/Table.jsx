@@ -65,7 +65,7 @@ const AntdTable = props => {
     sendDocumentToUser,
     tableData,
     status,
-    files: { isFetching },
+    files,
     ...rest
   } = props
 
@@ -371,12 +371,10 @@ const AntdTable = props => {
         return null
       }
       for (let file of document.attachments) {
-        // console.log(file)
         if (file.status.status_data.id === 3) {
           api.files.getBase64File(file.id)
               .then(({ data }) => {
                 if (data.success) {
-                  console.log(file)
                   try {
                     const sertificationObject = window.sign(data.data, file.hash_for_sign)
                     const verifiedData = {
@@ -384,10 +382,22 @@ const AntdTable = props => {
                       hash: sertificationObject.signedData,
                       data: sertificationObject.verifiedData,
                       hash_for_sign: sertificationObject.hex,
-                      status: file.status.status_data.id ? file.status.status_data.id : null
+                      status: 5
                     }
 
-                    verifyFile(verifiedData)
+                    api.documents.attachmentSignCanConfirm({ key: sertificationObject.verifiedData.key, attachment_id: file.id })
+                        .then(({ data }) => {
+                          if (data.success) {
+                            verifyFile(verifiedData)
+                          } else {
+                            throw new Error(data.error)
+                          }
+                        })
+                        .catch(error => {
+                          notification['error']({
+                            message: error.message
+                          })
+                        })
                   } catch (error) {
                     notification['error']({
                       message: error.message
@@ -395,11 +405,15 @@ const AntdTable = props => {
                   }
                 }
               })
+        } else {
+          notification['warning']({
+            message: 'Файлы не требуют подписи'
+          })
         }
       }
       setTableState({
         ...tableState,
-        isFetching: false
+        selectedRowKeys: []
       })
     })
   }
@@ -479,7 +493,7 @@ const AntdTable = props => {
                   </div>
                   <div>
                     {!!tableState.selectedRowKeys.length &&
-                      <Button type='primary' onClick={multipleVerify}>Verify</Button>
+                      <Button type='primary' onClick={multipleVerify}>Групповое подписание</Button>
                     }
                   </div>
                   <div className='table-header__search'>

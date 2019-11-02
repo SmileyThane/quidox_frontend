@@ -26,7 +26,7 @@ export default (state = initialState, action) => {
           { fetching: false, ...action.payload.data }
         ]
       }
-    case t.UPLOAD_FILE_STATUS:
+    case t.VERIFY_FILE_STATUS:
       return {
         ...state,
         status: action.payload

@@ -22,7 +22,7 @@ const FileActions = props => {
     isHidden = false,
     getDocument,
     changeStatus,
-    verifyDocument
+    verifyFile
   } = props
 
   const receivingTooltipText = (status, array = []) => {
@@ -88,50 +88,55 @@ const FileActions = props => {
     }
   }
 
-  const verifyFile = (item, documentId, status) => {
+  const handleVerifyFile = (item, documentId, status) => {
     if (checkBrowser('ie') && status === 3) {
-      const base64 = item.encoded_file
-
-      try {
-        const sertificationObject = window.sign(base64)
-
-        const newData = {
-          id: item.data,
-          hash: sertificationObject.signedData,
-          data: sertificationObject.verifiedData,
-          hash_for_sign: sertificationObject.hex,
-          status: 5
-        }
-
-        api.documents.checkFlashKey({ key: sertificationObject.verifiedData.key, attachment_id: item.id })
+      console.log('11111111', item)
+      api.files.getBase64File(item.id)
           .then(({ data }) => {
             if (data.success) {
-              verifyDocument(newData)
-                .then((response) => {
-                  if (response.success) {
-                    message.success('Файл успешно подписан!')
-                    getDocument()
-                  } else {
-                    throw new Error(response.error)
-                  }
+              try {
+                console.log('22222222', data.data)
+                const sertificationObject = window.sign(data.data, item.hash_for_sign)
+
+                const newData = {
+                  id: item.id,
+                  hash: sertificationObject.signedData,
+                  data: sertificationObject.verifiedData,
+                  hash_for_sign: sertificationObject.hex,
+                  status: 5
+                }
+
+                console.log(newData)
+                api.documents.attachmentSignCanConfirm({ key: sertificationObject.verifiedData.key, attachment_id: item.id })
+                    .then(({ data }) => {
+                      if (data.success) {
+                        verifyFile(newData)
+                            .then((response) => {
+                              if (response.success) {
+                                message.success('Файл успешно подписан!')
+                                getDocument()
+                              } else {
+                                throw new Error(response.error)
+                              }
+                            })
+                            .catch(error => {
+                              message.error(error.message)
+                            })
+                      } else {
+                        throw new Error(data.error)
+                      }
+                    })
+                    .catch(error => {
+                      message.error(error.message)
+                    })
+              } catch (error) {
+                console.log(error)
+                notification['error']({
+                  message: error.message
                 })
-                .catch(error => {
-                  message.error(error.message)
-                })
-            } else {
-              throw new Error(data.error)
+              }
             }
           })
-          .catch(error => {
-            message.error(error.message)
-          })
-      } catch (error) {
-        console.log(error)
-        notification['error']({
-          message: 'Ошибка флешки',
-          description: 'Проверьте наличие ЭЦП флешки'
-        })
-      }
     }
   }
 
@@ -202,7 +207,7 @@ const FileActions = props => {
           <ActionIcon
             type='edit'
             style={receivingIconColor(statusId, verifyStyle)}
-            onClick={() => verifyFile(file, documentId, statusId)}
+            onClick={() => handleVerifyFile(file, documentId, statusId)}
           />
         </ActionTooltip>
       }
