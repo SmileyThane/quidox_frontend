@@ -472,7 +472,7 @@ const NewDocumentPage = props => {
 
                   <Text strong>{i.original_name}</Text>
                 </div>
-                {!!i.users_companies.length &&
+                {i.users_companies && !!i.users_companies.length &&
                   <Tag
                     color='#3278fb'
                     style={{ cursor: 'pointer' }}
