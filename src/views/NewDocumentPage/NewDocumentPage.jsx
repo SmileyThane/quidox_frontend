@@ -114,7 +114,7 @@ const NewDocumentPage = props => {
   const showUploadingModal = ({ target }, type) => {
     setDocumentState({
       ...documentState,
-      filesArray: [...target.files],
+      files: [...target.files],
       showModal: true,
       modalType: type,
       isFileUploaded: false
@@ -125,7 +125,7 @@ const NewDocumentPage = props => {
   const getFiles = () => {
     return new Promise((resolve, reject) => {
       let chain = Promise.resolve()
-      const files = documentState.filesArray
+      const files = documentState.files
 
       console.log('Files', files)
 
@@ -150,18 +150,9 @@ const NewDocumentPage = props => {
               console.error(error)
             })
           if (idx === files.length - 1) {
-            setDocumentState({
-              ...documentState,
-              isFileUploaded: true
-            })
             chain.then(() => resolve())
           }
         }
-      })
-
-      setDocumentState({
-        ...documentState,
-        fileFetch: [...documentState.fileFetch, ...[files].map(() => false)]
       })
     })
   }
@@ -433,6 +424,13 @@ const NewDocumentPage = props => {
     })
   }
 
+  const abs = () => {
+    const ee = list.filter((i, idx) => documentState.files.find(e => e.name === i.original_name))
+
+    console.log('eeeeeeeeee', ee)
+  }
+
+  abs()
   console.log(documentState)
   return (
     <Fragment>
@@ -490,12 +488,11 @@ const NewDocumentPage = props => {
           <List
             itemLayout='horizontal'
             dataSource={list && list}
-            loading={isFetching}
             locale={{ emptyText: 'Нет прикрепленных файлов' }}
             style={{ maxHeight: '20rem', overflowY: 'scroll', padding: '1rem' }}
             renderItem={(i, idx) => (
               <List.Item
-                key={idx}
+                key={i.id}
                 actions={[
                   <Icon style={{ color: '#3278fb' }} type={documentState.fileFetch[idx] ? 'loading' : 'edit'} onClick={() => handleVerifyFile(i, idx)} />,
                   <Icon style={{ color: '#3278fb' }} type='delete' onClick={() => handleRemoveFile(i.id)} />
@@ -585,21 +582,21 @@ const NewDocumentPage = props => {
       >
         {documentState.modalType === 'filesLoad'
           ? <Fragment>
-            <p>Файлов к загрузке: {documentState.filesArray.length}</p>
-            <p>Файлов загруженно: {list.length}</p>
-            <Progress percent={Math.floor((list.length / documentState.filesArray.length) * 100)} />
-            <Button
-              type='primary'
-              onClick={!documentState.isFileUploaded
-                ? getFiles
-                : () => { setDocumentState({ ...documentState, showModal: false }) }
-              }
-            >
-              {!documentState.isFileUploaded
-                ? 'Загрузить'
-                : 'Закрыть'
-              }
-            </Button>
+            <p>Файлов к загрузке: {documentState.files.length}</p>
+            <p>Файлов загруженно: {list.filter((i, idx) => documentState.files.find(e => e.name === i.original_name)).length}</p>
+            <Progress
+              status='active'
+              percent={Math.floor((
+                list.filter((i, idx) => documentState.files.find(e => e.name === i.original_name)).length / documentState.files.length) * 100)} />
+            {list.filter((i, idx) => documentState.files.find(e => e.name === i.original_name)).length === documentState.files.length
+              ?
+              <Button
+                type='primary'
+                onClick={() => { setDocumentState({ ...documentState, showModal: false, files: [] }) }}
+              >Закрыть
+              </Button>
+              : <Button type='primary' onClick={getFiles}>Загрузить</Button>
+            }
           </Fragment>
           : <EscDataSlider data={documentState.fileInfo} onCancel={hideEscInfo} />
         }
