@@ -13,7 +13,9 @@ import {
   Button,
   Input,
   Modal,
-  List, Tag
+  List,
+  Tag,
+  Progress
 } from 'antd'
 
 import { EscDataSlider } from '../../components'
@@ -39,14 +41,16 @@ const defaultDocumentData = {
   verifyFetching: false,
   isClicked: false,
   isErrorWitchEcp: false,
+  userAddress: '', /// started new logic,
   showModal: false,
-  userAddress: '', /// started new logic
+  modalType: '',
   message: null,
   filesArray: [],
   fileFetch: [],
   fileInfo: [],
   isNewMessage: false,
-  uploadFetch: false
+  uploadFetch: false,
+  isFileUploaded: false
 }
 
 const getSignedHex = (base64) => {
@@ -76,7 +80,6 @@ const NewDocumentPage = props => {
     verifyFile,
     changeFileStatus,
     updateDocumentById,
-    user,
     files: { list, isFetching, status }
   } = props
 
@@ -108,31 +111,59 @@ const NewDocumentPage = props => {
     })
   }
 
-  const getFiles = ({ target }) => {
-    for (let file of [...target.files]) {
-      const fileReader = new window.FileReader()
-
-      fileReader.readAsDataURL(file)
-
-      fileReader.onload = function () {
-        const base64 = fileReader.result.split(',').pop()
-
-        const formData = api.helpers.buildForm({
-          'hash_for_sign': getSignedHex(base64),
-          'document_id': documentState.message.id,
-          'file': file
-        })
-
-        uploadFile(formData, { 'Content-Type': 'multipart/form-data' })
-      }
-    }
-
+  const showUploadingModal = ({ target }, type) => {
     setDocumentState({
       ...documentState,
-      fileFetch: [...documentState.fileFetch, ...[...target.files].map(() => false)]
+      filesArray: [...target.files],
+      showModal: true,
+      modalType: type,
+      isFileUploaded: false
     })
-
     inputNode.current.value = ''
+  }
+
+  const getFiles = () => {
+    return new Promise((resolve, reject) => {
+      let chain = Promise.resolve()
+      const files = documentState.filesArray
+
+      console.log('Files', files)
+
+      files.forEach((file, idx) => {
+        console.log('FIle:', file)
+        const fileReader = new window.FileReader()
+        fileReader.readAsDataURL(file)
+
+        fileReader.onload = function () {
+          const base64 = fileReader.result.split(',').pop()
+
+          const formData = api.helpers.buildForm({
+            'hash_for_sign': getSignedHex(base64),
+            'document_id': documentState.message.id,
+            'file': file
+          })
+          chain = chain
+            .then(() => {
+              return uploadFile(formData, { 'Content-Type': 'multipart/form-data' })
+            })
+            .catch(error => {
+              console.error(error)
+            })
+          if (idx === files.length - 1) {
+            setDocumentState({
+              ...documentState,
+              isFileUploaded: true
+            })
+            chain.then(() => resolve())
+          }
+        }
+      })
+
+      setDocumentState({
+        ...documentState,
+        fileFetch: [...documentState.fileFetch, ...[files].map(() => false)]
+      })
+    })
   }
 
   const handleRemoveFile = (id, index) => {
@@ -259,7 +290,7 @@ const NewDocumentPage = props => {
               })
           } catch (error) {
             notification['error']({
-              message: error.message()
+              message: error.message
             })
             setDocumentState({
               ...documentState,
@@ -402,18 +433,11 @@ const NewDocumentPage = props => {
     })
   }
 
-  const resolveEscError = () => {
-    setDocumentState({
-      ...documentState,
-      showModal: false,
-      isErrorWitchEcp: true
-    })
-  }
-
+  console.log(documentState)
   return (
     <Fragment>
       {!!status &&
-          <p>{status}</p>
+        <p>{status}</p>
       }
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>
         <Spin spinning={!!documentState.fetching}>
@@ -448,7 +472,14 @@ const NewDocumentPage = props => {
           </div>
 
           <div className='buttons-group'>
-            <input type='file' id='upload' hidden multiple onChange={event => getFiles(event)} ref={inputNode} />
+            <input
+              type='file'
+              id='upload'
+              hidden
+              multiple
+              onChange={event => showUploadingModal(event, 'filesLoad')}
+              ref={inputNode}
+            />
 
             <label style={{ minWidth: 216 }} className='ant-btn ant-btn-primary ant-btn-background-ghost label-btn' htmlFor='upload'>
               <Icon type='upload' style={{ marginRight: 10 }} />
@@ -461,13 +492,13 @@ const NewDocumentPage = props => {
             dataSource={list && list}
             loading={isFetching}
             locale={{ emptyText: 'Нет прикрепленных файлов' }}
-            style={{ padding: '1rem' }}
+            style={{ maxHeight: '20rem', overflowY: 'scroll', padding: '1rem' }}
             renderItem={(i, idx) => (
               <List.Item
                 key={idx}
                 actions={[
                   <Icon style={{ color: '#3278fb' }} type={documentState.fileFetch[idx] ? 'loading' : 'edit'} onClick={() => handleVerifyFile(i, idx)} />,
-                  <Icon style={{ color: '#3278fb' }} type='delete' onClick={() => handleRemoveFile(i.id)} />,
+                  <Icon style={{ color: '#3278fb' }} type='delete' onClick={() => handleRemoveFile(i.id)} />
                 ]}
               >
                 <div className='file-item'>
@@ -530,9 +561,9 @@ const NewDocumentPage = props => {
               </Button>
               {list && list.length > 2 &&
               <Button
-                  style={{ marginLeft: '2rem' }}
-                  type='primary'
-                  onClick={handleVerifyAll}
+                style={{ marginLeft: '2rem' }}
+                type='primary'
+                onClick={handleVerifyAll}
               >Подписать все
               </Button>
               }
@@ -552,7 +583,26 @@ const NewDocumentPage = props => {
         closable={false}
         footer={null}
       >
-        <EscDataSlider data={documentState.fileInfo} onCancel={hideEscInfo} />
+        {documentState.modalType === 'filesLoad'
+          ? <Fragment>
+            <p>Файлов к загрузке: {documentState.filesArray.length}</p>
+            <p>Файлов загруженно: {list.length}</p>
+            <Progress percent={Math.floor((list.length / documentState.filesArray.length) * 100)} />
+            <Button
+              type='primary'
+              onClick={!documentState.isFileUploaded
+                ? getFiles
+                : () => { setDocumentState({ ...documentState, showModal: false }) }
+              }
+            >
+              {!documentState.isFileUploaded
+                ? 'Загрузить'
+                : 'Закрыть'
+              }
+            </Button>
+          </Fragment>
+          : <EscDataSlider data={documentState.fileInfo} onCancel={hideEscInfo} />
+        }
       </Modal>
       }
     </Fragment>

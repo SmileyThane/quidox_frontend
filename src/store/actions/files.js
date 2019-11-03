@@ -15,15 +15,16 @@ const uploadFile = (data, headers) => dispatch => {
           payload: data
         })
       } else {
-          dispatch({
-              type: t.UPLOAD_FILE_STATUS,
-              payload: data.error
-          })
+        dispatch({
+          type: t.UPLOAD_FILE_STATUS,
+          payload: data.error
+        })
       }
       dispatch({
         type: t.UPLOAD_FILE_FETCHING,
         payload: false
       })
+      return data
     })
 }
 
@@ -61,14 +62,14 @@ const verifyFile = body => dispatch => {
           payload: data
         })
       } else {
-      dispatch({
+        dispatch({
           type: t.VERIFY_FILE_STATUS,
           payload: data.error
-      })
+        })
       }
       dispatch({
-          type: t.VERIFY_FILE_STATUS,
-          payload: data.success
+        type: t.VERIFY_FILE_STATUS,
+        payload: data.success
       })
       dispatch({
         type: t.VERIFY_FILE_FETCHING,

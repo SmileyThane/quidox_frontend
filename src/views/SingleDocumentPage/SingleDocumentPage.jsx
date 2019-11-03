@@ -326,6 +326,7 @@ const SingleDocumentPage = props => {
                   itemLayout='horizontal'
                   locale={{ emptyText: 'Нет приложенных документов' }}
                   dataSource={document && document.attachments}
+                  style={{ maxHeight: '20rem', overflowY: 'scroll' }}
                   renderItem={(item, index) => (
                     <List.Item key={index}
                       extra={
