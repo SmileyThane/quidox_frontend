@@ -117,10 +117,19 @@ const NewDocumentPage = props => {
     setDocumentState({
       ...documentState,
       files: [...files],
-      showModal: true,
+      showModal: !documentState.showModal,
       modalType: type,
-      isFileUploaded: false
     })
+  }
+
+  const hodeUploadedModal = () => {
+    setDocumentState({
+      ...documentState,
+      files: [],
+      showModal: !documentState.showModal,
+      modalType: ''
+    })
+    inputNode.current.value = ''
   }
 
   const getFiles = () => {
@@ -151,6 +160,10 @@ const NewDocumentPage = props => {
               console.error(error)
             })
           if (idx === files.length - 1) {
+            setDocumentState({
+              ...documentState,
+              isFileUploaded: !documentState.isFileUploaded
+            })
             chain.then(() => resolve())
           }
         }
@@ -586,7 +599,7 @@ const NewDocumentPage = props => {
               ?
               <Button
                 type='primary'
-                onClick={() => { setDocumentState({ ...documentState, showModal: false, files: [] }) }}
+                onClick={hodeUploadedModal}
               >Закрыть
               </Button>
               : <Button type='primary' onClick={getFiles}>Загрузить</Button>
