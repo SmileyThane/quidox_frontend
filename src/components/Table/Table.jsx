@@ -385,7 +385,7 @@ const AntdTable = props => {
         return null
       }
       for (let file of document.attachments) {
-        if (status === 1 || status === 2 || status === 3 || file.status.status_data.id === 3) {
+        if (status === 1 || status === 9 || status === 10 || file.status.status_data.id === 3) {
           api.files.getBase64File(file.id)
             .then(({ data }) => {
               if (data.success) {

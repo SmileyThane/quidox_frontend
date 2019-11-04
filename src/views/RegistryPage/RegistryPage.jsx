@@ -1,11 +1,43 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 
-import { Typography } from 'antd'
+import { Typography, Table } from 'antd'
 import { Upload } from './styled'
 
 const { Text } = Typography
 
 const RegistryPage = () => {
+
+  const columns = [
+    {
+      title: 'File',
+      key: 'file'
+    },
+    {
+      title: 'E-mail',
+      key: 'file'
+    },
+    {
+      title: 'UNP*',
+      key: 'unp'
+    },
+    {
+      title: 'Topic',
+      key: 'topic'
+    },
+    {
+      title: 'Comment',
+      key: 'comment'
+    },
+    {
+      title: 'Request',
+      key: 'request'
+    },
+    {
+      title: 'Success',
+      key: 'success'
+    }
+  ]
+
   return (
     <div className='content' style={{ padding: '1rem' }}>
       <Text>
@@ -23,6 +55,7 @@ const RegistryPage = () => {
             accept='application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
           />
         </Upload.Button>
+        <Table dataSource={[]} columns={columns} />
       </Upload>
     </div>
   )
