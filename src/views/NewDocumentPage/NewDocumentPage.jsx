@@ -111,15 +111,16 @@ const NewDocumentPage = props => {
     })
   }
 
-  const showUploadingModal = ({ target }, type) => {
+  const showUploadingModal = (e, type) => {
+    const files = [...e.target.files]
+    console.log(files)
     setDocumentState({
       ...documentState,
-      files: [...target.files],
+      files: [...files],
       showModal: true,
       modalType: type,
       isFileUploaded: false
     })
-    inputNode.current.value = ''
   }
 
   const getFiles = () => {
@@ -424,13 +425,6 @@ const NewDocumentPage = props => {
     })
   }
 
-  const abs = () => {
-    const ee = list.filter((i, idx) => documentState.files.find(e => e.name === i.original_name))
-
-    console.log('eeeeeeeeee', ee)
-  }
-
-  abs()
   console.log(documentState)
   return (
     <Fragment>
