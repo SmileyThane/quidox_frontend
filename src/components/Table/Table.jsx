@@ -102,7 +102,7 @@ const AntdTable = props => {
 
   const columns = [
     {
-      title: (status === 1 || status === 3) ? 'Получатель' : 'Отправитель',
+      title: (status === 1 || status === 3 || status === 9) ? 'Получатель' : 'Отправитель',
       key: type,
       render: record =>
         <Fragment>
@@ -133,6 +133,10 @@ const AntdTable = props => {
         </Fragment>
     },
     {
+      title: (status === 9 ? 'УНП' : ''),
+      key: 'unp'
+    },
+    {
       title: 'Тема',
       key: 'descr',
       render: record => <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }}>{record.document.name}</Link>
@@ -150,6 +154,9 @@ const AntdTable = props => {
       render: record => <Text>{moment.utc(record.document.created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD/MM/YYYY HH:mm:ss')}</Text>,
       sorter: true,
       defaultSortOrder: 'descend'
+    },
+    {
+      title: (status === 9 ? 'ЭЦП' : '')
     },
     // {
     //   title: 'Статус',
@@ -428,8 +435,6 @@ const AntdTable = props => {
     parameterState.sort_by,
     parameterState.sort_value
   ])
-
-  console.log(tableState.isFetching)
   return (
     <Fragment>
       {tableState.showModal && <Modal

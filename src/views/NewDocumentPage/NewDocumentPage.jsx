@@ -118,11 +118,11 @@ const NewDocumentPage = props => {
       ...documentState,
       files: [...files],
       showModal: !documentState.showModal,
-      modalType: type,
+      modalType: type
     })
   }
 
-  const hodeUploadedModal = () => {
+  const hideUploadedModal = () => {
     setDocumentState({
       ...documentState,
       files: [],
@@ -204,43 +204,42 @@ const NewDocumentPage = props => {
 
     for (let file of list) {
       api.files.getBase64File(file.id)
-          .then(({ data }) => {
-            if (data.success) {
-              try {
-                const sertificationObject = window.sign(data.data, file.hash_for_sign)
+        .then(({ data }) => {
+          if (data.success) {
+            try {
+              const sertificationObject = window.sign(data.data, file.hash_for_sign)
 
-                const verifiedData = {
-                  id: file.id,
-                  hash: sertificationObject.signedData,
-                  data: sertificationObject.verifiedData,
-                  hash_for_sign: sertificationObject.hex,
-                  status: file.status.status_data.id ? file.status.status_data.id : null
-                }
-
-                verifyFile(verifiedData)
-                    .then(response => {
-                      if (response.success) {
-                        notification['success']({
-                          message: 'Файл успешно подписан'
-                        })
-                      } else {
-                        throw new Error(response.error)
-                      }
-                    })
-              } catch (error) {
-                notification['error']({
-                  message: error.message
-                })
+              const verifiedData = {
+                id: file.id,
+                hash: sertificationObject.signedData,
+                data: sertificationObject.verifiedData,
+                hash_for_sign: sertificationObject.hex,
+                status: file.status.status_data.id ? file.status.status_data.id : null
               }
-            } else {
-              throw new Error(data.error)
-            }
-          })
-          .catch(error => {
-            message.error(error.message)
-          })
-    }
 
+              verifyFile(verifiedData)
+                .then(response => {
+                  if (response.success) {
+                    notification['success']({
+                      message: 'Файл успешно подписан'
+                    })
+                  } else {
+                    throw new Error(response.error)
+                  }
+                })
+            } catch (error) {
+              notification['error']({
+                message: error.message
+              })
+            }
+          } else {
+            throw new Error(data.error)
+          }
+        })
+        .catch(error => {
+          message.error(error.message)
+        })
+    }
   }
 
   const handleVerifyFile = (item, index) => {
@@ -497,6 +496,7 @@ const NewDocumentPage = props => {
             dataSource={list && list}
             locale={{ emptyText: 'Нет прикрепленных файлов' }}
             style={{ maxHeight: '20rem', overflowY: 'scroll', padding: '1rem' }}
+            loading={isFetching}
             renderItem={(i, idx) => (
               <List.Item
                 key={i.id}
@@ -596,10 +596,9 @@ const NewDocumentPage = props => {
               percent={Math.floor((
                 list.filter((i, idx) => documentState.files.find(e => e.name === i.original_name)).length / documentState.files.length) * 100)} />
             {list.filter((i, idx) => documentState.files.find(e => e.name === i.original_name)).length === documentState.files.length
-              ?
-              <Button
+              ? <Button
                 type='primary'
-                onClick={hodeUploadedModal}
+                onClick={hideUploadedModal}
               >Закрыть
               </Button>
               : <Button type='primary' onClick={getFiles}>Загрузить</Button>
