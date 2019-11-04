@@ -156,6 +156,15 @@ const AntMenu = props => {
 
         />
         <MenuItem
+          heading='Работа с реестром документов'
+          url='/registry'
+          key='/documents/10'
+          icon='code'
+          status={10}
+          id={'/documents/10'}
+
+        />
+        <MenuItem
           heading='Панель администратора'
           url=''
           key={11}

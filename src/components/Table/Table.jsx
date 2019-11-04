@@ -19,7 +19,7 @@ import {
   Spin,
   Pagination,
   Tooltip,
-  notification,
+  notification
 } from 'antd'
 
 import './Table.scss'
@@ -375,43 +375,50 @@ const AntdTable = props => {
       })
       const document = message.document
       if (!document.attachments.length) {
+        notification['error']({
+          message: 'В сообщении отсутствуют файлы'
+        })
+        setTableState({
+          ...tableState,
+          isFetching: false
+        })
         return null
       }
       for (let file of document.attachments) {
-        if (file.status.status_data.id === 3) {
+        if (status === 1 || status === 2 || status === 3 || file.status.status_data.id === 3) {
           api.files.getBase64File(file.id)
-              .then(({ data }) => {
-                if (data.success) {
-                  try {
-                    const sertificationObject = window.sign(data.data, file.hash_for_sign)
-                    const verifiedData = {
-                      id: file.id,
-                      hash: sertificationObject.signedData,
-                      data: sertificationObject.verifiedData,
-                      hash_for_sign: sertificationObject.hex,
-                      status: 5
-                    }
-
-                    api.documents.attachmentSignCanConfirm({ key: sertificationObject.verifiedData.key, attachment_id: file.id })
-                        .then(({ data }) => {
-                          if (data.success) {
-                            verifyFile(verifiedData)
-                          } else {
-                            throw new Error(data.error)
-                          }
-                        })
-                        .catch(error => {
-                          notification['error']({
-                            message: error.message
-                          })
-                        })
-                  } catch (error) {
-                    notification['error']({
-                      message: error.message
-                    })
+            .then(({ data }) => {
+              if (data.success) {
+                try {
+                  const sertificationObject = window.sign(data.data, file.hash_for_sign)
+                  const verifiedData = {
+                    id: file.id,
+                    hash: sertificationObject.signedData,
+                    data: sertificationObject.verifiedData,
+                    hash_for_sign: sertificationObject.hex,
+                    status: 5
                   }
+
+                  api.documents.attachmentSignCanConfirm({ key: sertificationObject.verifiedData.key, attachment_id: file.id })
+                    .then(({ data }) => {
+                      if (data.success) {
+                        verifyFile(verifiedData)
+                      } else {
+                        throw new Error(data.error)
+                      }
+                    })
+                    .catch(error => {
+                      notification['error']({
+                        message: error.message
+                      })
+                    })
+                } catch (error) {
+                  notification['error']({
+                    message: error.message
+                  })
                 }
-              })
+              }
+            })
         } else {
           notification['warning']({
             message: 'Файлы не требуют подписи'

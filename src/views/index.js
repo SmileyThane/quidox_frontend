@@ -12,6 +12,7 @@ import ResetPasswordPage from './ResetPasswordPage'
 import DocumentsPage from './DocumentsPage'
 import AttachmentsPage from './AttachmentsPage'
 import EcsCheckingPage from './EcsCheckingPage'
+import RegistryPage from './RegistryPage'
 
 export {
   LoginPage,
@@ -27,5 +28,6 @@ export {
   CompaniesPage,
   DocumentsPage,
   AttachmentsPage,
-  EcsCheckingPage
+  EcsCheckingPage,
+  RegistryPage
 }

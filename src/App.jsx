@@ -19,7 +19,8 @@ import {
   CompaniesPage,
   DocumentsPage,
   AttachmentsPage,
-  EcsCheckingPage
+  EcsCheckingPage,
+  RegistryPage
 } from './views'
 
 function App () {
@@ -41,6 +42,7 @@ function App () {
           <PrivateRoute exact path='/attachments' component={AttachmentsPage} />
           <PrivateRoute path='/documents/:id' component={SingleDocumentPage} />
           <PrivateRoute path='/attachments/:id' component={SingleDocumentPage} />
+          <PrivateRoute path='/registry' component={RegistryPage} />
           <PrivateRoute path='/user-me' component={UserInfoPage} />
 
           <PublicRoute path='/login' component={LoginPage} />
