@@ -162,6 +162,7 @@ const AntMenu = props => {
           icon='code'
           status={10}
           id={'/documents/10'}
+          disabled
 
         />
         <MenuItem

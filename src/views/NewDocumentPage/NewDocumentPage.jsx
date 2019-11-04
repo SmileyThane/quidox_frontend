@@ -132,7 +132,7 @@ const NewDocumentPage = props => {
     inputNode.current.value = ''
   }
 
-  const getFiles = () => {
+  const getFiles = () =>  {
     return new Promise((resolve, reject) => {
       let chain = Promise.resolve()
       const files = documentState.files
@@ -274,35 +274,36 @@ const NewDocumentPage = props => {
               status: item.status.status_data.id ? item.status.status_data.id : null
             }
 
-            verifyFile(verifiedData)
-              .then(response => {
-                if (response.success) {
-                  notification['success']({
-                    message: 'Файл успешно подписан'
-                  })
-                  setDocumentState({
-                    ...documentState,
-                    fileFetch: [
-                      ...documentState.fileFetch.slice(0, index),
-                      false,
-                      ...documentState.fileFetch.slice(index + 1)
-                    ]
-                  })
+            api.documents.attachmentSignCanConfirm({ key: sertificationObject.verifiedData.key, attachment_id: item.id })
+              .then(({ data }) => {
+                if (data.success) {
+                  verifyFile(verifiedData)
+                    .then(response => {
+                      if (response.success) {
+                        notification['success']({
+                          message: 'Файл успешно подписан'
+                        })
+                      } else {
+                        throw new Error(response.error)
+                      }
+                    })
+                    .catch(error => {
+                      notification['error']({
+                        message: error.message
+                      })
+                    })
                 } else {
-                  throw new Error(response.error)
+                  throw new Error(data.error)
                 }
+              })
+              .catch(error => {
+                notification['error']({
+                  message: error.message
+                })
               })
           } catch (error) {
             notification['error']({
               message: error.message
-            })
-            setDocumentState({
-              ...documentState,
-              fileFetch: [
-                ...documentState.fileFetch.slice(0, index),
-                false,
-                ...documentState.fileFetch.slice(index + 1)
-              ]
             })
           }
         } else {

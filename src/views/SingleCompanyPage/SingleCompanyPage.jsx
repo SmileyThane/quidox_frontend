@@ -27,8 +27,6 @@ const SingleCompanyPage = props => {
       getCompanyById(match.params.id)
     }
   }, [match, getCompanyById])
-
-  console.log(singleCompany)
   return (
     <Fragment>
       <Spin spinning={isFetching}>
