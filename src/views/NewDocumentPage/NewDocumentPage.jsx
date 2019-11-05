@@ -113,7 +113,6 @@ const NewDocumentPage = props => {
 
   const showUploadingModal = (e, type) => {
     const files = [...e.target.files]
-    console.log(files)
     setDocumentState({
       ...documentState,
       files: [...files],

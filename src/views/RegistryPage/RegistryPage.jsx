@@ -1,20 +1,50 @@
-import React, { useState, useRef, Fragment } from 'react'
+import React, { useState, useEffect, useRef, Fragment } from 'react'
 
-import { Typography, Table, Steps } from 'antd'
+import {Typography, Table, Steps, Icon, notification, Button} from 'antd'
 import { Upload } from './styled'
 import { api } from '../../services'
 
-const { Text } = Typography
 const { Step } = Steps
 
 const defaultState = {
   registryData: [],
-  files: []
+  files: [],
+  sync: false
 }
-const RegistryPage = () => {
+
+const getSignedHex = (base64) => {
+  try {
+    return window.sign(base64).hex
+  } catch (error) {
+    return ''
+  }
+}
+
+const RegistryPage = ({ createMessage, uploadFile, updateDocumentById }) => {
   const [state, setState] = useState(defaultState)
   const inputNode = useRef(null)
   const filesNode = useRef(null)
+
+  useEffect(() => {
+    if (state.files.length) {
+      filesNode.current.value = ''
+      if (!!state.registryData.reduce((a, b) => a.system_status * b.system_status)) {
+        notification['success']({
+          message: 'Файлы синхронизированы',
+          description: `${state.files.length} успешная(ых) синхронизаций`
+        })
+      } else {
+        notification['error']({
+          message: 'Ошибка синхронизации',
+          description: 'Убедитесь в правильности загружаемых файлов!'
+        })
+      }
+      setState({
+        ...state,
+        sync: !!state.registryData.reduce((a, b) => a.system_status * b.system_status)
+      })
+    }
+  }, [state.files.length])
 
   const handleImportRegistry = e => {
     console.log(e.target.files)
@@ -29,9 +59,19 @@ const RegistryPage = () => {
             ...state,
             registryData: data.data
           })
+          notification['success']({
+            message: 'Файл реестра успешно добавлен'
+          })
           inputNode.current.value = ''
+        } else {
+          throw new Error(data.error)
         }
       })
+        .catch(error => {
+          notification['error']({
+            message: error.message
+          })
+        })
   }
 
   const getFiles = e => {
@@ -61,6 +101,41 @@ const RegistryPage = () => {
     } else {
       return 'Error'
     }
+  }
+
+  const handleCreateMessage = () => {
+    let chain = Promise.resolve()
+    const messages = state.registryData
+    messages.forEach((message, idx) => {
+      chain = chain
+          .then(() => {
+            createMessage({ name: message.name, description: messages.description })
+                .then(({ success, data }) => {
+                  if (success) {
+                    const fileReader = new window.FileReader()
+                    fileReader.readAsDataURL(state.files[idx])
+                    fileReader.onload = function () {
+                      const base64 = fileReader.result.split(',').pop()
+
+                      const formData = api.helpers.buildForm({
+                        'hash_for_sign': getSignedHex(base64),
+                        'document_id': data.id,
+                        'file': state.files[idx]
+                      })
+
+                      uploadFile(formData, { 'Content-Type': 'multipart/form-data' })
+                          .then(() => {
+                            updateDocumentById(data.id, {
+                              name: message.name,
+                              description: messages.description,
+                              user_company_ids: JSON.stringify([message.e_mail])
+                            })
+                          })
+                    }
+                  }
+                })
+          })
+    })
   }
 
   const columns = [
@@ -100,49 +175,55 @@ const RegistryPage = () => {
       render: record => <p style={{ color: record.system_status ? 'green' : 'red' }}>{getSystemStatus(record.system_status)}</p>
     }
   ]
-  console.log(state.files)
-  console.log(state.registryData)
+  // console.log(state.files)
+  // console.log(state.registryData)
+  console.log(state)
   return (
     <div className='content' style={{ padding: '1rem' }}>
-      <Steps
-        direction='vertical'
-        size='small'
-      >
-        <Step title='Шаг 1' description='Загрузите файл реестра'>123</Step>
-        <Step title='Шаг 2' description='Загрузите файлы указанные в реестре' />
+      <Steps  size='small' style={{ maxWidth: '100%' }}>
+        <Step status={state.registryData.length ? 'finish' : 'process'} title='Шаг 1' description='Загрузите файл реестра' icon={<Icon type='file-excel' />} />
+        <Step status={
+          state.registryData.length && !!state.registryData.reduce((a, b) => a.system_status * b.system_status) ? 'finish' : 'wait'
+        } title='Шаг 2' description='Загрузите файлы указанные в реестре' icon={<Icon type='file' />} />
+        <Step status={state.sync ? 'finish' : 'wait'} title='Шаг 3' description='Сонхронизация окончена, сохраните сообщения' icon={<Icon type='file-done' />} />
       </Steps>
-      <Text>
-        <strong>Работа с Реестром документов</strong> - это простой встроенный сервис для работы с большим количеством
-        сообщений и документов, который позволит Вам принимать решение об интеграции Ваших систем (1С, CRM и др.)
-        Работа с Реестром документов более детально описана <a href='#'>тут</a>.
-      </Text>
-      <Upload>
-        <Upload.Button htmlFor='upload'>
-          Загрузить
-          <input
-            hidden
+      <div className='buttons-group'>
+        <input
             type='file'
             id='upload'
-            ref={inputNode}
-            accept='application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            hidden
             onChange={event => handleImportRegistry(event)}
-          />
-        </Upload.Button>
+            accept='application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            ref={inputNode}
+        />
+
+        <label style={{ minWidth: 216 }} className='ant-btn ant-btn-primary ant-btn-background-ghost label-btn' htmlFor='upload'>
+          <Icon type='upload' style={{ marginRight: 10 }} />
+          Загрузить реестр
+        </label>
+      </div>
+      <Upload>
         {!!state.registryData.length &&
         <Fragment>
           <Table rowKey='file' scroll={{ x: true }} dataSource={state.registryData} columns={columns} />
-          <Upload>
-            <Upload.Button htmlFor='file-upload'>Загрузить
-              <input
-                hidden
+          <div className='buttons-group'>
+            <input
                 type='file'
-                ref={filesNode}
+                id='upload-file'
+                hidden
                 multiple
-                id='file-upload'
                 onChange={event => getFiles(event)}
-              />
-            </Upload.Button>
-          </Upload>
+                ref={filesNode}
+            />
+
+            <label style={{ minWidth: 216 }} className='ant-btn ant-btn-primary ant-btn-background-ghost label-btn' htmlFor='upload-file'>
+              <Icon type='upload' style={{ marginRight: 10 }} />
+              Загрузить файл(ы)
+            </label>
+            {state.sync &&
+            <Button type='primary' onClick={() => handleCreateMessage()}>Сохранить</Button>
+            }
+          </div>
         </Fragment>
         }
       </Upload>
