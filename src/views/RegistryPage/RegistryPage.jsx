@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef, Fragment } from 'react'
+import React, { useState, useRef, Fragment } from 'react'
 
-import { Typography, Table } from 'antd'
+import { Typography, Table, Steps } from 'antd'
 import { Upload } from './styled'
 import { api } from '../../services'
 
 const { Text } = Typography
+const { Step } = Steps
 
 const defaultState = {
   registryData: [],
@@ -34,9 +35,12 @@ const RegistryPage = () => {
   }
 
   const getFiles = e => {
+    const oldFileNames = state.registryData.map(i => i.file)
+    const newFileNames = [...e.target.files].map(i => i.name)
     setState({
       ...state,
-      files: [...e.target.files].filter(e => state.registryData.find(i => i.file === e.name))
+      files: [...e.target.files].filter(e => oldFileNames.includes(e.name)),
+      registryData: state.registryData.map(i => ({ ...i, system_status: newFileNames.includes(i.file) }))
     })
   }
 
@@ -58,26 +62,6 @@ const RegistryPage = () => {
       return 'Error'
     }
   }
-
-  useEffect(() => {
-    if (state.files.length) {
-      setState({
-        ...state,
-        registryData: state.registryData.map(i => {
-          state.files.map(e => {
-            if (i.file !== e.name) {
-              console.log('True', i)
-              return {
-                ...i,
-                system_status: false
-              }
-            }
-            return i
-          })
-        })
-      })
-    }
-  }, [state.files.length])
 
   const columns = [
     {
@@ -120,6 +104,13 @@ const RegistryPage = () => {
   console.log(state.registryData)
   return (
     <div className='content' style={{ padding: '1rem' }}>
+      <Steps
+        direction='vertical'
+        size='small'
+      >
+        <Step title='Шаг 1' description='Загрузите файл реестра'>123</Step>
+        <Step title='Шаг 2' description='Загрузите файлы указанные в реестре' />
+      </Steps>
       <Text>
         <strong>Работа с Реестром документов</strong> - это простой встроенный сервис для работы с большим количеством
         сообщений и документов, который позволит Вам принимать решение об интеграции Ваших систем (1С, CRM и др.)

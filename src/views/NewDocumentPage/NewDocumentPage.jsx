@@ -132,42 +132,31 @@ const NewDocumentPage = props => {
     inputNode.current.value = ''
   }
 
-  const getFiles = () =>  {
-    return new Promise((resolve, reject) => {
-      let chain = Promise.resolve()
-      const files = documentState.files
+  const getFiles = () => {
+    let chain = Promise.resolve()
+    const files = documentState.files
 
-      console.log('Files', files)
+    console.log('Files', files)
 
-      files.forEach((file, idx) => {
-        console.log('FIle:', file)
-        const fileReader = new window.FileReader()
-        fileReader.readAsDataURL(file)
+    files.forEach((file, idx) => {
+      console.log('FIle:', file)
+      const fileReader = new window.FileReader()
+      fileReader.readAsDataURL(file)
 
-        fileReader.onload = function () {
-          const base64 = fileReader.result.split(',').pop()
+      fileReader.onload = function () {
+        const base64 = fileReader.result.split(',').pop()
 
-          const formData = api.helpers.buildForm({
-            'hash_for_sign': getSignedHex(base64),
-            'document_id': documentState.message.id,
-            'file': file
+        const formData = api.helpers.buildForm({
+          'hash_for_sign': getSignedHex(base64),
+          'document_id': documentState.message.id,
+          'file': file
+        })
+        chain = chain
+          .then(() => uploadFile(formData, { 'Content-Type': 'multipart/form-data' }))
+          .catch(error => {
+            console.error(error)
           })
-          chain = chain
-            .then(() => {
-              return uploadFile(formData, { 'Content-Type': 'multipart/form-data' })
-            })
-            .catch(error => {
-              console.error(error)
-            })
-          if (idx === files.length - 1) {
-            setDocumentState({
-              ...documentState,
-              isFileUploaded: !documentState.isFileUploaded
-            })
-            chain.then(() => resolve())
-          }
-        }
-      })
+      }
     })
   }
 
