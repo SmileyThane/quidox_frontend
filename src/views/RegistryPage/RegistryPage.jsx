@@ -183,8 +183,8 @@ const RegistryPage = ({ createMessage, uploadFile, updateDocumentById }) => {
         <Step status={state.registryData.length ? 'finish' : 'process'} title='Шаг 1' description='Загрузите файл реестра' icon={<Icon type='file-excel' />} />
         <Step status={
           state.registryData.length && !!state.registryData.reduce((a, b) => a.system_status * b.system_status) ? 'finish' : 'wait'
-        } title='Шаг 2' description='Загрузите файлы указанные в реестре' icon={<Icon type='file' />} />
-        <Step status={state.sync ? 'finish' : 'wait'} title='Шаг 3' description='Сонхронизация окончена, сохраните сообщения' icon={<Icon type='file-done' />} />
+        } title='Шаг 2' description='Загрузите файлы, указанные в реестре' icon={<Icon type='file' />} />
+        <Step status={state.sync ? 'finish' : 'wait'} title='Шаг 3' description='Синхронизация окончена, сохраните сообщения' icon={<Icon type='file-done' />} />
       </Steps>
       <div className='buttons-group'>
         <input
