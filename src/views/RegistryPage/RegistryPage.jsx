@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, Fragment } from 'react'
 
-import {Typography, Table, Steps, Icon, notification, Button} from 'antd'
+import { Table, Steps, Icon, notification, Button } from 'antd'
 import { Upload } from './styled'
 import { api } from '../../services'
 
@@ -28,7 +28,7 @@ const RegistryPage = ({ createMessage, uploadFile, updateDocumentById }) => {
   useEffect(() => {
     if (state.files.length) {
       filesNode.current.value = ''
-      if (!!state.registryData.reduce((a, b) => a.system_status * b.system_status)) {
+      if (state.registryData.reduce((a, b) => a.system_status * b.system_status)) {
         notification['success']({
           message: 'Файлы синхронизированы',
           description: `${state.files.length} успешная(ых) синхронизаций`
@@ -67,11 +67,11 @@ const RegistryPage = ({ createMessage, uploadFile, updateDocumentById }) => {
           throw new Error(data.error)
         }
       })
-        .catch(error => {
-          notification['error']({
-            message: error.message
-          })
+      .catch(error => {
+        notification['error']({
+          message: error.message
         })
+      })
   }
 
   const getFiles = e => {
@@ -95,11 +95,13 @@ const RegistryPage = ({ createMessage, uploadFile, updateDocumentById }) => {
     }
   }
 
-  const getSystemStatus = bool => {
-    if (bool) {
-      return 'Ok'
+  const getSystemStatus = (bool, files = []) => {
+    if (bool && !files.length) {
+      return <p style={{ color: 'orange' }}>processing</p>
+    } else if (bool && files.length) {
+      return <p style={{ color: 'green' }}>ok</p>
     } else {
-      return 'Error'
+      return <p style={{ color: 'red' }}>error</p>
     }
   }
 
@@ -108,33 +110,33 @@ const RegistryPage = ({ createMessage, uploadFile, updateDocumentById }) => {
     const messages = state.registryData
     messages.forEach((message, idx) => {
       chain = chain
-          .then(() => {
-            createMessage({ name: message.name, description: messages.description })
-                .then(({ success, data }) => {
-                  if (success) {
-                    const fileReader = new window.FileReader()
-                    fileReader.readAsDataURL(state.files[idx])
-                    fileReader.onload = function () {
-                      const base64 = fileReader.result.split(',').pop()
+        .then(() => {
+          createMessage({ name: message.name, description: messages.description })
+            .then(({ success, data }) => {
+              if (success) {
+                const fileReader = new window.FileReader()
+                fileReader.readAsDataURL(state.files[idx])
+                fileReader.onload = function () {
+                  const base64 = fileReader.result.split(',').pop()
 
-                      const formData = api.helpers.buildForm({
-                        'hash_for_sign': getSignedHex(base64),
-                        'document_id': data.id,
-                        'file': state.files[idx]
+                  const formData = api.helpers.buildForm({
+                    'hash_for_sign': getSignedHex(base64),
+                    'document_id': data.id,
+                    'file': state.files[idx]
+                  })
+
+                  uploadFile(formData, { 'Content-Type': 'multipart/form-data' })
+                    .then(() => {
+                      updateDocumentById(data.id, {
+                        name: message.name,
+                        description: messages.description,
+                        user_company_ids: JSON.stringify([message.e_mail])
                       })
-
-                      uploadFile(formData, { 'Content-Type': 'multipart/form-data' })
-                          .then(() => {
-                            updateDocumentById(data.id, {
-                              name: message.name,
-                              description: messages.description,
-                              user_company_ids: JSON.stringify([message.e_mail])
-                            })
-                          })
-                    }
-                  }
-                })
-          })
+                    })
+                }
+              }
+            })
+        })
     })
   }
 
@@ -172,15 +174,12 @@ const RegistryPage = ({ createMessage, uploadFile, updateDocumentById }) => {
     {
       title: 'Success',
       key: 'success',
-      render: record => <p style={{ color: record.system_status ? 'green' : 'red' }}>{getSystemStatus(record.system_status)}</p>
+      render: record => getSystemStatus(record.system_status, state.files)
     }
   ]
-  // console.log(state.files)
-  // console.log(state.registryData)
-  console.log(state)
   return (
     <div className='content' style={{ padding: '1rem' }}>
-      <Steps  size='small' style={{ maxWidth: '100%' }}>
+      <Steps size='small' style={{ maxWidth: '100%' }}>
         <Step status={state.registryData.length ? 'finish' : 'process'} title='Шаг 1' description='Загрузите файл реестра' icon={<Icon type='file-excel' />} />
         <Step status={
           state.registryData.length && !!state.registryData.reduce((a, b) => a.system_status * b.system_status) ? 'finish' : 'wait'
@@ -189,12 +188,12 @@ const RegistryPage = ({ createMessage, uploadFile, updateDocumentById }) => {
       </Steps>
       <div className='buttons-group'>
         <input
-            type='file'
-            id='upload'
-            hidden
-            onChange={event => handleImportRegistry(event)}
-            accept='application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-            ref={inputNode}
+          type='file'
+          id='upload'
+          hidden
+          onChange={event => handleImportRegistry(event)}
+          accept='application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+          ref={inputNode}
         />
 
         <label style={{ minWidth: 216 }} className='ant-btn ant-btn-primary ant-btn-background-ghost label-btn' htmlFor='upload'>
@@ -208,12 +207,12 @@ const RegistryPage = ({ createMessage, uploadFile, updateDocumentById }) => {
           <Table rowKey='file' scroll={{ x: true }} dataSource={state.registryData} columns={columns} />
           <div className='buttons-group'>
             <input
-                type='file'
-                id='upload-file'
-                hidden
-                multiple
-                onChange={event => getFiles(event)}
-                ref={filesNode}
+              type='file'
+              id='upload-file'
+              hidden
+              multiple
+              onChange={event => getFiles(event)}
+              ref={filesNode}
             />
 
             <label style={{ minWidth: 216 }} className='ant-btn ant-btn-primary ant-btn-background-ghost label-btn' htmlFor='upload-file'>
