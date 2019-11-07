@@ -113,6 +113,12 @@ const NewDocumentPage = props => {
 
   const showUploadingModal = (e, type) => {
     const files = [...e.target.files]
+    if (files.length > 5) {
+      notification['error']({
+        message: 'Error'
+      })
+      return null
+    }
     setDocumentState({
       ...documentState,
       files: [...files],

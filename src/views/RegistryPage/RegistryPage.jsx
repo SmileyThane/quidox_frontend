@@ -28,7 +28,8 @@ const RegistryPage = ({ createMessage, uploadFile, updateDocumentById }) => {
   useEffect(() => {
     if (state.files.length) {
       filesNode.current.value = ''
-      if (state.registryData.reduce((a, b) => a.system_status * b.system_status)) {
+      // console.log(Boolean(state.registryData.filter(i => i.system_status).length))
+      if (!state.registryData.filter(i => !i.system_status).length) {
         notification['success']({
           message: 'Файлы синхронизированы',
           description: `${state.files.length} успешная(ых) синхронизаций`
@@ -55,6 +56,7 @@ const RegistryPage = ({ createMessage, uploadFile, updateDocumentById }) => {
     api.registry.importRegistry(formData, { 'Content-Type': 'multipart/form-data' })
       .then(({ data }) => {
         if (data.success) {
+          console.log(data.data.filter(i => i.system_status === false))
           setState({
             ...state,
             registryData: data.data
@@ -111,7 +113,7 @@ const RegistryPage = ({ createMessage, uploadFile, updateDocumentById }) => {
     messages.forEach((message, idx) => {
       chain = chain
         .then(() => {
-          createMessage({ name: message.name, description: messages.description })
+          createMessage({ name: message.name, description: message.description, status: 10 })
             .then(({ success, data }) => {
               if (success) {
                 const fileReader = new window.FileReader()
@@ -177,6 +179,8 @@ const RegistryPage = ({ createMessage, uploadFile, updateDocumentById }) => {
       render: record => getSystemStatus(record.system_status, state.files)
     }
   ]
+  console.log(state.registryData.length)
+  console.log(state.files.length)
   return (
     <div className='content' style={{ padding: '1rem' }}>
       <Steps size='small' style={{ maxWidth: '100%' }}>
