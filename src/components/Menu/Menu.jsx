@@ -148,7 +148,7 @@ const AntMenu = props => {
         />
         <MenuItem
           heading='Сторонние источники'
-          url='/externals'
+          url='/documents'
           key='/documents/9'
           icon='file-text'
           status={9}
@@ -156,12 +156,20 @@ const AntMenu = props => {
 
         />
         <MenuItem
+            heading='Сообщения реестра'
+            url='/documents'
+            key='/documents/10'
+            icon='file-text'
+            status={10}
+            id={'/documents/10'}
+
+        />
+        <MenuItem
           heading='Работа с реестром документов'
           url='/registry'
-          key='/documents/10'
+          key='/registry'
           icon='code'
-          status={10}
-          id={'/documents/10'}
+          id={'/registry'}
 
         />
         <MenuItem

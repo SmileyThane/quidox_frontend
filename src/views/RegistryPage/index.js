@@ -5,7 +5,7 @@ import RegistryPage from './RegistryPage'
 const mapDispatchToProps = dispatch => ({
     createMessage: data => dispatch(actions.document.createMessage(data)),
     uploadFile: (data, headers) => dispatch(actions.files.uploadFile(data, headers)),
-    updateDocumentById: (id, data) => dispatch(actions.document.updateDocumentById(id, data))
+    changeFileStatus: data => dispatch(actions.files.changeFileStatus(data))
 })
 
 export default connect(
