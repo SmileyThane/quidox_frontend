@@ -66,6 +66,7 @@ const DocumentsPage = props => {
             console.log('Was verify:', verify)
           }
         } catch (error) {
+          console.error(error)
           notification['error']({
             message: error.message
           })
