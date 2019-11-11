@@ -477,6 +477,9 @@ const AntdTable = props => {
               <div>
                 <div className='table__header table-header'>
                   <div className='table-header__actions'>
+                    <Tooltip title='Перенаправление документа(ов)' placement='topRight' arrowPointAtCenter>
+                      <Icon type='cloud-upload' onClick={() => openModal()} />
+                    </Tooltip>
                     <Tooltip title='Удаление документа(ов)' placement='topRight' arrowPointAtCenter>
                       <Popconfirm
                         title='Вы уверены?'
