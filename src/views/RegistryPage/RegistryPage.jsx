@@ -76,17 +76,17 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
       })
   }
 
-  const getAsyncBase64 = async function parse(file) {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    const  result = await new Promise((resolve, reject) => {
-      reader.onload = function(event) {
-        resolve(reader.result.split(',').pop())
-      }
+  const asyncFileReader = async (file) => {
+    console.log(file)
+    console.log('file', file)
+    const base64 = file => new Promise((resolve, reject) => {
+      const reader = window.FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => resolve(reader.result)
     })
-    return result
+    console.log('result', base64)
+    return base64
   }
-
 
   const asyncCreateMessage = async (message, idx) => {
     console.log(`start with file # ${idx}`)
@@ -96,9 +96,9 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
       user_company_ids: JSON.stringify([message.e_mail]),
       status: 10 })
 
-    const base64 = getAsyncBase64(state.files[idx])
+    const base64 = asyncFileReader(state.files[idx])
     console.log(123);
-    console.log('base64', base64.json)
+    console.log('base64', base64)
     console.log(321);
 
     const formData = api.helpers.buildForm({

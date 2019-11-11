@@ -245,20 +245,11 @@ const NewDocumentPage = props => {
       return null
     }
 
-    setDocumentState({
-      ...documentState,
-      fileFetch: [
-        ...documentState.fileFetch.slice(0, index),
-        true,
-        ...documentState.fileFetch.slice(index + 1)
-      ]
-    })
-
     api.files.getBase64File(item.id)
       .then(({ data }) => {
         if (data.success) {
           try {
-            const sertificationObject = window.sign(data.data, item.hash_for_sign)
+            const sertificationObject = window.sign(data.data.encoded_base64_file, item.hash_for_sign)
 
             const verifiedData = {
               id: item.id,
@@ -316,11 +307,12 @@ const NewDocumentPage = props => {
       })
   }
 
-  const showEscInfo = info => {
+  const showEscInfo = (info, type) => {
     setDocumentState({
       ...documentState,
       showModal: true,
-      fileInfo: info
+      fileInfo: info,
+      modalType: type
     })
   }
 
@@ -509,7 +501,7 @@ const NewDocumentPage = props => {
                   <Tag
                     color='#3278fb'
                     style={{ cursor: 'pointer' }}
-                    onClick={() => showEscInfo(i.users_companies)}
+                    onClick={() => showEscInfo(i.users_companies, 'info')}
                   >ЭЦП</Tag>
                 }
                 <Select value={i.status.status_data.id} onChange={handleChangeStatus(i, idx)} style={{ marginLeft: 10, minWidth: '20rem' }}>
@@ -582,24 +574,27 @@ const NewDocumentPage = props => {
         closable={false}
         footer={null}
       >
-        {documentState.modalType === 'filesLoad'
-          ? <Fragment>
-            <p>Файлов к загрузке: {documentState.files.length}</p>
-            <p>Файлов загруженно: {list.filter((i, idx) => documentState.files.find(e => e.name === i.original_name)).length}</p>
-            <Progress
-              status='active'
-              percent={Math.floor((
-                list.filter((i, idx) => documentState.files.find(e => e.name === i.original_name)).length / documentState.files.length) * 100)} />
-            {list.filter((i, idx) => documentState.files.find(e => e.name === i.original_name)).length === documentState.files.length
-              ? <Button
-                type='primary'
-                onClick={hideUploadedModal}
-              >Закрыть
-              </Button>
-              : <Button type='primary' onClick={getFiles}>Загрузить</Button>
-            }
-          </Fragment>
-          : <EscDataSlider data={documentState.fileInfo} onCancel={hideEscInfo} />
+        {documentState.modalType === 'filesLoad' &&
+            <Fragment>
+              <p>Файлов к загрузке: {documentState.files.length}</p>
+              <p>Файлов
+                загруженно: {list.filter((i, idx) => documentState.files.find(e => e.name === i.original_name)).length}</p>
+              <Progress
+                  status='active'
+                  percent={Math.floor((
+                      list.filter((i, idx) => documentState.files.find(e => e.name === i.original_name)).length / documentState.files.length) * 100)}/>
+              {list.filter((i, idx) => documentState.files.find(e => e.name === i.original_name)).length === documentState.files.length
+                  ? <Button
+                      type='primary'
+                      onClick={hideUploadedModal}
+                  >Закрыть
+                  </Button>
+                  : <Button type='primary' onClick={getFiles}>Загрузить</Button>
+              }
+            </Fragment>
+        }
+        {documentState.modalType === 'info' &&
+        <EscDataSlider data={documentState.fileInfo} onCancel={hideEscInfo} />
         }
       </Modal>
       }

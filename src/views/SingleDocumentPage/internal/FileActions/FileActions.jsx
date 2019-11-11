@@ -10,7 +10,8 @@ import {
   verifyText,
   agreeStyle,
   declineStyle,
-  verifyStyle
+  verifyStyle,
+  normal
 } from './static'
 import { api } from '../../../../services'
 import { checkBrowser } from '../../../../utils'
@@ -19,7 +20,8 @@ const FileActions = props => {
   const {
     file,
     documentId,
-    isHidden = false,
+    // isHidden = false,
+    canBeSigned,
     getDocument,
     changeStatus,
     verifyFile
@@ -89,20 +91,20 @@ const FileActions = props => {
   }
 
   const handleVerifyFile = (item, documentId, status) => {
-    if (checkBrowser('ie') && status === 3) {
+    if ((checkBrowser('ie') && status === 3) || canBeSigned) {
       api.files.getBase64File(item.id)
         .then(({ data }) => {
           if (data.success) {
             try {
               console.log('22222222', data.data)
-              const sertificationObject = window.sign(data.data, item.hash_for_sign)
+              const sertificationObject = window.sign(data.data.encoded_base64_file, item.hash_for_sign)
 
               const newData = {
                 id: item.id,
                 hash: sertificationObject.signedData,
                 data: sertificationObject.verifiedData,
                 hash_for_sign: sertificationObject.hex,
-                status: 5
+                status: canBeSigned ? null : 5
               }
 
               console.log(newData)
@@ -159,17 +161,18 @@ const FileActions = props => {
       })
   }
 
+  console.log(canBeSigned)
   const statusId = file.status.status_data.id
   return [
     <Fragment>
-      { statusId !== 5 && isHidden &&
+      { statusId !== 5 &&
         <ActionTooltip
           arrowPointAtCenter
           placement='topRight'
-          key={1}
           title={receivingTooltipText(statusId, agreeText)}
         >
           <ActionIcon
+            key={1}
             type='check-circle'
             style={receivingIconColor(statusId, agreeStyle)}
             onClick={() => handleAgreeFile(file, statusId)}
@@ -179,14 +182,14 @@ const FileActions = props => {
     </Fragment>,
 
     <Fragment>
-      {statusId !== 5 && isHidden &&
+      {statusId !== 5 &&
         <ActionTooltip
           arrowPointAtCenter
           placement='topRight'
-          key={2}
           title={receivingTooltipText(statusId, declineText)}
         >
           <ActionIcon
+            key={2}
             type='stop'
             style={receivingIconColor(statusId, declineStyle)}
             onClick={() => handleDeclineFile(file, statusId)}
@@ -196,16 +199,16 @@ const FileActions = props => {
     </Fragment>,
 
     <Fragment>
-      {statusId !== 5 && isHidden &&
+      {statusId !== 5 &&
         <ActionTooltip
           arrowPointAtCenter
           placement='topRight'
-          key={3}
-          title={receivingTooltipText(statusId, verifyText)}
+          title={canBeSigned ? 'Подписать документ (ЭЦП)' : receivingTooltipText(statusId, verifyText)}
         >
           <ActionIcon
+            key={3}
             type='edit'
-            style={receivingIconColor(statusId, verifyStyle)}
+            style={canBeSigned ? normal : receivingIconColor(statusId, verifyStyle)}
             onClick={() => handleVerifyFile(file, documentId, statusId)}
           />
         </ActionTooltip>
@@ -214,11 +217,11 @@ const FileActions = props => {
 
     <ActionTooltip
       arrowPointAtCenter
-      key={4}
       placement='topRight'
       title='Скачать файл'
     >
       <ActionIcon
+        key={4}
         type='download'
         style={{ color: '#3278fb', fontSize: '1.7rem' }}
         onClick={() => downloadFile(file)}

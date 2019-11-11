@@ -58,12 +58,16 @@ const SingleDocumentPage = props => {
     getDocumentById,
     sendDocumentToUser,
     updateDocumentById,
-    getUser
+    getUser,
+    messageStatus = null
   } = props
 
   const { document, sender, recipient, statuses } = singleDocument
 
   const [documentState, setDocumentState] = useState({ ...defaultDocumentState })
+
+
+
 
   useEffect(() => {
     if (match) {
@@ -328,13 +332,14 @@ const SingleDocumentPage = props => {
                   dataSource={document && document.attachments}
                   style={{ maxHeight: '20rem', overflowY: 'scroll' }}
                   renderItem={(item, index) => (
-                    <List.Item key={index}
+                    <List.Item key={item.id}
                       extra={
                         <FileActions
                           file={item}
                           documentId={singleDocument.document.id}
                           getDocument={() => getDocumentById(match.params.id)}
-                          isHidden={singleDocument.status_name !== 'Отправленные'}
+                          // isHidden={singleDocument.status_name !== 'Отправленные'}
+                          canBeSigned={singleDocument.can_be_signed}
                         />
                       }
                     >

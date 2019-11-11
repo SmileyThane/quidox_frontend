@@ -3,8 +3,7 @@ const disabled = {
   fontSize: '1.6rem',
   cursor: 'not-allowed'
 }
-
-const normal = {
+export const normal = {
   color: '#3278fb',
   fontSize: '1.6rem'
 }
@@ -68,7 +67,7 @@ export const declineText = [
 export const verifyText = [
   {
     status: 1,
-    text: 'Подписание не требуется'
+    text: 'Подписание не требуется',
   },
   {
     status: 2,

@@ -75,6 +75,9 @@ const AntdTable = props => {
 
   const [parameterState, setParameterState] = useState({ ...defaultParameterState })
 
+  // is_minified = true
+  // per_page = total
+
   useEffect(() => {
     if (activeCompany && status && type) {
       setParameterState({
@@ -366,6 +369,34 @@ const AntdTable = props => {
     })
   }
 
+  const asyncVerify = async (file, bool) => {
+    if (bool || file.status.status_data.id === 3) {
+      const base64 = await api.files.getBase64File(file.id)
+      console.log(base64)
+      try {
+        const sertificationObject = window.sign(base64.data.data.encoded_base64_file, file.hash_for_sign)
+        const verifiedData = {
+          id: file.id,
+          hash: sertificationObject.signedData,
+          data: sertificationObject.verifiedData,
+          hash_for_sign: sertificationObject.hex,
+          status: bool ? null : 5
+        }
+
+        const confirm = await api.documents.attachmentSignCanConfirm({ key: sertificationObject.verifiedData.key, attachment_id: file.id })
+        console.log(confirm)
+        if (confirm.data.success) {
+          const verify = await  verifyFile(verifiedData)
+          console.log(verify)
+        }
+      } catch (error) {
+        notification['error']({
+          message: error.message
+        })
+      }
+    }
+  }
+
   const multipleVerify = () => {
     const selectedDocuments = tableData.data.filter(i => tableState.selectedRowKeys.includes(i.id))
     selectedDocuments.forEach(message => {
@@ -374,57 +405,11 @@ const AntdTable = props => {
         isFetching: true
       })
       const document = message.document
-      if (!document.attachments.length) {
-        notification['error']({
-          message: 'В сообщении отсутствуют файлы'
-        })
-        setTableState({
-          ...tableState,
-          isFetching: false
-        })
-        return null
-      }
-      for (let file of document.attachments) {
-        if (status === 1 || status === 9 || status === 10 || file.status.status_data.id === 3) {
-          api.files.getBase64File(file.id)
-            .then(({ data }) => {
-              if (data.success) {
-                try {
-                  const sertificationObject = window.sign(data.data, file.hash_for_sign)
-                  const verifiedData = {
-                    id: file.id,
-                    hash: sertificationObject.signedData,
-                    data: sertificationObject.verifiedData,
-                    hash_for_sign: sertificationObject.hex,
-                    status: 5
-                  }
-
-                  api.documents.attachmentSignCanConfirm({ key: sertificationObject.verifiedData.key, attachment_id: file.id })
-                    .then(({ data }) => {
-                      if (data.success) {
-                        verifyFile(verifiedData)
-                      } else {
-                        throw new Error(data.error)
-                      }
-                    })
-                    .catch(error => {
-                      notification['error']({
-                        message: error.message
-                      })
-                    })
-                } catch (error) {
-                  notification['error']({
-                    message: error.message
-                  })
-                }
-              }
-            })
-        } else {
-          notification['warning']({
-            message: 'Файлы не требуют подписи'
-          })
-        }
-      }
+      let chain = Promise.resolve()
+      const canBeSigned = message.can_be_signed
+      message.document.attachments.forEach((file) => {
+        chain = chain.then(() => asyncVerify(file, canBeSigned))
+      })
       setTableState({
         ...tableState,
         selectedRowKeys: []
