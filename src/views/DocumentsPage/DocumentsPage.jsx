@@ -1,15 +1,16 @@
 import React, { useState, Fragment } from 'react'
 
-import {Button, Modal, Icon, notification} from 'antd'
+import {Button, Modal, Icon, notification, Progress} from 'antd'
 import { Table, PageDescription } from '../../components'
 import { api } from '../../services'
-import {importRegistry} from "../../services/api/registry";
+import { checkBrowser } from '../../utils'
 
   const defaultState = {
     isVisible: false,
     fetching: false,
     messages: [],
-    filesWasVerified: 0
+    processedMessage: 0,
+    disabled: false
   }
 const DocumentsPage = props => {
   const {
@@ -45,12 +46,12 @@ const DocumentsPage = props => {
         .catch(error => console.log(error))
     }
 
-    const asyncVerify = async (file, bool) => {
+  const proccesFilesForVerifyFile = async (bool, files) => {
+    for (const file of files) {
       if (bool || file.status.status_data.id === 3) {
         const base64 = await api.files.getBase64File(file.id)
-        console.log('base64:', base64)
         try {
-          const sertificationObject = window.sign(base64.data.data.encoded_base64_file, file.hash_for_sign)
+          const sertificationObject = await window.sign(base64.data.data.encoded_base64_file, file.hash_for_sign)
           const verifiedData = {
             id: file.id,
             hash: sertificationObject.signedData,
@@ -58,42 +59,41 @@ const DocumentsPage = props => {
             hash_for_sign: sertificationObject.hex,
             status: bool ? null : 5
           }
-
           const confirm = await api.documents.attachmentSignCanConfirm({ key: sertificationObject.verifiedData.key, attachment_id: file.id })
-          console.log('Can confirm:', confirm)
           if (confirm.data.success) {
-            const verify = await  verifyFile(verifiedData)
-            console.log('Was verify:', verify)
+            api.files.verifyFile(verifiedData)
           }
         } catch (error) {
-          console.error(error)
-          notification['error']({
-            message: error.message
-          })
+          break
         }
       }
     }
+  }
 
-    const multipleVerify = () => {
-    state.messages.forEach(message => {
-      setState({
-        ...state,
-        isVisible: false
-      })
-      let chain = Promise.resolve()
-      const canBeSigned = message.can_be_signed
-      console.log(canBeSigned)
-      message.document.attachments.forEach((file) => {
-        chain = chain.then(() => asyncVerify(file, canBeSigned))
-      })
+    const multipleVerify = async () => {
+    setState({
+      ...state,
+      disabled: true
     })
+      proccesMessageForVerifyFiles(state.messages).then(() => {
+        setState({ ...state, disabled: false })
+      })
     }
 
-    console.log(state)
+    const proccesMessageForVerifyFiles = async (messages) => {
+      for (const [index, message] of messages.entries()) {
+        await proccesFilesForVerifyFile(message.can_be_signed, message.document.attachments)
+        setState({
+          ...state,
+          processedMessage: index + 1
+        })
+      }
+    }
+
   return (
     <Fragment>
       <div className='content'>
-        {!!(documents.data && documents.data.length > 0) &&
+        {!!(documents.data && documents.data.length > 0) && checkBrowser('ie') &&
           <Button
             type='primary'
             style={{ margin: '2rem' }}
@@ -120,8 +120,9 @@ const DocumentsPage = props => {
       />
       {state.isVisible &&
       <Modal visible closable={false} footer={null}>
-        <p>Подписать все файлы в {state.messages.length} сообщениях</p>
-        <Button type='primary' style={{ marginTop: '2rem' }} onClick={multipleVerify}>Подписать</Button>
+        <p>Файлов подписано: {state.processedMessage}</p>
+        <Progress percent={Math.floor((state.processedMessage / state.messages.length) * 100)} />
+        <Button type='primary' style={{ marginTop: '2rem' }} disabled={state.disabled} onClick={multipleVerify}>Подписать</Button>
         <Button style={{ margin: '2rem 0 0 2rem' }} onClick={() => setState({ ...defaultState })}>Закрыть</Button>
       </Modal>
       }

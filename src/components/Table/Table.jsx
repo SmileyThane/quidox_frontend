@@ -19,7 +19,8 @@ import {
   Spin,
   Pagination,
   Tooltip,
-  notification
+  notification,
+  Tag
 } from 'antd'
 
 import './Table.scss'
@@ -35,7 +36,8 @@ const defaultTableState = {
   data: [],
   showModal: false,
   sorter: '',
-  isFetching: false
+  isFetching: false,
+  loading: false
 }
 
 const defaultParameterState = {
@@ -138,6 +140,14 @@ const AntdTable = props => {
     {
       title: (status === 9 ? 'УНП' : ''),
       key: 'unp'
+    },
+    {
+      title: (status === 10 ? 'ЭЦП' : ''),
+      key: 'file-status',
+      render: (status === 10
+        ? record => <Tag color={!!record.document.applied_attachments_count ? 'green' : 'orange'}>{!!record.document.applied_attachments_count ? 'ЭЦП имеется' : 'ЭЦП отсутсвует'}</Tag>
+        : ''
+      )
     },
     {
       title: 'Тема',
@@ -361,7 +371,6 @@ const AntdTable = props => {
   }
 
   const handleTableChange = (pagination, filters, sorter) => {
-    console.log(sorter)
     setParameterState({
       ...parameterState,
       sort_by: sorter.columnKey,
@@ -369,52 +378,45 @@ const AntdTable = props => {
     })
   }
 
-  const asyncVerify = async (file, bool) => {
-    if (bool || file.status.status_data.id === 3) {
-      const base64 = await api.files.getBase64File(file.id)
-      console.log(base64)
-      try {
-        const sertificationObject = window.sign(base64.data.data.encoded_base64_file, file.hash_for_sign)
-        const verifiedData = {
-          id: file.id,
-          hash: sertificationObject.signedData,
-          data: sertificationObject.verifiedData,
-          hash_for_sign: sertificationObject.hex,
-          status: bool ? null : 5
+  const proccesFilesForVerifyFile = async (bool, files) => {
+    for (const file of files) {
+      if (bool || file.status.status_data.id === 3) {
+        const base64 = await api.files.getBase64File(file.id)
+        try {
+          const sertificationObject = await window.sign(base64.data.data.encoded_base64_file, file.hash_for_sign)
+          const verifiedData = {
+            id: file.id,
+            hash: sertificationObject.signedData,
+            data: sertificationObject.verifiedData,
+            hash_for_sign: sertificationObject.hex,
+            status: bool ? null : 5
+          }
+          const confirm = await api.documents.attachmentSignCanConfirm({ key: sertificationObject.verifiedData.key, attachment_id: file.id })
+          if (confirm.data.success) {
+            api.files.verifyFile(verifiedData)
+          }
+        } catch (error) {
+          notification['error']({
+            message: error.message
+          })
         }
-
-        const confirm = await api.documents.attachmentSignCanConfirm({ key: sertificationObject.verifiedData.key, attachment_id: file.id })
-        console.log(confirm)
-        if (confirm.data.success) {
-          const verify = await  verifyFile(verifiedData)
-          console.log(verify)
-        }
-      } catch (error) {
-        notification['error']({
-          message: error.message
-        })
       }
     }
   }
 
   const multipleVerify = () => {
-    const selectedDocuments = tableData.data.filter(i => tableState.selectedRowKeys.includes(i.id))
-    selectedDocuments.forEach(message => {
-      setTableState({
-        ...tableState,
-        isFetching: true
-      })
-      const document = message.document
-      let chain = Promise.resolve()
-      const canBeSigned = message.can_be_signed
-      message.document.attachments.forEach((file) => {
-        chain = chain.then(() => asyncVerify(file, canBeSigned))
-      })
-      setTableState({
-        ...tableState,
-        selectedRowKeys: []
-      })
+    setTableState({
+      ...tableState,
+      loading: true
     })
+    proccesMessageForVerifyFiles(tableData.data.filter(i => tableState.selectedRowKeys.includes(i.id)))
+      .then(() => { setTableState({ ...defaultTableState }) })
+  }
+
+  const proccesMessageForVerifyFiles = async (messages) => {
+    for (const [index, message] of messages.entries()) {
+      await proccesFilesForVerifyFile(message.can_be_signed, message.document.attachments)
+    }
   }
 
   useEffect(() => {
@@ -493,7 +495,10 @@ const AntdTable = props => {
                   </div>
                   <div>
                     {!!tableState.selectedRowKeys.length &&
-                      <Button type='primary' onClick={multipleVerify}>Групповое подписание</Button>
+                      <Button type={'primary'} onClick={multipleVerify}>
+                        <Icon type={tableState.loading ? 'loading' : 'edit'} />
+                        Групповое подписание
+                      </Button>
                     }
                   </div>
                   <div className='table-header__search'>

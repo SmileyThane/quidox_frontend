@@ -141,10 +141,8 @@ const NewDocumentPage = props => {
     let chain = Promise.resolve()
     const files = documentState.files
 
-    console.log('Files', files)
 
     files.forEach((file, idx) => {
-      console.log('FIle:', file)
       const fileReader = new window.FileReader()
       fileReader.readAsDataURL(file)
 
@@ -303,7 +301,6 @@ const NewDocumentPage = props => {
   const handleChangeStatus = (file, index) => value => {
     changeFileStatus({ attachment_id: file.id, status: value, index: index })
       .then(response => {
-        console.log(response)
       })
   }
 
@@ -424,7 +421,6 @@ const NewDocumentPage = props => {
     })
   }
 
-  console.log(documentState)
   return (
     <Fragment>
       {!!status &&

@@ -42,7 +42,6 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, redirect = false }) =
 
     createCompany(body)
       .then(response => {
-        console.log(response)
         if (response.success) {
           setState({ ...defaultState })
           message.success('ЭЦП подключена успешно')

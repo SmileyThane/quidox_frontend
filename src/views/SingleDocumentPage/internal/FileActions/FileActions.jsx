@@ -96,7 +96,6 @@ const FileActions = props => {
         .then(({ data }) => {
           if (data.success) {
             try {
-              console.log('22222222', data.data)
               const sertificationObject = window.sign(data.data.encoded_base64_file, item.hash_for_sign)
 
               const newData = {
@@ -107,7 +106,6 @@ const FileActions = props => {
                 status: canBeSigned ? null : 5
               }
 
-              console.log(newData)
               api.documents.attachmentSignCanConfirm({ key: sertificationObject.verifiedData.key, attachment_id: item.id })
                 .then(({ data }) => {
                   if (data.success) {
@@ -131,7 +129,6 @@ const FileActions = props => {
                   message.error(error.message)
                 })
             } catch (error) {
-              console.log(error)
               notification['error']({
                 message: error.message
               })
@@ -156,12 +153,10 @@ const FileActions = props => {
         }
       })
       .catch(error => {
-        console.log(123)
         message.error(error.message)
       })
   }
 
-  console.log(canBeSigned)
   const statusId = file.status.status_data.id
   return [
     <Fragment>

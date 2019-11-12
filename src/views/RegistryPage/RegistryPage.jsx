@@ -50,7 +50,6 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
   }, [state.files.length])
 
   const handleImportRegistry = e => {
-    console.log(e.target.files)
     const formData = api.helpers.buildForm({
       'file': e.target.files[0]
     })
@@ -77,19 +76,15 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
   }
 
   const asyncFileReader = async (file) => {
-    console.log(file)
-    console.log('file', file)
     const base64 = file => new Promise((resolve, reject) => {
       const reader = window.FileReader()
       reader.readAsDataURL(file)
       reader.onload = () => resolve(reader.result)
     })
-    console.log('result', base64)
     return base64
   }
 
   const asyncCreateMessage = async (message, idx) => {
-    console.log(`start with file # ${idx}`)
     const newMessage = await createMessage({
       name: message.name,
       description: message.description,
@@ -97,9 +92,6 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
       status: 10 })
 
     const base64 = asyncFileReader(state.files[idx])
-    console.log(123);
-    console.log('base64', base64)
-    console.log(321);
 
     const formData = api.helpers.buildForm({
         'hash_for_sign': getSignedHex(base64),
@@ -111,7 +103,6 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
     if (updateStatus) {
       setState({ ...state, filesUploaded: idx + 1 })
     }
-    console.log(`end with file # ${idx}`)
   }
 
   const handleCreateMessages = () => {
@@ -224,7 +215,6 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
       render: record => getSystemStatus(record.system_status, state.files)
     }
   ]
-  console.log(state)
   return (
     <div className='content' style={{ padding: '1rem' }}>
       <Steps size='small' style={{ maxWidth: '100%' }}>

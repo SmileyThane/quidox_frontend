@@ -19,7 +19,6 @@ export default (state = initialState, action) => {
         isFetching: action.payload
       }
     case t.UPLOAD_FILE_SUCCESS:
-      console.log('Action payload:', action.payload.data)
       return {
         ...state,
         list: [

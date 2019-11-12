@@ -190,8 +190,6 @@ class UserInfoPage extends React.Component {
 
     const ActiveCompany = data.hasOwnProperty('companies') && data.companies.find(i => i.company_id === data.active_company_id)
 
-    console.log(data)
-    console.log('ActiveCompany', ActiveCompany)
     return (
       <Fragment>
         <Form className='content content_user form-user'>

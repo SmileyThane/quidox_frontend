@@ -116,7 +116,6 @@ class CompleteRegistrationForm extends React.Component {
               .then(({ data }) => {
                 if (data.success) {
                   message.success('СМС код введен правильно!')
-                  console.log('REGISTER DATA:', registerData)
                   const secretData = generateHash({ length: 10 }) + Base64.encode( JSON.stringify(registerData) ) + generateHash({ length: 5 })
                   axios.post(`${process.env.REACT_APP_BASE_URL}/user/update/phone`, { phone_data: secretData })
                     .then(({ data }) => {

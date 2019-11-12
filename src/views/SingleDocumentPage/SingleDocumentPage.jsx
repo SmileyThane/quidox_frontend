@@ -81,7 +81,6 @@ const SingleDocumentPage = props => {
         try {
           window.pluginLoaded()
         } catch (error) {
-          console.log(error)
         }
       }, 1000)
     }

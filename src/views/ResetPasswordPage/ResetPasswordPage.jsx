@@ -38,7 +38,6 @@ class LoginPage extends React.Component {
 
   render () {
     const { getFieldDecorator } = this.props.form
-    console.log(this.state.email)
     return (
       <Form onSubmit={this.sendEmail} className='form form_login form-reset-password' style={{ maxHeight: '20rem', maxWidth: '45rem' }}>
         <Form.Item label='Введите адрес электронной почты'>

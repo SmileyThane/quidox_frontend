@@ -119,11 +119,9 @@ export default (state = initialState, action) => {
 
     case t.CHANGE_FILEE_STATUS_SUCCESS: {
       const payloadStatus = action.payload.status
-      console.log(payloadStatus, 22222)
       const payloadId = action.payload.attachment_id
       const color = action.payload.color
       const name = action.payload.name
-      console.log(payloadId, 3333)
       return {
         ...state,
         singleDocument: {
