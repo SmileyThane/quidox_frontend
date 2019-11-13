@@ -67,7 +67,7 @@ const SingleDocumentPage = props => {
   const [documentState, setDocumentState] = useState({ ...defaultDocumentState })
 
 
-
+  console.log(match)
 
   useEffect(() => {
     if (match) {
@@ -339,6 +339,7 @@ const SingleDocumentPage = props => {
                           getDocument={() => getDocumentById(match.params.id)}
                           // isHidden={singleDocument.status_name !== 'Отправленные'}
                           canBeSigned={singleDocument.can_be_signed}
+                          messageId={singleDocument.status_id}
                         />
                       }
                     >

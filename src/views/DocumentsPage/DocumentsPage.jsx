@@ -9,8 +9,9 @@ import { checkBrowser } from '../../utils'
     isVisible: false,
     fetching: false,
     messages: [],
-    processedMessage: 0,
-    disabled: false
+    processedFiles: 0,
+    disabled: false,
+    not_applied_attachments_count: 0
   }
 const DocumentsPage = props => {
   const {
@@ -33,11 +34,13 @@ const DocumentsPage = props => {
       api.documents.getDocumentsByActiveCompanyId(data.active_company_id, { status: Number(status), selection_type: 'document', is_minified: true })
         .then(({ data }) => {
           if (data.success) {
+            const notApplied = data.data.data.reduce((acc, el) => acc + (el.document.not_applied_attachments_count), 0)
             setState({
               ...state,
               isVisible: true,
               fetching: false,
-              messages: data.data.data
+              messages: data.data.data,
+              not_applied_attachments_count: notApplied
             })
           } else {
             throw new Error(data.error)
@@ -75,32 +78,27 @@ const DocumentsPage = props => {
       ...state,
       disabled: true
     })
-      proccesMessageForVerifyFiles(state.messages).then(() => {
-        setState({ ...state, disabled: false })
-      })
+       proccesMessageForVerifyFiles(state.messages).then(() => window.location.reload())
     }
 
     const proccesMessageForVerifyFiles = async (messages) => {
       for (const [index, message] of messages.entries()) {
         await proccesFilesForVerifyFile(message.can_be_signed, message.document.attachments)
-        setState({
-          ...state,
-          processedMessage: index + 1
-        })
       }
     }
 
+    console.log(state)
   return (
     <Fragment>
       <div className='content'>
-        {!!(documents.data && documents.data.length > 0) && checkBrowser('ie') &&
-          <Button
-            type='primary'
-            style={{ margin: '2rem' }}
-            onClick={showVerifyModal}
-          >
-            <Icon type={state.fetching ? 'loading' : 'edit'} />
-            Подписать все</Button>
+        {!!(documents.data && documents.data.length > 0) && checkBrowser('ie') && Number(status) !== 3 &&
+        <Button
+          type='primary'
+          style={{ margin: '2rem' }}
+          onClick={showVerifyModal}
+        >
+          <Icon type={state.fetching ? 'loading' : 'edit'} />
+          Подписать все</Button>
         }
         <Table
           className='document-table'
@@ -120,10 +118,14 @@ const DocumentsPage = props => {
       />
       {state.isVisible &&
       <Modal visible closable={false} footer={null}>
-        <p>Файлов подписано: {state.processedMessage}</p>
-        <Progress percent={Math.floor((state.processedMessage / state.messages.length) * 100)} />
-        <Button type='primary' style={{ marginTop: '2rem' }} disabled={state.disabled} onClick={multipleVerify}>Подписать</Button>
-        <Button style={{ margin: '2rem 0 0 2rem' }} onClick={() => setState({ ...defaultState })}>Закрыть</Button>
+        <p>Файлов к подписанию: {state.not_applied_attachments_count}</p>
+        {/*<p>Файлов подписано: {state.processedMessage}</p>*/}
+        {/*<Progress percent={Math.floor((state.processedMessage / state.not_applied_attachments_count) * 100)} />*/}
+        <Button type='primary' style={{ marginTop: '2rem' }} disabled={state.disabled} onClick={multipleVerify}>
+          <Icon type={state.disabled ? 'loading' : 'edit'} />
+          {state.disabled ? 'Подождите, идет процесс подписания' : 'Подписать файлы'}
+        </Button>
+        {/*<Button style={{ margin: '2rem 0 0 2rem' }} onClick={() => window.location.reload()}>Закрыть</Button>*/}
       </Modal>
       }
     </Fragment>

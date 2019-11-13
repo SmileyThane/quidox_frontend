@@ -12,7 +12,8 @@ const defaultState = {
   sync: false,
   fetching: false,
   showModal: false,
-  filesUploaded: 0
+  filesUploaded: 0,
+  disabled: false
 }
 
 const getSignedHex = (base64) => {
@@ -100,12 +101,20 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
       })
       const newFile = await uploadFile(formData, { 'Content-Type': 'multipart/form-data' })
       const updateStatus = await changeFileStatus({ attachment_id: newFile.data.id, status: message.status })
-    if (updateStatus) {
-      setState({ ...state, filesUploaded: idx + 1 })
+    if (updateStatus.success) {
+      setState({
+        ...state,
+        disabled: true,
+        filesUploaded: idx + 1
+      })
     }
   }
 
   const handleCreateMessages = () => {
+    setState({
+      ...state,
+      disabled: true
+    })
     let chain = Promise.resolve()
     state.registryData.forEach((message, idx) => {
       chain = chain.then(() => asyncCreateMessage(message, idx))
@@ -143,41 +152,7 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
     }
   }
 
-  // const handleCreateMessage = () => {
-  //   let chain = Promise.resolve()
-  //   const messages = state.registryData
-  //   messages.forEach((message, idx) => {
-  //     chain = chain
-  //       .then(() => {
-  //         createMessage({ name: message.name, description: message.description, status: 10 })
-  //           .then(({ success, data }) => {
-  //             if (success) {
-  //               const fileReader = new window.FileReader()
-  //               fileReader.readAsDataURL(state.files[idx])
-  //               fileReader.onload = function () {
-  //                 const base64 = fileReader.result.split(',').pop()
-  //
-  //                 const formData = api.helpers.buildForm({
-  //                   'hash_for_sign': getSignedHex(base64),
-  //                   'document_id': data.id,
-  //                   'file': state.files[idx]
-  //                 })
-  //
-  //                 uploadFile(formData, { 'Content-Type': 'multipart/form-data' })
-  //                   .then(() => {
-  //                     updateDocumentById(data.id, {
-  //                       name: message.name,
-  //                       description: messages.description,
-  //                       user_company_ids: JSON.stringify([message.e_mail])
-  //                     })
-  //                   })
-  //               }
-  //             }
-  //           })
-  //       })
-  //   })
-  // }
-
+  console.log(state)
   const columns = [
     {
       title: 'File',
@@ -281,8 +256,8 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
             )}
         />
         {state.filesUploaded !== state.registryData.length
-            ? <Button onClick={() => handleCreateMessages()}>Сохранить сообщения</Button>
-            : <Button onClick={() => { setState({ ...defaultState })}}>Закрыть</Button>
+            ? <Button type='primary' disabled={state.disabled} onClick={() => handleCreateMessages()}>Сохранить сообщения</Button>
+            : <Button type='primary' ghost onClick={() => { setState({ ...defaultState })}}>Закрыть</Button>
         }
       </Modal>
       }

@@ -111,7 +111,7 @@ const AntdTable = props => {
       key: type,
       render: record =>
         <Fragment>
-          {(status === 1 || status === 3)
+          {(status === 1 || status === 3 || status === 9 || status === 10)
             ? <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }}>
               <div>
                 {record.recipient &&
@@ -494,7 +494,7 @@ const AntdTable = props => {
                     </Tooltip>
                   </div>
                   <div>
-                    {!!tableState.selectedRowKeys.length &&
+                    {!!tableState.selectedRowKeys.length && status !== 3 &&
                       <Button type={'primary'} onClick={multipleVerify}>
                         <Icon type={tableState.loading ? 'loading' : 'edit'} />
                         Групповое подписание

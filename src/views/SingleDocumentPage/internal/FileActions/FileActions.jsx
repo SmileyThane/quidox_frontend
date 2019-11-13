@@ -22,6 +22,7 @@ const FileActions = props => {
     documentId,
     // isHidden = false,
     canBeSigned,
+    messageId,
     getDocument,
     changeStatus,
     verifyFile
@@ -160,7 +161,7 @@ const FileActions = props => {
   const statusId = file.status.status_data.id
   return [
     <Fragment>
-      { statusId !== 5 &&
+      { statusId !== 5 && ![1, 3, 4, 9, 10].includes(messageId) &&
         <ActionTooltip
           arrowPointAtCenter
           placement='topRight'
@@ -177,7 +178,7 @@ const FileActions = props => {
     </Fragment>,
 
     <Fragment>
-      {statusId !== 5 &&
+      {statusId !== 5 && ![1, 3, 4, 9, 10].includes(messageId) &&
         <ActionTooltip
           arrowPointAtCenter
           placement='topRight'
@@ -194,7 +195,7 @@ const FileActions = props => {
     </Fragment>,
 
     <Fragment>
-      {statusId !== 5 &&
+      {statusId !== 5 && ![3, 4].includes(messageId) &&
         <ActionTooltip
           arrowPointAtCenter
           placement='topRight'
