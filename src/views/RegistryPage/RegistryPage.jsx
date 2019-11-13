@@ -97,7 +97,7 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
     const formData = api.helpers.buildForm({
         'hash_for_sign': getSignedHex(base64),
         'document_id': newMessage.data.id,
-        'file': state.files[idx]
+        'file': state.files.find(i => i.name === message.file)
       })
       const newFile = await uploadFile(formData, { 'Content-Type': 'multipart/form-data' })
       const updateStatus = await changeFileStatus({ attachment_id: newFile.data.id, status: message.status })
