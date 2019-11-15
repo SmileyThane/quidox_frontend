@@ -350,7 +350,7 @@ const NewDocumentPage = props => {
           }).then(({ success }) => {
             if (success) {
               notification['success']({
-                message: 'Сообещние успешно доставлено'
+                message: 'Ваше сообщение успешно отправлено'
               })
               setDocumentState({ ...defaultDocumentData })
               setMessage(!message)
