@@ -88,6 +88,7 @@ const AntMenu = props => {
           id={'/companies'}
         />
         <SubMenu
+          disabled
           key='sub1'
           onTitleClick={({ key: menuKey }) => handleTitleClick(menuKey)}
           title={
@@ -112,6 +113,7 @@ const AntMenu = props => {
           ))}
         </SubMenu>
         <SubMenu
+          disabled
           key='sub2'
           title={
             <span>
