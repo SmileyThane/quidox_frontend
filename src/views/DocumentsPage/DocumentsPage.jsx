@@ -1,24 +1,27 @@
 import React, { useState, Fragment } from 'react'
 
-import {Button, Modal, Icon, notification, Progress} from 'antd'
+import { Button, Modal, Icon, notification, Progress } from 'antd'
 import { Table, PageDescription } from '../../components'
 import { api } from '../../services'
 import { checkBrowser } from '../../utils'
 
-  const defaultState = {
-    isVisible: false,
-    fetching: false,
-    messages: [],
-    processedFiles: 0,
-    disabled: false,
-    not_applied_attachments_count: 0
-  }
+const defaultState = {
+  isVisible: false,
+  fetching: false,
+  messages: [],
+  processedFiles: 0,
+  disabled: false,
+  buttonsFetching: [false, false],
+  type: '',
+  not_applied_attachments_count: 0,
+  idsForRemove: null
+}
 const DocumentsPage = props => {
   const {
     user: { data },
     documents: { documents, isFetching },
     getDocumentsByActiveCompanyId,
-    verifyFile
+    removeDocumentsByIds
   } = props
 
   const [state, setState] = useState({ ...defaultState })
@@ -26,28 +29,55 @@ const DocumentsPage = props => {
   const params = new URLSearchParams(props.location.search)
   const status = params.get('status')
 
-    const showVerifyModal = () => {
+  const showVerifyModal = () => {
     setState({
       ...state,
-      fetching: true
+      buttonsFetching: [true, false]
     })
-      api.documents.getDocumentsByActiveCompanyId(data.active_company_id, { status: Number(status), selection_type: 'document', is_minified: true })
-        .then(({ data }) => {
-          if (data.success) {
-            const notApplied = data.data.data.reduce((acc, el) => acc + (el.document.not_applied_attachments_count), 0)
-            setState({
-              ...state,
-              isVisible: true,
-              fetching: false,
-              messages: data.data.data,
-              not_applied_attachments_count: notApplied
-            })
-          } else {
-            throw new Error(data.error)
-          }
-        })
-        .catch(error => console.log(error))
-    }
+    api.documents.getDocumentsByActiveCompanyId(data.active_company_id, { status: Number(status), selection_type: 'document', is_minified: true })
+      .then(({ data }) => {
+        if (data.success) {
+          const notApplied = data.data.data.reduce((acc, el) => acc + (el.document.not_applied_attachments_count), 0)
+          setState({
+            ...state,
+            isVisible: true,
+            fetching: false,
+            type: 'verify',
+            messages: data.data.data,
+            not_applied_attachments_count: notApplied
+          })
+        } else {
+          throw new Error(data.error)
+        }
+      })
+      .catch(error => console.log(error))
+  }
+
+  const showRemoveModal = () => {
+    setState({
+      ...state,
+      buttonsFetching: [false, true]
+    })
+    api.documents.getDocumentsByActiveCompanyId(data.active_company_id, { status: Number(status), selection_type: 'document', is_minified: true })
+      .then(({ data }) => {
+        if (data.success) {
+          const notApplied = data.data.data.length
+          const ids = data.data.data.map(i => i.id)
+          setState({
+            ...state,
+            isVisible: true,
+            fetching: false,
+            type: 'remove',
+            messages: data.data.data,
+            idsForRemove: ids,
+            not_applied_attachments_count: notApplied
+          })
+        } else {
+          throw new Error(data.error)
+        }
+      })
+      .catch(error => console.log(error))
+  }
 
   const proccesFilesForVerifyFile = async (bool, files) => {
     for (const file of files) {
@@ -73,32 +103,56 @@ const DocumentsPage = props => {
     }
   }
 
-    const multipleVerify = async () => {
+  const multipleVerify = async () => {
     setState({
       ...state,
       disabled: true
     })
-       proccesMessageForVerifyFiles(state.messages).then(() => window.location.reload())
-    }
+    proccesMessageForVerifyFiles(state.messages).then(() => window.location.reload())
+  }
 
-    const proccesMessageForVerifyFiles = async (messages) => {
-      for (const [index, message] of messages.entries()) {
-        await proccesFilesForVerifyFile(message.can_be_signed, message.document.attachments)
-      }
-    }
+  const multipleRemove = () => {
+    setState({
+      ...state,
+      disabled: true
+    })
+    api.documents.removeDocumentsByIds({ ids: state.idsForRemove }).then(() => window.location.reload())
+      // .then(response => {
+      //   if (response.success) {
+      //     window.location.reload()
+      //   }
+      // })
+  }
 
-    console.log(state)
+  const proccesMessageForVerifyFiles = async (messages) => {
+    for (const [index, message] of messages.entries()) {
+      await proccesFilesForVerifyFile(message.can_be_signed, message.document.attachments)
+    }
+  }
+
+  console.log(state)
+  // && checkBrowser('ie')
   return (
     <Fragment>
       <div className='content'>
-        {!!(documents.data && documents.data.length > 0) && checkBrowser('ie') && Number(status) !== 3 &&
-        <Button
-          type='primary'
-          style={{ margin: '2rem' }}
-          onClick={showVerifyModal}
-        >
-          <Icon type={state.fetching ? 'loading' : 'edit'} />
-          Подписать все</Button>
+        {!!(documents.data && documents.data.length > 0) && Number(status) !== 3 &&
+          <div>
+            <Button
+              type='primary'
+              style={{ margin: '2rem 2rem 0' }}
+              onClick={showVerifyModal}
+            >
+              <Icon type={state.buttonsFetching[0] ? 'loading' : 'edit'} />
+              Подписать все
+            </Button>
+            <Button
+              type='primary'
+              onClick={showRemoveModal}
+            >
+              <Icon type={state.buttonsFetching[1] ? 'loading' : 'edit'} />
+              Удалить все
+            </Button>
+          </div>
         }
         <Table
           className='document-table'
@@ -112,20 +166,39 @@ const DocumentsPage = props => {
       </div>
 
       <PageDescription
-        // isVisible={(draftDocuments.data && !draftDocuments.data.length)}
         title='В эту папку Вы сможете сохранить черновик любого сообщения.'
         text={['Вы сможете в любой момент продолжить редактирование сообщения и отправить его адресату.']}
       />
       {state.isVisible &&
       <Modal visible closable={false} footer={null}>
-        <p>Файлов к подписанию: {state.not_applied_attachments_count}</p>
-        {/*<p>Файлов подписано: {state.processedMessage}</p>*/}
-        {/*<Progress percent={Math.floor((state.processedMessage / state.not_applied_attachments_count) * 100)} />*/}
-        <Button type='primary' style={{ marginTop: '2rem' }} disabled={state.disabled} onClick={multipleVerify}>
-          <Icon type={state.disabled ? 'loading' : 'edit'} />
-          {state.disabled ? 'Подождите, идет процесс подписания' : 'Подписать файлы'}
-        </Button>
-        {/*<Button style={{ margin: '2rem 0 0 2rem' }} onClick={() => window.location.reload()}>Закрыть</Button>*/}
+        {state.type === 'verify' &&
+          <p>Файлов к подписанию: {state.not_applied_attachments_count}</p>
+        }
+        {state.type === 'remove' &&
+          <p>Файлов к удалению: {state.not_applied_attachments_count}</p>
+        }
+        {state.type === 'verify'
+          ? <Button
+            type='primary'
+            style={{ marginTop: '2rem' }}
+            disabled={state.disabled}
+            onClick={multipleVerify}
+          >
+            <Icon type={state.disabled ? 'loading' : 'edit'} />
+            {state.disabled ? 'Подождите, идет процесс подписания' : 'Подписать файлы'}
+          </Button>
+          : <Button
+            type='primary'
+            style={{ marginTop: '2rem' }}
+            disabled={state.disabled}
+            onClick={multipleRemove}
+          >
+            <Icon type={state.disabled ? 'loading' : 'edit'} />
+            {state.disabled ? 'Подождите, идет процесс удаления' : 'Удалить файлы'}
+          </Button>
+        }
+
+        <Button disabled={state.disabled} style={{ marginLeft: '2rem' }} onClick={() => setState({ ...defaultState })}>Закрыть</Button>
       </Modal>
       }
     </Fragment>
