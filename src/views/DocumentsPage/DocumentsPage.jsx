@@ -11,10 +11,11 @@ const defaultState = {
   messages: [],
   processedFiles: 0,
   disabled: false,
-  buttonsFetching: [false, false],
+  buttonsFetching: [false, false, false],
   type: '',
   not_applied_attachments_count: 0,
-  idsForRemove: null
+  idsForRemove: null,
+  idsForSend: null
 }
 const DocumentsPage = props => {
   const {
@@ -32,7 +33,7 @@ const DocumentsPage = props => {
   const showVerifyModal = () => {
     setState({
       ...state,
-      buttonsFetching: [true, false]
+      buttonsFetching: [true, false, false]
     })
     api.documents.getDocumentsByActiveCompanyId(data.active_company_id, { status: Number(status), selection_type: 'document', is_minified: true })
       .then(({ data }) => {
@@ -56,7 +57,7 @@ const DocumentsPage = props => {
   const showRemoveModal = () => {
     setState({
       ...state,
-      buttonsFetching: [false, true]
+      buttonsFetching: [false, true, false]
     })
     api.documents.getDocumentsByActiveCompanyId(data.active_company_id, { status: Number(status), selection_type: 'document', is_minified: true })
       .then(({ data }) => {
@@ -70,6 +71,32 @@ const DocumentsPage = props => {
             type: 'remove',
             messages: data.data.data,
             idsForRemove: ids,
+            not_applied_attachments_count: notApplied
+          })
+        } else {
+          throw new Error(data.error)
+        }
+      })
+      .catch(error => console.log(error))
+  }
+
+  const showSendModal = () => {
+    setState({
+      ...state,
+      buttonsFetching: [false, false, true]
+    })
+    api.documents.getDocumentsByActiveCompanyId(data.active_company_id, { status: Number(status), selection_type: 'document', is_minified: true })
+      .then(({ data }) => {
+        if (data.success) {
+          const notApplied = data.data.data.length
+          const ids = data.data.data.map(i => i.document_id)
+          setState({
+            ...state,
+            isVisible: true,
+            fetching: false,
+            type: 'send',
+            messages: data.data.data,
+            idsForSend: ids,
             not_applied_attachments_count: notApplied
           })
         } else {
@@ -117,11 +144,15 @@ const DocumentsPage = props => {
       disabled: true
     })
     api.documents.removeDocumentsByIds({ ids: state.idsForRemove }).then(() => window.location.reload())
-      // .then(response => {
-      //   if (response.success) {
-      //     window.location.reload()
-      //   }
-      // })
+  }
+
+  const multipleSend = () => {
+    setState({
+      ...state,
+      disabled: true
+    })
+    api.documents.sendDocumentToUser({ document_ids: state.idsForSend, user_company_id: JSON.stringify([]) })
+      .then(() => window.location.reload())
   }
 
   const proccesMessageForVerifyFiles = async (messages) => {
@@ -131,15 +162,14 @@ const DocumentsPage = props => {
   }
 
   console.log(state)
-  // && checkBrowser('ie')
   return (
     <Fragment>
       <div className='content'>
-        {!!(documents.data && documents.data.length > 0) && Number(status) !== 3 &&
-          <div>
+        {!!(documents.data && documents.data.length > 0) && checkBrowser('ie') && Number(status) !== 3 &&
+          <div style={{ margin: '2rem' }}>
             <Button
               type='primary'
-              style={{ margin: '2rem 2rem 0' }}
+              style={{ marginLeft: '2rem' }}
               onClick={showVerifyModal}
             >
               <Icon type={state.buttonsFetching[0] ? 'loading' : 'edit'} />
@@ -147,10 +177,19 @@ const DocumentsPage = props => {
             </Button>
             <Button
               type='primary'
+              style={{ marginLeft: '2rem' }}
               onClick={showRemoveModal}
             >
-              <Icon type={state.buttonsFetching[1] ? 'loading' : 'edit'} />
+              <Icon type={state.buttonsFetching[1] ? 'loading' : 'delete'} />
               Удалить все
+            </Button>
+            <Button
+              type='primary'
+              style={{ marginLeft: '2rem' }}
+              onClick={showSendModal}
+            >
+              <Icon type={state.buttonsFetching[2] ? 'loading' : 'upload'} />
+              Отправить все
             </Button>
           </div>
         }
@@ -177,8 +216,11 @@ const DocumentsPage = props => {
         {state.type === 'remove' &&
           <p>Файлов к удалению: {state.not_applied_attachments_count}</p>
         }
-        {state.type === 'verify'
-          ? <Button
+        {state.type === 'send' &&
+        <p>Сообщений к отправке: {state.not_applied_attachments_count}</p>
+        }
+        {state.type === 'verify' &&
+          <Button
             type='primary'
             style={{ marginTop: '2rem' }}
             disabled={state.disabled}
@@ -187,7 +229,9 @@ const DocumentsPage = props => {
             <Icon type={state.disabled ? 'loading' : 'edit'} />
             {state.disabled ? 'Подождите, идет процесс подписания' : 'Подписать файлы'}
           </Button>
-          : <Button
+        }
+        {state.type === 'remove' &&
+          <Button
             type='primary'
             style={{ marginTop: '2rem' }}
             disabled={state.disabled}
@@ -196,6 +240,17 @@ const DocumentsPage = props => {
             <Icon type={state.disabled ? 'loading' : 'edit'} />
             {state.disabled ? 'Подождите, идет процесс удаления' : 'Удалить файлы'}
           </Button>
+        }
+        {state.type === 'send' &&
+        <Button
+          type='primary'
+          style={{ marginTop: '2rem' }}
+          disabled={state.disabled}
+          onClick={multipleSend}
+        >
+          <Icon type={state.disabled ? 'loading' : 'edit'} />
+          {state.disabled ? 'Подождите, идет процесс отправки' : 'Отправить сообщени'}
+        </Button>
         }
 
         <Button disabled={state.disabled} style={{ marginLeft: '2rem' }} onClick={() => setState({ ...defaultState })}>Закрыть</Button>
