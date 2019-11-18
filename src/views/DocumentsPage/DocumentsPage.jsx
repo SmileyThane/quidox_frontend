@@ -89,7 +89,7 @@ const DocumentsPage = props => {
       .then(({ data }) => {
         if (data.success) {
           const notApplied = data.data.data.length
-          const ids = data.data.data.map(i => i.document_id)
+          const ids = [...new Set(data.data.data.map(i => i.document_id))]
           setState({
             ...state,
             isVisible: true,
@@ -151,21 +151,26 @@ const DocumentsPage = props => {
       ...state,
       disabled: true
     })
-    api.documents.sendDocumentToUser({ document_ids: state.idsForSend, user_company_id: JSON.stringify([]) })
-      .then(() => window.location.reload())
+    let chain = Promise.resolve()
+    state.idsForSend.forEach(id => {
+      chain = chain.then(() => asyncSend(id)).finally(() => { window.location.reload() })
+    })
   }
 
+  const asyncSend = async (id) => {
+    await api.documents.sendDocumentToUser({ document_ids: [id], user_company_id: JSON.stringify([]) })
+  }
   const proccesMessageForVerifyFiles = async (messages) => {
     for (const [index, message] of messages.entries()) {
       await proccesFilesForVerifyFile(message.can_be_signed, message.document.attachments)
     }
   }
-
+// && checkBrowser('ie')
   console.log(state)
   return (
     <Fragment>
       <div className='content'>
-        {!!(documents.data && documents.data.length > 0) && checkBrowser('ie') && Number(status) !== 3 &&
+      {!!(documents.data && documents.data.length > 0)  && Number(status) !== 3 &&
           <div style={{ margin: '2rem' }}>
             <Button
               type='primary'

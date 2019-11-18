@@ -95,12 +95,12 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
     const base64 = asyncFileReader(state.files[idx])
 
     const formData = api.helpers.buildForm({
-        'hash_for_sign': getSignedHex(base64),
-        'document_id': newMessage.data.id,
-        'file': state.files.find(i => i.name === message.file)
-      })
-      const newFile = await uploadFile(formData, { 'Content-Type': 'multipart/form-data' })
-      const updateStatus = await changeFileStatus({ attachment_id: newFile.data.id, status: message.status })
+      'hash_for_sign': getSignedHex(base64),
+      'document_id': newMessage.data.id,
+      'file': state.files.find(i => i.name === message.file)
+    })
+    const newFile = await uploadFile(formData, { 'Content-Type': 'multipart/form-data' })
+    const updateStatus = await changeFileStatus({ attachment_id: newFile.data.id, status: message.status })
     if (updateStatus.success) {
       setState({
         ...state,
@@ -243,21 +243,21 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
       </Upload>
       {state.showModal &&
       <Modal
-      visible
-      closable={false}
-      footer={null}
+        visible
+        closable={false}
+        footer={null}
       >
         <p>Сообщений к загрузке: {state.registryData.length}</p>
         <p>Сообщений сохранено: {state.filesUploaded}</p>
         <Progress
-            status='active'
-            percent={Math.floor(
-                (state.filesUploaded / state.registryData.length) * 100
-            )}
+          status='active'
+          percent={Math.floor(
+            (state.filesUploaded / state.registryData.length) * 100
+          )}
         />
         {state.filesUploaded !== state.registryData.length
-            ? <Button type='primary' disabled={state.disabled} onClick={() => handleCreateMessages()}>Сохранить сообщения</Button>
-            : <Button type='primary' ghost onClick={() => { setState({ ...defaultState })}}>Закрыть</Button>
+          ? <Button type='primary' disabled={state.disabled} onClick={() => handleCreateMessages()}>Сохранить сообщения</Button>
+          : <Button type='primary' ghost onClick={() => { setState({ ...defaultState }) }}>Закрыть</Button>
         }
       </Modal>
       }

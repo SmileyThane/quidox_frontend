@@ -326,17 +326,31 @@ const AntdTable = props => {
     })
   }
 
+  const asyncSendMessage = async (id, users) => {
+    await sendDocumentToUser({ document_ids: [id], user_company_id: users })
+      // .then(response => {
+      //   if (response.success) {
+      //   } else {
+      //     throw new Error(response.error)
+      //   }
+      // })
+      // .catch(error => {
+      //   message.error(error.message)
+      //   setTableState({ ...defaultTableState })
+      // })
+  }
+
   const sendToUser = () => {
     const docsDataToUser = {
-      document_ids: [...new Set(tableData.data
-        .filter(i => tableState.selectedRowKeys.includes(i.id))
-        .map(i => i.document_id))],
+      messages: tableData.data
+        .filter(i => tableState.selectedRowKeys.includes(i.id)).map(i => i.document_id),
       user_company_id: JSON.stringify(tableState.value.map(i => i.key))
     }
-    sendDocumentToUser(docsDataToUser)
-      .then(response => {
-        if (response.success) {
-          message.success('Сообщение успешно отправлено!')
+    let chain = Promise.resolve()
+    const uniqueMessagesIds = [...new Set(docsDataToUser.messages)]
+    uniqueMessagesIds.forEach(id => {
+      chain = chain.then(() => asyncSendMessage(id, docsDataToUser.user_company_id))
+        .finally(() => {
           getDocumentsWithParams(activeCompany, parameterState)
           getUser()
           setTableState({
@@ -345,14 +359,28 @@ const AntdTable = props => {
             selectedRowKeys: [],
             showModal: false
           })
-        } else {
-          throw new Error(response.error)
-        }
-      })
-      .catch(error => {
-        message.error(error.message)
-        setTableState({ ...defaultTableState })
-      })
+        })
+    })
+    // sendDocumentToUser(docsDataToUser)
+    //   .then(response => {
+    //     if (response.success) {
+    //       message.success('Сообщение успешно отправлено!')
+    //       getDocumentsWithParams(activeCompany, parameterState)
+    //       getUser()
+    //       setTableState({
+    //         ...tableState,
+    //         fetching: false,
+    //         selectedRowKeys: [],
+    //         showModal: false
+    //       })
+    //     } else {
+    //       throw new Error(response.error)
+    //     }
+    //   })
+    //   .catch(error => {
+    //     message.error(error.message)
+    //     setTableState({ ...defaultTableState })
+    //   })
   }
 
   const handleChangePerPage = value => {
@@ -546,3 +574,4 @@ const AntdTable = props => {
 }
 
 export default AntdTable
+
