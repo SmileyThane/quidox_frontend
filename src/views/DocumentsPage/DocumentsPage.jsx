@@ -130,6 +130,12 @@ const DocumentsPage = props => {
     }
   }
 
+  const proccesMessageForVerifyFiles = async (messages) => {
+    for (const [index, message] of messages.entries()) {
+      await proccesFilesForVerifyFile(message.can_be_signed, message.document.attachments)
+    }
+  }
+
   const multipleVerify = async () => {
     setState({
       ...state,
@@ -153,18 +159,15 @@ const DocumentsPage = props => {
     })
     let chain = Promise.resolve()
     state.idsForSend.forEach(id => {
-      chain = chain.then(() => asyncSend(id)).finally(() => { window.location.reload() })
+      chain = chain.then(() => asyncSend(id))
     })
+    chain.finally(() => { window.location.reload() })
   }
 
   const asyncSend = async (id) => {
     await api.documents.sendDocumentToUser({ document_ids: [id], user_company_id: JSON.stringify([]) })
   }
-  const proccesMessageForVerifyFiles = async (messages) => {
-    for (const [index, message] of messages.entries()) {
-      await proccesFilesForVerifyFile(message.can_be_signed, message.document.attachments)
-    }
-  }
+
 // && checkBrowser('ie')
   console.log(state)
   return (

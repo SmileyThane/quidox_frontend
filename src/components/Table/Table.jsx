@@ -350,16 +350,9 @@ const AntdTable = props => {
     const uniqueMessagesIds = [...new Set(docsDataToUser.messages)]
     uniqueMessagesIds.forEach(id => {
       chain = chain.then(() => asyncSendMessage(id, docsDataToUser.user_company_id))
-        .finally(() => {
-          getDocumentsWithParams(activeCompany, parameterState)
-          getUser()
-          setTableState({
-            ...tableState,
-            fetching: false,
-            selectedRowKeys: [],
-            showModal: false
-          })
-        })
+    })
+    chain.finally(() => {
+      window.location.reload()
     })
     // sendDocumentToUser(docsDataToUser)
     //   .then(response => {
