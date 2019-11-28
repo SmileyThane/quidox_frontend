@@ -396,13 +396,12 @@ class RegistrationForm extends React.Component {
                     </div>
                     {currentStep === 0 &&
                     <Fragment>
-                      <Text type='secondary'>Благодаря сервису QuiDox.by<br />
-                        Вы сможете с легкостью обмениваться электронными документами с ЭЦП с Вашими контрагентами.
+                      <Text type='warning'><br />
+                        Подписывайте и сохраняйте полученные от Ваших контрагентов
+                        документы - для работы с <strong>входящими сообщениями</strong>
+                        &nbsp; достаточно простой регистрации в сервисе и&nbsp;
+                        <strong>не требуется платить!</strong>
                       </Text>
-                      <br />
-                      <Text type='secondary'>Доставка происходит мгновенно.</Text>
-                      <br />
-                      <Text type='secondary'>Бесплатно первые 90 дней!</Text>
                     </Fragment>
                     }
                     <div style={{ marginTop: '2rem' }}>

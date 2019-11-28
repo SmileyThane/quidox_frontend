@@ -111,7 +111,7 @@ const AntdTable = props => {
       key: type,
       render: record =>
         <Fragment>
-          {(status === 1 || status === 3)
+          {(status === 1 || status === 3 || status === 9 || status === 10)
             ? <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }}>
               <div>
                 {record.recipient &&
@@ -161,7 +161,7 @@ const AntdTable = props => {
       sorter: false
     },
     {
-      title: 'Дата',
+      title: 'Дата создания',
       key: 'created_at',
       className: 'date-column',
       render: record => <Text>{moment.utc(record.document.created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD/MM/YYYY HH:mm:ss')}</Text>,
@@ -326,33 +326,54 @@ const AntdTable = props => {
     })
   }
 
+  const asyncSendMessage = async (id, users) => {
+    await sendDocumentToUser({ document_ids: [id], user_company_id: users })
+      // .then(response => {
+      //   if (response.success) {
+      //   } else {
+      //     throw new Error(response.error)
+      //   }
+      // })
+      // .catch(error => {
+      //   message.error(error.message)
+      //   setTableState({ ...defaultTableState })
+      // })
+  }
+
   const sendToUser = () => {
     const docsDataToUser = {
-      document_ids: [...new Set(tableData.data
-        .filter(i => tableState.selectedRowKeys.includes(i.id))
-        .map(i => i.document_id))],
+      messages: tableData.data
+        .filter(i => tableState.selectedRowKeys.includes(i.id)).map(i => i.document_id),
       user_company_id: JSON.stringify(tableState.value.map(i => i.key))
     }
-    sendDocumentToUser(docsDataToUser)
-      .then(response => {
-        if (response.success) {
-          message.success('Сообщение успешно отправлено!')
-          getDocumentsWithParams(activeCompany, parameterState)
-          getUser()
-          setTableState({
-            ...tableState,
-            fetching: false,
-            selectedRowKeys: [],
-            showModal: false
-          })
-        } else {
-          throw new Error(response.error)
-        }
-      })
-      .catch(error => {
-        message.error(error.message)
-        setTableState({ ...defaultTableState })
-      })
+    let chain = Promise.resolve()
+    const uniqueMessagesIds = [...new Set(docsDataToUser.messages)]
+    uniqueMessagesIds.forEach(id => {
+      chain = chain.then(() => asyncSendMessage(id, docsDataToUser.user_company_id))
+    })
+    chain.finally(() => {
+      window.location.reload()
+    })
+    // sendDocumentToUser(docsDataToUser)
+    //   .then(response => {
+    //     if (response.success) {
+    //       message.success('Сообщение успешно отправлено!')
+    //       getDocumentsWithParams(activeCompany, parameterState)
+    //       getUser()
+    //       setTableState({
+    //         ...tableState,
+    //         fetching: false,
+    //         selectedRowKeys: [],
+    //         showModal: false
+    //       })
+    //     } else {
+    //       throw new Error(response.error)
+    //     }
+    //   })
+    //   .catch(error => {
+    //     message.error(error.message)
+    //     setTableState({ ...defaultTableState })
+    //   })
   }
 
   const handleChangePerPage = value => {
@@ -494,7 +515,7 @@ const AntdTable = props => {
                     </Tooltip>
                   </div>
                   <div>
-                    {!!tableState.selectedRowKeys.length &&
+                    {!!tableState.selectedRowKeys.length && status !== 3 &&
                       <Button type={'primary'} onClick={multipleVerify}>
                         <Icon type={tableState.loading ? 'loading' : 'edit'} />
                         Групповое подписание
@@ -546,3 +567,4 @@ const AntdTable = props => {
 }
 
 export default AntdTable
+

@@ -10,7 +10,7 @@
     "classnames": "^2.2.6",
     "iplocation": "^6.1.0",
     "js-base64": "^2.5.1",
-    "js-file-download": "^0.4.7",
+    "js-file-download": "^0.4.8",
     "local-ip-url": "^1.0.2",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",

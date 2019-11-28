@@ -13,3 +13,29 @@
     max-height: 6.5rem;
   }
 }
+.app {
+  position: absolute;
+  top: 80px;
+  width: 100%;
+  bottom: 0;
+  display: flex;
+  .app-preview {
+    flex-basis: 35%;
+    background-color: rgba(0, 0, 0, .55);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 5rem;
+  }
+  .app-content {
+    position: relative;
+    height: 100%;
+    flex-basis: 65%;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 5rem;
+  }
+}

@@ -50,7 +50,7 @@ const defaultDocumentData = {
   fileInfo: [],
   isNewMessage: false,
   uploadFetch: false,
-  isFileUploaded: false
+  disabled: false
 }
 
 const getSignedHex = (base64) => {
@@ -115,7 +115,7 @@ const NewDocumentPage = props => {
     const files = [...e.target.files]
     if (files.length > 5) {
       notification['error']({
-        message: 'Error'
+        message: 'Максимальное количество файлов для однопоточной загрузки 5'
       })
       return null
     }
@@ -140,7 +140,10 @@ const NewDocumentPage = props => {
   const getFiles = () => {
     let chain = Promise.resolve()
     const files = documentState.files
-
+    setDocumentState({
+      ...documentState,
+      disabled: true
+    })
 
     files.forEach((file, idx) => {
       const fileReader = new window.FileReader()
@@ -155,7 +158,9 @@ const NewDocumentPage = props => {
           'file': file
         })
         chain = chain
-          .then(() => uploadFile(formData, { 'Content-Type': 'multipart/form-data' }))
+          .then(() =>{
+            uploadFile(formData, { 'Content-Type': 'multipart/form-data' })
+          })
           .catch(error => {
             console.error(error)
           })
@@ -345,7 +350,7 @@ const NewDocumentPage = props => {
           }).then(({ success }) => {
             if (success) {
               notification['success']({
-                message: 'Сообещние успешно доставлено'
+                message: 'Ваше сообщение успешно отправлено'
               })
               setDocumentState({ ...defaultDocumentData })
               setMessage(!message)
@@ -546,7 +551,7 @@ const NewDocumentPage = props => {
                 <Icon type='cloud-upload' />
                 Отправить
               </Button>
-              {list && list.length > 2 &&
+              {list && list.length > 2 && false &&
               <Button
                 style={{ marginLeft: '2rem' }}
                 type='primary'
@@ -585,7 +590,7 @@ const NewDocumentPage = props => {
                       onClick={hideUploadedModal}
                   >Закрыть
                   </Button>
-                  : <Button type='primary' onClick={getFiles}>Загрузить</Button>
+                  : <Button type='primary' disabled={documentState.disabled} onClick={getFiles}>Загрузить</Button>
               }
             </Fragment>
         }
