@@ -94,6 +94,7 @@ class LoginPage extends React.Component {
           </Button>
           <div style={{ marginTop: '1.5rem' }}>
             <Title level={4}>Начните обмент документами сейчас!<br />Нет аккаунта?</Title>
+            <Title level={4}>Начните обмен документами сейчас!<br />Нет аккаунта?</Title>
             <Link to={'/register'}>Зарегистрируйтесь! &nbsp;</Link>
             <Text type='secondary'>
               Вы сможете <strong>бесплатно</strong> обмениваться электронными документами с вашими контрагентами в течении <strong style={{ color: 'red' }}>90</strong> дней.
