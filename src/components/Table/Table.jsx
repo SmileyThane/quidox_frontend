@@ -145,7 +145,7 @@ const AntdTable = props => {
       title: (status === 10 ? 'ЭЦП' : ''),
       key: 'file-status',
       render: (status === 10
-        ? record => <Tag color={!!record.document.applied_attachments_count ? 'green' : 'orange'}>{!!record.document.applied_attachments_count ? 'ЭЦП имеется' : 'ЭЦП отсутсвует'}</Tag>
+        ? record => <Tag color={!!record.document.applied_attachments_count ? 'green' : 'orange'}>{!!record.document.applied_attachments_count ? 'ЭЦП имеется' : 'ЭЦП отсутствует'}</Tag>
         : ''
       )
     },
@@ -567,4 +567,3 @@ const AntdTable = props => {
 }
 
 export default AntdTable
-

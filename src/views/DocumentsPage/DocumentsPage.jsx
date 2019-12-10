@@ -257,7 +257,7 @@ const DocumentsPage = props => {
           onClick={multipleSend}
         >
           <Icon type={state.disabled ? 'loading' : 'edit'} />
-          {state.disabled ? 'Подождите, идет процесс отправки' : 'Отправить сообщени'}
+          {state.disabled ? 'Подождите, идет процесс отправки' : 'Отправить сообщения'}
         </Button>
         }
 
