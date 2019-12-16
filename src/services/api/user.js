@@ -29,9 +29,16 @@ const updateUser = data => {
   })
 }
 
-const updateUserPhone = data => {
+const getTariffications = () => {
   return http({
-    url: 'user/update/phone',
+    url: '/tarifications',
+    method: 'GET'
+  })
+}
+
+const changeTariff = data => {
+  return http({
+    url: '/tarification/add',
     method: 'POST',
     data
   })
@@ -41,6 +48,7 @@ export {
   getUser,
   userLogout,
   updateUser,
-  updateUserPhone,
-  findUsersByParams
+  findUsersByParams,
+  getTariffications,
+  changeTariff
 }

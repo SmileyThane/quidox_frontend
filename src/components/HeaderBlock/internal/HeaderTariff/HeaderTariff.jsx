@@ -3,9 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Typography, Tooltip, Tag } from 'antd'
 import { Tariff } from './styled'
 import { getActiveCompany } from '../../../../utils'
-import { User } from '../HeaderUser/styled'
 
-const { Text } = Typography
 const defaultState = {
   activeCompany: null
 }

@@ -2,6 +2,7 @@ import { combineReducers } from 'redux'
 import * as t from '../types'
 
 import user from './user'
+import tariff from './tariff'
 import companies from './companies'
 import documents from './documents'
 import files from './files'
@@ -10,7 +11,8 @@ const appReducer = combineReducers({
   user,
   documents,
   companies,
-  files
+  files,
+  tariff
 })
 
 const rootReducer = (state, action) => {

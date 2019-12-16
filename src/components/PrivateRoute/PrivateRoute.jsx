@@ -1,11 +1,13 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import { Redirect, Route } from 'react-router-dom'
 
-import { Layout, Modal } from 'antd'
+import history from '../../history'
+import { api } from '../../services'
+import { Layout, Modal, Button } from 'antd'
 import { getActiveCompany, checkActiveTariff } from '../../utils'
 import { LayoutBlock, HeaderBlock, SiderBlock, ContentBlock, FooterBlock } from '../'
 
-const PrivateRoute = ({ component: Component, user: { data }, getUser, ...rest }) => {
+const PrivateRoute = ({ component: Component, user: { data }, getUser, getTariffications, ...rest }) => {
   const [availableTariff, setAvailableTariff] = useState(false)
   const [activeCompany, setActiveCompany] = useState(null)
   // eslint-disable-next-line spaced-comment
@@ -13,6 +15,7 @@ const PrivateRoute = ({ component: Component, user: { data }, getUser, ...rest }
   useEffect(() => {
     if (window.localStorage.getItem('authToken')) {
       getUser()
+      getTariffications()
       if (isIE) {
         setTimeout(() => {
           window.pluginLoaded()
@@ -33,7 +36,15 @@ const PrivateRoute = ({ component: Component, user: { data }, getUser, ...rest }
     }
   }, [activeCompany && Object.keys(activeCompany).length])
 
-  console.log(availableTariff)
+  const handleChangeTariff = () => {
+    api.user.changeTariff({ company_id: activeCompany.company_id, tarification_id: 1 })
+      .then(({ data }) => {
+        if (data.status) {
+          history.push(history.push(`/companies/${activeCompany.company_id}`))
+        }
+      })
+  }
+
   return <Route {...rest}
     render={props =>
       window.localStorage.getItem('authToken')
@@ -54,9 +65,15 @@ const PrivateRoute = ({ component: Component, user: { data }, getUser, ...rest }
             <Modal
               visible
               footer={null}
+              closable={false}
             >
-              Дорогой друг, к сожалению ваш тариф исчерпал себя и ему стало грустно.
-              Возможно стоит дать ему денег и тогда станет лучше, пока что, довольствуйтесь ничем!
+              Внимание! Недостаточно средств на Вашем балансе и
+              мы не можем активировать очередной пакет услуг.
+              Чтобы продолжить пользование сервисом пополните, пожалуйста, баланс.
+              Кнопка - "Пополнить баланс"
+              <div style={{ marginTop: '2rem' }}>
+                <Button type='primary' onClick={handleChangeTariff}>Пополнить баланс</Button>
+              </div>
             </Modal>
           }
         </Fragment>

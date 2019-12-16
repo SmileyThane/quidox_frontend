@@ -57,8 +57,34 @@ const updateUser = data => dispatch => {
     })
 }
 
+const getTariffications = () => dispatch => {
+  dispatch({
+    type: t.GET_TARIFF_FETCHING,
+    payload: true
+  })
+  return api.user.getTariffications()
+    .then(({ data }) => {
+      if (data.success) {
+        dispatch({
+          type: t.GET_TARIFF_SUCCESS,
+          payload: data.data
+        })
+        dispatch({
+          type: t.GET_TARIFF_FETCHING,
+          payload: false
+        })
+      } else {
+        dispatch({
+          type: t.GET_TARIFF_FETCHING,
+          payload: false
+        })
+      }
+    })
+}
+
 export {
   getUser,
   userLogout,
-  updateUser
+  updateUser,
+  getTariffications
 }
