@@ -14,6 +14,8 @@ const { Title, Text } = Typography
 
 const PublicRoute = ({ component: Component, ...rest }) => {
 
+  console.log(rest)
+
   return <Route {...rest}
     render={props =>
       window.localStorage.getItem('authToken')

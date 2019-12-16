@@ -52,13 +52,41 @@ export const checkBrowser = browser => {
     default: return true
   }
 }
-
-export const checkActiveTariff = activeTarif => {
-  if (moment(moment().unix()).isAfter(moment(activeTarif.expired_at).unix()) ||
-    activeTarif.max_bytes === 0 ||
-    activeTarif.max_actions === 0) {
+/**
+ *
+ * @param activeTariff
+ * @returns {boolean}
+ */
+export const checkActiveTariff = activeTariff => {
+  if (moment(moment().unix()).isAfter(moment(activeTariff.expired_at).unix()) ||
+    activeTariff.max_bytes === 0 ||
+    activeTariff.max_actions === 0) {
     return true
   } else {
     return false
   }
+}
+/**
+ *
+ * @param textContent
+ */
+export const copy2Clipboard = textContent => {
+  const textarea = document.createElement('textarea')
+
+  textarea.style.width = '1px'
+  textarea.style.height = '1px'
+  textarea.style.position = 'fixed'
+  textarea.style.top = '-1px'
+  textarea.style.left = '-1px'
+
+  textarea.textContent = textContent
+
+  document.body.appendChild(textarea)
+  try {
+    textarea.select()
+    document.execCommand('copy')
+  } catch (error) {
+    console.error(error)
+  }
+  document.body.removeChild(textarea)
 }

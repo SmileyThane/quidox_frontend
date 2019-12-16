@@ -13,6 +13,7 @@ import DocumentsPage from './DocumentsPage'
 import AttachmentsPage from './AttachmentsPage'
 import EcsCheckingPage from './EcsCheckingPage'
 import RegistryPage from './RegistryPage'
+import SingleSharedDocumentPage from './SingleSharedDocumentPage'
 
 export {
   LoginPage,
@@ -29,5 +30,6 @@ export {
   DocumentsPage,
   AttachmentsPage,
   EcsCheckingPage,
-  RegistryPage
+  RegistryPage,
+  SingleSharedDocumentPage
 }

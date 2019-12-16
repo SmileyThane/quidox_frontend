@@ -11,11 +11,10 @@ import {
   CompleteRegistrationForm,
   ResetPasswordPage,
   UserInfoPage,
-  Home,
   SingleDocumentPage,
   SingleCompanyPage,
   NewDocumentPage,
-  ExternalsPage,
+  SingleSharedDocumentPage,
   CompaniesPage,
   DocumentsPage,
   AttachmentsPage,
@@ -48,6 +47,7 @@ function App () {
           <PublicRoute path='/register' component={RegisterPage} />
           <PublicRoute path='/complete-registration/:id' component={CompleteRegistrationForm} />
           <PublicRoute path='/password-recovery' component={ResetPasswordPage} />
+          <Route path='/api/document/:id/shared/:code' component={SingleSharedDocumentPage} />
 
           <Route path='*' render={() => <div>404</div>} />
         </Switch>

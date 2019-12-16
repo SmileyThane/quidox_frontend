@@ -15,19 +15,19 @@ import {
   Select,
   message,
   Typography,
-  Tooltip,
-  Input
+  Tooltip, notification
 } from 'antd'
-import { FileActions, DownloadButtons, FileView } from './internal'
+import { FileActions, DownloadButtons } from './internal'
 import { findUsersByParams } from '../../services/api/user'
 import { Button, PDFViewer, EscDataSlider, AvestErrorHandling } from '../../components'
 import { close } from '../../resources/img'
 
+import { api } from '../../services'
+import { copy2Clipboard } from '../../utils'
 import './SingleDocumentPage.scss'
 
 const { Text, Paragraph } = Typography
 const { Option } = Select
-const { TextArea } = Input
 
 const defaultDocumentState = {
   isVisible: false,
@@ -59,15 +59,11 @@ const SingleDocumentPage = props => {
     sendDocumentToUser,
     updateDocumentById,
     getUser,
-    messageStatus = null
   } = props
 
   const { document, sender, recipient, statuses } = singleDocument
 
   const [documentState, setDocumentState] = useState({ ...defaultDocumentState })
-
-
-  console.log(match)
 
   useEffect(() => {
     if (match) {
@@ -85,13 +81,6 @@ const SingleDocumentPage = props => {
       }, 1000)
     }
   }, [documentState.isErrorWitchEcp])
-
-  const updateField = (field, v) => {
-    setDocumentState({
-      ...documentState,
-      [field]: v
-    })
-  }
 
   const showModal = item => {
     axios.get(item['preview_path'], {
@@ -255,6 +244,22 @@ const SingleDocumentPage = props => {
     }
   }
 
+  const handleMessageShare = () => {
+    api.document.getDocumentLink(match.params.id)
+      .then(({ data }) => {
+        if (data.success) {
+          copy2Clipboard(data.data.shared_link)
+          notification.success({
+            message: 'Ссылка успешно скопирована в буферобмен'
+          })
+        } else {
+          notification.error({
+            message: 'Ошибка получения ссылки'
+          })
+        }
+      })
+  }
+
   return (
     <Fragment>
       <Spin spinning={isFetching}>
@@ -388,9 +393,13 @@ const SingleDocumentPage = props => {
                   </div>
 
                   <div className='document__actions__right'>
-                    <Button onClick={() => openModal('send')} type='primary'>
+                    <Button onClick={() => openModal('send')} type='primary' style={{ marginRight: '1rem' }}>
                       <Icon type='redo' />
                       Перенаправить
+                    </Button>
+                    <Button onClick={() => handleMessageShare()} type='primary'>
+                      <Icon type='share-alt' />
+                      Поделиться
                     </Button>
                   </div>
                 </div>
