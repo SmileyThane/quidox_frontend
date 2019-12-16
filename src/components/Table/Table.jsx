@@ -96,11 +96,7 @@ const AntdTable = props => {
     if (parameterState.status) {
       getDocumentsWithParams(activeCompany, parameterState)
         .then(response => {
-          if (response.error) {
-            notification['error']({
-              message: response.error
-            })
-          }
+          console.log(response)
         })
     }
   }, [parameterState.status])
@@ -328,16 +324,6 @@ const AntdTable = props => {
 
   const asyncSendMessage = async (id, users) => {
     await sendDocumentToUser({ document_ids: [id], user_company_id: users })
-      // .then(response => {
-      //   if (response.success) {
-      //   } else {
-      //     throw new Error(response.error)
-      //   }
-      // })
-      // .catch(error => {
-      //   message.error(error.message)
-      //   setTableState({ ...defaultTableState })
-      // })
   }
 
   const sendToUser = () => {
@@ -354,26 +340,6 @@ const AntdTable = props => {
     chain.finally(() => {
       window.location.reload()
     })
-    // sendDocumentToUser(docsDataToUser)
-    //   .then(response => {
-    //     if (response.success) {
-    //       message.success('Сообщение успешно отправлено!')
-    //       getDocumentsWithParams(activeCompany, parameterState)
-    //       getUser()
-    //       setTableState({
-    //         ...tableState,
-    //         fetching: false,
-    //         selectedRowKeys: [],
-    //         showModal: false
-    //       })
-    //     } else {
-    //       throw new Error(response.error)
-    //     }
-    //   })
-    //   .catch(error => {
-    //     message.error(error.message)
-    //     setTableState({ ...defaultTableState })
-    //   })
   }
 
   const handleChangePerPage = value => {

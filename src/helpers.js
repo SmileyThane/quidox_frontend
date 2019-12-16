@@ -19,3 +19,7 @@ export const getTimeStamp = (time) => {
 export const getFileName = (url) => {
   return url.substring(url.lastIndexOf('/') + 1)
 }
+
+export const checkTarification = activeTarif => {
+
+}

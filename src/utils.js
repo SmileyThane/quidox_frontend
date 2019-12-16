@@ -52,3 +52,13 @@ export const checkBrowser = browser => {
     default: return true
   }
 }
+
+export const checkActiveTariff = activeTarif => {
+  if (moment(moment().unix()).isAfter(moment(activeTarif.expired_at).unix()) ||
+    activeTarif.max_bytes === 0 ||
+    activeTarif.max_actions === 0) {
+    return true
+  } else {
+    return false
+  }
+}

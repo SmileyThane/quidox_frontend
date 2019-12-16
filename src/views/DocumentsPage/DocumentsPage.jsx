@@ -1,6 +1,6 @@
 import React, { useState, Fragment } from 'react'
 
-import { Button, Modal, Icon, notification, Progress } from 'antd'
+import { Button, Modal, Icon } from 'antd'
 import { Table, PageDescription } from '../../components'
 import { api } from '../../services'
 import { checkBrowser } from '../../utils'
@@ -21,8 +21,7 @@ const DocumentsPage = props => {
   const {
     user: { data },
     documents: { documents, isFetching },
-    getDocumentsByActiveCompanyId,
-    removeDocumentsByIds
+    getDocumentsByActiveCompanyId
   } = props
 
   const [state, setState] = useState({ ...defaultState })
@@ -168,38 +167,38 @@ const DocumentsPage = props => {
     await api.documents.sendDocumentToUser({ document_ids: [id], user_company_id: JSON.stringify([]) })
   }
 
-// && checkBrowser('ie')
+  // && checkBrowser('ie')
   console.log(state)
   return (
     <Fragment>
       <div className='content'>
-      {!!(documents.data && documents.data.length > 0)  && Number(status) !== 3 &&
-          <div style={{ margin: '2rem' }}>
-            <Button
-              type='primary'
-              style={{ marginLeft: '2rem' }}
-              onClick={showVerifyModal}
-            >
-              <Icon type={state.buttonsFetching[0] ? 'loading' : 'edit'} />
+        {!!(documents.data && documents.data.length > 0) && Number(status) !== 3 &&
+        <div style={{ margin: '2rem' }}>
+          <Button
+            type='primary'
+            style={{ marginLeft: '2rem' }}
+            onClick={showVerifyModal}
+          >
+            <Icon type={state.buttonsFetching[0] ? 'loading' : 'edit'} />
               Подписать все
-            </Button>
-            <Button
-              type='primary'
-              style={{ marginLeft: '2rem' }}
-              onClick={showRemoveModal}
-            >
-              <Icon type={state.buttonsFetching[1] ? 'loading' : 'delete'} />
+          </Button>
+          <Button
+            type='primary'
+            style={{ marginLeft: '2rem' }}
+            onClick={showRemoveModal}
+          >
+            <Icon type={state.buttonsFetching[1] ? 'loading' : 'delete'} />
               Удалить все
-            </Button>
-            <Button
-              type='primary'
-              style={{ marginLeft: '2rem' }}
-              onClick={showSendModal}
-            >
-              <Icon type={state.buttonsFetching[2] ? 'loading' : 'upload'} />
+          </Button>
+          <Button
+            type='primary'
+            style={{ marginLeft: '2rem' }}
+            onClick={showSendModal}
+          >
+            <Icon type={state.buttonsFetching[2] ? 'loading' : 'upload'} />
               Отправить все
-            </Button>
-          </div>
+          </Button>
+        </div>
         }
         <Table
           className='document-table'
