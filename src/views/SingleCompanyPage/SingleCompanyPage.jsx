@@ -35,7 +35,7 @@ const SingleCompanyPage = props => {
             <Icon type='left' />
           </div>
           <Tabs
-            defaultActiveKey={location.state.fromBalance ? '3' : '1'}
+            defaultActiveKey={'1'}
           >
             <TabPane
               key='1'
