@@ -39,9 +39,7 @@ const PrivateRoute = ({ component: Component, user: { data }, getUser, getTariff
   const handleChangeTariff = () => {
     api.user.changeTariff({ company_id: activeCompany.company_id, tarification_id: 1 })
       .then(({ data }) => {
-        if (data.status) {
           history.push(history.push(`/companies/${activeCompany.company_id}`))
-        }
       })
   }
 
