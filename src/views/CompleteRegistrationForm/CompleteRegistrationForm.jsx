@@ -276,7 +276,7 @@ class CompleteRegistrationForm extends React.Component {
                       <Text type='secondary'>Мы отправили вам код подтверждения на указанный вами номер.<br />
                         Пожалуйста, проверьте и введите в поле.<br />
                         Нажмите "Продолжить".
-                      </Text><br /><br />
+                      </Text><br /> <br />
                       <Text type='secondary'>Не получили код?<br />
                         {seconds > 0
                           ? <Fragment>Выслать повторно через... {seconds}</Fragment>

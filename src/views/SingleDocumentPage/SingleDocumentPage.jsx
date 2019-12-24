@@ -1,4 +1,4 @@
-import React, { useEffect, useState, Fragment } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import axios from 'axios'
 import moment from 'moment'
 import _ from 'lodash'
@@ -6,20 +6,10 @@ import _ from 'lodash'
 import history from '../../history'
 import PDFJSBACKEND from '../../backends/pdfjs'
 
-import {
-  Spin,
-  Icon,
-  List,
-  Tag,
-  Modal,
-  Select,
-  message,
-  Typography,
-  Tooltip, notification
-} from 'antd'
-import { FileActions, DownloadButtons } from './internal'
+import { Icon, List, message, Modal, notification, Select, Spin, Tag, Tooltip, Typography } from 'antd'
+import { DownloadButtons, FileActions } from './internal'
 import { findUsersByParams } from '../../services/api/user'
-import { Button, PDFViewer, EscDataSlider, AvestErrorHandling } from '../../components'
+import { AvestErrorHandling, Button, EscDataSlider, PDFViewer } from '../../components'
 import { close } from '../../resources/img'
 
 import { api } from '../../services'
@@ -58,7 +48,7 @@ const SingleDocumentPage = props => {
     getDocumentById,
     sendDocumentToUser,
     updateDocumentById,
-    getUser,
+    getUser
   } = props
 
   const { document, sender, recipient, statuses } = singleDocument
@@ -248,9 +238,12 @@ const SingleDocumentPage = props => {
     api.document.getDocumentLink(match.params.id)
       .then(({ data }) => {
         if (data.success) {
+          // copy2Clipboard(data.data.shared_link)
           copy2Clipboard(data.data.shared_link)
           notification.success({
-            message: 'Ссылка успешно скопирована в буферобмен'
+            message: 'Ссылка на переход к просмотру документа:\n' +
+              window.location.protocol + '//' + window.location.host +
+              `${'/document/' + data.data.id + '/shared/' + data.data.verification_code}`
           })
         } else {
           notification.error({
@@ -267,8 +260,8 @@ const SingleDocumentPage = props => {
           <div className='document'>
             <div className='document__header'>
               <div className='document__header_left'>
-                <div className='back' onClick={() => history.goBack()} >
-                  <Icon type='left' />
+                <div className='back' onClick={() => history.goBack()}>
+                  <Icon type='left'/>
                 </div>
 
                 {(statuses && statuses.length && statuses[0].user_company_document_list_id === 1)
@@ -294,11 +287,11 @@ const SingleDocumentPage = props => {
                   <div className='info__title'>Получатели</div>
                   <div className='info__content'>
                     {recipient &&
-                      <div style={{ padding: '.5rem 0' }}>
-                        <Text>{recipient['user_email']}</Text>
-                        <br />
-                        <Text>{`[ ${recipient['company_name']} ]`}</Text>
-                      </div>
+                    <div style={{ padding: '.5rem 0' }}>
+                      <Text>{recipient['user_email']}</Text>
+                      <br/>
+                      <Text>{`[ ${recipient['company_name']} ]`}</Text>
+                    </div>
                     }
                   </div>
                 </div>
@@ -309,7 +302,7 @@ const SingleDocumentPage = props => {
                     {sender &&
                     <div>
                       <Text>{sender.user_email}</Text>
-                      <br />
+                      <br/>
                       <Text>{`[ ${sender.company_name} ]`}</Text>
                     </div>
                     }
@@ -337,16 +330,16 @@ const SingleDocumentPage = props => {
                   style={{ maxHeight: '20rem', overflowY: 'scroll' }}
                   renderItem={(item, index) => (
                     <List.Item key={item.id}
-                      extra={
-                        <FileActions
-                          file={item}
-                          documentId={singleDocument.document.id}
-                          getDocument={() => getDocumentById(match.params.id)}
-                          // isHidden={singleDocument.status_name !== 'Отправленные'}
-                          canBeSigned={singleDocument.can_be_signed}
-                          messageId={singleDocument.status_id}
-                        />
-                      }
+                               extra={
+                                 <FileActions
+                                   file={item}
+                                   documentId={singleDocument.document.id}
+                                   getDocument={() => getDocumentById(match.params.id)}
+                                   // isHidden={singleDocument.status_name !== 'Отправленные'}
+                                   canBeSigned={singleDocument.can_be_signed}
+                                   messageId={singleDocument.status_id}
+                                 />
+                               }
                     >
                       <div className='single-document'>
                         <Tooltip
@@ -374,7 +367,7 @@ const SingleDocumentPage = props => {
                         }
 
                         {item.status &&
-                          <Tag color={item.status.status_data.color}>{item.status.status_data.name}</Tag>
+                        <Tag color={item.status.status_data.color}>{item.status.status_data.name}</Tag>
                         }
                       </div>
                     </List.Item>
@@ -383,98 +376,98 @@ const SingleDocumentPage = props => {
               </div>
             </div>
 
-            { (document && document.attachments) &&
-              <Fragment>
-                <div className='document__actions'>
-                  <div className='document__actions__left'>
-                    {!!document.attachments.length &&
-                      <DownloadButtons document={document} />
-                    }
-                  </div>
-
-                  <div className='document__actions__right'>
-                    <Button onClick={() => openModal('send')} type='primary' style={{ marginRight: '1rem' }}>
-                      <Icon type='redo' />
-                      Перенаправить
-                    </Button>
-                    <Button onClick={() => handleMessageShare()} type='primary'>
-                      <Icon type='share-alt' />
-                      Поделиться
-                    </Button>
-                  </div>
+            {(document && document.attachments) &&
+            <Fragment>
+              <div className='document__actions'>
+                <div className='document__actions__left'>
+                  {!!document.attachments.length &&
+                  <DownloadButtons document={document}/>
+                  }
                 </div>
-              </Fragment>
+
+                <div className='document__actions__right'>
+                  <Button onClick={() => openModal('send')} type='primary' style={{ marginRight: '1rem' }}>
+                    <Icon type='redo'/>
+                    Перенаправить
+                  </Button>
+                  <Button onClick={() => handleMessageShare()} type='primary'>
+                    <Icon type='share-alt'/>
+                    Поделиться
+                  </Button>
+                </div>
+              </div>
+            </Fragment>
             }
           </div>
         </div>
       </Spin>
 
       {documentState.isVisible &&
-        <div className='pdf-container'>
-          <div className='pdf-container__close'>
-            <div className='close' style={{ backgroundImage: `url(${close})` }} onClick={() => hideModal()} />
-          </div>
-          {['jpg', 'png', 'jpeg'].includes(documentState.fileType.split('.').pop())
-            ? <div className='img-wrapp'>
-              <img className='modal-img' src={documentState.fileLink} alt='img' />
-            </div>
-            : <PDFViewer
-              backend={PDFJSBACKEND}
-              src={documentState.fileLink}
-            />
-          }
-
+      <div className='pdf-container'>
+        <div className='pdf-container__close'>
+          <div className='close' style={{ backgroundImage: `url(${close})` }} onClick={() => hideModal()}/>
         </div>
+        {['jpg', 'png', 'jpeg'].includes(documentState.fileType.split('.').pop())
+          ? <div className='img-wrapp'>
+            <img className='modal-img' src={documentState.fileLink} alt='img'/>
+          </div>
+          : <PDFViewer
+            backend={PDFJSBACKEND}
+            src={documentState.fileLink}
+          />
+        }
+
+      </div>
       }
       {documentState.showModal &&
-        <Modal
-          visible
-          closable={false}
-          footer={null}
-        >
-          {documentState.modalType === 'ecp' &&
-          <EscDataSlider onCancel={handleCloseModal} data={documentState.fileCerts} />
-          }
-          {documentState.modalType === 'send' &&
-          <Fragment>
-            <Text>Получатели:</Text>
-            <Select
-              mode='tags'
-              labelInValue
-              tokenSeparators={[',']}
-              value={documentState.value}
-              filterOption={false}
-              notFoundContent={documentState.fetching ? <Spin size='small' /> : null}
-              onSearch={fetchUser}
-              onChange={handleSelect}
-              style={{ width: '100%', margin: '2rem 0 5rem 0' }}
-            >
-              {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
-            </Select>
+      <Modal
+        visible
+        closable={false}
+        footer={null}
+      >
+        {documentState.modalType === 'ecp' &&
+        <EscDataSlider onCancel={handleCloseModal} data={documentState.fileCerts}/>
+        }
+        {documentState.modalType === 'send' &&
+        <Fragment>
+          <Text>Получатели:</Text>
+          <Select
+            mode='tags'
+            labelInValue
+            tokenSeparators={[',']}
+            value={documentState.value}
+            filterOption={false}
+            notFoundContent={documentState.fetching ? <Spin size='small'/> : null}
+            onSearch={fetchUser}
+            onChange={handleSelect}
+            style={{ width: '100%', margin: '2rem 0 5rem 0' }}
+          >
+            {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
+          </Select>
 
-            <Button
-              type='primary'
-              style={{ marginTop: 20 }}
-              onClick={sendToUser}
-            >
-              Отправить
-            </Button>
+          <Button
+            type='primary'
+            style={{ marginTop: 20 }}
+            onClick={sendToUser}
+          >
+            Отправить
+          </Button>
 
-            <Button
-              type='primary'
-              style={{ marginLeft: 20 }}
-              onClick={() => setDocumentState({ ...documentState, showModal: false })}
-              ghost
-            >
-              Отмена
-            </Button>
-          </Fragment>
-          }
+          <Button
+            type='primary'
+            style={{ marginLeft: 20 }}
+            onClick={() => setDocumentState({ ...documentState, showModal: false })}
+            ghost
+          >
+            Отмена
+          </Button>
+        </Fragment>
+        }
 
-          {documentState.modalType === 'error' &&
-            <AvestErrorHandling onCancel={handleCloseModal} />
-          }
-        </Modal>
+        {documentState.modalType === 'error' &&
+        <AvestErrorHandling onCancel={handleCloseModal}/>
+        }
+      </Modal>
       }
     </Fragment>
   )

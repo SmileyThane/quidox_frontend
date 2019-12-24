@@ -21,6 +21,7 @@ import {
   EcsCheckingPage,
   RegistryPage
 } from './views'
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App () {
   return (
@@ -47,7 +48,7 @@ function App () {
           <PublicRoute path='/register' component={RegisterPage} />
           <PublicRoute path='/complete-registration/:id' component={CompleteRegistrationForm} />
           <PublicRoute path='/password-recovery' component={ResetPasswordPage} />
-          <Route path='/api/document/:id/shared/:code' component={SingleSharedDocumentPage} />
+          <ProtectedRoute path='/document/:id/shared/:code' component={SingleSharedDocumentPage} />
 
           <Route path='*' render={() => <div>404</div>} />
         </Switch>

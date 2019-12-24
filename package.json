@@ -21,6 +21,7 @@
     "react": "^16.8.6",
     "react-add-to-calendar": "^0.1.5",
     "react-app-polyfill": "^1.0.1",
+    "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.8.6",
     "react-geocode": "^0.2.0",
     "react-icons": "^3.7.0",
