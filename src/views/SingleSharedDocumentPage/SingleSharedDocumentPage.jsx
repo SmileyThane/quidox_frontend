@@ -61,8 +61,6 @@ const SingleSharedDocumentPage = props => {
   const getEcpCount = arr => {
     if (arr.length) {
       let acpCount = arr.filter(i => i.verification_hash !== null)
-      console.log('test')
-      console.log(acpCount)
       return acpCount.length
     }
   }

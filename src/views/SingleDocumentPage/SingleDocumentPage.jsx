@@ -238,12 +238,11 @@ const SingleDocumentPage = props => {
     api.document.getDocumentLink(match.params.id)
       .then(({ data }) => {
         if (data.success) {
-          // copy2Clipboard(data.data.shared_link)
-          copy2Clipboard(data.data.shared_link)
+          let link = window.location.protocol + '//' + window.location.host +
+            `${'/document/' + data.data.id + '/shared/' + data.data.verification_code}`
+          copy2Clipboard(link)
           notification.success({
-            message: 'Ссылка на переход к просмотру документа:\n' +
-              window.location.protocol + '//' + window.location.host +
-              `${'/document/' + data.data.id + '/shared/' + data.data.verification_code}`
+            message: 'Ссылка на переход к просмотру документа:\n' + link
           })
         } else {
           notification.error({
