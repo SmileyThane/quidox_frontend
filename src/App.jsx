@@ -32,7 +32,7 @@ function App () {
 
           <PrivateRoute path='/new-document' component={NewDocumentPage} />
 
-          <PrivateRoute path='/esc-checking' component={EcsCheckingPage} />
+          <ProtectedRoute path='/esc-checking' component={EcsCheckingPage} />
 
           <PrivateRoute exact path='/companies' component={CompaniesPage} />
           <PrivateRoute path='/companies/:id' component={SingleCompanyPage} />
