@@ -50,7 +50,7 @@ class RegistrationForm extends React.Component {
     code: '',
     seconds: 60,
     isFetching: false
-  };
+  }
 
   inputNode = React.createRef()
   inputPhoneNode = React.createRef()
@@ -108,10 +108,10 @@ class RegistrationForm extends React.Component {
                 if (data.success) {
                   message.success('На указанный Вами номер отправлено SMS с кодом. Введите его в окно ниже для ' +
                     'продолжения процесса регистрации')
-                    this.setState({ currentStep: this.state.currentStep + 1 })
-                    this.getOneMinuteTimer()
-                    this.inputNode.current.focus()
-                    this.setState({ isFetching: false })
+                  this.setState({ currentStep: this.state.currentStep + 1 })
+                  this.getOneMinuteTimer()
+                  this.inputNode.current.focus()
+                  this.setState({ isFetching: false })
                 } else {
                   this.setState({ isFetching: false })
                   throw new Error(data.error)
@@ -126,8 +126,8 @@ class RegistrationForm extends React.Component {
               .then(({ data }) => {
                 if (data.success) {
                   message.success('СМС код введен правильно!')
-                    this.setState({ currentStep: this.state.currentStep + 1 })
-                    this.inputNode.current.focus()
+                  this.setState({ currentStep: this.state.currentStep + 1 })
+                  this.inputNode.current.focus()
                   this.setState({ isFetching: false })
                 } else {
                   this.setState({ isFetching: false })
@@ -143,8 +143,8 @@ class RegistrationForm extends React.Component {
               .then(({ data }) => {
                 if (data.success) {
                   message.success('Данные отправлены успешно')
-                    this.setState({ currentStep: this.state.currentStep + 1 })
-                    this.setState({ isFetching: false })
+                  this.setState({ currentStep: this.state.currentStep + 1 })
+                  this.setState({ isFetching: false })
                 } else {
                   this.setState({ isFetching: false })
                   throw new Error(data.error)
@@ -161,7 +161,7 @@ class RegistrationForm extends React.Component {
         }
       }
     })
-  };
+  }
 
   getSmsCode = () => {
     this.setState({
@@ -196,7 +196,7 @@ class RegistrationForm extends React.Component {
   handleConfirmBlur = e => {
     const value = e.target.value
     this.setState({ confirmDirty: this.state.confirmDirty || !!value })
-  };
+  }
 
   compareToFirstPassword = (rule, value, callback) => {
     const form = this.props.form
@@ -205,7 +205,7 @@ class RegistrationForm extends React.Component {
     } else {
       callback()
     }
-  };
+  }
 
   validateToNextPassword = (rule, value, callback) => {
     const form = this.props.form
@@ -213,7 +213,7 @@ class RegistrationForm extends React.Component {
       form.validateFields(['confirm'], { force: true })
     }
     callback()
-  };
+  }
 
   getOneMinuteTimer = () => {
     const timeInterval = setInterval(() => {
@@ -227,6 +227,7 @@ class RegistrationForm extends React.Component {
       }
     }, 1000)
   }
+
   render () {
     const { currentStep, seconds } = this.state
     const { getFieldDecorator } = this.props.form
@@ -244,7 +245,7 @@ class RegistrationForm extends React.Component {
 
     return (
       <Fragment>
-        <div className='register' >
+        <div className='register'>
           <div className='preview-header'>
             <Title level={3}>
               Регистрация в Quidox.by
@@ -257,7 +258,7 @@ class RegistrationForm extends React.Component {
               current={currentStep}
             >
               {steps.map(item => (
-                <Step key={item.title} title={item.title} />
+                <Step key={item.title} title={item.title}/>
               ))}
             </Steps>
             <Spin spinning={this.state.isFetching}>
@@ -282,11 +283,14 @@ class RegistrationForm extends React.Component {
                     />)}
                   </Form.Item>
                   <Checkbox style={{ marginBottom: '1rem' }} onClick={this.handleCheck}>
-                    Я ознакомился и принимаю условия <a style={{ textDecoration: 'underline' }} href={publicContract} target='_blank'>Публичного договора</a> и <a style={{ textDecoration: 'underline' }} href={privacyPolicy}>Политику конфиденцальности</a>.
+                    Я ознакомился и принимаю условия <a style={{ textDecoration: 'underline' }} href={publicContract}
+                                                        target='_blank'>Публичного договора</a> и <a
+                    style={{ textDecoration: 'underline' }} href={privacyPolicy}>Политику конфиденцальности</a>.
                   </Checkbox>
                   <div style={{ marginBottom: '1rem' }}>
                     <Text>
-                      Для начала регистрации и обеспечения безопасной двухфакторной аутентификации, пожалуйста введите номер
+                      Для начала регистрации и обеспечения безопасной двухфакторной аутентификации, пожалуйста введите
+                      номер
                       Вашего мобильного телефона
                     </Text>
                   </div>
@@ -326,7 +330,7 @@ class RegistrationForm extends React.Component {
                           message: 'Пожалуйста, введите адрес электронной почты!'
                         }
                       ]
-                    })(<Input ref={this.inputNode} />)}
+                    })(<Input ref={this.inputNode}/>)}
                   </Form.Item>
                   <Form.Item label='Ваше имя'>
                     {getFieldDecorator('name', {
@@ -340,21 +344,21 @@ class RegistrationForm extends React.Component {
                           message: 'Пожалуйста, введите ваше имя!'
                         }
                       ]
-                    })(<Input />)}
+                    })(<Input/>)}
                   </Form.Item>
                   <Form.Item label='Придумайте пароль' hasFeedback>
                     {getFieldDecorator('password', {
                       rules: [
                         {
                           required: true,
-                          message: 'Минимум восемь символов, как минимум одна буква, одна цифра и один специальный символ',
-                          pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,}$/
+                          message: 'Минимум восемь символов, как минимум одна буква и одна цифра',
+                          pattern: /^.{8,128}$/
                         },
                         {
                           validator: this.validateToNextPassword
                         }
                       ]
-                    })(<Input.Password />)}
+                    })(<Input.Password/>)}
                   </Form.Item>
                   <Form.Item label='Подтвердите пароль' hasFeedback>
                     {getFieldDecorator('confirm', {
@@ -367,25 +371,26 @@ class RegistrationForm extends React.Component {
                           validator: this.compareToFirstPassword
                         }
                       ]
-                    })(<Input.Password onBlur={this.handleConfirmBlur} />)}
+                    })(<Input.Password onBlur={this.handleConfirmBlur}/>)}
                   </Form.Item>
                 </Fragment>
                 }
                 {currentStep === 3 &&
                 <Fragment>
-                  <p>Подтвердите регистрацию, пройдя по ссылке в сообщении, которое вы получите на указанный вами адрес электронной почты</p>
+                  <p>Подтвердите регистрацию, пройдя по ссылке в сообщении, которое вы получите на указанный вами адрес
+                    электронной почты</p>
                 </Fragment>
                 }
                 <Form.Item>
                   <div>
                     <div>
-                      { currentStep === 1 &&
+                      {currentStep === 1 &&
                       <Fragment>
-                        <Text type='secondary'>Мы отправили вам код подтверждения на указанный вами номер.<br />
-                          Пожалуйста, проверьте и введите в поле.<br />
+                        <Text type='secondary'>Мы отправили вам код подтверждения на указанный вами номер.<br/>
+                          Пожалуйста, проверьте и введите в поле.<br/>
                           Нажмите "Продолжить".
-                        </Text><br /><br />
-                        <Text type='secondary'>Не получили код?<br />
+                        </Text><br/><br/>
+                        <Text type='secondary'>Не получили код?<br/>
                           {seconds > 0
                             ? <Fragment>Выслать повторно через... {seconds}</Fragment>
                             : <Button type='link' onClick={() => this.getSmsCode()}>Выслать повторно!</Button>
@@ -396,12 +401,12 @@ class RegistrationForm extends React.Component {
                     </div>
                     {currentStep === 0 &&
                     <Fragment>
-                      <Text type='secondary'>Благодаря сервису QuiDox.by<br />
+                      <Text type='secondary'>Благодаря сервису QuiDox.by<br/>
                         Вы сможете с легкостью обмениваться электронными документами с ЭЦП с Вашими контрагентами.
                       </Text>
-                      <br />
+                      <br/>
                       <Text type='secondary'>Доставка происходит мгновенно.</Text>
-                      <br />
+                      <br/>
                       <Text type='secondary'>Бесплатно первые 90 дней!</Text>
                     </Fragment>
                     }
