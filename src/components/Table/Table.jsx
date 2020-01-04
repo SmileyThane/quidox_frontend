@@ -151,7 +151,7 @@ const AntdTable = props => {
       key: 'receipt',
       className: 'table-download',
       render: record => <Fragment>
-        <Tooltip placement='topRight' title='Скачать квитанцию в формате pdf (Скоро...)' arrowPointAtCenter>
+        <Tooltip placement='topRight' title='Скачать квитанцию в формате pdf' arrowPointAtCenter>
           {/* <Icon onClick={() => downloadReceipt(record.id, record.document.name)} type='file-pdf' style={{ marginRight: '0.5rem', fontSize: '1.8rem', cursor: 'pointer' }} /> */}
           <Icon type='file-pdf' style={{ marginRight: '0.5rem', fontSize: '1.8rem', cursor: 'pointer' }} />
         </Tooltip>
