@@ -8,7 +8,9 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateUser: data => dispatch(actions.user.updateUser(data))
+  updateUser: data => dispatch(actions.user.updateUser(data)),
+  shareUser: data => dispatch(actions.user.shareUser(data)),
+  getSharedUser: data => dispatch(actions.user.getSharedUser(data))
 })
 
 export default connect(

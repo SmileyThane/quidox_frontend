@@ -57,6 +57,48 @@ const updateUser = data => dispatch => {
     })
 }
 
+const shareUser = data => dispatch => {
+  dispatch({
+    type: t.UPDATE_USER_FETCHING,
+    payload: true
+  })
+  return api.user.shareUser(data)
+    .then(({ data }) => {
+      if (data.success) {
+        dispatch({
+          type: t.UPDATE_USER_SUCCESS,
+          payload: data
+        })
+      }
+      dispatch({
+        type: t.UPDATE_USER_FETCHING,
+        payload: false
+      })
+      return data
+    })
+}
+
+const getSharedUser = data => dispatch => {
+  dispatch({
+    type: t.UPDATE_USER_FETCHING,
+    payload: true
+  })
+  return api.user.getSharedUser(data)
+    .then(({ data }) => {
+      if (data.success) {
+        dispatch({
+          type: t.UPDATE_USER_SUCCESS,
+          payload: data
+        })
+      }
+      dispatch({
+        type: t.UPDATE_USER_FETCHING,
+        payload: false
+      })
+      return data
+    })
+}
+
 const getTariffications = () => dispatch => {
   dispatch({
     type: t.GET_TARIFF_FETCHING,
@@ -84,6 +126,8 @@ const getTariffications = () => dispatch => {
 
 export {
   getUser,
+  shareUser,
+  getSharedUser,
   userLogout,
   updateUser,
   getTariffications

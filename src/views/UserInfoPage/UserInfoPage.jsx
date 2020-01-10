@@ -1,20 +1,8 @@
 import React, { Fragment } from 'react'
 import axios from 'axios'
 import MaskedInput from 'antd-mask-input'
-import {
-  Select,
-  Spin,
-  message,
-  Row,
-  Col,
-  Icon,
-  Input,
-  Button,
-  Modal,
-  Form
-} from 'antd'
+import { Button, Col, Form, Icon, Input, message, Modal, Row, Select, Spin } from 'antd'
 import './UserInfoPage.scss'
-import { api } from '../../services'
 
 const { Option } = Select
 
@@ -145,6 +133,48 @@ class UserInfoPage extends React.Component {
     })
   }
 
+  shareUser = e => {
+    e.preventDefault()
+    this.props.form.validateFieldsAndScroll(['email'], (err, values) => {
+      if (!err) {
+        this.props.shareUser(values)
+          .then(data => {
+            if (data.success) {
+              message.success('Пользователь расшарен. передайте ему пароль: ' + data.data.verification_code)
+              this.setState({ isModalVisible: !this.state.isModalVisible })
+            } else {
+              throw new Error(data.error)
+            }
+          })
+          .catch(error => {
+            message.error(error.message)
+          })
+      }
+    })
+  }
+
+  getSharedUser = e => {
+    e.preventDefault()
+    this.props.form.validateFieldsAndScroll(['value'], (err, values) => {
+      if (!err) {
+        this.props.getSharedUser(values)
+          .then(data => {
+            if (data.success) {
+              window.localStorage.setItem('authToken', data.data.token)
+              message.success('Пользователь переключен')
+              this.setState({ isModalVisible: !this.state.isModalVisible })
+              window.location.reload();
+            } else {
+              throw new Error(data.error)
+            }
+          })
+          .catch(error => {
+            message.error(error.message)
+          })
+      }
+    })
+  }
+
   changeUserInfo = e => {
     e.preventDefault()
     this.props.form.validateFieldsAndScroll((err, values) => {
@@ -176,7 +206,7 @@ class UserInfoPage extends React.Component {
     const prefixSelector = getFieldDecorator('prefix', {
       initialValue: '37529'
     })(
-      <Select  disabled={this.state.isCode} style={{ width: 100 }}>
+      <Select disabled={this.state.isCode} style={{ width: 100 }}>
         <Option value='37529'>+375(29)</Option>
         <Option value='37525'>+375(25)</Option>
         <Option value='37533'>+375(33)</Option>
@@ -209,7 +239,7 @@ class UserInfoPage extends React.Component {
                         message: 'Пожалуйста, введите адрес электронной почты!'
                       }
                     ]
-                  })(<Input disabled />)}
+                  })(<Input disabled/>)}
                 </Form.Item>
               </Col>
 
@@ -227,7 +257,7 @@ class UserInfoPage extends React.Component {
                         message: 'Пожалуйста, введите ваше имя!'
                       }
                     ]
-                  })(<Input disabled />)}
+                  })(<Input disabled/>)}
                 </Form.Item>
               </Col>
 
@@ -245,7 +275,7 @@ class UserInfoPage extends React.Component {
                         message: 'Пожалуйста, введите ваше имя!'
                       }
                     ]
-                  })(<Input disabled={!isEditMode} />)}
+                  })(<Input disabled={!isEditMode}/>)}
                 </Form.Item>
               </Col>
 
@@ -259,7 +289,7 @@ class UserInfoPage extends React.Component {
                         message: 'Не похоже, что это отчество!'
                       }
                     ]
-                  })(<Input disabled={!isEditMode} />)}
+                  })(<Input disabled={!isEditMode}/>)}
                 </Form.Item>
               </Col>
 
@@ -277,7 +307,7 @@ class UserInfoPage extends React.Component {
                         message: 'Пожалуйста, введите вашу фамилию!'
                       }
                     ]
-                  })(<Input disabled={!isEditMode} />)}
+                  })(<Input disabled={!isEditMode}/>)}
                 </Form.Item>
               </Col>
 
@@ -297,9 +327,9 @@ class UserInfoPage extends React.Component {
                     ]
                   })(<Select disabled={!isEditMode}>
                     {(data.companies && data.companies.length) &&
-                      data.companies.map(i => (
-                        <Option key={i.company_id} value={i.company_id}>{i.company_name}</Option>
-                      ))
+                    data.companies.map(i => (
+                      <Option key={i.company_id} value={i.company_id}>{i.company_name}</Option>
+                    ))
                     }
                   </Select>)}
                 </Form.Item>
@@ -309,7 +339,7 @@ class UserInfoPage extends React.Component {
                 <Form.Item style={{ width: '50%' }} label='Должность:'>
                   {getFieldDecorator('position', {
                     initialValue: ActiveCompany.position ? ActiveCompany.position : 'Отсутствует'
-                  })(<Input disabled />)}
+                  })(<Input disabled/>)}
                 </Form.Item>
               </Col>
 
@@ -325,8 +355,9 @@ class UserInfoPage extends React.Component {
           </Spin>
         </Form>
         <div>
-          <Button style={{ margin: '2rem 2rem 0 0' }} type='primary' onClick={isEditMode ? e => this.changeUserInfo(e) : (() => this.changeMode())}>
-            <Icon type='edit' />
+          <Button style={{ margin: '2rem 2rem 0 0' }} type='primary'
+                  onClick={isEditMode ? e => this.changeUserInfo(e) : (() => this.changeMode())}>
+            <Icon type='edit'/>
             {isEditMode ? 'Сохранить изменения' : 'Изменить данные'}
           </Button>
 
@@ -339,10 +370,24 @@ class UserInfoPage extends React.Component {
             <Icon type='edit'/>
             Сменить номер телефона
           </Button>
+          <Button type='primary' style={{ marginLeft: '2rem' }} onClick={() => this.openModal('share')}>
+            <Icon type='cloud'/>
+            Расшарить пользователя
+          </Button>
+          <Button type='primary' style={{ marginLeft: '2rem' }} onClick={() => this.openModal('getShared')}>
+            <Icon type='cloud-download'/>
+            Перейти к активному расшареному пользователю
+          </Button>
+
         </div>
         {isModalVisible &&
         <Modal
-          title={`Изменить ${this.state.modalType === 'password' ? 'пароль' : 'номер телефона'}`}
+          title={`
+                  ${this.state.modalType === 'password' ? 'Изменить пароль' : ''}
+                  ${this.state.modalType === 'phone' ? 'Изменить номер телефона' : ''}
+                  ${this.state.modalType === 'share' ? 'Расшарить пользователя' : ''}
+                  ${this.state.modalType === 'getShared' ? 'Перейти к активному расшареному пользователю' : ''}
+           `}
           visible
           closable={false}
           footer={null}
@@ -359,7 +404,7 @@ class UserInfoPage extends React.Component {
                         message: 'Введите старый пароль'
                       }
                     ]
-                  })(<Input.Password />)}
+                  })(<Input.Password/>)}
                 </Form.Item>
 
                 <Form.Item label='Новый пароль' hasFeedback>
@@ -374,7 +419,7 @@ class UserInfoPage extends React.Component {
                         validator: this.validateToNextPassword
                       }
                     ]
-                  })(<Input.Password />)}
+                  })(<Input.Password/>)}
                 </Form.Item>
 
                 <Form.Item label='Подтвердите новый пароль' hasFeedback>
@@ -389,10 +434,14 @@ class UserInfoPage extends React.Component {
                         validator: this.compareToFirstPassword
                       }
                     ]
-                  })(<Input.Password />)}
+                  })(<Input.Password/>)}
                 </Form.Item>
               </Fragment>
               : <Fragment>
+              </Fragment>
+            }
+            {this.state.modalType === 'phone'
+              ? <Fragment>
                 <Form.Item
                   validateStatus={this.state.validateStatus}
                   label='Введите номер мобильного телефона'
@@ -432,18 +481,67 @@ class UserInfoPage extends React.Component {
                 </Form.Item>
                 }
               </Fragment>
+              : <Fragment>
+              </Fragment>
             }
+            {this.state.modalType === 'share'
+              ? <Fragment>
+                <Form.Item
+                  validateStatus={this.state.validateStatus}
+                  label='Введите E-mail'
+                >
+                  {getFieldDecorator('email', {
+                    rules: [{ required: true, message: 'Пожалуйста, введите E-mail' }]
+                  })(<Input
+                    placeholder='email'
+                    style={{ width: '100%' }}
+                  />)}
+                </Form.Item>
+              </Fragment>
+              : <Fragment>
+              </Fragment>
+            }
+            {this.state.modalType === 'getShared'
+              ? <Fragment>
+                <Form.Item
+                  validateStatus={this.state.validateStatus}
+                  label='Введите код'
+                >
+                  {getFieldDecorator('value', {
+                    rules: [{ required: true, message: 'Пожалуйста, введите секретный код' }]
+                  })(<Input
+                    placeholder='Код'
+                    style={{ width: '100%' }}
+                  />)}
+                </Form.Item>
+              </Fragment>
+              : <Fragment>
+              </Fragment>
+            }
+
           </Form>
 
           <div style={{ marginTop: '2rem' }}>
             {this.state.modalType === 'password'
               ? <Button type='primary' onClick={this.changeUserPassword}>Сохранить новый пароль</Button>
-              : <Button type='primary' onClick={this.changeUserPhone}>
-                { this.state.isCode
+              : null
+            }
+            {this.state.modalType === 'phone'
+              ? <Button type='primary' onClick={this.changeUserPhone}>
+                {this.state.isCode
                   ? 'Отправить код'
                   : 'Изменить номер телефона'
                 }
               </Button>
+              : null
+            }
+            {this.state.modalType === 'share'
+              ? <Button type='primary' onClick={this.shareUser}>Подтвердить шаринг</Button>
+              : null
+            }
+            {this.state.modalType === 'getShared'
+              ? <Button type='primary' onClick={this.getSharedUser}>Подтвердить переход</Button>
+              : null
             }
             <Button type='primary' ghost onClick={this.openModal} style={{ marginLeft: '1rem' }}>Закрыть</Button>
           </div>

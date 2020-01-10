@@ -29,6 +29,22 @@ const updateUser = data => {
   })
 }
 
+const shareUser = data => {
+  return http({
+    url: '/user/share',
+    method: 'POST',
+    data
+  })
+}
+
+const getSharedUser = data => {
+  return http({
+    url: '/user/shared/token/get',
+    method: 'POST',
+    data
+  })
+}
+
 const getTariffications = () => {
   return http({
     url: '/tarifications',
@@ -46,6 +62,8 @@ const changeTariff = data => {
 
 export {
   getUser,
+  shareUser,
+  getSharedUser,
   userLogout,
   updateUser,
   findUsersByParams,
