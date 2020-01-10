@@ -202,6 +202,15 @@ const AntMenu = props => {
           icon='folder'
           disabled
         />
+        <MenuItem
+          heading='Корпоративные источники'
+          url='/documents'
+          key='/documents/11'
+          icon='file-text'
+          status={11}
+          id={'/documents/11'}
+
+        />
       </Menu>
     </Fragment>
   )
