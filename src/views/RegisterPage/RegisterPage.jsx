@@ -347,8 +347,8 @@ class RegistrationForm extends React.Component {
                       rules: [
                         {
                           required: true,
-                          message: 'Минимум восемь символов, как минимум одна буква, одна цифра и один специальный символ',
-                          pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,}$/
+                          message: 'Минимум восемь символов, как минимум одна буква и одна цифра',
+                          pattern: /^.{8,128}$/
                         },
                         {
                           validator: this.validateToNextPassword
