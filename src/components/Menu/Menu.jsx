@@ -48,14 +48,25 @@ const AntMenu = props => {
         // selectedKeys={[props.match.url, (props.location.pathname || {}).from]}
         selectedKeys={[`${props.location.state ? props.location.state.id : ''}`]}
       >
-        <MenuItem
-          heading='Входящие'
-          url='/documents'
-          status={2}
-          key='/documents/2'
-          icon='import'
-          id={'/documents/2'}
-        />
+        <Menu.ItemGroup title={<span><Icon type="import" />Входящие</span>}>
+          <MenuItem
+            heading='Входящие'
+            url='/documents'
+            status={2}
+            key='/documents/2'
+            icon='import'
+            id={'/documents/2'}
+          />
+
+          <MenuItem
+            heading='УНП@qdx.by'
+            url='/documents'
+            key='/documents/11'
+            icon='file-protect'
+            status={11}
+            id={'/documents/11'}
+          />
+        </Menu.ItemGroup>
         <MenuItem
           heading='Отправленные'
           url='/documents'
@@ -201,15 +212,6 @@ const AntMenu = props => {
           key={55}
           icon='folder'
           disabled
-        />
-        <MenuItem
-          heading='Корпоративные источники'
-          url='/documents'
-          key='/documents/11'
-          icon='file-text'
-          status={11}
-          id={'/documents/11'}
-
         />
       </Menu>
     </Fragment>
