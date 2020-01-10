@@ -241,9 +241,7 @@ const SingleDocumentPage = props => {
           let link = window.location.protocol + '//' + window.location.host +
             `${'/document/' + data.data.id + '/shared/' + data.data.verification_code}`
           copy2Clipboard(link)
-          notification.success({
-            message: 'Ссылка на переход к просмотру документа:\n' + link
-          })
+          message.success('Ссылка на переход к просмотру документа:\n' + link)
         } else {
           notification.error({
             message: 'Ошибка получения ссылки'
