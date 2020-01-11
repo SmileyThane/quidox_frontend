@@ -92,6 +92,8 @@ class LoginPage extends React.Component {
           <Button type='primary' htmlType='submit' className='login-form-button' style={{ marginTop: '.5rem' }}>
             Войти
           </Button>
+
+          <Link className="ant-btn ant-btn-default login-form-button" style={{ marginTop: '.5rem' }} to="/e-sign-login">Войти с помощью ЭЦП</Link>
           <div style={{ marginTop: '1.5rem' }}>
             <Title level={4}>Начните обмен документами сейчас!<br />Нет аккаунта?</Title>
             <Link to={'/register'}>Зарегистрируйтесь! &nbsp;</Link>
