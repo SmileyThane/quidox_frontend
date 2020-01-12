@@ -28,9 +28,15 @@ class EsignLoginPage extends React.Component {
 
   render () {
     try {
+      const isIE = /*@cc_on!@*/false || !!document.documentMode
+      if (isIE) {
+        setTimeout(() => {
+          window.pluginLoaded()
+          const companyData = window.sign('123', '123')
+          alert(companyData)
+        }, 1500)
+      }
 
-      const companyData = window.sign('123', '123')
-      alert(companyData)
     } catch (e) {
       notification['error']({
         message: 'Ключ ЭЦП не найден',
