@@ -6,12 +6,9 @@ import { CompanyCreate } from '../../components'
 import history from '../../history.js'
 import {
   Form,
-  Icon,
-  Input,
   Button,
-  Checkbox,
   message,
-  Typography, notification, Modal
+  Typography, notification
 } from 'antd'
 
 import './EsignLoginPage.scss'
@@ -32,23 +29,12 @@ class EsignLoginPage extends React.Component {
   render () {
     try {
 
-      const defaultState = {
-        companyData: null,
-        isCreate: false
-      }
-
-      const [state, setState] = useState({ ...defaultState })
-
       const companyData = window.sign('123', '123')
-      setState({
-        ...state,
-        companyData: decryptionCompanyData(companyData),
-        isCreate: true
-      })
+      alert(companyData)
     } catch (e) {
       notification['error']({
         message: 'Ключ ЭЦП не найден',
-        description: 'Проверьте наличие ключа ЭЦП в USB'
+        description: 'Проверьте наличие ключа ЭЦП в USB' + e
       })
     }
     const { getFieldDecorator } = this.props.form
