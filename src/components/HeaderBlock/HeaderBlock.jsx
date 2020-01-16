@@ -47,7 +47,9 @@ const HeaderBlock = props => {
       <HeaderContent>
         <HeaderContent.Row>
           <HeaderContent.LeftAside>
-            <HeaderContent.Logo src={logo} alt='Quidox Logo' style={{ maxHeight: '5rem' }} />
+            <a href={'https://quidox.by'}>
+              <HeaderContent.Logo src={logo} alt='Quidox Logo' style={{ maxHeight: '5rem' }} />
+            </a>
           </HeaderContent.LeftAside>
           {window.localStorage.getItem('authToken') &&
           <Fragment>
