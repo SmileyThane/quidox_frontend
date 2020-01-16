@@ -29,6 +29,21 @@ class EsignLoginPage extends React.Component {
   };
 
   render () {
+    try {
+      const isIE = /*@cc_on!@*/false || !!document.documentMode
+      if (isIE) {
+        setTimeout(() => {
+          window.pluginLoaded()
+        }, 1500)
+      }
+
+    } catch (e) {
+      notification['error']({
+        message: 'Ключ ЭЦП не найден',
+        description: 'Проверьте наличие ключа ЭЦП в USB' + e
+      })
+    }
+    const { getFieldDecorator } = this.props.form
 
     return (
       <Form onSubmit={this.handleSubmit} className='form form_login' style={{ minHeight: '40rem', maxWidth: '45rem' }}>
