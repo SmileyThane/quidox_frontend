@@ -23,7 +23,7 @@ class EsignLoginPage extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault()
-    const companyData = window.sign('123')
+    const companyData = window.sign('123', '123')
     console.log(companyData)
     //window.location.reload()
   };
