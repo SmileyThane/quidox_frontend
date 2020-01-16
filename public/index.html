@@ -73,7 +73,7 @@
     function sign(base64, hexValue) {
       if (base64) {
         var blob = avcmx.CreateBlob(0);
-        console.log('blob created')
+        alert('blob created')
         blob.SetAsBase64(base64, 0);
         var hex = hashData(base64);
       } else {
@@ -81,7 +81,7 @@
       }
         
         var msg = conn.CreateMessage(avcmx.CreateBlob(0), AVCMF_ADD_SIGN_CERT | AVCMF_OPEN_FOR_SIGN | AVCMF_DETACHED);
-        console.log('msg created')
+        alert('msg created')
         var hashBlob = avcmx.CreateBlob(0);
         hashBlob.SetAsHex(hex, 0);
         var signed = msg.FinalHashed(hashBlob);
@@ -102,7 +102,7 @@
         var blob = avcmx.CreateBlob(0);
             blob.SetAsBase64(signedData, 0);
             var msg = conn.CreateMessage(blob, AVCMF_OPEN_FOR_VERIFYSIGN | AVCMF_DETACHED);
-            console.log('verified msg created')
+            alert('verified msg created')
             if (!msg.IsSigned()) {
                 alert("Сообщение не является подписанным сообщением");
                 return;

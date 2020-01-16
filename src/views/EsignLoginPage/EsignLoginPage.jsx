@@ -8,22 +8,27 @@ const isIE = /*@cc_on!@*/false || !!document.documentMode
 
 const EsignLoginPage = props => {
 
-  if (isIE) {
-    setTimeout(() => {
-      try {
-        window.pluginLoaded()
-      } catch (error) {
-      }
-    }, 1000)
-  }
+
 
   const signLogin = () => {
     try {
-      const sertificationObject = window.sign('111', '111')
-      notification['error']({
-        message: sertificationObject
-      })
-      console.log(sertificationObject)
+      if (isIE) {
+        setTimeout(() => {
+          try {
+            window.pluginLoaded()
+          } catch (error) {
+          }
+        }, 1000)
+        setTimeout(() => {
+          try {
+            const sertificationObject = window.sign('111', '111')
+            notification['error']({
+              message: sertificationObject
+            })
+          } catch (error) {
+          }
+        }, 2000)
+      }
     } catch (error) {
       notification['error']({
         message: error.message
