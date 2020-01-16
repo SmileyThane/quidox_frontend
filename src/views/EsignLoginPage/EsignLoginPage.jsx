@@ -23,14 +23,12 @@ class EsignLoginPage extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault()
-    const companyData = window.sign('MTIz')
+    const companyData = window.sign('123')
     console.log(companyData)
     //window.location.reload()
   };
 
   render () {
-
-    const { getFieldDecorator } = this.props.form
 
     return (
       <Form onSubmit={this.handleSubmit} className='form form_login' style={{ minHeight: '40rem', maxWidth: '45rem' }}>
