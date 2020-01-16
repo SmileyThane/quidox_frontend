@@ -21,6 +21,9 @@ const EsignLoginPage = props => {
     try {
       const sertificationObject = window.sign('111', '111')
       console.log(sertificationObject)
+      notification['error']({
+        message: 'успех!'
+      })
     } catch (error) {
       notification['error']({
         message: error.message
