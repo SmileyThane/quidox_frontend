@@ -29,11 +29,13 @@ const defaultDocumentState = {
   singleFile: null
 }
 
+const isIE = /*@cc_on!@*/false || !!document.documentMode
+
 const EsignLoginPage = props => {
   const [documentState] = useState({ ...defaultDocumentState })
 
   useEffect(() => {
-    if (documentState.isErrorWitchEcp) {
+    if (isIE) {
       setTimeout(() => {
         try {
           window.pluginLoaded()
