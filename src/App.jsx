@@ -50,7 +50,7 @@ function App () {
           <PublicRoute path='/complete-registration/:id' component={CompleteRegistrationForm} />
           <PublicRoute path='/password-recovery' component={ResetPasswordPage} />
           <ProtectedRoute path='/document/:id/shared/:code' component={SingleSharedDocumentPage} />
-          <ProtectedRoute path='/e-sign-login' component={EsignLoginPage} />
+          <PublicRoute path='/e-sign-login' component={EsignLoginPage} />
           <Route path='*' render={() => <div>404</div>} />
         </Switch>
       </Router>
