@@ -23,7 +23,9 @@ class EsignLoginPage extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault()
-    window.location.reload()
+    const companyData = window.sign('123', '123')
+    console.log(companyData)
+    //window.location.reload()
   };
 
   render () {
@@ -32,8 +34,6 @@ class EsignLoginPage extends React.Component {
       if (isIE) {
         setTimeout(() => {
           window.pluginLoaded()
-          const companyData = window.sign('123', '123')
-          alert(companyData)
         }, 1500)
       }
 
@@ -54,7 +54,7 @@ class EsignLoginPage extends React.Component {
             </Text>
           </div>
         <Button type='primary' htmlType='submit' className='login-form-button' style={{ marginTop: '.5rem' }}>
-          Перезагрузить
+          Перейти
         </Button>
       </Form>
     )
