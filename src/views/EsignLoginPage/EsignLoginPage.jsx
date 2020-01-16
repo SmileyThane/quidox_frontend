@@ -4,43 +4,56 @@ import { notification } from 'antd'
 import { Button } from '../../components'
 // import axios from 'axios'
 
-const isIE = /*@cc_on!@*/false || !!document.documentMode
+const isIE = /* @cc_on!@*/false || !!document.documentMode
+
+function signAuth (isIE) {
+
+  if (isIE) {
+    setTimeout(() => {
+      try {
+        window.pluginLoaded()
+        console.log('111')
+        return true
+      } catch (error) {
+        return false
+      }
+    }, 1000)
+  }
+  console.log('111')
+}
+
+function signLogin (isIE) {
+  try {
+    let $res = signAuth(isIE)
+    if ($res) {
+      const sertificationObject = window.sign('111', '111')
+      return true
+    }
+  } catch (error) {
+    return false
+  }
+  console.log('22')
+}
 
 const EsignLoginPage = props => {
 
-
-
-  const signLogin = () => {
+  const signLoginSubmit = () => {
     try {
-      if (isIE) {
-        setTimeout(() => {
-          try {
-            window.pluginLoaded()
-          } catch (error) {
-          }
-        }, 1000)
-        setTimeout(() => {
-          try {
-            const sertificationObject = window.sign('111', '111')
-            notification['error']({
-              message: sertificationObject
-            })
-          } catch (error) {
-          }
-        }, 2000)
-      }
+      signLogin(isIE)
+      console.log('aaaa')
     } catch (error) {
       notification['error']({
         message: error.message
       })
     }
   }
+
   return (
     <Fragment>
       <Button
         type='primary'
         style={{ marginTop: 20 }}
-        onClick={signLogin}
+        onClick={signLoginSubmit}
       >
         Перейти
       </Button>
