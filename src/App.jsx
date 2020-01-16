@@ -20,9 +20,12 @@ import {
   AttachmentsPage,
   EcsCheckingPage,
   RegistryPage,
-  EsignLoginPage
+  EsignLoginPage,
+  EsignFirstStepPage
 } from './views'
+
 import ProtectedRoute from './components/ProtectedRoute'
+import WhitePageRoute from './components/WhitePageRoute'
 
 function App () {
   return (
@@ -50,8 +53,9 @@ function App () {
           <PublicRoute path='/complete-registration/:id' component={CompleteRegistrationForm} />
           <PublicRoute path='/password-recovery' component={ResetPasswordPage} />
           <ProtectedRoute path='/document/:id/shared/:code' component={SingleSharedDocumentPage} />
-          <PublicRoute path='/e-sign-login' component={EsignLoginPage} />
-          <Route path='*' render={() => <div>404</div>} />
+          <WhitePageRoute path='/e-sign-first-step' component={EsignFirstStepPage} />
+          <WhitePageRoute path='/e-sign-login' component={EsignLoginPage} />
+          <PublicRoute path='*' component={LoginPage} />
         </Switch>
       </Router>
     </Fragment>

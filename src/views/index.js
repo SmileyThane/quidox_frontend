@@ -15,7 +15,7 @@ import EcsCheckingPage from './EcsCheckingPage'
 import RegistryPage from './RegistryPage'
 import SingleSharedDocumentPage from './SingleSharedDocumentPage'
 import EsignLoginPage from './EsignLoginPage'
-
+import EsignFirstStepPage from './EsignFirstStepPage'
 export {
   LoginPage,
   RegisterPage,
@@ -33,5 +33,6 @@ export {
   EcsCheckingPage,
   RegistryPage,
   SingleSharedDocumentPage,
-  EsignLoginPage
+  EsignLoginPage,
+  EsignFirstStepPage
 }
