@@ -22,7 +22,7 @@ const EsignLoginPage = props => {
   const signLogin = () => {
     try {
       const sertificationObject = window.sign('111', '111')
-      console.log(sertificationObject)
+      console.log(sertificationObject.verifiedData)
       notification['error']({
         message: 'успех!'
       })
