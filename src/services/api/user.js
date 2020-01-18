@@ -60,6 +60,14 @@ const changeTariff = data => {
   })
 }
 
+const loginByEsign = data => {
+  return http({
+    url: '/esign/login',
+    method: 'POST',
+    data
+  })
+}
+
 export {
   getUser,
   shareUser,
@@ -68,5 +76,6 @@ export {
   updateUser,
   findUsersByParams,
   getTariffications,
-  changeTariff
+  changeTariff,
+  loginByEsign
 }

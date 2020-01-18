@@ -1,7 +1,8 @@
 import React, { Fragment } from 'react'
-import { notification, Typography } from 'antd'
+import { message, notification, Typography } from 'antd'
 
 import { Button } from '../../components'
+import { api } from '../../services'
 // import axios from 'axios'
 
 const { Text } = Typography
@@ -23,9 +24,20 @@ const EsignLoginPage = props => {
     try {
       const sertificationObject = window.sign('111', '111')
       console.log(sertificationObject.verifiedData)
-      notification['error']({
-        message: 'успех!'
-      })
+      api.user.loginByEsign(sertificationObject.verifiedData)
+        .then(({ data }) => {
+          if (data.success) {
+            notification['success']({
+              message: 'Вы успешно вошли!'
+            })
+            window.localStorage.setItem('authToken', data.data.token)
+            window.location.reload()
+          } else {
+            notification['error']({
+              message: 'Ошибка входа!'
+            })
+          }
+        })
     } catch (error) {
       notification['error']({
         message: error.message
@@ -44,7 +56,7 @@ const EsignLoginPage = props => {
         согласие с <a href='https://quidox.by/agreement/'>Политикой конфиденциальности</a><br/>
         <Button
           type='primary'
-          style={{ margin: '30px', fontSize: '1.8rem'  }}
+          style={{ margin: '30px', fontSize: '1.8rem' }}
 
           onClick={signLogin}
         >
