@@ -1,8 +1,9 @@
 import React, { Fragment } from 'react'
-import { message, notification, Typography } from 'antd'
+import { notification, Typography } from 'antd'
 
 import { Button } from '../../components'
 import { api } from '../../services'
+import history from '../../history'
 // import axios from 'axios'
 
 const { Text } = Typography
@@ -31,7 +32,7 @@ const EsignLoginPage = props => {
               message: 'Вы успешно вошли!'
             })
             window.localStorage.setItem('authToken', data.data.token)
-            window.location.reload()
+            history.push({ pathname: '/documents', search: '?status=2' })
           } else {
             notification['error']({
               message: 'Ошибка входа!'
