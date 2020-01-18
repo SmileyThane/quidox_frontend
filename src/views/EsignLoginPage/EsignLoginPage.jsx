@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import { notification, Typography } from 'antd'
 
 import { Button } from '../../components'
@@ -8,18 +8,15 @@ import history from '../../history'
 
 const { Text } = Typography
 
-const isIE = /*@cc_on!@*/false || !!document.documentMode
-
 const EsignLoginPage = props => {
-
-  if (isIE) {
-    setTimeout(() => {
-      try {
+  const isIE = /*@cc_on!@*/false || !!document.documentMode
+  useEffect(() => {
+    if (isIE) {
+      setTimeout(() => {
         window.pluginLoaded()
-      } catch (error) {
-      }
-    }, 1000)
-  }
+      }, 1500)
+    }
+  }, [isIE])
 
   const signLogin = () => {
     try {
