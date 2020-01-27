@@ -52,7 +52,7 @@ const defaultDocumentData = {
   isNewMessage: false,
   uploadFetch: false,
   disabled: false,
-  coNumbers: []
+  coNumbers: ''
 }
 
 const getSignedHex = (base64) => {
@@ -333,7 +333,7 @@ const NewDocumentPage = props => {
     let UCIds = []
     if (documentState.coNumbers.length > 0)  {
       let coNumbersArray = documentState.coNumbers.split(',')
-      coNumbersArray.forEach(element => coEmails.push(coNumbersArray + '@qdx.by'))
+      coNumbersArray.forEach(element => coEmails.push(element + '@qdx.by'))
     }
     UCIds = documentState.value.length ? documentState.value.map(i => i.key).concat(coEmails) : [].concat(coEmails)
     updateDocumentById(documentState.message.id, {
@@ -345,7 +345,7 @@ const NewDocumentPage = props => {
         if (is2Draft) {
           history.push({ pathname: '/documents', search: '?status=1', state: { id: '/documents/1' } })
         } else {
-          if (!documentState.value.length > 0) {
+          if (!documentState.value.length > 0 && !documentState.coNumbers.length > 0) {
             message.error('Введите получателя!')
             setDocumentState({
               ...documentState,
