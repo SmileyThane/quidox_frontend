@@ -48,14 +48,14 @@ const DownloadButtons = ({ document }) => {
   const { fetching } = state
   return (
     <Fragment>
-      <Button
-        type='primary'
-        onClick={() => downloadArchive(document, false)}
-        style={{ marginRight: '2rem' }}
-      >
-        <Icon type={fetching[0] ? 'loading' : 'file-zip'} />
-        Скачать всe
-      </Button>
+      {/*<Button*/}
+      {/*  type='primary'*/}
+      {/*  onClick={() => downloadArchive(document, false)}*/}
+      {/*  style={{ marginRight: '2rem' }}*/}
+      {/*>*/}
+      {/*  <Icon type={fetching[0] ? 'loading' : 'file-zip'} />*/}
+      {/*  Скачать всe*/}
+      {/*</Button>*/}
       <Button
         type='primary'
         onClick={() => downloadArchive(document, true)}
