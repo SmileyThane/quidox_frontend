@@ -51,7 +51,8 @@ const defaultDocumentData = {
   fileInfo: [],
   isNewMessage: false,
   uploadFetch: false,
-  disabled: false
+  disabled: false,
+  coNumbers: []
 }
 
 const getSignedHex = (base64) => {
@@ -328,10 +329,17 @@ const NewDocumentPage = props => {
   }
 
   const save2DraftDMessage = is2Draft => {
+    let coEmails = []
+    let UCIds = []
+    if (documentState.coNumbers.length > 0)  {
+      let coNumbersArray = documentState.coNumbers.split(',')
+      coNumbersArray.forEach(element => coEmails.push(coNumbersArray + '@qdx.by'))
+    }
+    UCIds = documentState.value.length ? documentState.value.map(i => i.key).concat(coEmails) : [].concat(coEmails)
     updateDocumentById(documentState.message.id, {
       name: documentState.name ? documentState.name : 'Без темы',
       description: documentState.description,
-      user_company_ids: documentState.value.length ? JSON.stringify(documentState.value.map(i => i.key)) : JSON.stringify([])
+      user_company_ids: JSON.stringify(UCIds)
     })
       .then(({ data }) => {
         if (is2Draft) {
