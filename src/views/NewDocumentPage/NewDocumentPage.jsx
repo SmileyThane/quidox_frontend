@@ -15,7 +15,7 @@ import {
   Modal,
   List,
   Tag,
-  Progress
+  Progress, message
 } from 'antd'
 
 import { EscDataSlider } from '../../components'
@@ -23,6 +23,7 @@ import { EscDataSlider } from '../../components'
 import { checkBrowser } from '../../utils'
 import history from '../../history'
 import './NewDocumentPage.scss'
+import { findUsersByParams } from '../../services/api/user'
 
 const defaultDocumentData = {
   name: '',
@@ -98,11 +99,11 @@ const NewDocumentPage = props => {
       })
   }, [message])
 
-  useEffect(() => {
-    if (!documentState.fetching) {
-      inputRef.current.focus()
-    }
-  }, [documentState.fetching])
+  // useEffect(() => {
+  //   if (!documentState.fetching) {
+  //     inputRef.current.focus()
+  //   }
+  // }, [documentState.fetching])
 
   const updateField = (field, v) => {
     setDocumentState({
@@ -366,36 +367,29 @@ const NewDocumentPage = props => {
   const fetchUser = _.debounce(v => {
     if (v.length > 2) {
       setDocumentState({
-        ...documentState,
-        fetching: true
+        ...documentState
+        // fetching: true
       })
-      api.user.findUsersByParams(v)
+      findUsersByParams(v)
         .then(({ data }) => {
-          if (data.success) {
-            const dataIds = documentState.data.map(i => i.key)
-            const dataArray = data.data
-              .map(user => ({
-                label: `${user.user_data.email} (УНП:${user.company_data.company_number}; Компания:${user.company_data.name})`,
-                key: `${user.id}`
-              }))
-              .filter(i => !dataIds.includes(i.key))
-
-            setDocumentState({
-              ...documentState,
-              data: [...documentState.data, ...dataArray],
-              fetching: false
-            })
-          } else {
-            throw new Error(data.error)
-          }
-        })
-        .catch(error => {
-          notification['error']({
-            message: error.message()
+          const dataIds = documentState.data.map(i => i.key)
+          const dataArray = data.data
+            .map(user => ({
+              label: `${user.user_data.email} (УНП:${user.company_data.company_number}; Компания:${user.company_data.name})`,
+              key: `${user.id}`
+            }))
+            .filter(i => !dataIds.includes(i.key))
+          setDocumentState({
+            ...documentState,
+            data: [...documentState.data, ...dataArray],
+            // fetching: false
           })
         })
+        .catch(error => {
+          message.error(error.message)
+        })
     }
-  }, 800)
+  }, 200)
 
   const validateEmail = label => {
     const email = label.split(' ')[0]
@@ -437,7 +431,6 @@ const NewDocumentPage = props => {
             <label className='label'>Получатели</label>
 
             <Select
-              ref={inputRef}
               mode='tags'
               labelInValue
               tokenSeparators={[',']}
@@ -446,13 +439,17 @@ const NewDocumentPage = props => {
               notFoundContent={documentState.fetching ? <Spin size='small' /> : null}
               onSearch={fetchUser}
               onChange={handleSelect}
-              disabled={documentState.fetching}
+              // disabled={documentState.fetching}
               style={{ width: '100%' }}
             >
               {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
             </Select>
-          </div>
 
+          </div>
+          <div className='input-group'>
+            <label className='label'>Получатели<br/> по УНП</label>
+            <Input kind='text' type='text' value={documentState.coNumbers} onChange={e => updateField('coNumbers', e.target.value)} />
+          </div>
           <div className='input-group'>
             <label className='label'>Тема</label>
             <Input kind='text' type='text' value={documentState.name} onChange={e => updateField('name', e.target.value)} />
