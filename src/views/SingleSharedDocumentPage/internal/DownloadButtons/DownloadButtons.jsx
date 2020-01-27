@@ -61,7 +61,8 @@ const DownloadButtons = ({ document }) => {
         onClick={() => downloadArchive(document, true)}
       >
         <Icon type={fetching[1] ? 'loading' : 'file-zip'} />
-        Скачать всe c сигнатурами
+        Скачать всe
+        {/*c сигнатурами*/}
       </Button>
     </Fragment>
   )
