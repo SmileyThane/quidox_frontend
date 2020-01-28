@@ -161,7 +161,7 @@ const FileActions = props => {
   const statusId = file.status.status_data.id
   return [
     <Fragment>
-      { statusId !== 5 && ![1, 3, 4, 9, 10].includes(messageId) &&
+      { statusId !== 5 && ![1, 3, 4, 9, 10, 11].includes(messageId) &&
         <ActionTooltip
           arrowPointAtCenter
           placement='topRight'
@@ -178,7 +178,7 @@ const FileActions = props => {
     </Fragment>,
 
     <Fragment>
-      {statusId !== 5 && ![1, 3, 4, 9, 10].includes(messageId) &&
+      {statusId !== 5 && ![1, 3, 4, 9, 10, 11].includes(messageId) &&
         <ActionTooltip
           arrowPointAtCenter
           placement='topRight'
