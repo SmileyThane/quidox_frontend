@@ -28,7 +28,7 @@ const EsignLoginPage = props => {
             notification['success']({
               message: 'Вы успешно вошли!'
             })
-            window.localStorage.setItem('authToken', data.data.token)
+            window.sessionStorage.setItem('authToken', data.data.token)
             history.push({ pathname: '/login' })
           } else {
             notification['error']({
