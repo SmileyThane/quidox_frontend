@@ -26,6 +26,7 @@ const HeaderUser = ({ user: { data }, userLogout }) => {
       .then(({ data }) => {
         if (data.success) {
           window.localStorage.clear()
+          window.sessionStorage.clear()
           history.push('/login')
         } else {
           throw new Error(data.error)
