@@ -51,7 +51,7 @@ const HeaderBlock = props => {
               <HeaderContent.Logo src={logo} alt='Quidox Logo' style={{ maxHeight: '5rem' }} />
             </a>
           </HeaderContent.LeftAside>
-          {window.localStorage.getItem('authToken') &&
+          {(window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken')) &&
           <Fragment>
             <Skeleton loading={isFetching} active paragraph={false}>
               <HeaderTariff />

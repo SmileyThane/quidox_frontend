@@ -12,8 +12,9 @@ const PrivateRoute = ({ component: Component, user: { data }, getUser, getTariff
   const [activeCompany, setActiveCompany] = useState(null)
   // eslint-disable-next-line spaced-comment
   const isIE = /*@cc_on!@*/false || !!document.documentMode
+  const authToken = window.localStorage.getItem('authToken') || window.sessionStorage.getItem('authToken');
   useEffect(() => {
-    if (window.localStorage.getItem('authToken')) {
+    if (authToken) {
       getUser()
       getTariffications()
       if (isIE) {

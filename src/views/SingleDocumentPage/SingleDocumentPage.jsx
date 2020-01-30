@@ -76,7 +76,7 @@ const SingleDocumentPage = props => {
     axios.get(item['preview_path'], {
       'responseType': 'arraybuffer',
       headers: {
-        'Authorization': 'Bearer ' + window.localStorage.getItem('authToken'),
+        'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken'),
         'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
       }
     })
