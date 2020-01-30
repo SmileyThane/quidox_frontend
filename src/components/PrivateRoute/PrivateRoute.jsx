@@ -47,7 +47,7 @@ const PrivateRoute = ({ component: Component, user: { data }, getUser, getTariff
 
   return <Route {...rest}
     render={props =>
-      window.localStorage.getItem('authToken')
+      (window.localStorage.getItem('authToken') || window.sessionStorage.getItem('authToken'))
         ? <Fragment>
           <LayoutBlock content>
             <HeaderBlock />

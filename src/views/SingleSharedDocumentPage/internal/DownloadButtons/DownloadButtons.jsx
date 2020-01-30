@@ -22,7 +22,7 @@ const DownloadButtons = ({ document }) => {
           axios.get(data.data, {
             'responseType': 'arraybuffer',
             headers: {
-              'Authorization': 'Bearer ' + window.localStorage.getItem('authToken'),
+              'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken'),
               'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
             }
           })
