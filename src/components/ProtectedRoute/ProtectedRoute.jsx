@@ -11,7 +11,7 @@ const ProtectedRoute = ({ component: Component, user: { data }, getUser, getTari
   // eslint-disable-next-line spaced-comment
   const isIE = /*@cc_on!@*/false || !!document.documentMode
   useEffect(() => {
-    if (window.localStorage.getItem('authToken')) {
+    if (window.localStorage.getItem('authToken') || window.sessionStorage.getItem('authToken')) {
       getUser()
       getTariffications()
       if (isIE) {

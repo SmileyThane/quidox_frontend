@@ -18,7 +18,7 @@ const WhitePageRoute = ({ component: Component, ...rest }) => {
 
   return <Route {...rest}
     render={props =>
-      window.localStorage.getItem('authToken')
+      (window.localStorage.getItem('authToken') || window.sessionStorage.getItem('authToken'))
         ? (<Redirect to={{ pathname: '/', state: { from: props.location } }} />)
         : <Fragment>
           <LayoutBlock>
