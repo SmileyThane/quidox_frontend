@@ -45,6 +45,10 @@ const PrivateRoute = ({ component: Component, user: { data }, getUser, getTariff
     //   })
   }
 
+  const handleStayOnPage = () => {
+    setAvailableTariff(false)
+  }
+
   return <Route {...rest}
     render={props =>
       (window.localStorage.getItem('authToken') || window.sessionStorage.getItem('authToken'))
@@ -73,6 +77,7 @@ const PrivateRoute = ({ component: Component, user: { data }, getUser, getTariff
               Кнопка - "Пополнить баланс"
               <div style={{ marginTop: '2rem' }}>
                 <Button type='primary' onClick={handleChangeTariff}>Пополнить баланс</Button>
+                <Button type='link' onClick={handleStayOnPage}>Пополнить позже</Button>
               </div>
             </Modal>
           }
