@@ -10,12 +10,18 @@ const { Text } = Typography
 
 const EsignLoginPage = props => {
   const isIE = /*@cc_on!@*/false || !!document.documentMode
+
   useEffect(() => {
+    document.getElementById('eSignLogin').disabled = true;
     if (isIE) {
       setTimeout(() => {
         window.pluginLoaded()
       }, 1500)
     }
+    setTimeout(() => {
+      document.getElementById('eSignLogin').disabled = false;
+    }, 3000)
+
   }, [isIE])
 
   const signLogin = () => {
@@ -53,9 +59,9 @@ const EsignLoginPage = props => {
         и принятия условий <a href='https://quidox.by/agreement/'>Публичного договора</a>,<br/>
         согласие с <a href='https://quidox.by/agreement/'>Политикой конфиденциальности</a><br/>
         <Button
+          id={'eSignLogin'}
           type='primary'
           style={{ margin: '30px', fontSize: '1.8rem' }}
-
           onClick={signLogin}
         >
           Продолжить
