@@ -9,7 +9,7 @@ import PDFJSBACKEND from '../../backends/pdfjs'
 import { Icon, List, message, Modal, notification, Select, Spin, Tag, Tooltip, Typography } from 'antd'
 import { DownloadButtons, FileActions } from './internal'
 import { findUsersByParams } from '../../services/api/user'
-import { AvestErrorHandling, Button, EscDataSlider, PDFViewer } from '../../components'
+import { AvestErrorHandling, Button, EscDataSlider, PDFViewer, UploadFiles } from '../../components'
 import { close } from '../../resources/img'
 
 import { api } from '../../services'
@@ -320,6 +320,8 @@ const SingleDocumentPage = props => {
                 </div>
               </div>
               <div className='document__attached-doc attached-doc'>
+                {singleDocument.status_id !== 1
+                  ?
                 <List
                   itemLayout='horizontal'
                   locale={{ emptyText: 'Нет приложенных документов' }}
@@ -370,6 +372,8 @@ const SingleDocumentPage = props => {
                     </List.Item>
                   )}
                 />
+                : <UploadFiles />
+                }
               </div>
             </div>
 
@@ -387,7 +391,7 @@ const SingleDocumentPage = props => {
                     <Icon type='redo'/>
                     Перенаправить
                   </Button>
-                  <Button onClick={() => handleMessageShare()} type='primary'>
+                  <Button disabled={singleDocument.status_id === 1} onClick={() => handleMessageShare()} type='primary'>
                     <Icon type='share-alt'/>
                     Поделиться
                   </Button>

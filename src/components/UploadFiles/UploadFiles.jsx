@@ -1,4 +1,4 @@
-import React, { Fragment, useReducer, useCallback } from 'react'
+import React, { Fragment, useReducer, useEffect } from 'react'
 
 import { uploadReducer } from './UploadReducer'
 import { api } from '../../services'
@@ -15,6 +15,8 @@ const getSignedHex = (base64) => {
 
 const initialState = {
   isModalVisible: false,
+  isDisabled: false,
+  isFilesUploaded: false,
   filesToUpload: []
 }
 
@@ -30,9 +32,23 @@ export default function (props) {
     initialState
   )
 
-  const uploadingAFile = () => {
-    let chain = Promise.resolve()
+  useEffect(() => {
+    if (list.map(({ name }) => filesToUpload.find(({ original_name }) => name === original_name)).length === filesToUpload.length && filesToUpload.length > 0) {
+      dispatch({
+        type: 'FILES_UPLOADED_STATUS',
+        payload: { disabled: false, uploaded_status: true }
+      })
+      console.log('123')
+    }
+  }, [list.length])
 
+  const uploadingAFile = () => {
+    dispatch({
+      type: 'FILES_UPLOADED_STATUS',
+      payload: { disabled: true }
+    })
+
+    let chain = Promise.resolve()
     filesToUpload.forEach((file, idx) => {
       const fileReader = new window.FileReader()
       fileReader.readAsDataURL(file)
@@ -47,7 +63,13 @@ export default function (props) {
         })
         chain = chain
           .then(() => uploadFile(formData, { 'Content-Type': 'multipart/form-data' }))
-          .catch(error => console.error(error))
+          .catch(error => {
+            dispatch({
+              type: 'FILES_UPLOADED_STATUS',
+              payload: { disabled: false, uploaded_status: false }
+            })
+            console.error(error)
+          })
       }
     })
   }
@@ -61,8 +83,13 @@ export default function (props) {
     })
   }
 
+  const handleHideModal = () => {
+    dispatch({ type: 'HIDE_UPLOAD_MODAL' })
+  }
+
   const { id } = singleDocument
-  const { isModalVisible, filesToUpload } = state
+  const { isModalVisible, isDisabled, isFilesUploaded, filesToUpload } = state
+  console.log(isFilesUploaded)
   return (
     <Fragment>
       <Upload>
@@ -88,14 +115,23 @@ export default function (props) {
         closable={false}
         footer={null}
       >
-        {filesToUpload.length &&
-        <p>Файлов к загрузке: {filesToUpload.length}</p>}
+        <p>Файлов к загрузке: {filesToUpload.length}</p>
+        <p>Файлов загружено: {list.length}</p>
         <Progress
           status='active'
           percent={Math.floor((list.length / filesToUpload.length) * 100)}
         />
         <div>
-          <Button onClick={uploadingAFile}>Загрузить</Button>
+          <Button
+            onClick={isFilesUploaded ? handleHideModal : uploadingAFile}
+            disabled={isDisabled}
+            type='primary'
+          >
+            {isFilesUploaded
+              ? 'Закрыть'
+              : 'Загрузить'
+            }
+          </Button>
         </div>
       </Modal>
       }
