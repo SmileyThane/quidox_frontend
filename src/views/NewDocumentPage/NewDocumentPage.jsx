@@ -18,7 +18,7 @@ import {
   Progress, message
 } from 'antd'
 
-import { EscDataSlider } from '../../components'
+import { EscDataSlider, UploadFiles } from '../../components'
 
 import { checkBrowser } from '../../utils'
 import history from '../../history'
@@ -428,9 +428,9 @@ const NewDocumentPage = props => {
       value: validEmails
     })
   }
-
   return (
     <Fragment>
+      <UploadFiles />
       {!!status &&
         <p>{status}</p>
       }
