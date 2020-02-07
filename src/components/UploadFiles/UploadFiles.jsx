@@ -1,11 +1,12 @@
 import React, { Fragment, useReducer, useEffect } from 'react'
 
-import { uploadReducer } from './UploadReducer'
 import { api } from '../../services'
+import { checkBrowser } from '../../utils'
 import { Button, Icon, Modal, Progress, List, Typography, Select, notification } from 'antd'
+import { uploadReducer } from './UploadReducer'
 import { Upload, File } from './styled'
 
-const getSignedHex = (base64) => {
+const getSignedHex = base64 => {
   try {
     return window.sign(base64).hex
   } catch (error) {
@@ -115,9 +116,74 @@ export default function (props) {
       })
   }
 
+  const handleVerifyFile = file => {
+    if (!checkBrowser('ie')) {
+      notification.error({
+        message: 'Ошибка подписания',
+        description: 'Подписание файла возможно только в браузере IE'
+      })
+      return null
+    }
+
+    api.files.getBase64File(file.id)
+      .then(({ data }) => {
+        if (data.success) {
+          try {
+            const certificate = window.sign(data.data.encoded_base64_file, file.hash_for_sign)
+
+            const verifiedData = {
+              id: file.id,
+              hash: certificate.signedData,
+              data: certificate.verifiedData,
+              hash_for_sign: certificate.hex,
+              status: file.status.status_data.id ? file.status.status_data.id : null
+            }
+
+            api.documents.attachmentSignCanConfirm({ key: certificate.verifiedData.key, attachment_id: file.id })
+              .then(({ data }) => {
+                if (data.success) {
+                  verifyFile(verifiedData)
+                    .then(response => {
+                      if (response.success) {
+                        notification.success({
+                          message: 'Файл успешно подписан'
+                        })
+                      } else {
+                        throw new Error(response.error)
+                      }
+                    })
+                    .catch(error => {
+                      notification.error({
+                        message: error.message
+                      })
+                    })
+                } else {
+                  throw new Error(data.error)
+                }
+              })
+              .catch(error => {
+                notification.error({
+                  message: error.message
+                })
+              })
+          } catch (error) {
+            notification.error({
+              message: error.message
+            })
+          }
+        } else {
+          throw new Error(data.error)
+        }
+      })
+      .catch(error => {
+        notification.error({
+          message: error.message
+        })
+      })
+  }
+
 
   const { isModalVisible, isDisabled, isFilesUploaded, filesToUpload } = state
-  console.log(isFilesUploaded)
   return (
     <Fragment>
       <Upload>
@@ -146,7 +212,11 @@ export default function (props) {
             <List.Item
               key={idx}
               actions={[
-                <Icon style={{ color: '#3278fb' }} type='edit' />,
+                <Icon
+                  style={{ color: '#3278fb' }}
+                  type='edit'
+                  onClick={() => handleVerifyFile(file)}
+                />,
                 <Icon
                   style={{ color: '#3278fb' }}
                   type='delete'
