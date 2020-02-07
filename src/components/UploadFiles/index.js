@@ -9,6 +9,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   uploadFile: (data, headers) => dispatch(actions.files.uploadFile(data, headers)),
+  changeFileStatus: data => dispatch(actions.files.changeFileStatus(data)),
+  removeFile: id => dispatch(actions.files.removeFile(id)),
+  verifyFile: data => dispatch(actions.files.verifyFile(data)),
 })
 
 export default connect(

@@ -24,6 +24,11 @@ Upload.Button = styled.label`
   }
 `
 
+const File = styled.div``
+
 Upload.Input = styled.input``
 
-export default Upload
+export {
+  Upload,
+  File
+}

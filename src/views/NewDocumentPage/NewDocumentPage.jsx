@@ -430,7 +430,9 @@ const NewDocumentPage = props => {
   }
   return (
     <Fragment>
-      <UploadFiles />
+      {documentState.message &&
+        <UploadFiles document_id={documentState.message.id} />
+      }
       {!!status &&
         <p>{status}</p>
       }

@@ -2,8 +2,8 @@ import React, { Fragment, useReducer, useEffect } from 'react'
 
 import { uploadReducer } from './UploadReducer'
 import { api } from '../../services'
-import { Button, Icon, Modal, Progress } from 'antd'
-import Upload from './styled'
+import { Button, Icon, Modal, Progress, List, Typography, Select, notification } from 'antd'
+import { Upload, File } from './styled'
 
 const getSignedHex = (base64) => {
   try {
@@ -12,6 +12,9 @@ const getSignedHex = (base64) => {
     return ''
   }
 }
+
+const { Option } = Select
+const { Text } = Typography
 
 const initialState = {
   isModalVisible: false,
@@ -22,9 +25,12 @@ const initialState = {
 
 export default function (props) {
   const {
-    documents: { singleDocument },
+    document_id = null,
     files: { list },
-    uploadFile
+    uploadFile,
+    changeFileStatus,
+    removeFile,
+    verifyFile
   } = props
 
   const [state, dispatch] = useReducer(
@@ -58,7 +64,7 @@ export default function (props) {
 
         const formData = api.helpers.buildForm({
           'hash_for_sign': getSignedHex(base64),
-          'document_id': id,
+          'document_id': document_id,
           'file': file
         })
         chain = chain
@@ -87,7 +93,29 @@ export default function (props) {
     dispatch({ type: 'HIDE_UPLOAD_MODAL' })
   }
 
-  const { id } = singleDocument
+  const handleChangeFileStatus = (file, idx) => value => {
+    changeFileStatus({ attachment_id: file.id, status: value, index: idx })
+  }
+
+  const handleRemoveFile = file => {
+    removeFile(file.id)
+      .then(({ success, error }) => {
+        if (success) {
+          notification.success({
+            message: 'Файл успешно удален'
+          })
+        } else {
+          throw new Error(error)
+        }
+      })
+      .catch(error => {
+        notification.error({
+          message: error.message
+        })
+      })
+  }
+
+
   const { isModalVisible, isDisabled, isFilesUploaded, filesToUpload } = state
   console.log(isFilesUploaded)
   return (
@@ -108,7 +136,44 @@ export default function (props) {
           multiple
         />
       </Upload.Button>
+
+      <div>
+        <List
+          itemLayout='horizontal'
+          dataSource={list && list}
+          locale={{ emptyText: 'Нет прикрепленных файлов' }}
+          renderItem={(file, idx) => (
+            <List.Item
+              key={idx}
+              actions={[
+                <Icon style={{ color: '#3278fb' }} type='edit' />,
+                <Icon
+                  style={{ color: '#3278fb' }}
+                  type='delete'
+                  onClick={() => handleRemoveFile(file)}
+                />
+              ]}
+            >
+              <File>
+                <Text type='secondary'>{idx + 1}</Text>
+                <Text strong>{file.original_name}</Text>
+                <div>
+                  <Select
+                    value={file.status.status_data.id}
+                    onChange={handleChangeFileStatus(file, idx)}
+                  >
+                    <Option value={1}>Простая доставка</Option>
+                    <Option value={2}>Согласование</Option>
+                    <Option value={3}>Подпись получателя</Option>
+                  </Select>
+                </div>
+              </File>
+            </List.Item>
+          )}
+        ></List>
+      </div>
     </Upload>
+
       {isModalVisible &&
       <Modal
         visible
