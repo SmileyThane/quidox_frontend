@@ -225,8 +225,10 @@ export default function (props) {
               ]}
             >
               <File>
-                <Text type='secondary'>{idx + 1}</Text>
-                <Text strong>{file.original_name}</Text>
+                <div>
+                  <Text type='secondary'>{idx + 1}</Text>
+                  <Text strong>{file.original_name}</Text>
+                </div>
                 <div>
                   <Select
                     value={file.status.status_data.id}

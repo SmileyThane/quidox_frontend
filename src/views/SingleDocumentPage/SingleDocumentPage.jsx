@@ -372,7 +372,7 @@ const SingleDocumentPage = props => {
                     </List.Item>
                   )}
                 />
-                : <UploadFiles />
+                : <UploadFiles document_id={singleDocument.document_id} />
                 }
               </div>
             </div>
