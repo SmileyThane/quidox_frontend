@@ -1,11 +1,12 @@
 function uploadReducer (state, action) {
   switch (action.type) {
-    case 'SHOW_UPLOAD_MODAL':
+    case 'SHOW_MODAL':
       return {
         ...state,
-        isModalVisible: true
+        isModalVisible: true,
+        modalType: action.payload
       }
-    case 'HIDE_UPLOAD_MODAL':
+    case 'HIDE_MODAL':
       return {
         ...state,
         isModalVisible: false,

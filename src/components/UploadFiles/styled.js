@@ -33,6 +33,13 @@ const File = styled.div`
 
 Upload.Input = styled.input``
 
+Upload.List = styled.div`
+  margin-top: 2rem;
+  height: 15rem;
+  max-height: 15rem;
+  overflow-y: scroll;
+`
+
 export {
   Upload,
   File

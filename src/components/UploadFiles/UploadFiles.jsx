@@ -1,9 +1,9 @@
 import React, { Fragment, useReducer, useEffect } from 'react'
 
 import { api } from '../../services'
+import { EscDataSlider } from '../'
 import { checkBrowser } from '../../utils'
-import { Button, Icon, Modal, Progress, List, Typography, Select, notification } from 'antd'
-import { uploadReducer } from './UploadReducer'
+import { Button, Icon, Modal, Progress, List, Typography, Select, notification, Tag } from 'antd'
 import { Upload, File } from './styled'
 
 const getSignedHex = base64 => {
@@ -19,9 +19,48 @@ const { Text } = Typography
 
 const initialState = {
   isModalVisible: false,
+  modalType: '',
+  fileInfo: {},
   isDisabled: false,
   isFilesUploaded: false,
-  filesToUpload: []
+  filesToUpload: [],
+  filesUploaded: []
+}
+
+function uploadReducer (state, action) {
+  switch (action.type) {
+    case 'SHOW_MODAL':
+      return {
+        ...state,
+        isModalVisible: true,
+        modalType: action.payload
+      }
+    case 'HIDE_MODAL':
+      return {
+        ...initialState
+      }
+    case 'GET_FILE_INFO':
+      return {
+        ...state,
+        fileInfo: action.payload
+      }
+    case 'HANDLE_GET_FILES':
+      return {
+        ...state,
+        filesToUpload: action.payload
+      }
+    case 'FILE_IS_UPLOADED':
+      return {
+        ...state,
+        filesUploaded: [...state.filesUploaded, action.payload]
+      }
+    case 'FILES_UPLOADED_STATUS':
+      return {
+        ...state,
+        isDisabled: action.payload.disabled,
+        isFilesUploaded: action.payload.uploaded_status
+      }
+  }
 }
 
 export default function (props) {
@@ -39,15 +78,16 @@ export default function (props) {
     initialState
   )
 
+  const { isModalVisible, isDisabled, isFilesUploaded, filesToUpload, modalType, fileInfo, filesUploaded } = state
+
   useEffect(() => {
-    if (list.map(({ name }) => filesToUpload.find(({ original_name }) => name === original_name)).length === filesToUpload.length && filesToUpload.length > 0) {
+    if (filesToUpload.length === filesUploaded.length) {
       dispatch({
         type: 'FILES_UPLOADED_STATUS',
         payload: { disabled: false, uploaded_status: true }
       })
-      console.log('123')
     }
-  }, [list.length])
+  }, [filesUploaded.length])
 
   const uploadingAFile = () => {
     dispatch({
@@ -69,7 +109,12 @@ export default function (props) {
           'file': file
         })
         chain = chain
-          .then(() => uploadFile(formData, { 'Content-Type': 'multipart/form-data' }))
+          .then(() => {
+            uploadFile(formData, { 'Content-Type': 'multipart/form-data' })
+              .then(({ data }) => {
+                dispatch({ type: 'FILE_IS_UPLOADED', payload: data })
+              })
+          })
           .catch(error => {
             dispatch({
               type: 'FILES_UPLOADED_STATUS',
@@ -81,8 +126,8 @@ export default function (props) {
     })
   }
 
-  const handleUploadFiles = ({ target: { files } }) => {
-    dispatch({ type: 'SHOW_UPLOAD_MODAL' })
+  const handleUploadFiles = ({ target: { files } }, type) => {
+    dispatch({ type: 'SHOW_MODAL', payload: type })
 
     dispatch({
       type: 'HANDLE_GET_FILES',
@@ -91,7 +136,7 @@ export default function (props) {
   }
 
   const handleHideModal = () => {
-    dispatch({ type: 'HIDE_UPLOAD_MODAL' })
+    dispatch({ type: 'HIDE_MODAL' })
   }
 
   const handleChangeFileStatus = (file, idx) => value => {
@@ -182,8 +227,13 @@ export default function (props) {
       })
   }
 
+  const handleShowEscInfo = (file, type) => {
+    dispatch({ type: 'SHOW_MODAL', payload: type })
 
-  const { isModalVisible, isDisabled, isFilesUploaded, filesToUpload } = state
+    dispatch({ type: 'HANDLE_GET_FILES', payload: file.users_companies })
+  }
+
+  console.log(filesUploaded)
   return (
     <Fragment>
       <Upload>
@@ -197,13 +247,13 @@ export default function (props) {
         <Upload.Input
           type='file'
           id='uploadInput'
-          onChange={e => handleUploadFiles(e)}
+          onChange={e => handleUploadFiles(e, 'upload')}
           hidden
           multiple
         />
       </Upload.Button>
 
-      <div>
+      <Upload.List>
         <List
           itemLayout='horizontal'
           dataSource={list && list}
@@ -211,26 +261,36 @@ export default function (props) {
           renderItem={(file, idx) => (
             <List.Item
               key={idx}
+              style={{ padding: '5px 10px' }}
               actions={[
-                <Icon
-                  style={{ color: '#3278fb' }}
-                  type='edit'
-                  onClick={() => handleVerifyFile(file)}
-                />,
-                <Icon
-                  style={{ color: '#3278fb' }}
-                  type='delete'
-                  onClick={() => handleRemoveFile(file)}
-                />
+                <Tag color='#87d068' onClick={() => handleVerifyFile(file)}>
+                  <Icon type='edit'/>
+                  Подписать
+                </Tag>,
+                <Tag color='#f50' onClick={() => handleRemoveFile(file)}
+                >
+                  <Icon type='delete'/>
+                  Удалить
+                </Tag>
               ]}
             >
               <File>
                 <div>
-                  <Text type='secondary'>{idx + 1}</Text>
-                  <Text strong>{file.original_name}</Text>
+                  <Text type='secondary'>{idx + 1}.</Text>
+                  <Text style={{ padding: '0 10px'}} strong>{file.original_name}</Text>
+                  {file.users_companies.length && file.users_companies[0].verification_info &&
+                    <Tag
+                      color='#3278fb'
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => handleShowEscInfo(file, 'esc')}
+                    >
+                      ЭЦП
+                    </Tag>
+                  }
                 </div>
                 <div>
                   <Select
+                    style={{ minWidth: '20rem' }}
                     value={file.status.status_data.id}
                     onChange={handleChangeFileStatus(file, idx)}
                   >
@@ -243,7 +303,7 @@ export default function (props) {
             </List.Item>
           )}
         ></List>
-      </div>
+      </Upload.List>
     </Upload>
 
       {isModalVisible &&
@@ -252,24 +312,31 @@ export default function (props) {
         closable={false}
         footer={null}
       >
-        <p>Файлов к загрузке: {filesToUpload.length}</p>
-        <p>Файлов загружено: {list.length}</p>
-        <Progress
-          status='active'
-          percent={Math.floor((list.length / filesToUpload.length) * 100)}
-        />
-        <div>
-          <Button
-            onClick={isFilesUploaded ? handleHideModal : uploadingAFile}
-            disabled={isDisabled}
-            type='primary'
-          >
-            {isFilesUploaded
-              ? 'Закрыть'
-              : 'Загрузить'
-            }
-          </Button>
-        </div>
+        {modalType === 'upload' &&
+          <>
+            <p>Файлов к загрузке: {filesToUpload.length}</p>
+            <p>Файлов загружено: {filesUploaded.length}</p>
+            <Progress
+              status='active'
+              percent={Math.floor((filesUploaded.length / filesToUpload.length) * 100)}
+            />
+            <div>
+              <Button
+                onClick={isFilesUploaded ? handleHideModal : uploadingAFile}
+                disabled={isDisabled}
+                type='primary'
+              >
+                {isFilesUploaded
+                  ? 'Закрыть'
+                  : 'Загрузить'
+                }
+              </Button>
+            </div>
+          </>}
+        {modalType === 'esc' &&
+        <>
+          <EscDataSlider data={fileInfo} onCancel={handleHideModal} />
+        </>}
       </Modal>
       }
     </Fragment>
