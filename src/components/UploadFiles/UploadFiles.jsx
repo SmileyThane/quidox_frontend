@@ -1,4 +1,4 @@
-import React, { Fragment, useReducer, useEffect } from 'react'
+import React, { Fragment, useReducer, useEffect, useRef } from 'react'
 
 import { api } from '../../services'
 import { EscDataSlider } from '../'
@@ -73,6 +73,8 @@ export default function (props) {
     verifyFile
   } = props
 
+  const inputRef = useRef()
+
   const [state, dispatch] = useReducer(
     uploadReducer,
     initialState
@@ -86,6 +88,7 @@ export default function (props) {
         type: 'FILES_UPLOADED_STATUS',
         payload: { disabled: false, uploaded_status: true }
       })
+      inputRef.current.value = ''
     }
   }, [filesUploaded.length])
 
@@ -247,6 +250,7 @@ export default function (props) {
         <Upload.Input
           type='file'
           id='uploadInput'
+          ref={inputRef}
           onChange={e => handleUploadFiles(e, 'upload')}
           hidden
           multiple
