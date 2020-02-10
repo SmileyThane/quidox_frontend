@@ -81,7 +81,7 @@ export default function (props) {
   const { isModalVisible, isDisabled, isFilesUploaded, filesToUpload, modalType, fileInfo, filesUploaded } = state
 
   useEffect(() => {
-    if (filesToUpload.length === filesUploaded.length) {
+    if (filesToUpload.length === filesUploaded.length && filesUploaded.length) {
       dispatch({
         type: 'FILES_UPLOADED_STATUS',
         payload: { disabled: false, uploaded_status: true }
@@ -233,7 +233,7 @@ export default function (props) {
     dispatch({ type: 'HANDLE_GET_FILES', payload: file.users_companies })
   }
 
-  console.log(filesUploaded)
+  console.log(state)
   return (
     <Fragment>
       <Upload>
@@ -263,13 +263,13 @@ export default function (props) {
               key={idx}
               style={{ padding: '5px 10px' }}
               actions={[
-                <Tag color='#87d068' onClick={() => handleVerifyFile(file)}>
-                  <Icon type='edit'/>
+                <Tag style={{ margin: 0 }} color='#87d068' onClick={() => handleVerifyFile(file)}>
+                  <Icon style={{ marginRight: 5, cursor: 'pointer' }} type='edit'/>
                   Подписать
                 </Tag>,
                 <Tag color='#f50' onClick={() => handleRemoveFile(file)}
                 >
-                  <Icon type='delete'/>
+                  <Icon style={{ marginRight: 5, cursor: 'pointer' }} type='delete'/>
                   Удалить
                 </Tag>
               ]}
@@ -278,7 +278,7 @@ export default function (props) {
                 <div>
                   <Text type='secondary'>{idx + 1}.</Text>
                   <Text style={{ padding: '0 10px'}} strong>{file.original_name}</Text>
-                  {file.users_companies.length && file.users_companies[0].verification_info &&
+                  {!!(file.users_companies.length && file.users_companies[0].verification_info) &&
                     <Tag
                       color='#3278fb'
                       style={{ cursor: 'pointer' }}

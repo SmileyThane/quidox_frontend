@@ -7,7 +7,6 @@ const initialState = {
 }
 
 export default (state = initialState, action) => {
-  console.log(action.payload)
   switch (action.type) {
     case t.GET_DOCUMENT_BY_ID_SUCCESS:
       return {

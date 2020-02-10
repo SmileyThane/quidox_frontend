@@ -4,7 +4,9 @@ import { styleguide } from '../../constants'
 
 const { colors } = styleguide
 
-const Upload = styled.div``
+const Upload = styled.div`
+  width: 100%;
+`
 
 Upload.Button = styled.label`
   font-size: 1.4rem;
