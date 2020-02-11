@@ -109,6 +109,7 @@ export default function (props) {
         const formData = api.helpers.buildForm({
           'hash_for_sign': getSignedHex(base64),
           'document_id': document_id,
+          'status': 1,
           'file': file
         })
         chain = chain
