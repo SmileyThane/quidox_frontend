@@ -18,7 +18,7 @@ import {
   Progress, message
 } from 'antd'
 
-import { EscDataSlider } from '../../components'
+import { EscDataSlider, UploadFiles } from '../../components'
 
 import { checkBrowser } from '../../utils'
 import history from '../../history'
@@ -428,7 +428,6 @@ const NewDocumentPage = props => {
       value: validEmails
     })
   }
-
   return (
     <Fragment>
       {!!status &&
@@ -470,55 +469,9 @@ const NewDocumentPage = props => {
           </div>
 
           <div className='buttons-group'>
-            <input
-              type='file'
-              id='upload'
-              hidden
-              multiple
-              onChange={event => showUploadingModal(event, 'filesLoad')}
-              ref={inputNode}
-            />
-
-            <label style={{ minWidth: 216 }} className='ant-btn ant-btn-primary ant-btn-background-ghost label-btn' htmlFor='upload'>
-              <Icon type='upload' style={{ marginRight: 10 }} />
-            Прикрепить файл(ы)
-            </label>
+            {documentState.message &&
+            <UploadFiles document_id={documentState.message.id} />}
           </div>
-
-          <List
-            itemLayout='horizontal'
-            dataSource={list && list}
-            locale={{ emptyText: 'Нет прикрепленных файлов' }}
-            style={{ maxHeight: '20rem', overflowY: 'scroll', padding: '1rem' }}
-            loading={isFetching}
-            renderItem={(i, idx) => (
-              <List.Item
-                key={i.id}
-                actions={[
-                  <Icon style={{ color: '#3278fb' }} type={documentState.fileFetch[idx] ? 'loading' : 'edit'} onClick={() => handleVerifyFile(i, idx)} />,
-                  <Icon style={{ color: '#3278fb' }} type='delete' onClick={() => handleRemoveFile(i.id)} />
-                ]}
-              >
-                <div className='file-item'>
-                  <Text type='secondary' style={{ marginRight: '1rem' }}>{idx + 1}</Text>
-
-                  <Text strong>{i.original_name}</Text>
-                </div>
-                {!!i.users_companies.length &&
-                  <Tag
-                    color='#3278fb'
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => showEscInfo(i.users_companies, 'info')}
-                  >ЭЦП</Tag>
-                }
-                <Select value={i.status.status_data.id} onChange={handleChangeStatus(i, idx)} style={{ marginLeft: 10, minWidth: '20rem' }}>
-                  <Option value={1}>Простая доставка</Option>
-                  <Option value={2}>Согласование</Option>
-                  <Option value={3}>Подпись получателя</Option>
-                </Select>
-              </List.Item>
-            )}
-          />
 
           <div className='buttons-group'>
             <Button

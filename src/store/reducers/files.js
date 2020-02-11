@@ -8,6 +8,11 @@ const initialState = {
 
 export default (state = initialState, action) => {
   switch (action.type) {
+    case t.GET_DOCUMENT_BY_ID_SUCCESS:
+      return {
+        ...state,
+        list: action.payload.data.document.attachments
+      }
     case t.CREATE_MESSAGE_FETCHING:
       return {
         ...state,

@@ -15,6 +15,7 @@ import PageDescription from './PageDescription'
 import EscDataSlider from './EscDataSlider'
 import CompanyCreate from './CompanyCreate'
 import AvestErrorHandling from './AvestErrorHandling'
+import UploadFiles from './UploadFiles'
 
 export {
   PrivateRoute,
@@ -33,5 +34,6 @@ export {
   PageDescription,
   EscDataSlider,
   CompanyCreate,
-  AvestErrorHandling
+  AvestErrorHandling,
+  UploadFiles
 }
