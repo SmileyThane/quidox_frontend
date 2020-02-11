@@ -387,7 +387,7 @@ const SingleDocumentPage = props => {
                     <Icon type='redo'/>
                     Перенаправить
                   </Button>
-                  <Button onClick={() => handleMessageShare()} type='primary'>
+                  <Button disabled={singleDocument.status_id === 1} onClick={() => handleMessageShare()} type='primary'>
                     <Icon type='share-alt'/>
                     Поделиться
                   </Button>
