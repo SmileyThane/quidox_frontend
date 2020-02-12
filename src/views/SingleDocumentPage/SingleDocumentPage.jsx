@@ -379,7 +379,7 @@ const SingleDocumentPage = props => {
                         <Tag color={item.status.status_data.color}>{item.status.status_data.name}</Tag>
                         }
 
-                        {item.status && item.status.comment.length &&
+                        {item.status && item.status.comment && item.status.comment.length &&
                           <Tooltip
                             title='Просмотреть комментарий'
                             placement='top'
