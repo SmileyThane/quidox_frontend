@@ -24,6 +24,7 @@ const defaultDocumentState = {
   fileLink: '',
   fileType: '',
   showModal: false,
+  comment: '',
   data: [],
   value: [],
   fetching: false,
@@ -120,6 +121,15 @@ const SingleDocumentPage = props => {
         fileCerts: dataArray
       })
     }
+  }
+
+  const showComment = (type, comment) => {
+    setDocumentState({
+      ...documentState,
+      showModal: true,
+      modalType: type,
+      comment: comment
+    })
   }
 
   const openModal = type => {
@@ -329,16 +339,16 @@ const SingleDocumentPage = props => {
                   style={{ maxHeight: '20rem', overflowY: 'scroll' }}
                   renderItem={(item, index) => (
                     <List.Item key={item.id}
-                               extra={
-                                 <FileActions
-                                   file={item}
-                                   documentId={singleDocument.document.id}
-                                   getDocument={() => getDocumentById(match.params.id)}
-                                   // isHidden={singleDocument.status_name !== 'Отправленные'}
-                                   canBeSigned={singleDocument.can_be_signed}
-                                   messageId={singleDocument.status_id}
-                                 />
-                               }
+                     extra={
+                       <FileActions
+                         file={item}
+                         documentId={singleDocument.document.id}
+                         getDocument={() => getDocumentById(match.params.id)}
+                         // isHidden={singleDocument.status_name !== 'Отправленные'}
+                         canBeSigned={singleDocument.can_be_signed}
+                         messageId={singleDocument.status_id}
+                       />
+                     }
                     >
                       <div className='single-document'>
                         <Tooltip
@@ -367,6 +377,16 @@ const SingleDocumentPage = props => {
 
                         {item.status &&
                         <Tag color={item.status.status_data.color}>{item.status.status_data.name}</Tag>
+                        }
+
+                        {item.status && item.status.comment.length &&
+                          <Tooltip
+                            title='Просмотреть комментарий'
+                            placement='top'
+                            arrowPointAtCenter
+                          >
+                            <Icon type='question-circle' onClick={() => showComment('comment', item.status.comment)} />
+                          </Tooltip>
                         }
                       </div>
                     </List.Item>
@@ -428,6 +448,12 @@ const SingleDocumentPage = props => {
       >
         {documentState.modalType === 'ecp' &&
         <EscDataSlider onCancel={handleCloseModal} data={documentState.fileCerts}/>
+        }
+        {documentState.modalType === 'comment' &&
+        <div>
+          <Text>{documentState.comment}</Text><br />
+          <Button style={{ marginTop: 20 }} type='primary' onClick={handleCloseModal}>Закрыть</Button>
+        </div>
         }
         {documentState.modalType === 'send' &&
         <Fragment>
