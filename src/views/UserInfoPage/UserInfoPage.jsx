@@ -1,10 +1,12 @@
 import React, { Fragment } from 'react'
 import axios from 'axios'
 import MaskedInput from 'antd-mask-input'
-import { Button, Col, Form, Icon, Input, message, Modal, Row, Select, Spin } from 'antd'
+import { Button, Col, Form, Icon, Input, message, Modal, Row, Select, Spin, Tabs } from 'antd'
 import './UserInfoPage.scss'
 
 const { Option } = Select
+
+const { TabPane } = Tabs
 
 class UserInfoPage extends React.Component {
   state = {
@@ -222,164 +224,192 @@ class UserInfoPage extends React.Component {
 
     return (
       <Fragment>
-        <Form className='content content_user form-user'>
-          <Spin spinning={isFetching} style={{ maxWidth: '50rem', margin: '0 auto' }}>
-            <Row gutter={30}>
-              <Col span={24}>
-                <Form.Item style={{ width: '50%' }} label='Адрес электронной почты'>
-                  {getFieldDecorator('email', {
-                    initialValue: data.email,
-                    rules: [
-                      {
-                        type: 'email',
-                        message: 'Не правильный адрес электронной почты!'
-                      },
-                      {
-                        required: true,
-                        message: 'Пожалуйста, введите адрес электронной почты!'
-                      }
-                    ]
-                  })(<Input disabled/>)}
-                </Form.Item>
-              </Col>
+        <Tabs defaultActiveKey="1">
+          <TabPane
+            tab={
+              <span>
+          <Icon type="user" />
+          Данные пользователя
+        </span>
+            }
+            key="1"
+          >
+            <div className='tab-content'>
+              <Form className='content content_user form-user'>
+                <Spin spinning={isFetching} style={{ maxWidth: '50rem', margin: '0 auto' }}>
+                  <Row gutter={30}>
+                    <Col span={24}>
+                      <Form.Item style={{ width: '50%' }} label='Адрес электронной почты'>
+                        {getFieldDecorator('email', {
+                          initialValue: data.email,
+                          rules: [
+                            {
+                              type: 'email',
+                              message: 'Не правильный адрес электронной почты!'
+                            },
+                            {
+                              required: true,
+                              message: 'Пожалуйста, введите адрес электронной почты!'
+                            }
+                          ]
+                        })(<Input disabled/>)}
+                      </Form.Item>
+                    </Col>
 
-              <Col span={24}>
-                <Form.Item style={{ width: '50%' }} label='Мобильный телефон:'>
-                  {getFieldDecorator('phone', {
-                    initialValue: data.phone,
-                    rules: [
-                      {
-                        type: 'string',
-                        message: 'Не похоже, что это имя!'
-                      },
-                      {
-                        required: true,
-                        message: 'Пожалуйста, введите ваше имя!'
-                      }
-                    ]
-                  })(<Input disabled/>)}
-                </Form.Item>
-              </Col>
+                    <Col span={24}>
+                      <Form.Item style={{ width: '50%' }} label='Мобильный телефон:'>
+                        {getFieldDecorator('phone', {
+                          initialValue: data.phone,
+                          rules: [
+                            {
+                              type: 'string',
+                              message: 'Не похоже, что это имя!'
+                            },
+                            {
+                              required: true,
+                              message: 'Пожалуйста, введите ваше имя!'
+                            }
+                          ]
+                        })(<Input disabled/>)}
+                      </Form.Item>
+                    </Col>
 
-              <Col span={24}>
-                <Form.Item style={{ width: '50%' }} label='Имя:'>
-                  {getFieldDecorator('name', {
-                    initialValue: data.name,
-                    rules: [
-                      {
-                        type: 'string',
-                        message: 'Не похоже, что это имя!'
-                      },
-                      {
-                        required: true,
-                        message: 'Пожалуйста, введите ваше имя!'
-                      }
-                    ]
-                  })(<Input disabled={!isEditMode}/>)}
-                </Form.Item>
-              </Col>
+                    <Col span={24}>
+                      <Form.Item style={{ width: '50%' }} label='Имя:'>
+                        {getFieldDecorator('name', {
+                          initialValue: data.name,
+                          rules: [
+                            {
+                              type: 'string',
+                              message: 'Не похоже, что это имя!'
+                            },
+                            {
+                              required: true,
+                              message: 'Пожалуйста, введите ваше имя!'
+                            }
+                          ]
+                        })(<Input disabled={!isEditMode}/>)}
+                      </Form.Item>
+                    </Col>
 
-              <Col span={24}>
-                <Form.Item style={{ width: '50%' }} label='Отчество:'>
-                  {getFieldDecorator('patronymic', {
-                    initialValue: data.patronymic,
-                    rules: [
-                      {
-                        type: 'string',
-                        message: 'Не похоже, что это отчество!'
-                      }
-                    ]
-                  })(<Input disabled={!isEditMode}/>)}
-                </Form.Item>
-              </Col>
+                    <Col span={24}>
+                      <Form.Item style={{ width: '50%' }} label='Отчество:'>
+                        {getFieldDecorator('patronymic', {
+                          initialValue: data.patronymic,
+                          rules: [
+                            {
+                              type: 'string',
+                              message: 'Не похоже, что это отчество!'
+                            }
+                          ]
+                        })(<Input disabled={!isEditMode}/>)}
+                      </Form.Item>
+                    </Col>
 
-              <Col span={24}>
-                <Form.Item style={{ width: '50%' }} label='Фамилия:'>
-                  {getFieldDecorator('lastname', {
-                    initialValue: data.lastname,
-                    rules: [
-                      {
-                        type: 'string',
-                        message: 'Не похоже, что это фамилия!'
-                      },
-                      {
-                        required: true,
-                        message: 'Пожалуйста, введите вашу фамилию!'
-                      }
-                    ]
-                  })(<Input disabled={!isEditMode}/>)}
-                </Form.Item>
-              </Col>
+                    <Col span={24}>
+                      <Form.Item style={{ width: '50%' }} label='Фамилия:'>
+                        {getFieldDecorator('lastname', {
+                          initialValue: data.lastname,
+                          rules: [
+                            {
+                              type: 'string',
+                              message: 'Не похоже, что это фамилия!'
+                            },
+                            {
+                              required: true,
+                              message: 'Пожалуйста, введите вашу фамилию!'
+                            }
+                          ]
+                        })(<Input disabled={!isEditMode}/>)}
+                      </Form.Item>
+                    </Col>
 
-              <Col span={24}>
-                <Form.Item style={{ width: '50%' }} label='Активаная компания:'>
-                  {getFieldDecorator('active_company_id', {
-                    initialValue: data.active_company_id,
-                    rules: [
-                      {
-                        type: 'number',
-                        message: 'Пожалуйста, укажите активную'
-                      },
-                      {
-                        required: true,
-                        message: 'Пожалуйста, укажите активную компанию'
-                      }
-                    ]
-                  })(<Select disabled={!isEditMode}>
-                    {(data.companies && data.companies.length) &&
-                    data.companies.map(i => (
-                      <Option key={i.company_id} value={i.company_id}>{i.company_name}</Option>
-                    ))
-                    }
-                  </Select>)}
-                </Form.Item>
-              </Col>
+                    <Col span={24}>
+                      <Form.Item style={{ width: '50%' }} label='Активаная компания:'>
+                        {getFieldDecorator('active_company_id', {
+                          initialValue: data.active_company_id,
+                          rules: [
+                            {
+                              type: 'number',
+                              message: 'Пожалуйста, укажите активную'
+                            },
+                            {
+                              required: true,
+                              message: 'Пожалуйста, укажите активную компанию'
+                            }
+                          ]
+                        })(<Select disabled={!isEditMode}>
+                          {(data.companies && data.companies.length) &&
+                          data.companies.map(i => (
+                            <Option key={i.company_id} value={i.company_id}>{i.company_name}</Option>
+                          ))
+                          }
+                        </Select>)}
+                      </Form.Item>
+                    </Col>
 
-              <Col span={24}>
-                <Form.Item style={{ width: '50%' }} label='Должность:'>
-                  {getFieldDecorator('position', {
-                    initialValue: ActiveCompany.position ? ActiveCompany.position : 'Отсутствует'
-                  })(<Input disabled/>)}
-                </Form.Item>
-              </Col>
+                    <Col span={24}>
+                      <Form.Item style={{ width: '50%' }} label='Должность:'>
+                        {getFieldDecorator('position', {
+                          initialValue: ActiveCompany.position ? ActiveCompany.position : 'Отсутствует'
+                        })(<Input disabled/>)}
+                      </Form.Item>
+                    </Col>
 
 
-              {/*<Col span={24}>*/}
-              {/*  <Form.Item style={{ width: '50%' }} label='Роль:'>*/}
-              {/*    {getFieldDecorator('role_name', {*/}
-              {/*      initialValue: ActiveCompany.role_name ? ActiveCompany.role_name : 'Отсутствует'*/}
-              {/*    })(<Input disabled/>)}*/}
-              {/*  </Form.Item>*/}
-              {/*</Col>*/}
-            </Row>
-          </Spin>
-        </Form>
-        <div>
-          <Button style={{ margin: '2rem 2rem 0 0' }} type='primary'
-                  onClick={isEditMode ? e => this.changeUserInfo(e) : (() => this.changeMode())}>
-            <Icon type='edit'/>
-            {isEditMode ? 'Сохранить изменения' : 'Изменить данные'}
-          </Button>
+                    {/*<Col span={24}>*/}
+                    {/*  <Form.Item style={{ width: '50%' }} label='Роль:'>*/}
+                    {/*    {getFieldDecorator('role_name', {*/}
+                    {/*      initialValue: ActiveCompany.role_name ? ActiveCompany.role_name : 'Отсутствует'*/}
+                    {/*    })(<Input disabled/>)}*/}
+                    {/*  </Form.Item>*/}
+                    {/*</Col>*/}
+                  </Row>
+                </Spin>
+              </Form>
 
-          <Button type='primary' onClick={() => this.openModal('password')}>
-            <Icon type='edit'/>
-            Сменить пароль
-          </Button>
+              <div>
+                <Button style={{ margin: '2rem 2rem 0 0' }} type='primary'
+                        onClick={isEditMode ? e => this.changeUserInfo(e) : (() => this.changeMode())}>
+                  <Icon type='edit'/>
+                  {isEditMode ? 'Сохранить изменения' : 'Изменить данные'}
+                </Button>
 
-          <Button type='primary' style={{ marginLeft: '2rem' }} onClick={() => this.openModal('phone')}>
-            <Icon type='edit'/>
-            Сменить номер телефона
-          </Button>
-          <Button type='primary' style={{ marginLeft: '2rem' }} onClick={() => this.openModal('share')}>
-            <Icon type='cloud'/>
-            Расшарить пользователя
-          </Button>
-          <Button type='primary' style={{ marginLeft: '2rem' }} onClick={() => this.openModal('getShared')}>
-            <Icon type='cloud-download'/>
-            Перейти к активному расшареному пользователю
-          </Button>
+                <Button type='primary' onClick={() => this.openModal('password')}>
+                  <Icon type='edit'/>
+                  Сменить пароль
+                </Button>
 
-        </div>
+                <Button type='primary' style={{ marginLeft: '2rem' }} onClick={() => this.openModal('phone')}>
+                  <Icon type='edit'/>
+                  Сменить номер телефона
+                </Button>
+              </div>
+            </div>
+          </TabPane>
+          <TabPane
+            tab={
+              <span>
+          <Icon type="team" />
+          Расшаренные пользователи
+        </span>
+            }
+            key="2"
+          >
+            <div className='tab-content'>
+              <div>
+                <Button type='primary' style={{ marginLeft: '2rem' }} onClick={() => this.openModal('share')}>
+                  <Icon type='cloud'/>
+                  Расшарить пользователя
+                </Button>
+                <Button type='primary' style={{ marginLeft: '2rem' }} onClick={() => this.openModal('getShared')}>
+                  <Icon type='cloud-download'/>
+                  Перейти к активному расшареному пользователю
+                </Button>
+              </div>
+            </div>
+          </TabPane>
+        </Tabs>
         {isModalVisible &&
         <Modal
           title={`

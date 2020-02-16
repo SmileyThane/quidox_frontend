@@ -2,7 +2,6 @@ import React, { Fragment, useEffect, useState } from 'react'
 import { Redirect, Route } from 'react-router-dom'
 
 import history from '../../history'
-import { api } from '../../services'
 import { Layout, Modal, Button } from 'antd'
 import { getActiveCompany, checkActiveTariff } from '../../utils'
 import { LayoutBlock, HeaderBlock, SiderBlock, ContentBlock, FooterBlock } from '../'
