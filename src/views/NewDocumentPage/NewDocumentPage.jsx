@@ -3,7 +3,6 @@ import AddToCalendar from 'react-add-to-calendar'
 import _ from 'lodash'
 import moment from 'moment'
 
-import { api } from '../../services'
 import {
   Icon,
   Select,
@@ -12,13 +11,9 @@ import {
   Typography,
   Button,
   Input,
-  Modal,
-  List,
-  Tag,
-  Progress, message
 } from 'antd'
 
-import { EscDataSlider, UploadFiles } from '../../components'
+import { UploadFiles } from '../../components'
 
 import { checkBrowser } from '../../utils'
 import history from '../../history'
@@ -29,38 +24,11 @@ const defaultDocumentData = {
   name: '',
   description: '',
   document: {},
-  files: [],
-  base64files: [],
-  certs: [],
-  fileHashes: [],
-  fileData: [],
-  statuses: [],
   data: [],
   value: [],
   fetching: false,
-  ids: [],
-  verifyFetching: false,
-  isClicked: false,
-  isErrorWitchEcp: false,
-  userAddress: '', /// started new logic,
-  showModal: false,
-  modalType: '',
   message: null,
-  filesArray: [],
-  fileFetch: [],
-  fileInfo: [],
-  isNewMessage: false,
-  uploadFetch: false,
-  disabled: false,
   coNumbers: ''
-}
-
-const getSignedHex = (base64) => {
-  try {
-    return window.sign(base64).hex
-  } catch (error) {
-    return ''
-  }
 }
 
 // eslint-disable-next-line spaced-comment
@@ -71,18 +39,11 @@ const { TextArea } = Input
 const { Text } = Typography
 
 const NewDocumentPage = props => {
-  const inputRef = useRef(null)
-  const inputNode = useRef(null)
   const {
     createMessage,
     getUser,
     sendDocumentToUser,
-    uploadFile,
-    removeFile,
-    verifyFile,
-    changeFileStatus,
     updateDocumentById,
-    files: { list, isFetching, status }
   } = props
 
   const [documentState, setDocumentState] = useState({ ...defaultDocumentData })
@@ -100,232 +61,10 @@ const NewDocumentPage = props => {
       })
   }, [message])
 
-  // useEffect(() => {
-  //   if (!documentState.fetching) {
-  //     inputRef.current.focus()
-  //   }
-  // }, [documentState.fetching])
-
   const updateField = (field, v) => {
     setDocumentState({
       ...documentState,
       [field]: v
-    })
-  }
-
-  const showUploadingModal = (e, type) => {
-    documentState.disabled = false;
-    const files = [...e.target.files]
-    if (files.length > 5) {
-      notification['error']({
-        message: 'Максимальное количество файлов для однопоточной загрузки 5'
-      })
-      return null
-    }
-    setDocumentState({
-      ...documentState,
-      files: [...files],
-      showModal: !documentState.showModal,
-      modalType: type
-    })
-  }
-
-  const hideUploadedModal = () => {
-    setDocumentState({
-      ...documentState,
-      files: [],
-      showModal: !documentState.showModal,
-      modalType: ''
-    })
-    inputNode.current.value = ''
-  }
-
-  const getFiles = () => {
-    let chain = Promise.resolve()
-    const files = documentState.files
-    setDocumentState({
-      ...documentState,
-      disabled: true
-    })
-
-    files.forEach((file, idx) => {
-      const fileReader = new window.FileReader()
-      fileReader.readAsDataURL(file)
-
-      fileReader.onload = function () {
-        const base64 = fileReader.result.split(',').pop()
-
-        const formData = api.helpers.buildForm({
-          'hash_for_sign': getSignedHex(base64),
-          'document_id': documentState.message.id,
-          'file': file
-        })
-        chain = chain
-          .then(() =>{
-            uploadFile(formData, { 'Content-Type': 'multipart/form-data' })
-          })
-          .catch(error => {
-            console.error(error)
-          })
-      }
-    })
-  }
-
-  const handleRemoveFile = (id, index) => {
-    removeFile(id)
-      .then(response => {
-        if (response.success) {
-          notification['success']({
-            message: 'Файл успешно удален'
-          })
-          setDocumentState({
-            ...documentState,
-            fileFetch: documentState.files.filter((e, i) => i !== index)
-          })
-        } else {
-          throw new Error(response.error)
-        }
-      })
-      .catch(error => {
-        notification['error']({
-          message: error.message
-        })
-      })
-  }
-
-  const handleVerifyAll = () => {
-    if (!checkBrowser('ie')) {
-      notification['error']({
-        message: 'Ошибка подписания',
-        description: 'Подписание файла возможно только в браузере IE'
-      })
-      return null
-    }
-
-    for (let file of list) {
-      api.files.getBase64File(file.id)
-        .then(({ data }) => {
-          if (data.success) {
-            try {
-              const sertificationObject = window.sign(data.data, file.hash_for_sign)
-
-              const verifiedData = {
-                id: file.id,
-                hash: sertificationObject.signedData,
-                data: sertificationObject.verifiedData,
-                hash_for_sign: sertificationObject.hex,
-                status: file.status.status_data.id ? file.status.status_data.id : null
-              }
-
-              verifyFile(verifiedData)
-                .then(response => {
-                  if (response.success) {
-                    notification['success']({
-                      message: 'Файл успешно подписан'
-                    })
-                  } else {
-                    throw new Error(response.error)
-                  }
-                })
-            } catch (error) {
-              notification['error']({
-                message: error.message
-              })
-            }
-          } else {
-            throw new Error(data.error)
-          }
-        })
-        .catch(error => {
-          message.error(error.message)
-        })
-    }
-  }
-
-  const handleVerifyFile = (item, index) => {
-    if (!checkBrowser('ie')) {
-      notification['error']({
-        message: 'Ошибка подписания',
-        description: 'Подписание файла возможно только в браузере IE'
-      })
-      return null
-    }
-
-    api.files.getBase64File(item.id)
-      .then(({ data }) => {
-        if (data.success) {
-          try {
-            const sertificationObject = window.sign(data.data.encoded_base64_file, item.hash_for_sign)
-
-            const verifiedData = {
-              id: item.id,
-              hash: sertificationObject.signedData,
-              data: sertificationObject.verifiedData,
-              hash_for_sign: sertificationObject.hex,
-              status: item.status.status_data.id ? item.status.status_data.id : null
-            }
-
-            api.documents.attachmentSignCanConfirm({ key: sertificationObject.verifiedData.key, attachment_id: item.id })
-              .then(({ data }) => {
-                if (data.success) {
-                  verifyFile(verifiedData)
-                    .then(response => {
-                      if (response.success) {
-                        notification['success']({
-                          message: 'Файл успешно подписан'
-                        })
-                      } else {
-                        throw new Error(response.error)
-                      }
-                    })
-                    .catch(error => {
-                      notification['error']({
-                        message: error.message
-                      })
-                    })
-                } else {
-                  throw new Error(data.error)
-                }
-              })
-              .catch(error => {
-                notification['error']({
-                  message: error.message
-                })
-              })
-          } catch (error) {
-            notification['error']({
-              message: error.message
-            })
-          }
-        } else {
-          throw new Error(data.error)
-        }
-      })
-      .catch(error => {
-        message.error(error.message)
-      })
-  }
-
-  const handleChangeStatus = (file, index) => value => {
-    changeFileStatus({ attachment_id: file.id, status: value, index: index })
-      .then(response => {
-      })
-  }
-
-  const showEscInfo = (info, type) => {
-    setDocumentState({
-      ...documentState,
-      showModal: true,
-      fileInfo: info,
-      modalType: type
-    })
-  }
-
-  const hideEscInfo = () => {
-    setDocumentState({
-      ...documentState,
-      showModal: false,
-      fileInfo: []
     })
   }
 
@@ -430,9 +169,6 @@ const NewDocumentPage = props => {
   }
   return (
     <Fragment>
-      {!!status &&
-        <p>{status}</p>
-      }
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>
         <Spin spinning={!!documentState.fetching}>
           <div className='input-group'>
@@ -479,7 +215,6 @@ const NewDocumentPage = props => {
               type='primary'
               onClick={() => save2DraftDMessage(true)}
               style={{ minWidth: 216 }}
-              disabled={documentState.isClicked}
             >
               <Icon type='file-text' />
               Сохранить в черновиках
@@ -510,14 +245,6 @@ const NewDocumentPage = props => {
                 <Icon type='cloud-upload' />
                 Отправить
               </Button>
-              {list && list.length > 2 && false &&
-              <Button
-                style={{ marginLeft: '2rem' }}
-                type='primary'
-                onClick={handleVerifyAll}
-              >Подписать все
-              </Button>
-              }
             </div>
           </div>
         </Spin>
@@ -526,37 +253,6 @@ const NewDocumentPage = props => {
       {!isIE && <Text type='secondary'>
         Подпись файлов возможна только в браузере Internet Explorer
       </Text>
-      }
-
-      {documentState.showModal &&
-      <Modal
-        visible
-        closable={false}
-        footer={null}
-      >
-        {documentState.modalType === 'filesLoad' &&
-            <Fragment>
-              <p>Файлов к загрузке: {documentState.files.length}</p>
-              <p>Файлов
-                загруженно: {list.filter((i, idx) => documentState.files.find(e => e.name === i.original_name)).length}</p>
-              <Progress
-                  status='active'
-                  percent={Math.floor((
-                      list.filter((i, idx) => documentState.files.find(e => e.name === i.original_name)).length / documentState.files.length) * 100)}/>
-              {list.filter((i, idx) => documentState.files.find(e => e.name === i.original_name)).length === documentState.files.length
-                  ? <Button
-                      type='primary'
-                      onClick={hideUploadedModal}
-                  >Закрыть
-                  </Button>
-                  : <Button type='primary' disabled={documentState.disabled} onClick={getFiles}>Загрузить</Button>
-              }
-            </Fragment>
-        }
-        {documentState.modalType === 'info' &&
-        <EscDataSlider data={documentState.fileInfo} onCancel={hideEscInfo} />
-        }
-      </Modal>
       }
     </Fragment>
   )
