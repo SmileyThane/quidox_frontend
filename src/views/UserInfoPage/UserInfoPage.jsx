@@ -1,7 +1,8 @@
 import React, { Fragment } from 'react'
 import axios from 'axios'
+import { api } from '../../services'
 import MaskedInput from 'antd-mask-input'
-import { Button, Col, Form, Icon, Input, message, Modal, Row, Select, Spin, Tabs } from 'antd'
+import { Button, Col, Form, Icon, Input, message, Modal, Row, Select, Spin, Tabs, List } from 'antd'
 import './UserInfoPage.scss'
 
 const { Option } = Select
@@ -16,7 +17,8 @@ class UserInfoPage extends React.Component {
     isModalVisible: false,
     phone: '',
     modalType: '',
-    isCode: false
+    isCode: false,
+    sharedUsers: []
   }
 
   inputPhoneNode = React.createRef()
@@ -25,6 +27,26 @@ class UserInfoPage extends React.Component {
     if (this.inputPhoneNode.current) {
       this.inputPhoneNode.current.focus()
     }
+  }
+
+  componentWillMount () {
+    this.getSharedUsers()
+  }
+
+  getSharedUsers = () => {
+    api.user.getSharedUsers()
+      .then(({ data }) => {
+        if (data.success) {
+          this.setState({
+            sharedUsers: data.data
+          })
+        } else {
+          throw new Error(data.error)
+        }
+      })
+      .catch(error => {
+        message.error(error.message)
+      })
   }
 
   handleChange = (value, field) => {
@@ -397,8 +419,23 @@ class UserInfoPage extends React.Component {
             key="2"
           >
             <div className='tab-content'>
+              <List
+                className='content content_user'
+                dataSource={this.state.sharedUsers.length && this.state.sharedUsers}
+                rowKey='id'
+                locale={{ emptyText: 'Нет расшаренных пользователей' }}
+                style={{ marginBottom: 20 }}
+                renderItem={item => (
+                  <List.Item>
+                    <List.Item.Meta
+                      title={<h4>{item.shared.company_name}</h4>}
+                      description={item.shared.user_email}
+                    />
+                  </List.Item>
+                )}
+              ></List>
               <div>
-                <Button type='primary' style={{ marginLeft: '2rem' }} onClick={() => this.openModal('share')}>
+                <Button type='primary' onClick={() => this.openModal('share')}>
                   <Icon type='cloud'/>
                   Расшарить пользователя
                 </Button>

@@ -7,6 +7,13 @@ const getUser = () => {
   })
 }
 
+const getSharedUsers = () => {
+  return http({
+    url: '/user/shared',
+    method: 'GET'
+  })
+}
+
 const userLogout = () => {
   return http({
     url: 'logout',
@@ -72,6 +79,7 @@ export {
   getUser,
   shareUser,
   getSharedUser,
+  getSharedUsers,
   userLogout,
   updateUser,
   findUsersByParams,
