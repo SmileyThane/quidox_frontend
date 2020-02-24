@@ -421,7 +421,7 @@ class UserInfoPage extends React.Component {
             <div className='tab-content'>
               <List
                 className='content content_user'
-                dataSource={this.state.sharedUsers.length && this.state.sharedUsers}
+                dataSource={this.state.sharedUsers}
                 rowKey='id'
                 locale={{ emptyText: 'Нет расшаренных пользователей' }}
                 style={{ marginBottom: 20 }}
