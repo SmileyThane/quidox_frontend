@@ -186,6 +186,15 @@ const AntMenu = props => {
 
         />
         <MenuItem
+          heading='Загруженные реестры'
+          url='/registry-stored'
+          key='/registry-stored'
+          icon='file-select'
+          id={'/registry-stored'}
+
+        />
+
+        <MenuItem
           heading='Панель администратора'
           url=''
           key={11}

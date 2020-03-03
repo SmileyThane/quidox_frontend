@@ -9,6 +9,14 @@ const importRegistry = (data, headers) => {
   })
 }
 
+const   importStoredRegistry = () => {
+  return http({
+    url: '/registry/stored',
+    method: 'GET',
+  })
+}
+
 export {
-  importRegistry
+  importRegistry,
+  importStoredRegistry
 }

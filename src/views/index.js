@@ -13,6 +13,7 @@ import DocumentsPage from './DocumentsPage'
 import AttachmentsPage from './AttachmentsPage'
 import EcsCheckingPage from './EcsCheckingPage'
 import RegistryPage from './RegistryPage'
+import StoredRegistryPage from './StoredRegistryPage'
 import SingleSharedDocumentPage from './SingleSharedDocumentPage'
 import EsignLoginPage from './EsignLoginPage'
 import EsignFirstStepPage from './EsignFirstStepPage'
@@ -32,6 +33,7 @@ export {
   AttachmentsPage,
   EcsCheckingPage,
   RegistryPage,
+  StoredRegistryPage,
   SingleSharedDocumentPage,
   EsignLoginPage,
   EsignFirstStepPage

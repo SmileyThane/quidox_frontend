@@ -20,6 +20,7 @@ import {
   AttachmentsPage,
   EcsCheckingPage,
   RegistryPage,
+  StoredRegistryPage,
   EsignLoginPage,
   EsignFirstStepPage
 } from './views'
@@ -46,6 +47,7 @@ function App () {
           <PrivateRoute path='/documents/:id' component={SingleDocumentPage} />
           <PrivateRoute path='/attachments/:id' component={SingleDocumentPage} />
           <PrivateRoute path='/registry' component={RegistryPage} />
+          <PrivateRoute path='/registry-stored' component={StoredRegistryPage} />
           <PrivateRoute path='/user-me' component={UserInfoPage} />
 
           <PublicRoute path='/login' component={LoginPage} />
