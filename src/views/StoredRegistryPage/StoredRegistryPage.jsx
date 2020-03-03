@@ -3,6 +3,9 @@ import React, { Fragment, useEffect, useRef, useState } from 'react'
 import { Button, Icon, Modal, notification, Progress, Steps, Table } from 'antd'
 import { api } from '../../services'
 import fileDownload from 'js-file-download'
+import { Base64 } from 'js-base64'
+import axios from 'axios'
+
 
 const defaultState = {
   registryData: [],
@@ -42,10 +45,17 @@ const StoredRegistryPage = () => {
   }
 
   const downloadRegistry = (id) => {
-    api.registry.downloadStoredRegistry(id)
+    axios.get(`${process.env.REACT_APP_BASE_URL}/registry/stored/${id}`, {
+      'responseType': 'arraybuffer',
+      headers: {
+        'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken'),
+        'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
+      }
+    })
       .then(({ data }) => {
         if (data) {
-          fileDownload(data, `test.xlsx`)
+          console.log(data)
+          fileDownload(data, `aapp.xlsx`)
           notification['success']({
             message: ' Файл подготовлен к загрузке!'
           })
