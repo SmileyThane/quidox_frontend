@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useRef, useState } from 'react'
 
 import { Button, Icon, Modal, notification, Progress, Steps, Table } from 'antd'
 import { api } from '../../services'
+import fileDownload from 'js-file-download'
 
 const defaultState = {
   registryData: [],
@@ -27,7 +28,7 @@ const StoredRegistryPage = () => {
             registryData: data.data,
           })
           notification['success']({
-            message: 'Файлы реестра успешно добавлены'
+            message: 'Ваши файлы реестров успешно загружены!'
           })
         } else {
           throw new Error(data.error)
@@ -39,6 +40,28 @@ const StoredRegistryPage = () => {
         })
       })
   }
+
+  const downloadRegistry = (id) => {
+    api.registry.downloadStoredRegistry(id)
+      .then(({ data }) => {
+        if (data) {
+          fileDownload(data, `test.xlsx`)
+          notification['success']({
+            message: ' Файл подготовлен к загрузке!'
+          })
+        } else {
+          throw new Error(data.error)
+        }
+      })
+      .catch(error => {
+        notification['error']({
+          message: error.message
+        })
+      })
+  }
+  useEffect(() => {
+      handleImportRegistry();
+  }, [])
 
   console.log(state)
   const columns = [
@@ -56,23 +79,16 @@ const StoredRegistryPage = () => {
   return (
     <div className='content' style={{ padding: '1rem' }}>
       <div className='buttons-group'>
-        <Button
-          type='primary'
-          style={{ marginTop: '2rem' }}
-          disabled={state.disabled}
-          onClick={handleImportRegistry}
-          ref={inputNode}
-        >
-          <Icon type={'alert'} />
-          {'Обновить'}
-        </Button>
       </div>
         {!!state.registryData.length &&
         <Fragment>
           <Table
             dataSource={state.registryData}
             columns={columns}
-            rowKey='filename'
+            rowKey='id'
+            onRow={(record, index) => ({
+              onClick: (event) => { downloadRegistry(record.id) }
+            })}
           />
         </Fragment>
         }
