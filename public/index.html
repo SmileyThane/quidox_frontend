@@ -34,7 +34,7 @@
       var AVCMF_OPEN_FOR_VERIFYSIGN = 0x2000
       var signedData, verifiedData, data
 
-      function handleError (e) {
+      function handleError(e) {
         var lastError = avcmx.GetLastError()
         if (lastError > 0) {
           alert(avcmx.GetErrorInformation(lastError, 0))
@@ -43,7 +43,7 @@
         }
       }
 
-      function pluginLoaded () {
+      function pluginLoaded() {
         avcmx = document.getElementById('oavcmx')
         try {
           var params = avcmx.CreateParameters(0)
@@ -59,12 +59,12 @@
         }
       }
 
-      function pluginClosed () {
+      function pluginClosed() {
         avcmx = null
         conn = null
       }
 
-      function hashData (base64) {
+      function hashData(base64) {
         try {
           var data = avcmx.CreateBlob(0)
           data.SetAsBase64(base64, 0)
@@ -75,14 +75,14 @@
         }
       }
 
-      function sign (base64, hexValue) {
+      function sign(base64, hexValue) {
         pluginLoaded()
         setTimeout(() => {
           signProcess(base64, hexValue)
         }, 2000)
       }
 
-      function signProcess (base64, hexValue) {
+      function signProcess(base64, hexValue) {
         if (base64) {
           var blob = avcmx.CreateBlob(0)
           blob.SetAsBase64(base64, 0)
@@ -101,12 +101,12 @@
 
       }
 
-      function lastErrorIs (error) {
+      function lastErrorIs(error) {
         var lastError = parseInt(avcmx.GetLastError())
         return lastError && (error == lastError || (error == (AVCMR_BASE + (lastError & 0xFFFF))))
       }
 
-      function verify (hex, signedData) {
+      function verify(hex, signedData) {
 
         try {
           var blob = avcmx.CreateBlob(0)
