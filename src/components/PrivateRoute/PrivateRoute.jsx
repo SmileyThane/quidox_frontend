@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import { Redirect, Route } from 'react-router-dom'
 
 import history from '../../history'
-import { Layout, Modal, Button, Result } from 'antd'
+import { Layout, Modal, Button} from 'antd'
 import { getActiveCompany, checkActiveTariff } from '../../utils'
 import { LayoutBlock, HeaderBlock, SiderBlock, ContentBlock, FooterBlock } from '../'
 import { useResponseStatus } from '../../hooks'
@@ -18,9 +18,6 @@ const PrivateRoute = ({ component: Component, user: { data }, getUser, getTariff
       getUser()
       getTariffications()
       if (isIE) {
-        setTimeout(() => {
-          // window.pluginLoaded()
-        }, 1500)
       }
     }
   }, [getUser, isIE])
@@ -62,13 +59,13 @@ const PrivateRoute = ({ component: Component, user: { data }, getUser, getTariff
               <SiderBlock />
               <Layout>
                 <ContentBlock>
-                  {(status === 500 || status === 403) &&
-                    <Result
-                      status={status}
-                      title={status}
-                      subTitle={status === 500 ? 'Извините, ошибка сервера.' : 'Извините, но у вас нет прав доступа к этой странице.'}
-                      extra={<Button onClick={history.push('/')} type="primary">Back Home</Button>}
-                    />}
+                  {/*{(status === 500 || status === 403) &&*/}
+                  {/*  <Result*/}
+                  {/*    status={status}*/}
+                  {/*    title={status}*/}
+                  {/*    subTitle={status === 500 ? 'Извините, ошибка сервера.' : 'Извините, но у вас нет прав доступа к этой странице.'}*/}
+                  {/*    extra={<Button onClick={history.push('/')} type="primary">Back Home</Button>}*/}
+                  {/*  />}*/}
                   {status === 200 && <Component {...props} />}
                 </ContentBlock>
                 <FooterBlock />
