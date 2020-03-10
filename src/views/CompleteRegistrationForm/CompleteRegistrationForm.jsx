@@ -5,16 +5,7 @@ import { Base64 } from 'js-base64'
 import generateHash from 'random-hash'
 
 import history from '../../history'
-import {
-  Steps,
-  Form,
-  Input,
-  Select,
-  Button,
-  message,
-  Typography,
-  Checkbox
-} from 'antd'
+import { Button, Checkbox, Form, Input, message, Select, Steps, Typography } from 'antd'
 
 import './RegisterPage.scss'
 
@@ -40,9 +31,10 @@ class CompleteRegistrationForm extends React.Component {
     autoCompleteResult: [],
     currentStep: 0,
     phone: '',
+    password:'',
     code: '',
     seconds: 60
-  };
+  }
 
   inputNode = React.createRef()
   inputPhoneNode = React.createRef()
@@ -88,6 +80,7 @@ class CompleteRegistrationForm extends React.Component {
         const registerData = {
           phone: this.state.phone,
           code: this.state.code,
+          password: this.state.password,
           id: this.props.match.params.id,
           secret_key: process.env.REACT_APP_SECRET_KEY
         }
@@ -116,7 +109,7 @@ class CompleteRegistrationForm extends React.Component {
               .then(({ data }) => {
                 if (data.success) {
                   message.success('СМС код введен правильно!')
-                  const secretData = generateHash({ length: 10 }) + Base64.encode( JSON.stringify(registerData) ) + generateHash({ length: 5 })
+                  const secretData = generateHash({ length: 10 }) + Base64.encode(JSON.stringify(registerData)) + generateHash({ length: 5 })
                   axios.post(`${process.env.REACT_APP_BASE_URL}/user/update/phone`, { phone_data: secretData })
                     .then(({ data }) => {
                       if (data.success) {
@@ -140,7 +133,7 @@ class CompleteRegistrationForm extends React.Component {
         }
       }
     })
-  };
+  }
 
   getSmsCode = () => {
     this.setState({
@@ -176,6 +169,29 @@ class CompleteRegistrationForm extends React.Component {
     }, 1000)
   }
 
+  handleConfirmBlur = e => {
+    const value = e.target.value
+    this.setState({ confirmDirty: this.state.confirmDirty || !!value })
+  };
+
+  compareToFirstPassword = (rule, value, callback) => {
+    const form = this.props.form
+    if (value && value !== form.getFieldValue('password')) {
+      callback('Пароли не совпадают')
+    } else {
+      this.state.password = value
+      callback()
+    }
+  };
+
+  validateToNextPassword = (rule, value, callback) => {
+    const form = this.props.form
+    if (value && this.state.confirmDirty) {
+      form.validateFields(['confirm'], { force: true })
+    }
+    callback()
+  };
+
   render () {
     const { currentStep, seconds } = this.state
     const { getFieldDecorator } = this.props.form
@@ -207,7 +223,7 @@ class CompleteRegistrationForm extends React.Component {
               current={currentStep}
             >
               {steps.map(item => (
-                <Step key={item.title} title={item.title} />
+                <Step key={item.title} title={item.title}/>
               ))}
             </Steps>
 
@@ -231,10 +247,12 @@ class CompleteRegistrationForm extends React.Component {
                     style={{ width: '100%' }}
                   />)}
                 </Form.Item>
-                <Checkbox style={{ marginBottom: '1rem' }} onClick={this.handleCheck}>Я ознакомился и принимаю условия Публичного договора и Политику конфиденцальности.</Checkbox>
+                <Checkbox style={{ marginBottom: '1rem' }} onClick={this.handleCheck}>Я ознакомился и принимаю условия
+                  Публичного договора и Политику конфиденцальности.</Checkbox>
                 <div style={{ marginBottom: '1rem' }}>
                   <Text>
-                    Для начала регистрации и обеспечения безопасной двухфакторной аутентификации, пожалуйста введите номер
+                    Для начала регистрации и обеспечения безопасной двухфакторной аутентификации, пожалуйста введите
+                    номер
                     Вашего мобильного телефона
                   </Text>
                 </div>
@@ -260,24 +278,58 @@ class CompleteRegistrationForm extends React.Component {
                   placeholder='Код из СМС'
                 />)}
               </Form.Item>
+
+              }
+              {currentStep === 1 &&
+              <Form.Item label='Придумайте пароль' hasFeedback>
+                {getFieldDecorator('password', {
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Минимум восемь символов, как минимум одна буква и одна цифра',
+                      pattern: /^.{8,128}$/
+                    },
+                    {
+                      validator: this.validateToNextPassword
+                    }
+                  ]
+                })(<Input.Password/>)}
+              </Form.Item>
+              }
+              {currentStep === 1 &&
+              <Form.Item label='Подтвердите пароль' hasFeedback>
+                {getFieldDecorator('confirm', {
+                  rules: [
+                    {
+                      required: true,
+                      message: 'Пожалуйста, подтвердите ваш пороль!'
+                    },
+                    {
+                      validator: this.compareToFirstPassword
+                    }
+                  ]
+                })(<Input.Password
+                  onBlur={this.handleConfirmBlur}/>)}
+              </Form.Item>
               }
 
               {currentStep === 2 &&
               <Fragment>
-                <p>Подтвердите регистрацию, пройдя по ссылке в сообщении, которое вы получите на указанный вами адрес электронной почты</p>
+                <p>Подтвердите регистрацию, пройдя по ссылке в сообщении, которое вы получите на указанный вами адрес
+                  электронной почты</p>
               </Fragment>
               }
 
               <Form.Item>
                 <div>
                   <div>
-                    { currentStep === 1 &&
+                    {currentStep === 1 &&
                     <Fragment>
-                      <Text type='secondary'>Мы отправили вам код подтверждения на указанный вами номер.<br />
-                        Пожалуйста, проверьте и введите в поле.<br />
+                      <Text type='secondary'>Мы отправили вам код подтверждения на указанный вами номер.<br/>
+                        Пожалуйста, проверьте и введите в поле.<br/>
                         Нажмите "Продолжить".
-                      </Text><br /> <br />
-                      <Text type='secondary'>Не получили код?<br />
+                      </Text><br/> <br/>
+                      <Text type='secondary'>Не получили код?<br/>
                         {seconds > 0
                           ? <Fragment>Выслать повторно через... {seconds}</Fragment>
                           : <Button type='link' onClick={() => this.getSmsCode()}>Выслать повторно!</Button>
@@ -285,18 +337,19 @@ class CompleteRegistrationForm extends React.Component {
                       </Text>
                     </Fragment>
                     }
+
                   </div>
                   {currentStep === 0 &&
-                    <Fragment>
-                      <Text type='secondary'>Благодаря сервису QuiDox.by<br />
-                        Вы сможете с легкостью обмениваться электронными документами с ЭЦП с Вашими контрагентами.
-                      </Text>
-                      <br />
-                      <Text type='secondary'>Доставка происходит мгновенно.</Text>
-                      <br />
-                      <Text type='secondary'>Бесплатно первые 90 дней!</Text>
-                    </Fragment>
-                    }
+                  <Fragment>
+                    <Text type='secondary'>Благодаря сервису QuiDox.by<br/>
+                      Вы сможете с легкостью обмениваться электронными документами с ЭЦП с Вашими контрагентами.
+                    </Text>
+                    <br/>
+                    <Text type='secondary'>Доставка происходит мгновенно.</Text>
+                    <br/>
+                    <Text type='secondary'>Бесплатно первые 90 дней!</Text>
+                  </Fragment>
+                  }
                   <div style={{ marginTop: '2rem' }}>
                     <Button type='primary' htmlType='submit' disabled={currentStep === 0 && !this.state.isChecked}>
                       {currentStep === 2 ? 'Завершить регистрацию' : 'Продолжить'}

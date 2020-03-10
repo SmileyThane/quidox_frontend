@@ -139,7 +139,7 @@ class UserInfoPage extends React.Component {
 
   changeUserPassword = e => {
     e.preventDefault()
-    this.props.form.validateFieldsAndScroll(['old_password', 'password'], (err, values) => {
+    this.props.form.validateFieldsAndScroll([/*'old_password',*/ 'password'], (err, values) => {
       if (!err) {
         this.props.updateUser(values)
           .then(data => {
@@ -463,16 +463,16 @@ class UserInfoPage extends React.Component {
           <Form>
             {this.state.modalType === 'password'
               ? <Fragment>
-                <Form.Item label='Старый пароль' hasFeedback>
-                  {getFieldDecorator('old_password', {
-                    rules: [
-                      {
-                        required: true,
-                        message: 'Введите старый пароль'
-                      }
-                    ]
-                  })(<Input.Password/>)}
-                </Form.Item>
+                {/*<Form.Item label='Старый пароль' hasFeedback>*/}
+                {/*  {getFieldDecorator('old_password', {*/}
+                {/*    rules: [*/}
+                {/*      {*/}
+                {/*        required: true,*/}
+                {/*        message: 'Введите старый пароль'*/}
+                {/*      }*/}
+                {/*    ]*/}
+                {/*  })(<Input.Password/>)}*/}
+                {/*</Form.Item>*/}
 
                 <Form.Item label='Новый пароль' hasFeedback>
                   {getFieldDecorator('password', {
