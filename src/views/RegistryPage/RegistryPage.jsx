@@ -19,7 +19,9 @@ const defaultState = {
 
 const getSignedHex = (base64) => {
   try {
-    return window.sign(base64).hex
+    let result = window.sign(base64).hex
+    window.pluginClosed()
+    return result
   } catch (error) {
     return ''
   }

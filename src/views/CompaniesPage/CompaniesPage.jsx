@@ -70,11 +70,11 @@ const CompaniesPage = props => {
 
           const inputVerifiedDataArray = Array.from(document.getElementsByClassName('verifiedData'))
           inputVerifiedDataArray.forEach(i => {
-            i.parentNode.removeChild(i)
+            i.pawindow.signPrentNode.removeChild(i)
           })
           setTimeout(() => {
             try {
-              window.pluginLoaded()
+              // window.pluginLoaded()
             } catch (error) {
             }
           }, 1000)

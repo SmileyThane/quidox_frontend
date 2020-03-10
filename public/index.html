@@ -2,209 +2,224 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" type="image/x-icon" />
-  <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" type="image/x-icon" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#000000" />
-  <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-  <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
+    <meta charset="utf-8"/>
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" type="image/x-icon"/>
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" type="image/x-icon"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="theme-color" content="#000000"/>
+    <!--
+        manifest.json provides metadata used when your web app is installed on a
+        user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+      -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json"/>
+    <!--
+        Notice the use of %PUBLIC_URL% in the tags above.
+        It will be replaced with the URL of the `public` folder during the build.
+        Only files inside the `public` folder can be referenced from the HTML.
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-  <title>Quidox</title>
+        Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+        work correctly both with client-side routing and a non-root public URL.
+        Learn how to configure a non-root public URL by running `npm run build`.
+      -->
+    <title>Quidox</title>
 
-  <script type="text/javascript">
-    var avcmx, conn;
-    var msg, cert, issuerCert;
-    var AVCMR_BASE = 0xE82A0100;
-    var AVCMR_SIGN_INVALID = AVCMR_BASE + 0x27;
-    var AVCMF_DETACHED = 0x2000000;
-    var AVCMF_ADD_SIGN_CERT = 0x100000;
-    var AVCMF_OPEN_FOR_SIGN = 0x1000;
-    var AVCMF_OPEN_FOR_VERIFYSIGN = 0x2000;
-    var signedData, verifiedData, data;
+    <script type="text/javascript">
+      var avcmx, conn
+      var msg, cert, issuerCert
+      var AVCMR_BASE = 0xE82A0100
+      var AVCMR_SIGN_INVALID = AVCMR_BASE + 0x27
+      var AVCMF_DETACHED = 0x2000000
+      var AVCMF_ADD_SIGN_CERT = 0x100000
+      var AVCMF_OPEN_FOR_SIGN = 0x1000
+      var AVCMF_OPEN_FOR_VERIFYSIGN = 0x2000
+      var signedData, verifiedData, data
 
-    function handleError(e) {
-      var lastError = avcmx.GetLastError();
-      if (lastError > 0) {
-        alert(avcmx.GetErrorInformation(lastError, 0));
-      } else {
-        throw e;
+      function handleError (e) {
+        var lastError = avcmx.GetLastError()
+        if (lastError > 0) {
+          alert(avcmx.GetErrorInformation(lastError, 0))
+        } else {
+          throw e
+        }
       }
-    }
 
-    function pluginLoaded() {
-      avcmx = document.getElementById('oavcmx');
-      try {
-        var params = avcmx.CreateParameters(0);
-        avcmx.CreateConnectionAsync(params, 0, function (e, cnn) {
-          if (e) {
-            alert(avcmx.GetErrorInformation(e, 0));
-            return;
-          }
-          conn = cnn;
-        });
-      } catch (e) {
-        handleError(e);
-      }
-    }
-
-    function hashData(base64) {
-    	try {
-	        var data = avcmx.CreateBlob(0);
-	        data.SetAsBase64(base64, 0);
-          res = avcmx.Hash(data, "1.2.112.0.2.0.34.101.31.81", 0).GetAsHex(0);
-          return res;
-    	} catch (e) {
-    		handleError(e);
-    	}
-    }
-
-    function sign(base64, hexValue) {
-      if (base64) {
-        var blob = avcmx.CreateBlob(0);
-        blob.SetAsBase64(base64, 0);
-        var hex = hashData(base64);
-      } else {
-        var hex = hexValue
-      }
-        
-        var msg = conn.CreateMessage(avcmx.CreateBlob(0), AVCMF_ADD_SIGN_CERT | AVCMF_OPEN_FOR_SIGN | AVCMF_DETACHED);
-        var hashBlob = avcmx.CreateBlob(0);
-        hashBlob.SetAsHex(hex, 0);
-        var signed = msg.FinalHashed(hashBlob);
-        signedData = signed.Blob.GetAsBase64(0); 
-        verifiedData = verify(hex, signed.Blob.GetAsBase64(0));
-        return {hex : hex, signedData: signedData, verifiedData : verifiedData};
- 
-    }
-
-    function lastErrorIs(error) {
-      var lastError = parseInt(avcmx.GetLastError());
-      return lastError && (error == lastError || (error == (AVCMR_BASE + (lastError & 0xFFFF))));
-    }
-
-    function verify(hex, signedData) {
-
-      try {
-        var blob = avcmx.CreateBlob(0);
-            blob.SetAsBase64(signedData, 0);
-            var msg = conn.CreateMessage(blob, AVCMF_OPEN_FOR_VERIFYSIGN | AVCMF_DETACHED);
-            if (!msg.IsSigned()) {
-                alert("Сообщение не является подписанным сообщением");
-                return;
-            }
-        var hashBlob = avcmx.CreateBlob(0);
-            hashBlob.SetAsHex(hex, 0);
-            msg.FinalHashed(hashBlob);
+      function pluginLoaded () {
+        avcmx = document.getElementById('oavcmx')
         try {
-          msg.Verify(0);
+          var params = avcmx.CreateParameters(0)
+          avcmx.CreateConnectionAsync(params, 0, function (e, cnn) {
+            if (e) {
+              alert(avcmx.GetErrorInformation(e, 0))
+              return
+            }
+            conn = cnn
+          })
         } catch (e) {
-          if (lastErrorIs(AVCMR_SIGN_INVALID)) {
-            alert("Подпись не верна");
-            return;
-          } else {
-            throw e;
+          handleError(e)
+        }
+      }
+
+      function pluginClosed () {
+        avcmx = null
+        conn = null
+      }
+
+      function hashData (base64) {
+        try {
+          var data = avcmx.CreateBlob(0)
+          data.SetAsBase64(base64, 0)
+          res = avcmx.Hash(data, '1.2.112.0.2.0.34.101.31.81', 0).GetAsHex(0)
+          return res
+        } catch (e) {
+          handleError(e)
+        }
+      }
+
+      function sign (base64, hexValue) {
+        pluginLoaded()
+        setTimeout(() => {
+          signProcess(base64, hexValue)
+        }, 2000)
+      }
+
+      function signProcess (base64, hexValue) {
+        if (base64) {
+          var blob = avcmx.CreateBlob(0)
+          blob.SetAsBase64(base64, 0)
+          var hex = hashData(base64)
+        } else {
+          var hex = hexValue
+        }
+
+        var msg = conn.CreateMessage(avcmx.CreateBlob(0), AVCMF_ADD_SIGN_CERT | AVCMF_OPEN_FOR_SIGN | AVCMF_DETACHED)
+        var hashBlob = avcmx.CreateBlob(0)
+        hashBlob.SetAsHex(hex, 0)
+        var signed = msg.FinalHashed(hashBlob)
+        signedData = signed.Blob.GetAsBase64(0)
+        verifiedData = verify(hex, signed.Blob.GetAsBase64(0))
+        return { hex: hex, signedData: signedData, verifiedData: verifiedData }
+
+      }
+
+      function lastErrorIs (error) {
+        var lastError = parseInt(avcmx.GetLastError())
+        return lastError && (error == lastError || (error == (AVCMR_BASE + (lastError & 0xFFFF))))
+      }
+
+      function verify (hex, signedData) {
+
+        try {
+          var blob = avcmx.CreateBlob(0)
+          blob.SetAsBase64(signedData, 0)
+          var msg = conn.CreateMessage(blob, AVCMF_OPEN_FOR_VERIFYSIGN | AVCMF_DETACHED)
+          if (!msg.IsSigned()) {
+            alert('Сообщение не является подписанным сообщением')
+            return
           }
+          var hashBlob = avcmx.CreateBlob(0)
+          hashBlob.SetAsHex(hex, 0)
+          msg.FinalHashed(hashBlob)
+          try {
+            msg.Verify(0)
+          } catch (e) {
+            if (lastErrorIs(AVCMR_SIGN_INVALID)) {
+              alert('Подпись не верна')
+              return
+            } else {
+              throw e
+            }
+          }
+
+          var sign = msg.Signs(0)
+          cert = sign.SignerCertificate
+          var date = new Date(sign.SignDateTimeSec * 1000).toString()
+          // var key = cert.AuthorityKeyIdentifier;
+
+          var connCertCount = conn.OwnCertificate.SubjectNameAttributesCount
+          var connSubjectCount = conn.OwnCertificate.SubjectNameAttributesCount
+          var connIssuerCount = conn.OwnCertificate.IssuerNameAttributesCount
+
+          var connCertObj = {}
+          var connSubjectObject = {}
+          var connIssuerObject = {}
+
+          for (var i = 0; i < connCertCount; i++) {
+            connCertObj[conn.OwnCertificate.GetExtensionByIndex(i, 0).Oid] = conn.OwnCertificate.GetExtensionByIndex(i, 0).ValueAsString
+          }
+
+          for (var j = 0; j < connSubjectCount; j++) {
+            connSubjectObject[conn.OwnCertificate.GetSubjectNameAttributeByIndex(j, 0).Oid] = conn.OwnCertificate.GetSubjectNameAttributeByIndex(j, 0).Value
+          }
+
+          for (var j = 0; j < connIssuerCount; j++) {
+            connIssuerObject[conn.OwnCertificate.GetIssuerNameAttributeByIndex(j, 0).Oid] = conn.OwnCertificate.GetIssuerNameAttributeByIndex(j, 0).Value
+          }
+
+          // cert
+
+          var certCount = cert.ExtensionsCount
+          var subjectCount = cert.SubjectNameAttributesCount
+          var issuerCount = cert.IssuerNameAttributesCount
+
+          var certArr = {}
+          var subjectArr = {}
+          var issuerArr = {}
+
+          for (var i = 0; i < certCount; i++) {
+            certArr[cert.GetExtensionByIndex(i, 0).Oid] = cert.GetExtensionByIndex(i, 0).ValueAsString
+          }
+
+          for (var j = 0; j < subjectCount; j++) {
+            subjectArr[cert.GetSubjectNameAttributeByIndex(j, 0).Oid] = cert.GetSubjectNameAttributeByIndex(j, 0).Value
+          }
+
+          for (var k = 0; k < issuerCount; k++) {
+            issuerArr[cert.GetIssuerNameAttributeByIndex(k, 0).Oid] = cert.GetIssuerNameAttributeByIndex(k, 0).Value
+          }
+
+        } catch (e) {
+          handleError(e)
         }
 
-        var sign = msg.Signs(0);
-        cert = sign.SignerCertificate;
-        var date = new Date(sign.SignDateTimeSec * 1000).toString();
-        // var key = cert.AuthorityKeyIdentifier;
-
-        var connCertCount = conn.OwnCertificate.SubjectNameAttributesCount;
-        var connSubjectCount = conn.OwnCertificate.SubjectNameAttributesCount;
-        var connIssuerCount = conn.OwnCertificate.IssuerNameAttributesCount;
-
-        var connCertObj = {};
-        var connSubjectObject = {};
-        var connIssuerObject = {};
-
-        for (var i = 0; i < connCertCount; i++) {
-          connCertObj[conn.OwnCertificate.GetExtensionByIndex(i, 0).Oid] = conn.OwnCertificate.GetExtensionByIndex(i, 0).ValueAsString;
+        key = certArr['2.5.29.14']
+        var result = {
+          cert: certArr,
+          subject: subjectArr,
+          issuer: issuerArr,
+          key: key,
+          date: [cert.ValidityNotBeforeSec, cert.ValidityNotAfterSec]
         }
 
-        for (var j = 0; j < connSubjectCount; j++) {
-          connSubjectObject[conn.OwnCertificate.GetSubjectNameAttributeByIndex(j, 0).Oid] = conn.OwnCertificate.GetSubjectNameAttributeByIndex(j, 0).Value;
-        }
-
-        for (var j = 0; j < connIssuerCount; j++) {
-          connIssuerObject[conn.OwnCertificate.GetIssuerNameAttributeByIndex(j, 0).Oid] = conn.OwnCertificate.GetIssuerNameAttributeByIndex(j, 0).Value;
-        }
-
-        // cert
-
-        var certCount = cert.ExtensionsCount;
-        var subjectCount = cert.SubjectNameAttributesCount;
-        var issuerCount = cert.IssuerNameAttributesCount;
-
-        var certArr = {};
-        var subjectArr = {};
-        var issuerArr = {};
-
-        for (var i = 0; i < certCount; i++) {
-          certArr[cert.GetExtensionByIndex(i, 0).Oid] = cert.GetExtensionByIndex(i, 0).ValueAsString;
-        }
-
-        for (var j = 0; j < subjectCount; j++) {
-          subjectArr[cert.GetSubjectNameAttributeByIndex(j, 0).Oid] = cert.GetSubjectNameAttributeByIndex(j, 0).Value;
-        }
-
-        for (var k = 0; k < issuerCount; k++) {
-          issuerArr[cert.GetIssuerNameAttributeByIndex(k, 0).Oid] = cert.GetIssuerNameAttributeByIndex(k, 0).Value;
-        }
-
-      } catch (e) {
-        handleError(e);
+        return result
       }
-
-      key = certArr['2.5.29.14']
-      var result = {
-        cert: certArr,
-        subject: subjectArr,
-        issuer: issuerArr,
-        key: key,
-        date: [cert.ValidityNotBeforeSec, cert.ValidityNotAfterSec]
-      }
-
-      return result;
-    }
-  </script>
-  <script>
-    (function(w,d,u){
-      var s=d.createElement('script');s.async=true;s.src=u+'?'+(Date.now()/60000|0);
-      var h=d.getElementsByTagName('script')[0];h.parentNode.insertBefore(s,h);
-    })(window,document,'https://cdn.bitrix24.by/b9056817/crm/site_button/loader_2_qnbahg.js');
-  </script>
+    </script>
+    <script>
+      (function (w, d, u) {
+        var s = d.createElement('script')
+        s.async = true
+        s.src = u + '?' + (Date.now() / 60000 | 0)
+        var h = d.getElementsByTagName('script')[0]
+        h.parentNode.insertBefore(s, h)
+      })(window, document, 'https://cdn.bitrix24.by/b9056817/crm/site_button/loader_2_qnbahg.js')
+    </script>
 </head>
 
 <body>
-  <object id="oavcmx" type="application/x-avcmx-web-plugin" width="0" height="0" style="position: absolute">
+<object id="oavcmx" type="application/x-avcmx-web-plugin" width="0" height="0" style="position: absolute">
     <!--<param name="onload" value="pluginLoaded" />-->
-  </object>
-  <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div id="root"></div>
-  <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+</object>
+<noscript>You need to enable JavaScript to run this app.</noscript>
+<div id="root"></div>
+<!--
+    This HTML file is a template.
+    If you open it directly in the browser, you will see an empty page.
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+    You can add webfonts, meta tags, or analytics to this file.
+    The build step will place the bundled scripts into the <body> tag.
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+    To begin the development, run `npm start` or `yarn start`.
+    To create a production bundle, use `npm run build` or `yarn build`.
+  -->
 </body>
 <!-- <script type="text/javascript">
   !function () { function t(t, e) { return function () { window.carrotquestasync.push(t, arguments) } } if ("undefined" == typeof carrotquest) { var e = document.createElement("script"); e.type = "text/javascript", e.async = !0, e.src = "//cdn.carrotquest.io/api.min.js", document.getElementsByTagName("head")[0].appendChild(e), window.carrotquest = {}, window.carrotquestasync = [], carrotquest.settings = {}; for (var n = ["connect", "track", "identify", "auth", "oth", "onReady", "addCallback", "removeCallback", "trackMessageInteraction"], a = 0; a < n.length; a++)carrotquest[n[a]] = t(n[a]) } }(), carrotquest.connect("27800-05d8494222c541d21fbadd0777");

@@ -11,7 +11,7 @@ const AvestErrorHandling = ({ user: { data }, onCancel }) => {
 
   const runAvestPlugin = () => {
     try {
-      window.pluginLoaded()
+      // window.pluginLoaded()
       onCancel()
     } catch (error) {
       message.error(error.message)

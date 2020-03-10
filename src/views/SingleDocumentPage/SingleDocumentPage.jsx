@@ -66,7 +66,7 @@ const SingleDocumentPage = props => {
     if (documentState.isErrorWitchEcp) {
       setTimeout(() => {
         try {
-          window.pluginLoaded()
+          // window.pluginLoaded()
         } catch (error) {
         }
       }, 1000)

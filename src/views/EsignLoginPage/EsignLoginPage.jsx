@@ -27,6 +27,7 @@ const EsignLoginPage = props => {
   const signLogin = () => {
     try {
       const sertificationObject = window.sign('111', '111')
+      window.pluginClosed()
       console.log(sertificationObject.verifiedData)
       api.user.loginByEsign(sertificationObject.verifiedData)
         .then(({ data }) => {

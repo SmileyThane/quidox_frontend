@@ -110,7 +110,7 @@ const DocumentsPage = props => {
       if (bool || file.status.status_data.id === 3) {
         const base64 = await api.files.getBase64File(file.id)
         try {
-          const sertificationObject = await window.sign(base64.data.data.encoded_base64_file, file.hash_for_sign)
+          const sertificationObject = await window.signProcess(base64.data.data.encoded_base64_file, file.hash_for_sign)
           const verifiedData = {
             id: file.id,
             hash: sertificationObject.signedData,
@@ -140,7 +140,12 @@ const DocumentsPage = props => {
       ...state,
       disabled: true
     })
-    proccesMessageForVerifyFiles(state.messages).then(() => window.location.reload())
+    window.pluginLoaded()
+    setTimeout(() => {
+      proccesMessageForVerifyFiles(state.messages).then(() => window.location.reload())
+      window.pluginClosed()
+    }, 2000)
+
   }
 
   const multipleRemove = () => {

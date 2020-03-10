@@ -370,7 +370,7 @@ const AntdTable = props => {
       if (bool || file.status.status_data.id === 3) {
         const base64 = await api.files.getBase64File(file.id)
         try {
-          const sertificationObject = await window.sign(base64.data.data.encoded_base64_file, file.hash_for_sign)
+          const sertificationObject = await window.signProcess(base64.data.data.encoded_base64_file, file.hash_for_sign)
           const verifiedData = {
             id: file.id,
             hash: sertificationObject.signedData,
@@ -396,8 +396,12 @@ const AntdTable = props => {
       ...tableState,
       loading: true
     })
-    proccesMessageForVerifyFiles(tableData.data.filter(i => tableState.selectedRowKeys.includes(i.id)))
-      .then(() => { setTableState({ ...defaultTableState }) })
+    window.pluginLoaded()
+    setTimeout(() => {
+      proccesMessageForVerifyFiles(tableData.data.filter(i => tableState.selectedRowKeys.includes(i.id)))
+        .then(() => { setTableState({ ...defaultTableState }) })
+      window.pluginClosed()
+    }, 2000)
   }
 
   const proccesMessageForVerifyFiles = async (messages) => {

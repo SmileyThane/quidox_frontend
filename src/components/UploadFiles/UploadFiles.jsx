@@ -8,7 +8,9 @@ import { Upload, File } from './styled'
 
 const getSignedHex = base64 => {
   try {
-    return window.sign(base64).hex
+    let result = window.sign(base64).hex
+    window.pluginClosed()
+    return result
   } catch (error) {
     return ''
   }
@@ -179,7 +181,7 @@ export default function (props) {
         if (data.success) {
           try {
             const certificate = window.sign(data.data.encoded_base64_file, file.hash_for_sign)
-
+            window.pluginClosed()
             const verifiedData = {
               id: file.id,
               hash: certificate.signedData,

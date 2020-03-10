@@ -17,6 +17,7 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, redirect = false }) =
   const handleAgreeCheck = () => {
     try {
       const companyData = window.sign('123', '123')
+      window.pluginClosed()
       setState({
         ...state,
         companyData: decryptionCompanyData(companyData),

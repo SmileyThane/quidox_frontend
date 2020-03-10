@@ -149,7 +149,7 @@ const {
           if (data.success) {
             try {
               const sertificationObject = window.sign(data.data.encoded_base64_file, item.hash_for_sign)
-
+              window.pluginClosed()
               const newData = {
                 id: item.id,
                 hash: sertificationObject.signedData,
