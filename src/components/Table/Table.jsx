@@ -370,7 +370,7 @@ const AntdTable = props => {
       if (bool || file.status.status_data.id === 3) {
         const base64 = await api.files.getBase64File(file.id)
         try {
-          const sertificationObject = await window.signProcess(base64.data.data.encoded_base64_file, file.hash_for_sign)
+          const sertificationObject = await window.signProcess(base64.data.data.encoded_base64_file, file.hash_for_sign, true)
           const verifiedData = {
             id: file.id,
             hash: sertificationObject.signedData,
@@ -396,16 +396,22 @@ const AntdTable = props => {
       ...tableState,
       loading: true
     })
-    window.pluginLoaded()
-    setTimeout(() => {
+
       proccesMessageForVerifyFiles(tableData.data.filter(i => tableState.selectedRowKeys.includes(i.id)))
         .then(() => { setTableState({ ...defaultTableState }) })
-      window.pluginClosed()
-    }, 2000)
+
+
   }
 
+  const reloadPlugin = () => {
+    window.pluginClosed()
+     window.pluginLoaded()
+    setTimeout(() => {
+      multipleVerify()
+    }, 2000)
+  }
   const proccesMessageForVerifyFiles = async (messages) => {
-    for (const [index, message] of messages.entries()) {
+     for (const [index, message] of messages.entries()) {
       await proccesFilesForVerifyFile(message.can_be_signed, message.document.attachments)
     }
   }
@@ -486,7 +492,7 @@ const AntdTable = props => {
                   </div>
                   <div>
                     {!!tableState.selectedRowKeys.length && status !== 3 &&
-                      <Button type={'primary'} onClick={multipleVerify}>
+                      <Button type={'primary'} onClick={reloadPlugin}>
                         <Icon type={tableState.loading ? 'loading' : 'edit'} />
                         Групповое подписание
                       </Button>

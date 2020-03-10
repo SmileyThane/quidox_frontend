@@ -18,6 +18,9 @@ const PrivateRoute = ({ component: Component, user: { data }, getUser, getTariff
       getUser()
       getTariffications()
       if (isIE) {
+        setTimeout(() => {
+          window.pluginClosed()
+        }, 1500)
       }
     }
   }, [getUser, isIE])

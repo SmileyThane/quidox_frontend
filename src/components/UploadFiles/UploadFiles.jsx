@@ -6,10 +6,20 @@ import { checkBrowser } from '../../utils'
 import { Button, Icon, Modal, Progress, List, Typography, Select, notification, Tag } from 'antd'
 import { Upload, File } from './styled'
 
+//use this effect for modification
+// const isIE = /*@cc_on!@*/false || !!document.documentMode
+// useEffect(() => {
+//   if (isIE) {
+//     setTimeout(() => {
+//       window.pluginLoaded()
+//     }, 1500)
+//   }
+// }, [isIE])
+
 const getSignedHex = base64 => {
   try {
-    let result = window.sign(base64).hex
-    window.pluginClosed()
+//need to be modified!!!!!
+    let result = window.signProcess(base64).hex
     return result
   } catch (error) {
     return ''
@@ -180,8 +190,12 @@ export default function (props) {
       .then(({ data }) => {
         if (data.success) {
           try {
-            const certificate = window.sign(data.data.encoded_base64_file, file.hash_for_sign)
             window.pluginClosed()
+            console.log('pluginClosed')
+            window.pluginLoaded()
+            console.log('pluginLoaded')
+            setTimeout(() => {
+            const certificate = window.signProcess(data.data.encoded_base64_file, file.hash_for_sign)
             const verifiedData = {
               id: file.id,
               hash: certificate.signedData,
@@ -209,7 +223,9 @@ export default function (props) {
                       })
                     })
                 } else {
-                  throw new Error(data.error)
+                  notification.error({
+                    message: 'падение'
+                  })
                 }
               })
               .catch(error => {
@@ -217,6 +233,7 @@ export default function (props) {
                   message: error.message
                 })
               })
+          }, 2000)
           } catch (error) {
             notification.error({
               message: error.message

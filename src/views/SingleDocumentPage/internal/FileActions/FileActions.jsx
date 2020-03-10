@@ -1,4 +1,4 @@
-import React, { useReducer, Fragment } from 'react'
+import React, { useReducer, Fragment, useEffect } from 'react'
 import useForm from 'rc-form-hooks'
 import axios from 'axios'
 import fileDownload from 'js-file-download'
@@ -148,38 +148,49 @@ const {
         .then(({ data }) => {
           if (data.success) {
             try {
-              const sertificationObject = window.sign(data.data.encoded_base64_file, item.hash_for_sign)
-              window.pluginClosed()
-              const newData = {
-                id: item.id,
-                hash: sertificationObject.signedData,
-                data: sertificationObject.verifiedData,
-                hash_for_sign: sertificationObject.hex,
-                status: canBeSigned ? null : 5
-              }
+              const isIE = /*@cc_on!@*/false || !!document.documentMode
 
-              api.documents.attachmentSignCanConfirm({ key: sertificationObject.verifiedData.key, attachment_id: item.id })
-                .then(({ data }) => {
-                  if (data.success) {
-                    verifyFile(newData)
-                      .then((response) => {
-                        if (response.success) {
-                          message.success('Файл успешно подписан!')
-                          getDocument()
-                        } else {
-                          throw new Error(response.error)
-                        }
-                      })
-                      .catch(error => {
-                        message.error(error.message)
-                      })
-                  } else {
-                    throw new Error(data.error)
+              window.pluginClosed()
+              console.log('pluginClosed')
+              window.pluginLoaded()
+              console.log('pluginLoaded')
+                setTimeout(() => {
+                  const sertificationObject = window.signProcess(data.data.encoded_base64_file, item.hash_for_sign)
+                  console.log('singCreated')
+
+                  const newData = {
+                    id: item.id,
+                    hash: sertificationObject.signedData,
+                    data: sertificationObject.verifiedData,
+                    hash_for_sign: sertificationObject.hex,
+                    status: canBeSigned ? null : 5
                   }
-                })
-                .catch(error => {
-                  message.error(error.message)
-                })
+
+                  api.documents.attachmentSignCanConfirm({ key: sertificationObject.verifiedData.key, attachment_id: item.id })
+                    .then(({ data }) => {
+                      if (data.success) {
+                        verifyFile(newData)
+                          .then((response) => {
+                            if (response.success) {
+                              message.success('Файл успешно подписан!')
+                              getDocument()
+                            } else {
+                              throw new Error(response.error)
+                            }
+                          })
+                          .catch(error => {
+                            message.error(error.message)
+                          })
+                      } else {
+                        throw new Error(data.error)
+                      }
+                    })
+                    .catch(error => {
+                      message.error(error.message)
+                    })
+                }, 2000)
+
+
             } catch (error) {
               notification['error']({
                 message: error.message
