@@ -1,6 +1,7 @@
 import LoginPage from './LoginPage'
 import RegisterPage from './RegisterPage'
 import CompleteRegistrationForm from './CompleteRegistrationForm'
+import CompleteResetForm from './CompleteResetForm'
 import UserInfoPage from './UserInfoPage'
 import Home from './Home'
 import SingleDocumentPage from './SingleDocumentPage'
@@ -21,6 +22,7 @@ export {
   LoginPage,
   RegisterPage,
   CompleteRegistrationForm,
+  CompleteResetForm,
   UserInfoPage,
   ResetPasswordPage,
   Home,
