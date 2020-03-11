@@ -6,7 +6,6 @@ import './ContentBlock.scss'
 const { Content } = Layout
 
 const ContentBlock = ({ logWrapp, children }) => {
-
   const mainLayoutClassName = classNames(
     'main-content',
     {

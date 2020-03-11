@@ -4,6 +4,8 @@ import { Button, Icon, Modal, notification, Progress, Steps, Table } from 'antd'
 import { Upload } from './styled'
 import { api } from '../../services'
 
+
+
 const { Step } = Steps
 
 const defaultState = {
@@ -19,8 +21,7 @@ const defaultState = {
 
 const getSignedHex = (base64) => {
   try {
-    let result = window.sign(base64).hex
-    window.pluginClosed()
+    let result = window.signProcess(base64).hex
     return result
   } catch (error) {
     return ''
@@ -31,6 +32,15 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
   const [state, setState] = useState(defaultState)
   const inputNode = useRef(null)
   const filesNode = useRef(null)
+
+  const isIE = /*@cc_on!@*/false || !!document.documentMode
+  useEffect(() => {
+    if (isIE) {
+      setTimeout(() => {
+        window.pluginLoaded()
+      }, 1500)
+    }
+  }, [isIE])
 
   useEffect(() => {
     if (state.files.length) {

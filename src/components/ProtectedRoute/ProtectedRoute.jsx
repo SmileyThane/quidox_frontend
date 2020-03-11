@@ -16,7 +16,7 @@ const ProtectedRoute = ({ component: Component, user: { data }, getUser, getTari
       getTariffications()
       if (isIE) {
         setTimeout(() => {
-          // window.pluginLoaded()
+          window.pluginLoaded()
         }, 1500)
       }
     }

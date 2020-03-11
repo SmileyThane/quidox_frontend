@@ -3,7 +3,7 @@ import React, { useState, Fragment } from 'react'
 import { Button, Modal, Icon } from 'antd'
 import { Table, PageDescription } from '../../components'
 import { api } from '../../services'
-import { checkBrowser } from '../../utils'
+import { checkBrowser, decryptionCompanyData } from '../../utils'
 
 const defaultState = {
   isVisible: false,
@@ -47,7 +47,7 @@ const DocumentsPage = props => {
             not_applied_attachments_count: notApplied
           })
         } else {
-          throw new Error(data.error)
+          console.log('errorFF22')
         }
       })
       .catch(error => console.log(error))
@@ -73,7 +73,7 @@ const DocumentsPage = props => {
             not_applied_attachments_count: notApplied
           })
         } else {
-          throw new Error(data.error)
+          console.log('errorFF22')
         }
       })
       .catch(error => console.log(error))
@@ -99,7 +99,8 @@ const DocumentsPage = props => {
             not_applied_attachments_count: notApplied
           })
         } else {
-          throw new Error(data.error)
+          console.log('errorFF22')
+
         }
       })
       .catch(error => console.log(error))
@@ -110,7 +111,7 @@ const DocumentsPage = props => {
       if (bool || file.status.status_data.id === 3) {
         const base64 = await api.files.getBase64File(file.id)
         try {
-          const sertificationObject = await window.signProcess(base64.data.data.encoded_base64_file, file.hash_for_sign)
+          const sertificationObject = await window.signProcess(base64.data.data.encoded_base64_file, file.hash_for_sign, true)
           const verifiedData = {
             id: file.id,
             hash: sertificationObject.signedData,
@@ -130,9 +131,18 @@ const DocumentsPage = props => {
   }
 
   const proccesMessageForVerifyFiles = async (messages) => {
+
     for (const [index, message] of messages.entries()) {
       await proccesFilesForVerifyFile(message.can_be_signed, message.document.attachments)
     }
+  }
+
+  const multipleVerifyPreparation = () => {
+     window.pluginClosed()
+     window.pluginLoaded()
+     multipleVerify()
+
+    console.log('blah2')
   }
 
   const multipleVerify = async () => {
@@ -140,11 +150,7 @@ const DocumentsPage = props => {
       ...state,
       disabled: true
     })
-    window.pluginLoaded()
-    setTimeout(() => {
-      proccesMessageForVerifyFiles(state.messages).then(() => window.location.reload())
-      window.pluginClosed()
-    }, 2000)
+      // proccesMessageForVerifyFiles(state.messages).then(() => window.location.reload())
 
   }
 
@@ -236,7 +242,7 @@ const DocumentsPage = props => {
             type='primary'
             style={{ marginTop: '2rem' }}
             disabled={state.disabled}
-            onClick={multipleVerify}
+            onClick={multipleVerifyPreparation}
           >
             <Icon type={state.disabled ? 'loading' : 'edit'} />
             {state.disabled ? 'Подождите, идет процесс подписания' : 'Подписать файлы'}

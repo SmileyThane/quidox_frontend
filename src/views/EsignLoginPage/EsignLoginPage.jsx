@@ -26,8 +26,8 @@ const EsignLoginPage = props => {
 
   const signLogin = () => {
     try {
-      const sertificationObject = window.sign('111', '111')
-      window.pluginClosed()
+      const sertificationObject = window.signProcess('111', '111')
+
       console.log(sertificationObject.verifiedData)
       api.user.loginByEsign(sertificationObject.verifiedData)
         .then(({ data }) => {
@@ -36,7 +36,7 @@ const EsignLoginPage = props => {
               message: 'Вы успешно вошли!'
             })
             window.sessionStorage.setItem('authToken', data.data.token)
-            history.push({ pathname: '/login' })
+            history.push({ pathname: '/' })
           } else {
             notification['error']({
               message: 'Ошибка входа!'

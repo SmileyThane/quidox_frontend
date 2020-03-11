@@ -16,13 +16,17 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, redirect = false }) =
 
   const handleAgreeCheck = () => {
     try {
-      const companyData = window.sign('123', '123')
       window.pluginClosed()
-      setState({
-        ...state,
-        companyData: decryptionCompanyData(companyData),
-        isCreate: true
-      })
+      window.pluginLoaded()
+      setTimeout(() => {
+        const companyData = window.signProcess('123', '123')
+        setState({
+          ...state,
+          companyData: decryptionCompanyData(companyData),
+          isCreate: true
+        })
+      }, 2000)
+
     } catch (e) {
       notification['error']({
         message: 'Ключ ЭЦП не найден',

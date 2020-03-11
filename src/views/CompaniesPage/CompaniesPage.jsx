@@ -74,7 +74,7 @@ const CompaniesPage = props => {
           })
           setTimeout(() => {
             try {
-              // window.pluginLoaded()
+              window.pluginLoaded()
             } catch (error) {
             }
           }, 1000)
