@@ -142,7 +142,7 @@ const DocumentsPage = props => {
      window.pluginLoaded()
      multipleVerify()
 
-    console.log('blah2')
+
   }
 
   const multipleVerify = async () => {

@@ -213,6 +213,7 @@ export default function (props) {
                         notification.success({
                           message: 'Файл успешно подписан'
                         })
+                        window.pluginClosed()
                       } else {
                         throw new Error(response.error)
                       }

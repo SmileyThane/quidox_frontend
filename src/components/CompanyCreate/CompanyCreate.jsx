@@ -25,6 +25,7 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, redirect = false }) =
           companyData: decryptionCompanyData(companyData),
           isCreate: true
         })
+        window.pluginClosed()
       }, 2000)
 
     } catch (e) {
