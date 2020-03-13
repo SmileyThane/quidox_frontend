@@ -33,6 +33,7 @@
       var AVCMF_OPEN_FOR_SIGN = 0x1000
       var AVCMF_OPEN_FOR_VERIFYSIGN = 0x2000
       var AVCMF_REPEAT_AUTHENTICATION = 0x800
+      var AVCMF_IMPORT_ALL_CERTS = 0x80000
       var signedData, verifiedData, data
 
       function handleError (e) {
@@ -56,7 +57,7 @@
 
             conn = cnn
 
-            console.log('connections is: ' +  Math.random())
+            console.log('connections is: ' + Math.random())
           })
         } catch (e) {
           console.log('connections is:______ ')
@@ -68,6 +69,13 @@
         console.log('avcmx is: ' + avcmx)
         conn = null
         console.log('conn is: ' + conn)
+      }
+
+      function importCerts () {
+        pluginLoaded()
+        setTimeout(() => {
+          conn.importCerts(AVCMF_IMPORT_ALL_CERTS)
+        }, 1500)
       }
 
       function hashData (base64) {

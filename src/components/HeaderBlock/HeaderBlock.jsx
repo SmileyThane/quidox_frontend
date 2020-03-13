@@ -58,6 +58,9 @@ const HeaderBlock = props => {
               {activeCompany && +activeCompany.company_number === 0 &&
                 <Button type='primary' ghost onClick={handleOpenModal}>Подключить ЭЦП</Button>
               }
+              {activeCompany && +activeCompany.company_number !== 0 &&
+              <Button type='primary' ghost onClick={window.importCerts}>Обновить СОС</Button>
+              }
 
               <HeaderUser />
             </Skeleton>
