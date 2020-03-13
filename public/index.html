@@ -34,6 +34,7 @@
       var AVCMF_OPEN_FOR_VERIFYSIGN = 0x2000
       var AVCMF_REPEAT_AUTHENTICATION = 0x800
       var AVCMF_IMPORT_ALL_CERTS = 0x80000
+      var AVCM_CRL_ISSUER_SUBJECT = 0x1
       var signedData, verifiedData, data
 
       function handleError (e) {
@@ -71,11 +72,13 @@
         console.log('conn is: ' + conn)
       }
 
-      function importCerts () {
-        pluginLoaded()
-        setTimeout(() => {
-          conn.importCerts(AVCMF_IMPORT_ALL_CERTS)
-        }, 1500)
+      function importCerts (data) {
+        if (data) {
+          let blob = avcmx.CreateBlob(0)
+          blob.SetAsBase64(data, 0)
+          conn.ImportCRL(blob.get(), "", 0 );
+          alert('Сертификаты обновлены!')
+        }
       }
 
       function hashData (base64) {

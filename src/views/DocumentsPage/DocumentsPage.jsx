@@ -150,7 +150,7 @@ const DocumentsPage = props => {
       ...state,
       disabled: true
     })
-      // proccesMessageForVerifyFiles(state.messages).then(() => window.location.reload())
+       proccesMessageForVerifyFiles(state.messages).then(() => window.location.reload())
 
   }
 

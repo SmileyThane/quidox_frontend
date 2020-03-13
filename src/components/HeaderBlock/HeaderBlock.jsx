@@ -1,11 +1,13 @@
 import React, { Fragment, useEffect, useState } from 'react'
 
-import { Skeleton, Button, Modal } from 'antd'
-import { HeaderUser, HeaderTariff } from './internal'
+import { Button, Modal, Skeleton } from 'antd'
+import { HeaderTariff, HeaderUser } from './internal'
 import { CompanyCreate } from '../'
 import { HeaderContent } from './styled'
 import { logo } from '../../resources/img'
 import { getActiveCompany } from '../../utils'
+import axios from 'axios'
+import fileDownload from "js-file-download"
 
 const defaultState = {
   isModalVisible: false,
@@ -41,6 +43,29 @@ const HeaderBlock = props => {
     })
   }
 
+  const isIE = /*@cc_on!@*/false || !!document.documentMode
+
+  const importCerts = () => {
+
+    if (isIE) {
+      window.pluginLoaded()
+      setTimeout(() => {
+        axios.get('https://nces.by/wp-content/uploads/certificates/pki/ruc.crl', {
+          headers: {
+            'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
+          }
+        }).then(({ data }) => {
+            if (data) {
+              window.importCerts(data)
+            }
+          }).catch(error => console.log(error))
+
+
+      }, 3000)
+    }
+
+  }
+
   const { isModalVisible, activeCompany } = state
   return (
     <Fragment>
@@ -48,21 +73,21 @@ const HeaderBlock = props => {
         <HeaderContent.Row>
           <HeaderContent.LeftAside>
             <a href={'https://quidox.by'}>
-              <HeaderContent.Logo src={logo} alt='Quidox Logo' style={{ maxHeight: '5rem' }} />
+              <HeaderContent.Logo src={logo} alt='Quidox Logo' style={{ maxHeight: '5rem' }}/>
             </a>
           </HeaderContent.LeftAside>
           {(window.localStorage.getItem('authToken') || window.sessionStorage.getItem('authToken')) &&
           <Fragment>
             <Skeleton loading={isFetching} active paragraph={false}>
-              <HeaderTariff />
+              <HeaderTariff/>
               {activeCompany && +activeCompany.company_number === 0 &&
-                <Button type='primary' ghost onClick={handleOpenModal}>Подключить ЭЦП</Button>
+              <Button type='primary' ghost onClick={handleOpenModal}>Подключить ЭЦП</Button>
               }
               {activeCompany && +activeCompany.company_number !== 0 &&
-              <Button type='primary' ghost onClick={window.importCerts}>Обновить СОС</Button>
+              <Button type='primary' ghost onClick={importCerts}>Обновить СОС</Button>
               }
 
-              <HeaderUser />
+              <HeaderUser/>
             </Skeleton>
           </Fragment>
           }
@@ -77,7 +102,7 @@ const HeaderBlock = props => {
         closable={false}
         footer={null}
       >
-        <CompanyCreate onCancel={handleCloseModal} redirect />
+        <CompanyCreate onCancel={handleCloseModal} redirect/>
       </Modal>
       }
     </Fragment>
