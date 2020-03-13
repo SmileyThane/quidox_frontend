@@ -194,10 +194,13 @@ const AntdTable = props => {
       ...tableState,
       isFetching: true
     })
+    console.log(window.localStorage.getItem('authToken'))
+    console.log(window.sessionStorage.getItem('authToken'))
+    let auth = window.localStorage.getItem('authToken') != null ? window.localStorage.getItem('authToken') : window.sessionStorage.getItem('authToken')
     axios.get(`${process.env.REACT_APP_BASE_URL}/receipt/${type}/${id}`, {
       'responseType': 'arraybuffer',
       headers: {
-        'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' +  window.sessionStorage.getItem('authToken'),
+        'Authorization': 'Bearer ' + auth ,
         'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
       }
     })
