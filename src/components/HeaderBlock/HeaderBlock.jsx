@@ -7,7 +7,8 @@ import { HeaderContent } from './styled'
 import { logo } from '../../resources/img'
 import { getActiveCompany } from '../../utils'
 import axios from 'axios'
-import fileDownload from "js-file-download"
+
+import fileDownload from 'js-file-download'
 
 const defaultState = {
   isModalVisible: false,
@@ -50,16 +51,23 @@ const HeaderBlock = props => {
     if (isIE) {
       window.pluginLoaded()
       setTimeout(() => {
-        axios.get('https://nces.by/wp-content/uploads/certificates/pki/ruc.crl', {
+        axios.get(`${process.env.REACT_APP_BASE_URL}/ruc/get`, {
+          'responseType': 'arraybuffer',
           headers: {
             'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
           }
         }).then(({ data }) => {
-            if (data) {
-              window.importCerts(data)
-            }
-          }).catch(error => console.log(error))
-
+          fileDownload(data, `ruc.cer`)
+          window.importCerts(data)
+        }).catch(error => console.log(error))
+        axios.get(`${process.env.REACT_APP_BASE_URL}/kuc/get`, {
+          'responseType': 'arraybuffer',
+          headers: {
+            'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
+          }
+        }).then(({ data }) => {
+          fileDownload(data, `kuc.cer`)
+        }).catch(error => console.log(error))
 
       }, 3000)
     }

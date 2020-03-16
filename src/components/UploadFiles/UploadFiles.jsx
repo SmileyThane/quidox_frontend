@@ -303,7 +303,7 @@ export default function (props) {
                 <div>
                   <Text type='secondary'>{idx + 1}.</Text>
                   <Text style={{ padding: '0 10px'}} strong>{file.original_name}</Text>
-                  {!!(file.users_companies.length && file.users_companies[0].verification_info) &&
+                  {!!(file.users_companies.length > 0 && file.users_companies[0].verification_info) &&
                     <Tag
                       color='#3278fb'
                       style={{ cursor: 'pointer' }}

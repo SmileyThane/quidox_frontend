@@ -73,12 +73,10 @@
       }
 
       function importCerts (data) {
-        if (data) {
-          let blob = avcmx.CreateBlob(0)
-          blob.SetAsBase64(data, 0)
-          conn.ImportCRL(blob.get(), "", 0 );
-          alert('Сертификаты обновлены!')
-        }
+        console.log('import started')
+        console.log(data)
+        avcmx.ImportCRL(data)
+        alert('Сертификаты обновлены!')
       }
 
       function hashData (base64) {
