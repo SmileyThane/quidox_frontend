@@ -32,7 +32,7 @@ const { Text } = Typography
 const initialState = {
   isModalVisible: false,
   modalType: '',
-  fileInfo: {},
+  fileInfo: [],
   isDisabled: false,
   isFilesUploaded: false,
   filesToUpload: [],
@@ -254,7 +254,15 @@ export default function (props) {
   const handleShowEscInfo = (file, type) => {
     dispatch({ type: 'SHOW_MODAL', payload: type })
 
-    dispatch({ type: 'HANDLE_GET_FILES', payload: file.users_companies })
+    dispatch({ type: 'GET_FILE_INFO', payload: file })
+  }
+
+  const getECP = arr => {
+    if (arr.length) {
+      const ECP = arr.filter(i => i.verification_hash !== null && i.verification_info !== null)
+      console.log(ECP)
+      return ECP
+    }
   }
 
   console.log(state)
@@ -280,54 +288,57 @@ export default function (props) {
 
       <Upload.List>
         <List
-          itemLayout='horizontal'
-          dataSource={list && list}
-          locale={{ emptyText: 'Нет прикрепленных файлов' }}
-          renderItem={(file, idx) => (
-            <List.Item
-              key={idx}
-              style={{ padding: '5px 10px' }}
-              actions={[
-                <Tag style={{ margin: 0 }} color='#87d068' onClick={() => handleVerifyFile(file)}>
-                  <Icon style={{ marginRight: 5, cursor: 'pointer' }} type='edit'/>
-                  Подписать
-                </Tag>,
-                <Tag color='#f50' onClick={() => handleRemoveFile(file)}
+      itemLayout='horizontal'
+      dataSource={list && list}
+      locale={{ emptyText: 'Нет прикрепленных файлов' }}
+      renderItem={(file, idx) => {
+        const isFileWithECP = getECP(file.users_companies)
+        return (
+          <List.Item
+            key={idx}
+            style={{ padding: '5px 10px' }}
+            actions={[
+              <Tag disabled style={{ margin: 0 }} color='#87d068' onClick={() => isFileWithECP ? null : handleVerifyFile(file)}>
+                <Icon style={{ marginRight: 5, cursor: 'pointer' }} type={isFileWithECP ? 'like' : 'edit'}/>
+                {isFileWithECP ? 'Файл подписан' : 'Подписать'}
+              </Tag>,
+              <Tag color='#f50' onClick={() => handleRemoveFile(file)}
+              >
+                <Icon style={{ marginRight: 5, cursor: 'pointer' }} type='delete'/>
+                Удалить
+              </Tag>
+            ]}
+          >
+            <File>
+              <div>
+                <Text type='secondary'>{idx + 1}.</Text>
+                <Text style={{ padding: '0 10px' }} strong>{file.original_name}</Text>
+                {isFileWithECP &&
+                <Tag
+                  color='#3278fb'
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleShowEscInfo(getECP(file.users_companies), 'esc')}
                 >
-                  <Icon style={{ marginRight: 5, cursor: 'pointer' }} type='delete'/>
-                  Удалить
+                  ЭЦП
                 </Tag>
-              ]}
-            >
-              <File>
-                <div>
-                  <Text type='secondary'>{idx + 1}.</Text>
-                  <Text style={{ padding: '0 10px'}} strong>{file.original_name}</Text>
-                  {!!(file.users_companies.length > 0 && file.users_companies[0].verification_info) &&
-                    <Tag
-                      color='#3278fb'
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => handleShowEscInfo(file, 'esc')}
-                    >
-                      ЭЦП
-                    </Tag>
-                  }
-                </div>
-                <div>
-                  <Select
-                    style={{ minWidth: '20rem' }}
-                    value={file.status.status_data.id}
-                    onChange={handleChangeFileStatus(file, idx)}
-                  >
-                    <Option value={1}>Простая доставка</Option>
-                    <Option value={2}>Согласование</Option>
-                    <Option value={3}>Подпись получателя</Option>
-                  </Select>
-                </div>
-              </File>
-            </List.Item>
-          )}
-        ></List>
+                }
+              </div>
+              <div>
+                <Select
+                  style={{ minWidth: '20rem' }}
+                  value={file.status.status_data.id}
+                  onChange={handleChangeFileStatus(file, idx)}
+                >
+                  <Option value={1}>Простая доставка</Option>
+                  <Option value={2}>Согласование</Option>
+                  <Option value={3}>Подпись получателя</Option>
+                </Select>
+              </div>
+            </File>
+          </List.Item>
+        )
+      }}
+      />
       </Upload.List>
     </Upload>
 
