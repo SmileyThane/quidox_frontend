@@ -340,21 +340,21 @@ class RegistrationForm extends React.Component {
                           message: 'Пожалуйста, введите ваше имя!'
                         }
                       ]
-                    })(<Input />)}
+                    })(<Input ref={this.inputNode} />)}
                   </Form.Item>
                   <Form.Item label='Придумайте пароль' hasFeedback>
                     {getFieldDecorator('password', {
                       rules: [
                         {
                           required: true,
-                          message: 'Минимум восемь символов, как минимум одна буква и одна цифра',
+                          message: 'Минимум восемь символов.',
                           pattern: /^.{8,128}$/
                         },
                         {
                           validator: this.validateToNextPassword
                         }
                       ]
-                    })(<Input.Password />)}
+                    })(<Input.Password ref={this.inputNode} />)}
                   </Form.Item>
                   <Form.Item label='Подтвердите пароль' hasFeedback>
                     {getFieldDecorator('confirm', {
