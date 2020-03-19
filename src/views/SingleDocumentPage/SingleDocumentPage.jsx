@@ -94,7 +94,8 @@ const SingleDocumentPage = props => {
         })
       })
       .catch(error => {
-        message.error(error.message)
+        message.success('Система создает копию для предпросмотра. Пожалуйста подождите!')
+        // message.error(error.message)
       })
   }
 
