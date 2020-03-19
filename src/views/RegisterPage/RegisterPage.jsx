@@ -347,7 +347,7 @@ class RegistrationForm extends React.Component {
                       rules: [
                         {
                           required: true,
-                          message: 'Минимум восемь символов, как минимум одна буква и одна цифра',
+                          message: 'Минимум восемь символов.',
                           pattern: /^.{8,128}$/
                         },
                         {

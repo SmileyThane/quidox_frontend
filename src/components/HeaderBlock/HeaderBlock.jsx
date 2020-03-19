@@ -58,7 +58,7 @@ const HeaderBlock = props => {
           }
         }).then(({ data }) => {
           fileDownload(data, `ruc.cer`)
-          window.importCerts(data)
+          // window.importCerts(data)
         }).catch(error => console.log(error))
         axios.get(`${process.env.REACT_APP_BASE_URL}/kuc/get`, {
           'responseType': 'arraybuffer',
@@ -91,7 +91,7 @@ const HeaderBlock = props => {
               {activeCompany && +activeCompany.company_number === 0 &&
               <Button type='primary' ghost onClick={handleOpenModal}>Подключить ЭЦП</Button>
               }
-              {activeCompany && +activeCompany.company_number !== 0 &&
+              {activeCompany && +activeCompany.company_number !== 0 && +isIE &&
               <Button type='primary' ghost onClick={importCerts}>Обновить СОС</Button>
               }
 
