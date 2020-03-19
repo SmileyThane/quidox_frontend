@@ -143,8 +143,16 @@ export default function (props) {
   }
 
   const handleUploadFiles = ({ target: { files } }, type) => {
+    console.log('Uploaded:', list.length)
+    console.log('To upload:', [...files].length)
+    if ([...files].length > 5 || (list.length + [...files].length) > 5) {
+      notification.error({
+        message: 'Превышен лимит файлов!',
+        description: 'Максимальное количество файлов для данного тарифа - 5'
+      })
+      return
+    }
     dispatch({ type: 'SHOW_MODAL', payload: type })
-
     dispatch({
       type: 'HANDLE_GET_FILES',
       payload: [...files]
@@ -292,7 +300,7 @@ export default function (props) {
       dataSource={list && list}
       locale={{ emptyText: 'Нет прикрепленных файлов' }}
       renderItem={(file, idx) => {
-        const isFileWithECP = !!getECP(file.users_companies).length
+        const isFileWithECP = file.users_companies.length ? !!getECP(file.users_companies).length : false
         return (
           <List.Item
             key={idx}
