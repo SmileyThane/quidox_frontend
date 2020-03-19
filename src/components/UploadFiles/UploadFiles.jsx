@@ -292,7 +292,7 @@ export default function (props) {
       dataSource={list && list}
       locale={{ emptyText: 'Нет прикрепленных файлов' }}
       renderItem={(file, idx) => {
-        const isFileWithECP = getECP(file.users_companies)
+        const isFileWithECP = !!getECP(file.users_companies).length
         return (
           <List.Item
             key={idx}
