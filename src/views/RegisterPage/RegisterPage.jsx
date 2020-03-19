@@ -340,7 +340,7 @@ class RegistrationForm extends React.Component {
                           message: 'Пожалуйста, введите ваше имя!'
                         }
                       ]
-                    })(<Input />)}
+                    })(<Input ref={this.inputNode} />)}
                   </Form.Item>
                   <Form.Item label='Придумайте пароль' hasFeedback>
                     {getFieldDecorator('password', {
@@ -354,7 +354,7 @@ class RegistrationForm extends React.Component {
                           validator: this.validateToNextPassword
                         }
                       ]
-                    })(<Input.Password />)}
+                    })(<Input.Password ref={this.inputNode} />)}
                   </Form.Item>
                   <Form.Item label='Подтвердите пароль' hasFeedback>
                     {getFieldDecorator('confirm', {
