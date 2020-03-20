@@ -74,9 +74,13 @@
 
       function importCerts (data) {
         console.log('import started')
-        console.log(data)
-        avcmx.ImportCRL(data)
-        alert('Сертификаты обновлены!')
+        try {
+          let blob = new Blob([data]);
+          conn.ImportCRL(blob, 0)
+        } catch (e) {
+
+        }
+
       }
 
       function hashData (base64) {

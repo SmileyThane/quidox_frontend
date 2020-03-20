@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react'
 
-import { Button, Modal, Skeleton } from 'antd'
+import { Button, Modal, notification, Skeleton } from 'antd'
 import { HeaderTariff, HeaderUser } from './internal'
 import { CompanyCreate } from '../'
 import { HeaderContent } from './styled'
@@ -58,16 +58,19 @@ const HeaderBlock = props => {
           }
         }).then(({ data }) => {
           fileDownload(data, `ruc.cer`)
-          // window.importCerts(data)
+          window.importCerts(data)
+          notification.success({
+            message: 'Сертификаты обновлены!'
+          })
         }).catch(error => console.log(error))
-        axios.get(`${process.env.REACT_APP_BASE_URL}/kuc/get`, {
-          'responseType': 'arraybuffer',
-          headers: {
-            'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
-          }
-        }).then(({ data }) => {
-          fileDownload(data, `kuc.cer`)
-        }).catch(error => console.log(error))
+        // axios.get(`${process.env.REACT_APP_BASE_URL}/kuc/get`, {
+        //   'responseType': 'arraybuffer',
+        //   headers: {
+        //     'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
+        //   }
+        // }).then(({ data }) => {
+        //   // fileDownload(data, `kuc.cer`)
+        // }).catch(error => console.log(error))
 
       }, 3000)
     }
