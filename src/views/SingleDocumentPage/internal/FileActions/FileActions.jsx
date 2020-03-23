@@ -176,7 +176,8 @@ const {
                               getDocument()
                               // window.pluginClosed()
                             } else {
-                              throw new Error(response.error)
+                              message.error(response.error)
+                              // throw new Error(response.error)
                             }
                           })
                           .catch(error => {

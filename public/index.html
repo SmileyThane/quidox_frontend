@@ -35,7 +35,7 @@
       var AVCMF_REPEAT_AUTHENTICATION = 0x800
       var AVCMF_IMPORT_ALL_CERTS = 0x80000
       var AVCM_CRL_ISSUER_SUBJECT = 0x1
-      var signedData, verifiedData, data
+      var signedData, verifiedData, data = null
 
       function handleError (e) {
         var lastError = avcmx.GetLastError()
@@ -107,13 +107,21 @@
         } else {
           var hex = hexValue
         }
-        var msg = conn.CreateMessage(avcmx.CreateBlob(0), AVCMF_ADD_SIGN_CERT | AVCMF_OPEN_FOR_SIGN | AVCMF_DETACHED | AVCMF_OPEN_FOR_VERIFYSIGN)
-        var hashBlob = avcmx.CreateBlob(0)
-        hashBlob.SetAsHex(hex, 0)
-        var signed = msg.FinalHashed(hashBlob)
-        signedData = signed.Blob.GetAsBase64(0)
-        verifiedData = verify(hex, signed.Blob.GetAsBase64(0))
-        return { hex: hex, signedData: signedData, verifiedData: verifiedData }
+        try {
+          var msg = conn.CreateMessage(avcmx.CreateBlob(0), AVCMF_ADD_SIGN_CERT | AVCMF_OPEN_FOR_SIGN | AVCMF_DETACHED | AVCMF_OPEN_FOR_VERIFYSIGN)
+          var hashBlob = avcmx.CreateBlob(0)
+          hashBlob.SetAsHex(hex, 0)
+          var signed = msg.FinalHashed(hashBlob)
+          if (signed) {
+            signedData = signed.Blob.GetAsBase64(0)
+            verifiedData = verify(hex, signed.Blob.GetAsBase64(0))
+          }
+          return { hex: hex, signedData: signedData, verifiedData: verifiedData }
+        } catch (e) {
+          alert('Ошибка инициализации библиотеки! Перезагрузите страницу и попробуйте еще раз.')
+        }
+
+
 
       }
 
