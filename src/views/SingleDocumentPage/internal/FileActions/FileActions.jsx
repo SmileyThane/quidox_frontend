@@ -174,7 +174,7 @@ const {
                             if (response.success) {
                               message.success('Файл успешно подписан!')
                               getDocument()
-                              window.pluginClosed()
+                              // window.pluginClosed()
                             } else {
                               throw new Error(response.error)
                             }
