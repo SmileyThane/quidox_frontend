@@ -242,7 +242,7 @@ const SingleSharedDocumentPage = props => {
                 itemLayout='horizontal'
                 locale={{ emptyText: 'Нет приложенных документов' }}
                 dataSource={message.document && message.document.attachments}
-                style={{ maxHeight: '20rem', overflowY: 'scroll' }}
+                style={{ maxHeight: '20rem' }}
                 renderItem={(item, index) => (
                   <List.Item key={item.id}
                   >
