@@ -5,7 +5,7 @@ export default (instance) => {
     const accessToken = 'Bearer ' + token
     // console.log(accessToken)
     if (accessToken) {
-      console.log('Auth attached')
+      // console.log('Auth attached')
       config.headers.Authorization = accessToken
       return Promise.resolve(config)
     } else {

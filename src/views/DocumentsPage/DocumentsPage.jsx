@@ -1,9 +1,8 @@
-import React, { useState, Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 
-import { Button, Modal, Icon } from 'antd'
-import { Table, PageDescription } from '../../components'
+import { Button, Icon, Modal, notification } from 'antd'
+import { PageDescription, Table } from '../../components'
 import { api } from '../../services'
-import { checkBrowser, decryptionCompanyData } from '../../utils'
 
 const defaultState = {
   isVisible: false,
@@ -11,6 +10,7 @@ const defaultState = {
   messages: [],
   processedFiles: 0,
   disabled: false,
+  disabledCloseButton: false,
   buttonsFetching: [false, false, false],
   type: '',
   not_applied_attachments_count: 0,
@@ -34,7 +34,11 @@ const DocumentsPage = props => {
       ...state,
       buttonsFetching: [true, false, false]
     })
-    api.documents.getDocumentsByActiveCompanyId(data.active_company_id, { status: Number(status), selection_type: 'document', is_minified: true })
+    api.documents.getDocumentsByActiveCompanyId(data.active_company_id, {
+      status: Number(status),
+      selection_type: 'document',
+      is_minified: true
+    })
       .then(({ data }) => {
         if (data.success) {
           const notApplied = data.data.data.reduce((acc, el) => acc + (el.document.not_applied_attachments_count), 0)
@@ -58,7 +62,11 @@ const DocumentsPage = props => {
       ...state,
       buttonsFetching: [false, true, false]
     })
-    api.documents.getDocumentsByActiveCompanyId(data.active_company_id, { status: Number(status), selection_type: 'document', is_minified: true })
+    api.documents.getDocumentsByActiveCompanyId(data.active_company_id, {
+      status: Number(status),
+      selection_type: 'document',
+      is_minified: true
+    })
       .then(({ data }) => {
         if (data.success) {
           const notApplied = data.data.data.length
@@ -84,7 +92,11 @@ const DocumentsPage = props => {
       ...state,
       buttonsFetching: [false, false, true]
     })
-    api.documents.getDocumentsByActiveCompanyId(data.active_company_id, { status: Number(status), selection_type: 'document', is_minified: true })
+    api.documents.getDocumentsByActiveCompanyId(data.active_company_id, {
+      status: Number(status),
+      selection_type: 'document',
+      is_minified: true
+    })
       .then(({ data }) => {
         if (data.success) {
           const notApplied = data.data.data.length
@@ -119,10 +131,14 @@ const DocumentsPage = props => {
             hash_for_sign: sertificationObject.hex,
             status: bool ? null : 5
           }
-          const confirm = await api.documents.attachmentSignCanConfirm({ key: sertificationObject.verifiedData.key, attachment_id: file.id })
+          const confirm = await api.documents.attachmentSignCanConfirm({
+            key: sertificationObject.verifiedData.key,
+            attachment_id: file.id
+          })
           if (confirm.data.success) {
             api.files.verifyFile(verifiedData)
           }
+          console.log(file.id + ': sign is ' + confirm.data.success)
         } catch (error) {
           break
         }
@@ -138,26 +154,43 @@ const DocumentsPage = props => {
   }
 
   const multipleVerifyPreparation = () => {
-     window.pluginClosed()
-     window.pluginLoaded()
-     multipleVerify()
-
+    window.pluginClosed()
+    window.pluginLoaded()
+    console.log('multiple verify preparation was started')
+    setTimeout(() => {
+      console.log('plugin loaded')
+      multipleVerify()
+    }, 2000)
 
   }
 
   const multipleVerify = async () => {
     setState({
       ...state,
-      disabled: true
+      disabled: true,
+      disabledCloseButton: true
     })
-       proccesMessageForVerifyFiles(state.messages).then(() => window.location.reload())
+    proccesMessageForVerifyFiles(state.messages).then(() =>
+        {
+        // window.location.reload()
+        // console.log('success')
+        setState({
+          ...state,
+          disabledCloseButton: false
+        })
+        notification.success({
+          message: 'Подпись завершена! закройте окно и перезагрузите страницу.'
+        })
+      }
+    )
 
   }
 
   const multipleRemove = () => {
     setState({
       ...state,
-      disabled: true
+      disabled: true,
+      disabledCloseButton: true
     })
     api.documents.removeDocumentsByIds({ ids: state.idsForRemove }).then(() => window.location.reload())
   }
@@ -165,7 +198,8 @@ const DocumentsPage = props => {
   const multipleSend = () => {
     setState({
       ...state,
-      disabled: true
+      disabled: true,
+      disabledCloseButton: true
     })
     let chain = Promise.resolve()
     state.idsForSend.forEach(id => {
@@ -190,24 +224,24 @@ const DocumentsPage = props => {
             style={{ marginLeft: '2rem' }}
             onClick={showVerifyModal}
           >
-            <Icon type={state.buttonsFetching[0] ? 'loading' : 'edit'} />
-              Подписать все
+            <Icon type={state.buttonsFetching[0] ? 'loading' : 'edit'}/>
+            Подписать все
           </Button>
           <Button
             type='primary'
             style={{ marginLeft: '2rem' }}
             onClick={showRemoveModal}
           >
-            <Icon type={state.buttonsFetching[1] ? 'loading' : 'delete'} />
-              Удалить все
+            <Icon type={state.buttonsFetching[1] ? 'loading' : 'delete'}/>
+            Удалить все
           </Button>
           <Button
             type='primary'
             style={{ marginLeft: '2rem' }}
             onClick={showSendModal}
           >
-            <Icon type={state.buttonsFetching[2] ? 'loading' : 'upload'} />
-              Отправить все
+            <Icon type={state.buttonsFetching[2] ? 'loading' : 'upload'}/>
+            Отправить все
           </Button>
         </div>
         }
@@ -229,35 +263,35 @@ const DocumentsPage = props => {
       {state.isVisible &&
       <Modal visible closable={false} footer={null}>
         {state.type === 'verify' &&
-          <p>Файлов к подписанию: {state.not_applied_attachments_count}</p>
+        <p>Файлов к подписанию: {state.not_applied_attachments_count}</p>
         }
         {state.type === 'remove' &&
-          <p>Файлов к удалению: {state.not_applied_attachments_count}</p>
+        <p>Файлов к удалению: {state.not_applied_attachments_count}</p>
         }
         {state.type === 'send' &&
         <p>Сообщений к отправке: {state.not_applied_attachments_count}</p>
         }
         {state.type === 'verify' &&
-          <Button
-            type='primary'
-            style={{ marginTop: '2rem' }}
-            disabled={state.disabled}
-            onClick={multipleVerifyPreparation}
-          >
-            <Icon type={state.disabled ? 'loading' : 'edit'} />
-            {state.disabled ? 'Подождите, идет процесс подписания' : 'Подписать файлы'}
-          </Button>
+        <Button
+          type='primary'
+          style={{ marginTop: '2rem' }}
+          disabled={state.disabled}
+          onClick={multipleVerifyPreparation}
+        >
+          <Icon type={state.disabled ? 'loading' : 'edit'}/>
+          {state.disabled ? 'Подождите, идет процесс подписания' : 'Подписать файлы'}
+        </Button>
         }
         {state.type === 'remove' &&
-          <Button
-            type='primary'
-            style={{ marginTop: '2rem' }}
-            disabled={state.disabled}
-            onClick={multipleRemove}
-          >
-            <Icon type={state.disabled ? 'loading' : 'edit'} />
-            {state.disabled ? 'Подождите, идет процесс удаления' : 'Удалить файлы'}
-          </Button>
+        <Button
+          type='primary'
+          style={{ marginTop: '2rem' }}
+          disabled={state.disabled}
+          onClick={multipleRemove}
+        >
+          <Icon type={state.disabled ? 'loading' : 'edit'}/>
+          {state.disabled ? 'Подождите, идет процесс удаления' : 'Удалить файлы'}
+        </Button>
         }
         {state.type === 'send' &&
         <Button
@@ -266,12 +300,13 @@ const DocumentsPage = props => {
           disabled={state.disabled}
           onClick={multipleSend}
         >
-          <Icon type={state.disabled ? 'loading' : 'edit'} />
+          <Icon type={state.disabled ? 'loading' : 'edit'}/>
           {state.disabled ? 'Подождите, идет процесс отправки' : 'Отправить сообщения'}
         </Button>
         }
 
-        <Button disabled={state.disabled} style={{ marginLeft: '2rem' }} onClick={() => setState({ ...defaultState })}>Закрыть</Button>
+        <Button disabled={state.disabledCloseButton} style={{ marginLeft: '2rem' }}
+                onClick={() => setState({ ...defaultState })}>Закрыть</Button>
       </Modal>
       }
     </Fragment>
