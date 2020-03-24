@@ -221,7 +221,7 @@ const DocumentsPage = props => {
         <div style={{ margin: '2rem' }}>
           <Button
             type='primary'
-            style={{ marginLeft: '2rem' }}
+            style={{ marginLeft: '1.4rem' }}
             onClick={showVerifyModal}
           >
             <Icon type={state.buttonsFetching[0] ? 'loading' : 'edit'}/>
@@ -229,7 +229,7 @@ const DocumentsPage = props => {
           </Button>
           <Button
             type='primary'
-            style={{ marginLeft: '2rem' }}
+            style={{ marginLeft: '1rem' }}
             onClick={showRemoveModal}
           >
             <Icon type={state.buttonsFetching[1] ? 'loading' : 'delete'}/>
@@ -237,7 +237,7 @@ const DocumentsPage = props => {
           </Button>
           <Button
             type='primary'
-            style={{ marginLeft: '2rem' }}
+            style={{ marginLeft: '1rem' }}
             onClick={showSendModal}
           >
             <Icon type={state.buttonsFetching[2] ? 'loading' : 'upload'}/>

@@ -399,11 +399,8 @@ const AntdTable = props => {
       ...tableState,
       loading: true
     })
-
-      proccesMessageForVerifyFiles(tableData.data.filter(i => tableState.selectedRowKeys.includes(i.id)))
-        .then(() => { setTableState({ ...defaultTableState }) })
-
-
+    proccesMessageForVerifyFiles(tableData.data.filter(i => tableState.selectedRowKeys.includes(i.id)))
+      .then(() => { setTableState({ ...defaultTableState }) })
   }
 
   const reloadPlugin = () => {
@@ -479,38 +476,20 @@ const AntdTable = props => {
               <div>
                 <div className='table__header table-header'>
                   <div className='table-header__actions'>
-                    <Tooltip title='Перенаправление документа(ов)' placement='topRight' arrowPointAtCenter>
-                      <Icon type='cloud-upload' onClick={() => openModal()} />
-                    </Tooltip>
-                    <Tooltip title='Удаление документа(ов)' placement='topRight' arrowPointAtCenter>
-                      <Popconfirm
-                        title='Вы уверены?'
-                        onConfirm={() => handleRemove(type)}
-                        okText='Удалить'
-                        cancelText='Отмена'
-                      >
-                        <Icon type='delete' style={{ color: '#FF7D1D' }} />
-                      </Popconfirm>
-                    </Tooltip>
-                  </div>
-                  <div>
-                    {!!tableState.selectedRowKeys.length && status !== 3 &&
-                      <Button type={'primary'} onClick={reloadPlugin}>
-                        <Icon type={tableState.loading ? 'loading' : 'edit'} />
-                        Групповое подписание
-                      </Button>
-                    }
+                    <Button style={{ marginRight: '1rem' }} disabled={!(!!tableState.selectedRowKeys.length && status !== 3)} icon='cloud-upload' type='primary' onClick={() => openModal()}>Отправить выделенное</Button>
+                    <Button style={{ marginRight: '1rem' }} disabled={!(!!tableState.selectedRowKeys.length && status !== 3)} icon='delete' type='primary' onClick={() => handleRemove(type)}>Переместить в архив</Button>
+                    <Button disabled={!(!!tableState.selectedRowKeys.length && status !== 3)} type='primary' icon={tableState.loading ? 'loading' : 'edit'} onClick={reloadPlugin}>Групповое подписание</Button>
                   </div>
                   <div className='table-header__search'>
                     <AutoComplete onSearch={_.debounce(handleSearch, 500)} placeholder={`Введите тему, ${(status === 1 || status === 3) ? '  получателя' : 'отправителя'}...`} />
+                    <Pagination
+                      simple
+                      current={parameterState.page}
+                      hideOnSinglePage
+                      total={tableData && !isNaN(Math.ceil(tableData.total / +tableData.per_page) * 10) ? Math.ceil(tableData.total / +tableData.per_page) * 10 : 0}
+                      onChange={handleChangePage}
+                    />
                   </div>
-                  <Pagination
-                    simple
-                    current={parameterState.page}
-                    hideOnSinglePage
-                    total={tableData && !isNaN(Math.ceil(tableData.total / +tableData.per_page) * 10) ? Math.ceil(tableData.total / +tableData.per_page) * 10 : 0}
-                    onChange={handleChangePage}
-                  />
                 </div>
               </div>
             )}
