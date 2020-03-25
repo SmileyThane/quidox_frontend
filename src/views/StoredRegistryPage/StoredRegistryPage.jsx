@@ -45,10 +45,11 @@ const StoredRegistryPage = () => {
   }
 
   const downloadRegistry = (id) => {
+    let auth = window.localStorage.getItem('authToken') != null ? window.localStorage.getItem('authToken') : window.sessionStorage.getItem('authToken')
     axios.get(`${process.env.REACT_APP_BASE_URL}/registry/stored/${id}`, {
       'responseType': 'arraybuffer',
       headers: {
-        'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken'),
+        'Authorization': 'Bearer ' + auth,
         'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
       }
     })

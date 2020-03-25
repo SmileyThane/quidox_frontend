@@ -404,11 +404,11 @@ const AntdTable = props => {
   }
 
   const reloadPlugin = () => {
-    window.pluginClosed()
+    // window.pluginClosed()
      window.pluginLoaded()
     setTimeout(() => {
       multipleVerify()
-    }, 2000)
+    }, 3000)
   }
   const proccesMessageForVerifyFiles = async (messages) => {
      for (const [index, message] of messages.entries()) {

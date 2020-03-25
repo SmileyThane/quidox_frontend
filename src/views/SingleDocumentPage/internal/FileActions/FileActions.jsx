@@ -150,8 +150,8 @@ const {
             try {
               const isIE = /*@cc_on!@*/false || !!document.documentMode
 
-              window.pluginClosed()
-              console.log('pluginClosed')
+              // window.pluginClosed()
+              // console.log('pluginClosed')
               window.pluginLoaded()
               console.log('pluginLoaded')
                 setTimeout(() => {
@@ -174,9 +174,9 @@ const {
                             if (response.success) {
                               message.success('Файл успешно подписан!')
                               getDocument()
-                              // window.pluginClosed()
+                              window.pluginClosed()
                             } else {
-                              message.error(response.error)
+                              message.error('Ошибка подписания. Повторите операцию')
                               // throw new Error(response.error)
                             }
                           })
@@ -190,7 +190,7 @@ const {
                     .catch(error => {
                       message.error(error.message)
                     })
-                }, 2000)
+                }, 3000)
 
 
             } catch (error) {

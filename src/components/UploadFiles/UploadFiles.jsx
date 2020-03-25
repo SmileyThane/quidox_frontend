@@ -3,7 +3,7 @@ import React, { Fragment, useReducer, useEffect, useRef } from 'react'
 import { api } from '../../services'
 import { EscDataSlider } from '../'
 import { checkBrowser } from '../../utils'
-import { Button, Icon, Modal, Progress, List, Typography, Select, notification, Tag } from 'antd'
+import { Button, Icon, Modal, Progress, List, Typography, Select, notification, Tag, message } from 'antd'
 import { Upload, File } from './styled'
 
 //use this effect for modification
@@ -198,8 +198,8 @@ export default function (props) {
       .then(({ data }) => {
         if (data.success) {
           try {
-            window.pluginClosed()
-            console.log('pluginClosed')
+            // window.pluginClosed()
+            // console.log('pluginClosed')
             window.pluginLoaded()
             console.log('pluginLoaded')
             setTimeout(() => {
@@ -221,41 +221,38 @@ export default function (props) {
                         notification.success({
                           message: 'Файл успешно подписан'
                         })
-                        // window.pluginClosed()
+                        window.pluginClosed()
                       } else {
-                        throw new Error(response.error)
+                        message.error('Ошибка подписания. Повторите операцию')
+                        // throw new Error(response.error)
+                        console.log(response.error)
                       }
                     })
                     .catch(error => {
-                      notification.error({
-                        message: error.message
-                      })
+                      message.error('Ошибка подписания. Повторите операцию')
+                      console.log(error)
                     })
                 } else {
-                  notification.error({
-                    message: 'падение'
-                  })
+                  message.error('Ошибка подписания. Повторите операцию')
                 }
               })
               .catch(error => {
-                notification.error({
-                  message: error.message
-                })
+                message.error('Ошибка подписания. Повторите операцию')
+                console.log(error)
               })
-          }, 2000)
+          }, 3000)
           } catch (error) {
-            notification.error({
-              message: error.message
-            })
+            message.error('Ошибка подписания. Повторите операцию')
+            console.log(error)
           }
         } else {
-          throw new Error(data.error)
+          message.error('Ошибка подписания. Повторите операцию')
+          console.log(data.error)
         }
       })
       .catch(error => {
-        notification.error({
-          message: error.message
-        })
+        message.error('Ошибка подписания. Повторите операцию')
+        console.log(error.message)
       })
   }
 

@@ -69,7 +69,7 @@ const SingleDocumentPage = props => {
           window.pluginLoaded()
         } catch (error) {
         }
-      }, 1000)
+      }, 3000)
     }
   }, [documentState.isErrorWitchEcp])
 
