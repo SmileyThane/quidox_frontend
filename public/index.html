@@ -109,14 +109,15 @@
         }
         try {
           console.log('sign process started.');
-          if (conn === null) {
+          // conn = undefined;
+          if (conn === null || conn === undefined) {
             console.log('cached connection was broken!');
-            let itr = 0;
-            while (conn === null || itr === 3) {
-              pluginLoaded();
-              itr++;
-              console.log('re-connection iteration ' + itr);
-            }
+            // let itr = 0;
+            // while (conn === null || conn === undefined || itr < 3) {
+            //   pluginLoaded();
+            //   itr++;
+            //   console.log('re-connection iteration ' + itr);
+            // }
           }
           console.log('connection was checked.');
           // setTimeout(() => {

@@ -221,7 +221,7 @@ export default function (props) {
                         notification.success({
                           message: 'Файл успешно подписан'
                         })
-                        window.pluginClosed()
+                        // window.pluginClosed()
                       } else {
                         message.error('Ошибка подписания. Повторите операцию')
                         // throw new Error(response.error)
