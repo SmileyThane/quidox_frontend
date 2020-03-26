@@ -400,7 +400,12 @@ const AntdTable = props => {
       loading: true
     })
     proccesMessageForVerifyFiles(tableData.data.filter(i => tableState.selectedRowKeys.includes(i.id)))
-      .then(() => { setTableState({ ...defaultTableState }) })
+      .then(() => {
+        setTableState({ ...defaultTableState })
+        notification.success({
+          message: 'Подпись завершена! закройте окно и перезагрузите страницу.'
+        })
+      })
   }
 
   const reloadPlugin = () => {
