@@ -50,18 +50,21 @@
         avcmx = document.getElementById('oavcmx')
         try {
           var params = avcmx.CreateParameters(0)
-          conn = avcmx.CreateConnectionAsync(params, 0, function (e, cnn) {
-            if (e) {
-              alert(avcmx.GetErrorInformation(e, 0))
-              return
-            }
+          conn = avcmx.CreateConnection(params, 0);
 
-            conn = cnn
-
-            console.log('connections is: ' + Math.random())
-          })
+          // conn = avcmx.CreateConnectionAsync(params, 0, function (e, cnn) {
+          //   if (e) {
+          //     alert(avcmx.GetErrorInformation(e, 0))
+          //     return
+          //   }
+          //
+          //   conn = cnn
+          //
+          //   console.log('connections is: ' + Math.random())
+          // })
         } catch (e) {
-          console.log('connections is:______ ')
+          console.log(e)
+          console.log(conn)
         }
       }
 
@@ -109,18 +112,6 @@
         }
         try {
           console.log('sign process started.');
-          // conn = undefined;
-          if (conn === null || conn === undefined) {
-            console.log('cached connection was broken!');
-            // let itr = 0;
-            // while (conn === null || conn === undefined || itr < 3) {
-            //   pluginLoaded();
-            //   itr++;
-            //   console.log('re-connection iteration ' + itr);
-            // }
-          }
-          console.log('connection was checked.');
-          // setTimeout(() => {
             var msg = conn.CreateMessage(avcmx.CreateBlob(0), AVCMF_ADD_SIGN_CERT | AVCMF_OPEN_FOR_SIGN | AVCMF_DETACHED | AVCMF_OPEN_FOR_VERIFYSIGN)
             var hashBlob = avcmx.CreateBlob(0)
             hashBlob.SetAsHex(hex, 0)
@@ -130,8 +121,6 @@
               verifiedData = verify(hex, signed.Blob.GetAsBase64(0))
             }
             return { hex: hex, signedData: signedData, verifiedData: verifiedData }
-          // }, 2000);
-
         } catch (e) {
           // alert('Ошибка инициализации библиотеки! Перезагрузите страницу и попробуйте еще раз.')
         }

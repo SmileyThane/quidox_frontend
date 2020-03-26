@@ -16,7 +16,6 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, redirect = false }) =
 
   const handleAgreeCheck = () => {
     try {
-      // window.pluginClosed()
       window.pluginLoaded()
       setTimeout(() => {
         const companyData = window.signProcess('123', '123')

@@ -18,11 +18,11 @@ const PrivateRoute = ({ component: Component, user: { data }, getUser, getTariff
       getUser()
       getTariffications()
       if (isIE) {
-        setTimeout(() => {
-          if (window.conn === null || window.conn === undefined) {
-            window.pluginLoaded()
-          }
-        }, 1500)
+        // setTimeout(() => {
+        //   if (window.conn === null || window.conn === undefined) {
+        //     window.pluginLoaded()
+        //   }
+        // }, 1500)
       }
     }
   }, [getUser, isIE])

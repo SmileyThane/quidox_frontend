@@ -404,7 +404,6 @@ const AntdTable = props => {
   }
 
   const reloadPlugin = () => {
-    // window.pluginClosed()
      window.pluginLoaded()
     setTimeout(() => {
       multipleVerify()

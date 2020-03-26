@@ -154,7 +154,6 @@ const DocumentsPage = props => {
   }
 
   const multipleVerifyPreparation = () => {
-    // window.pluginClosed()
     window.pluginLoaded()
     console.log('multiple verify preparation was started')
     setTimeout(() => {

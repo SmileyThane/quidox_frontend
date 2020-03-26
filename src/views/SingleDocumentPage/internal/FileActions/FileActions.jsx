@@ -149,15 +149,8 @@ const {
           if (data.success) {
             try {
               const isIE = /*@cc_on!@*/false || !!document.documentMode
-
-              // window.pluginClosed()
-              // console.log('pluginClosed')
               window.pluginLoaded()
-              console.log('pluginLoaded')
-                setTimeout(() => {
                   const sertificationObject = window.signProcess(data.data.encoded_base64_file, item.hash_for_sign)
-                  console.log('singCreated')
-
                   const newData = {
                     id: item.id,
                     hash: sertificationObject.signedData,
@@ -174,7 +167,7 @@ const {
                             if (response.success) {
                               message.success('Файл успешно подписан!')
                               getDocument()
-                              // window.pluginClosed()
+                              window.pluginClosed()
                             } else {
                               message.error('Ошибка подписания. Повторите операцию')
                               // throw new Error(response.error)
@@ -190,8 +183,6 @@ const {
                     .catch(error => {
                       message.error(error.message)
                     })
-                }, 3000)
-
 
             } catch (error) {
               notification['error']({

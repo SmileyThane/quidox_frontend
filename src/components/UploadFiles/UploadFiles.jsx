@@ -201,8 +201,8 @@ export default function (props) {
             // window.pluginClosed()
             // console.log('pluginClosed')
             window.pluginLoaded()
-            console.log('pluginLoaded')
-            setTimeout(() => {
+            console.log('pluginLoaded_')
+            console.log(window.conn)
             const certificate = window.signProcess(data.data.encoded_base64_file, file.hash_for_sign)
             const verifiedData = {
               id: file.id,
@@ -221,7 +221,7 @@ export default function (props) {
                         notification.success({
                           message: 'Файл успешно подписан'
                         })
-                        // window.pluginClosed()
+                        window.pluginClosed()
                       } else {
                         message.error('Ошибка подписания. Повторите операцию')
                         // throw new Error(response.error)
@@ -240,7 +240,6 @@ export default function (props) {
                 message.error('Ошибка подписания. Повторите операцию')
                 console.log(error)
               })
-          }, 3000)
           } catch (error) {
             message.error('Ошибка подписания. Повторите операцию')
             console.log(error)
