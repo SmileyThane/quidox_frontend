@@ -14,9 +14,9 @@ const EsignLoginPage = props => {
   useEffect(() => {
     document.getElementById('eSignLogin').disabled = true;
     if (isIE) {
-      setTimeout(() => {
+      // setTimeout(() => {
         window.pluginLoaded()
-      }, 1500)
+      // }, 1500)
     }
     setTimeout(() => {
       document.getElementById('eSignLogin').disabled = false;

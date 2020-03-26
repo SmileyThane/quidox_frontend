@@ -405,9 +405,7 @@ const AntdTable = props => {
 
   const reloadPlugin = () => {
      window.pluginLoaded()
-    setTimeout(() => {
-      multipleVerify()
-    }, 3000)
+    multipleVerify()
   }
   const proccesMessageForVerifyFiles = async (messages) => {
      for (const [index, message] of messages.entries()) {
