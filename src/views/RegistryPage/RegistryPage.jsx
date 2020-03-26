@@ -33,14 +33,14 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
   const inputNode = useRef(null)
   const filesNode = useRef(null)
 
-  // const isIE = /*@cc_on!@*/false || !!document.documentMode
-  // useEffect(() => {
-  //   if (isIE) {
-  //     setTimeout(() => {
-  //       // window.pluginLoaded()
-  //     }, 1500)
-  //   }
-  // }, [isIE])
+  const isIE = /*@cc_on!@*/false || !!document.documentMode
+  useEffect(() => {
+    if (isIE) {
+      // setTimeout(() => {
+        window.pluginLoaded()
+      // }, 1500)
+    }
+  }, [isIE])
 
   useEffect(() => {
     if (state.files.length) {
