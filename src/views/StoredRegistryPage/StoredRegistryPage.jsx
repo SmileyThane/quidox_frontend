@@ -56,7 +56,7 @@ const StoredRegistryPage = () => {
       .then(({ data }) => {
         if (data) {
           console.log(data)
-          fileDownload(data, `aapp.xlsx`)
+          fileDownload(data, `registry.xls`)
           notification['success']({
             message: ' Файл подготовлен к загрузке!'
           })
