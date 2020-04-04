@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Fragment, useRef } from 'react'
 import axios from 'axios'
+import { useLocation } from 'react-router-dom'
 import fileDownload from 'js-file-download'
 import { api } from '../../services'
 
@@ -71,14 +72,20 @@ const AntdTable = props => {
     ...rest
   } = props
 
+  const location = useLocation()
+
   const input = useRef(null)
 
   const [tableState, setTableState] = useState({ ...defaultTableState })
 
   const [parameterState, setParameterState] = useState({ ...defaultParameterState })
 
-  // is_minified = true
-  // per_page = total
+  useEffect(() => {
+      setTableState({
+        ...tableState,
+        selectedRowKeys: []
+      })
+  }, [location.state.id])
 
   useEffect(() => {
     if (activeCompany && status && type) {
@@ -428,6 +435,7 @@ const AntdTable = props => {
     parameterState.sort_by,
     parameterState.sort_value
   ])
+
   return (
     <Fragment>
       {tableState.showModal && <Modal
@@ -478,8 +486,8 @@ const AntdTable = props => {
               <div>
                 <div className='table__header table-header'>
                   <div className='table-header__actions'>
-                    <Button style={{ marginRight: '1rem' }} disabled={!(!!tableState.selectedRowKeys.length && status !== 3)} icon='cloud-upload' type='primary' onClick={() => openModal()}>Отправить выделенное</Button>
-                    <Button style={{ marginRight: '1rem' }} disabled={!(!!tableState.selectedRowKeys.length && status !== 3)} icon='delete' type='primary' onClick={() => handleRemove(type)}>Переместить в архив</Button>
+                    <Button style={{ marginRight: '1rem' }} disabled={!(!!tableState.selectedRowKeys.length)} icon='cloud-upload' type='primary' onClick={() => openModal()}>Отправить выделенное</Button>
+                    <Button style={{ marginRight: '1rem' }} disabled={!(!!tableState.selectedRowKeys.length)} icon='delete' type='primary' onClick={() => handleRemove(type)}>Переместить в архив</Button>
                     <Button disabled={!(!!tableState.selectedRowKeys.length && status !== 3)} type='primary' icon={tableState.loading ? 'loading' : 'edit'} onClick={reloadPlugin}>Групповое подписание</Button>
                   </div>
                   <div className='table-header__search'>
