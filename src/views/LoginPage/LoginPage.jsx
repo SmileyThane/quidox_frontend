@@ -98,7 +98,7 @@ class LoginPage extends React.Component {
                 onClick={(event) => {
                   event.preventDefault()
                   window.open(newPageUrl, '', 'width=800,height=600')
-                }}>Войти с помощью eSim</Link>
+                }}>Войти с помощью simЭЦП</Link>
           <div style={{ marginTop: '1.5rem' }}>
             <Title level={4}>Начните обмен документами сейчас!<br/>Нет аккаунта?</Title>
             <Link to={'/register'}>Зарегистрируйтесь! &nbsp;</Link>

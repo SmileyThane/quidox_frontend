@@ -18,6 +18,8 @@ import StoredRegistryPage from './StoredRegistryPage'
 import SingleSharedDocumentPage from './SingleSharedDocumentPage'
 import EsignLoginPage from './EsignLoginPage'
 import EsignFirstStepPage from './EsignFirstStepPage'
+import ExternalRedirectPage from './ExternalRedirectPage'
+
 export {
   LoginPage,
   RegisterPage,
@@ -38,5 +40,6 @@ export {
   StoredRegistryPage,
   SingleSharedDocumentPage,
   EsignLoginPage,
+  ExternalRedirectPage,
   EsignFirstStepPage
 }

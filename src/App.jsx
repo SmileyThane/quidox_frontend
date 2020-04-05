@@ -23,6 +23,7 @@ import {
   StoredRegistryPage,
   EsignLoginPage,
   EsignFirstStepPage,
+  ExternalRedirectPage,
   CompleteResetForm
 } from './views'
 
@@ -60,6 +61,7 @@ function App () {
           <WhitePageRoute path='/e-sign-first-step' component={EsignFirstStepPage} />
           <WhitePageRoute path='/e-sign-login' component={EsignLoginPage} />
           <PublicRoute path='*' component={LoginPage} />
+          <PublicRoute path='/external/auth' component={ExternalRedirectPage} />
         </Switch>
       </Router>
     </Fragment>
