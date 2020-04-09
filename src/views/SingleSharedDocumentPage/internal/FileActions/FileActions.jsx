@@ -139,6 +139,28 @@ const FileActions = props => {
     }
   }
 
+  const handleSimVerifyFile = (item, documentId, status) => {
+    if (status === 3 || canBeSigned) {
+            try {
+              api.documents.attachmentSimSign(item.id)
+                .then(({ data }) => {
+                  if (data.success) {
+                    window.open(data, '')
+                  } else {
+                    throw new Error(data.error)
+                  }
+                })
+                .catch(error => {
+                  message.error(error.message)
+                })
+            } catch (error) {
+              notification['error']({
+                message: error.message
+              })
+            }
+    }
+  }
+
   const downloadFile = file => {
     axios.get(file.original_path, {
       'responseType': 'arraybuffer',
@@ -191,6 +213,23 @@ const FileActions = props => {
             onClick={() => handleDeclineFile(file, statusId)}
           />
         </ActionTooltip>
+      }
+    </Fragment>,
+
+    <Fragment>
+      {statusId !== 5 && ![3, 4].includes(messageId) &&
+      <ActionTooltip
+        arrowPointAtCenter
+        placement='topRight'
+        title={canBeSigned ? 'Подписать документ (simЭЦП)' : receivingTooltipText(statusId, verifyText)}
+      >
+        <ActionIcon
+          key={3}
+          type='edit'
+          style={canBeSigned ? normal : receivingIconColor(statusId, verifyStyle)}
+          onClick={() => handleSimVerifyFile(file, documentId, statusId)}
+        />
+      </ActionTooltip>
       }
     </Fragment>,
 

@@ -40,6 +40,13 @@ const attachmentSignCanConfirm = data => {
   })
 }
 
+const attachmentSimSign = id => {
+  return http({
+    url: '/attachment/sim-sign/create' + id,
+    method: 'GET',
+  })
+}
+
 const getDocumentsStatuses = () => {
   return http({
     url: '/documents_statuses',
@@ -53,5 +60,6 @@ export {
   getDocumentsByActiveCompanyId,
   removeDocumentsByIds,
   attachmentSignCanConfirm,
+  attachmentSimSign,
   getDocumentsStatuses
 }
