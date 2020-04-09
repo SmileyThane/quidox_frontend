@@ -200,7 +200,7 @@ const {
         api.documents.attachmentSimSign(item.id)
           .then(({ data }) => {
             if (data.success) {
-              window.open(data, '')
+              window.open(data.data, '')
             } else {
               throw new Error(data.error)
             }
