@@ -28,6 +28,7 @@ import './Table.scss'
 import { findUsersByParams } from '../../services/api/user'
 import history from '../../history'
 import moment from 'moment'
+import forbiddenEmails from '../../constants/forbiddenEmails'
 
 const defaultTableState = {
   selectedRowKeys: [],
@@ -337,6 +338,14 @@ const AntdTable = props => {
   }
 
   const sendToUser = () => {
+
+    if (tableState.value.filter(i => forbiddenEmails.includes(i.key)).length) {
+      notification.error({
+        message: 'Отправка/перенаправление по реквизиту УНП для данного адресата запрещено. Укажите точный адрес (E-mail) получателя.'
+      })
+      return false
+    }
+
     const docsDataToUser = {
       messages: tableData.data
         .filter(i => tableState.selectedRowKeys.includes(i.id)).map(i => i.document_id),
@@ -344,6 +353,7 @@ const AntdTable = props => {
     }
     let chain = Promise.resolve()
     const uniqueMessagesIds = [...new Set(docsDataToUser.messages)]
+
     uniqueMessagesIds.forEach(id => {
       chain = chain.then(() => asyncSendMessage(id, docsDataToUser.user_company_id))
     })
@@ -419,6 +429,7 @@ const AntdTable = props => {
      window.pluginLoaded()
     multipleVerify()
   }
+
   const proccesMessageForVerifyFiles = async (messages) => {
      for (const [index, message] of messages.entries()) {
       await proccesFilesForVerifyFile(message.can_be_signed, message.document.attachments)

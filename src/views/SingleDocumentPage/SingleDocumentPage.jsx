@@ -3,6 +3,7 @@ import axios from 'axios'
 import moment from 'moment'
 import _ from 'lodash'
 
+import forbiddenEmails from '../../constants/forbiddenEmails'
 import history from '../../history'
 import PDFJSBACKEND from '../../backends/pdfjs'
 
@@ -177,6 +178,14 @@ const SingleDocumentPage = props => {
   }
 
   const sendToUser = () => {
+
+    if (documentState.value.filter(i => forbiddenEmails.includes(i.key)).length) {
+      notification.error({
+        message: 'Отправка/перенаправление по реквизиту УНП для данного адресата запрещено. Укажите точный адрес (E-mail) получателя.'
+      })
+      return false
+    }
+    console.log(documentState.value.filter(i => forbiddenEmails.includes(i)))
     const docDataToUser = {
       document_ids: [document.id],
       user_company_id: JSON.stringify(documentState.value.map(i => i.key))
@@ -260,7 +269,7 @@ const SingleDocumentPage = props => {
         }
       })
   }
-
+  console.log(documentState.value)
   return (
     <Fragment>
       <Spin spinning={isFetching}>

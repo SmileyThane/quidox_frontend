@@ -15,6 +15,7 @@ import {
 
 import { UploadFiles } from '../../components'
 
+import forbiddenEmails from '../../constants/forbiddenEmails'
 import { checkBrowser } from '../../utils'
 import history from '../../history'
 import './NewDocumentPage.scss'
@@ -76,6 +77,14 @@ const NewDocumentPage = props => {
       coNumbersArray.forEach(element => coEmails.push(element + '@qdx.by'))
     }
     UCIds = documentState.value.length ? documentState.value.map(i => i.key).concat(coEmails) : [].concat(coEmails)
+
+    if (UCIds.filter(UCId => forbiddenEmails.includes(UCId)).length) {
+      notification.error({
+        message: 'Отправка/перенаправление по реквизиту УНП для данного адресата запрещено. Укажите точный адрес (E-mail) получателя.'
+      })
+      return false
+    }
+
     updateDocumentById(documentState.message.id, {
       name: documentState.name ? documentState.name : 'Без темы',
       description: documentState.description,
