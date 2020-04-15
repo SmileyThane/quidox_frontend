@@ -280,11 +280,11 @@ const {
         <ActionTooltip
           arrowPointAtCenter
           placement='topRight'
-          title={canBeSigned ? 'Подписать документ (simЭЦП)' : receivingTooltipText(statusId, verifyText)}
+          title={'Подписать документ (simЭЦП)'}
         >
           <ActionIcon
             key={3}
-            type='edit'
+            type='mobile'
             style={canBeSigned ? normal : receivingIconColor(statusId, verifyStyle)}
             onClick={() => handleSimVerifyFile(file, documentId, statusId)}
           />

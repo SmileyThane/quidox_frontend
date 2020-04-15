@@ -58,6 +58,33 @@ const SingleDocumentPage = props => {
   const [documentState, setDocumentState] = useState({ ...defaultDocumentState })
 
   useEffect(() => {
+    let search = window.location.search
+    let params = new URLSearchParams(search)
+    let hash = params.get('hash')
+    let attachmentId = params.get('attachment_id')
+    if (hash && attachmentId) {
+      setTimeout(() => {
+        try {
+          let id = match.params.id
+          axios.get(`${process.env.REACT_APP_BASE_URL}/attachment/sim-sign/check/${attachmentId}?hash=${hash}`, {
+            headers: {
+              'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken'),
+            }
+          })
+            .then(response => {
+              message.success('Совершено успешное подписание!')
+            })
+            .catch(error => {
+              message.error('Система обрабатывает подпись. Пожалуйста подождите!')
+              // message.error(error.message)
+            })
+        } catch (error) {
+        }
+      }, 2000)
+    }
+  }, [])
+
+  useEffect(() => {
     if (match) {
       getDocumentById(match.params.id)
     }
@@ -342,67 +369,67 @@ const SingleDocumentPage = props => {
               <div className='document__attached-doc attached-doc'>
                 {singleDocument.status_id !== 1
                   ?
-                <List
-                  itemLayout='horizontal'
-                  locale={{ emptyText: 'Нет приложенных документов' }}
-                  dataSource={document && document.attachments}
-                  style={{ maxHeight: '20rem' }}
-                  renderItem={(item, index) => (
-                    <List.Item key={item.id}
-                     extra={
-                       <FileActions
-                         file={item}
-                         documentId={singleDocument.document.id}
-                         getDocument={() => getDocumentById(match.params.id)}
-                         // isHidden={singleDocument.status_name !== 'Отправленные'}
-                         canBeSigned={singleDocument.can_be_signed}
-                         messageId={singleDocument.status_id}
-                       />
-                     }
-                    >
-                      <div className='single-document'>
-                        <Tooltip
-                          title='Просмотреть содержимое файла'
-                          placement='top'
-                          arrowPointAtCenter
-                        >
-                          <Icon
-                            type='eye'
-                            style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }}
-                            onClick={() => showModal(item)}
-                          />
-                        </Tooltip>
+                  <List
+                    itemLayout='horizontal'
+                    locale={{ emptyText: 'Нет приложенных документов' }}
+                    dataSource={document && document.attachments}
+                    style={{ maxHeight: '20rem' }}
+                    renderItem={(item, index) => (
+                      <List.Item key={item.id}
+                                 extra={
+                                   <FileActions
+                                     file={item}
+                                     documentId={singleDocument.document.id}
+                                     getDocument={() => getDocumentById(match.params.id)}
+                                     // isHidden={singleDocument.status_name !== 'Отправленные'}
+                                     canBeSigned={singleDocument.can_be_signed}
+                                     messageId={singleDocument.status_id}
+                                   />
+                                 }
+                      >
+                        <div className='single-document'>
+                          <Tooltip
+                            title='Просмотреть содержимое файла'
+                            placement='top'
+                            arrowPointAtCenter
+                          >
+                            <Icon
+                              type='eye'
+                              style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }}
+                              onClick={() => showModal(item)}
+                            />
+                          </Tooltip>
 
-                        <p style={{ marginRight: 10 }} className='single-document__name'>{item.name}</p>
+                          <p style={{ marginRight: 10 }} className='single-document__name'>{item.name}</p>
 
-                        {getEcpCount(item.users_companies) > 0 &&
-                        <Tag
-                          color='#3278fb'
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => showUserData('ecp', item.users_companies)}
-                        >
-                          ЭЦП {getEcpCount(item.users_companies)}
-                        </Tag>
-                        }
+                          {getEcpCount(item.users_companies) > 0 &&
+                          <Tag
+                            color='#3278fb'
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => showUserData('ecp', item.users_companies)}
+                          >
+                            ЭЦП {getEcpCount(item.users_companies)}
+                          </Tag>
+                          }
 
-                        {item.status &&
-                        <Tag color={item.status.status_data.color}>{item.status.status_data.name}</Tag>
-                        }
+                          {item.status &&
+                          <Tag color={item.status.status_data.color}>{item.status.status_data.name}</Tag>
+                          }
 
-                        {item.status && item.status.comment && item.status.comment.length &&
+                          {item.status && item.status.comment && item.status.comment.length &&
                           <Tooltip
                             title='Просмотреть комментарий'
                             placement='top'
                             arrowPointAtCenter
                           >
-                            <Icon type='question-circle' onClick={() => showComment('comment', item.status.comment)} />
+                            <Icon type='question-circle' onClick={() => showComment('comment', item.status.comment)}/>
                           </Tooltip>
-                        }
-                      </div>
-                    </List.Item>
-                  )}
-                />
-                : <UploadFiles document_id={singleDocument.document_id} />
+                          }
+                        </div>
+                      </List.Item>
+                    )}
+                  />
+                  : <UploadFiles document_id={singleDocument.document_id}/>
                 }
               </div>
             </div>
@@ -461,7 +488,7 @@ const SingleDocumentPage = props => {
         }
         {documentState.modalType === 'comment' &&
         <div>
-          <Text>{documentState.comment}</Text><br />
+          <Text>{documentState.comment}</Text><br/>
           <Button style={{ marginTop: 20 }} type='primary' onClick={handleCloseModal}>Закрыть</Button>
         </div>
         }
