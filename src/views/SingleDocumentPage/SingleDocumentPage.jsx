@@ -17,6 +17,7 @@ import { api } from '../../services'
 import { copy2Clipboard } from '../../utils'
 import './SingleDocumentPage.scss'
 
+var signFetching = false
 const { Text, Paragraph } = Typography
 const { Option } = Select
 
@@ -44,13 +45,15 @@ const defaultDocumentState = {
 }
 
 const SingleDocumentPage = props => {
-  let {
+
+  const {
     documents: { isFetching, singleDocument },
     match,
     getDocumentById,
     sendDocumentToUser,
     updateDocumentById,
-    getUser
+    getUser,
+
   } = props
 
   const { document, sender, recipient, statuses } = singleDocument
@@ -63,7 +66,7 @@ const SingleDocumentPage = props => {
     let hash = params.get('hash')
     let attachmentId = params.get('attachment_id')
     if (hash && attachmentId) {
-      isFetching = true;
+      signFetching = true;
       setTimeout(() => {
         try {
           let id = match.params.id
@@ -74,12 +77,15 @@ const SingleDocumentPage = props => {
           })
             .then(response => {
               message.success('Совершено успешное подписание!')
+              signFetching = false;
               history.push({ pathname: `/documents/${match.params.id}` })
             })
             .catch(error => {
               message.error('Система обрабатывает подпись. Пожалуйста подождите!')
               // message.error(error.message)
+              setTimeout(() => {
               window.location.reload();
+              }, 2000)
             })
         } catch (error) {
         }
@@ -300,9 +306,11 @@ const SingleDocumentPage = props => {
       })
   }
   console.log(documentState.value)
+  // alert('res' + (isFetching || signFetching))
+
   return (
     <Fragment>
-      <Spin spinning={isFetching}>
+      <Spin spinning={(isFetching ||signFetching)}>
         <div className='content'>
           <div className='document'>
             <div className='document__header'>
