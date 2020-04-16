@@ -1,22 +1,13 @@
-import React, { useRef, useState, Fragment, useEffect } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import AddToCalendar from 'react-add-to-calendar'
 import _ from 'lodash'
 import moment from 'moment'
 
-import {
-  Icon,
-  Select,
-  Spin,
-  notification,
-  Typography,
-  Button,
-  Input,
-} from 'antd'
+import { Button, Icon, Input, notification, Select, Spin, Typography, } from 'antd'
 
 import { UploadFiles } from '../../components'
 
 import forbiddenEmails from '../../constants/forbiddenEmails'
-import { checkBrowser } from '../../utils'
 import history from '../../history'
 import './NewDocumentPage.scss'
 import { findUsersByParams } from '../../services/api/user'
@@ -69,10 +60,15 @@ const NewDocumentPage = props => {
     })
   }
 
+  const updateFieldProcess = (field, v) => {
+    updateField(field, v);
+    updateDocumentById(documentState.message.id, { [field]: v });
+  }
+
   const save2DraftDMessage = is2Draft => {
     let coEmails = []
     let UCIds = []
-    if (documentState.coNumbers.length > 0)  {
+    if (documentState.coNumbers.length > 0) {
       let coNumbersArray = documentState.coNumbers.split(',')
       coNumbersArray.forEach(element => coEmails.push(element + '@qdx.by'))
     }
@@ -189,7 +185,7 @@ const NewDocumentPage = props => {
               tokenSeparators={[',']}
               value={documentState.value}
               filterOption={false}
-              notFoundContent={documentState.fetching ? <Spin size='small' /> : null}
+              notFoundContent={documentState.fetching ? <Spin size='small'/> : null}
               onSearch={fetchUser}
               onChange={handleSelect}
               // disabled={documentState.fetching}
@@ -201,21 +197,26 @@ const NewDocumentPage = props => {
           </div>
           <div className='input-group'>
             <label className='label'>Получатели<br/> по УНП</label>
-            <Input kind='text' type='text' value={documentState.coNumbers} onChange={e => updateField('coNumbers', e.target.value)} />
+            <Input kind='text' type='text' value={documentState.coNumbers}
+                   onChange={e => updateField('coNumbers', e.target.value)}/>
           </div>
           <div className='input-group'>
             <label className='label'>Тема</label>
-            <Input kind='text' type='text' value={documentState.name} onChange={e => updateField('name', e.target.value)} />
+            <Input kind='text' type='text' value={documentState.name}
+                   onChange={
+                       e => updateFieldProcess('name', e.target.value)
+                   }/>
           </div>
 
           <div className='input-group'>
             <label className='label'>Комментарий</label>
-            <TextArea autosize={{ minRows: 4, maxRows: 10 }} value={documentState.description} onChange={e => updateField('description', e.target.value)} />
+            <TextArea autosize={{ minRows: 4, maxRows: 10 }} value={documentState.description}
+                      onChange={e => updateFieldProcess('description', e.target.value)}/>
           </div>
 
           <div className='buttons-group'>
             {documentState.message &&
-            <UploadFiles document_id={documentState.message.id} />}
+            <UploadFiles document_id={documentState.message.id}/>}
           </div>
 
           <div className='buttons-group'>
@@ -225,7 +226,7 @@ const NewDocumentPage = props => {
               onClick={() => save2DraftDMessage(true)}
               style={{ minWidth: 216 }}
             >
-              <Icon type='file-text' />
+              <Icon type='file-text'/>
               Сохранить в черновиках
             </Button>
 
@@ -251,7 +252,7 @@ const NewDocumentPage = props => {
                 type='primary'
                 onClick={() => save2DraftDMessage(false)}
               >
-                <Icon type='cloud-upload' />
+                <Icon type='cloud-upload'/>
                 Отправить
               </Button>
             </div>

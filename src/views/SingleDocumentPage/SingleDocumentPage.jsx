@@ -455,10 +455,18 @@ const SingleDocumentPage = props => {
                 </div>
 
                 <div className='document__actions__right'>
+                  {singleDocument.status_id == 1 &&
+                  <Button onClick={() => openModal('send')} type='primary' style={{ marginRight: '1rem' }}>
+                    <Icon type='redo'/>
+                     Отправить
+                  </Button>
+                  }
+                  {singleDocument.status_id != 1 &&
                   <Button onClick={() => openModal('send')} type='primary' style={{ marginRight: '1rem' }}>
                     <Icon type='redo'/>
                     Перенаправить
                   </Button>
+                  }
                   <Button disabled={singleDocument.status_id === 1} onClick={() => handleMessageShare()} type='primary'>
                     <Icon type='share-alt'/>
                     Поделиться
