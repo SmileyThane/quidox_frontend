@@ -1,10 +1,10 @@
-import React, { Fragment, useReducer, useEffect, useRef } from 'react'
+import React, { Fragment, useEffect, useReducer, useRef } from 'react'
 
 import { api } from '../../services'
 import { EscDataSlider } from '../'
 import { checkBrowser } from '../../utils'
-import { Button, Icon, Modal, Progress, List, Typography, Select, notification, Tag, message } from 'antd'
-import { Upload, File } from './styled'
+import { Button, Icon, List, message, Modal, notification, Progress, Select, Tag, Typography } from 'antd'
+import { File, Upload } from './styled'
 
 //use this effect for modification
 // const isIE = /*@cc_on!@*/false || !!document.documentMode
@@ -116,7 +116,7 @@ export default function (props) {
       fileReader.readAsDataURL(file)
 
       fileReader.onload = function () {
-        const base64  = fileReader.result.split(',').pop()
+        const base64 = fileReader.result.split(',').pop()
 
         const formData = api.helpers.buildForm({
           'hash_for_sign': getSignedHex(base64),
@@ -269,82 +269,108 @@ export default function (props) {
     }
   }
 
+  const handleSimVerifyFile = (item) => {
+    try {
+      api.documents.attachmentSimSign(item.id)
+        .then(({ data }) => {
+          if (data.success) {
+            window.open(data.data, '')
+          } else {
+            throw new Error(data.error)
+          }
+        })
+        .catch(error => {
+          message.error(error.message)
+        })
+    } catch (error) {
+      notification['error']({
+        message: error.message
+      })
+    }
+  }
+
   console.log(state)
   return (
     <Fragment>
       <Upload>
-      <Upload.Button
-        type='primary'
-        htmlFor='uploadInput'
-        ghost
-      >
-        <Icon type='upload' style={{ marginRight: 10 }} />
-        Прикрепить файл(ы)
-        <Upload.Input
-          type='file'
-          id='uploadInput'
-          ref={inputRef}
-          onChange={e => handleUploadFiles(e, 'upload')}
-          hidden
-          multiple
-        />
-      </Upload.Button>
+        <Upload.Button
+          type='primary'
+          htmlFor='uploadInput'
+          ghost
+        >
+          <Icon type='upload' style={{ marginRight: 10 }}/>
+          Прикрепить файл(ы)
+          <Upload.Input
+            type='file'
+            id='uploadInput'
+            ref={inputRef}
+            onChange={e => handleUploadFiles(e, 'upload')}
+            hidden
+            multiple
+          />
+        </Upload.Button>
 
-      <Upload.List>
-        <List
-      itemLayout='horizontal'
-      dataSource={list && list}
-      locale={{ emptyText: 'Нет прикрепленных файлов' }}
-      renderItem={(file, idx) => {
-        const isFileWithECP = file.users_companies.length ? !!getECP(file.users_companies).length : false
-        return (
-          <List.Item
-            key={idx}
-            style={{ padding: '5px 10px' }}
-            actions={[
-              <Tag disabled style={{ margin: 0 }} color='#87d068' onClick={() => isFileWithECP ? null : handleVerifyFile(file)}>
-                <Icon style={{ marginRight: 5, cursor: 'pointer' }} type={isFileWithECP ? 'like' : 'edit'}/>
-                {isFileWithECP ? 'Файл подписан' : 'Подписать'}
-              </Tag>,
-              <Tag color='#f50' onClick={() => handleRemoveFile(file)}
-              >
-                <Icon style={{ marginRight: 5, cursor: 'pointer' }} type='delete'/>
-                Удалить
-              </Tag>
-            ]}
-          >
-            <File>
-              <div>
-                <Text type='secondary'>{idx + 1}.</Text>
-                <Text style={{ padding: '0 10px' }} strong>{file.original_name}</Text>
-                {isFileWithECP &&
-                <Tag
-                  color='#3278fb'
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => handleShowEscInfo(getECP(file.users_companies), 'esc')}
+        <Upload.List>
+          <List
+            itemLayout='horizontal'
+            dataSource={list && list}
+            locale={{ emptyText: 'Нет прикрепленных файлов' }}
+            renderItem={(file, idx) => {
+              const isFileWithECP = file.users_companies.length ? !!getECP(file.users_companies).length : false
+              return (
+                <List.Item
+                  key={idx}
+                  style={{ padding: '5px 10px' }}
+                  actions={[
+                    <Tag disabled style={{ margin: 0 }} color='#87d068'
+                         onClick={() => isFileWithECP ? null : handleVerifyFile(file)}>
+                      <Icon style={{ marginRight: 5, cursor: 'pointer' }} type={isFileWithECP ? 'like' : 'edit'}/>
+                      {isFileWithECP ? 'Файл подписан' : 'Подписать'}
+                    </Tag>,
+                    <Tag disabled style={{ margin: 0 }} color='#87d068'
+                         onClick={() => isFileWithECP ? null : handleSimVerifyFile(file)}>
+                      <Icon style={{ marginRight: 5, cursor: 'pointer' }} type={isFileWithECP ? 'like' : 'edit'}/>
+                      {isFileWithECP ? '' : 'Подписать(SimЭЦП)'}
+                    </Tag>,
+                    <Tag color='#f50' onClick={() => handleRemoveFile(file)}
+                    >
+                      <Icon style={{ marginRight: 5, cursor: 'pointer' }} type='delete'/>
+                      Удалить
+                    </Tag>
+                  ]}
                 >
-                  ЭЦП
-                </Tag>
-                }
-              </div>
-              <div>
-                <Select
-                  style={{ minWidth: '20rem' }}
-                  value={file.status.status_data.id}
-                  onChange={handleChangeFileStatus(file, idx)}
-                >
-                  <Option value={1}>Простая доставка</Option>
-                  <Option value={2}>Согласование</Option>
-                  <Option value={3}>Подпись получателя</Option>
-                </Select>
-              </div>
-            </File>
-          </List.Item>
-        )
-      }}
-      />
-      </Upload.List>
-    </Upload>
+                  <File>
+                    <div>
+                      <Text type='secondary'>{idx + 1}.</Text>
+                      <Text style={{ padding: '0 10px' }} strong>{file.original_name}</Text>
+                      {isFileWithECP &&
+                      <Tag
+                        color='#3278fb'
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => handleShowEscInfo(getECP(file.users_companies), 'esc')}
+                      >
+                        ЭЦП
+                      </Tag>
+                      }
+                    </div>
+                    <div>
+                      <Select
+                        style={{ minWidth: '20rem' }}
+                        value={file.status.status_data.id}
+                        onChange={handleChangeFileStatus(file, idx)}
+                      >
+                        <Option value={1}>Простая доставка</Option>
+                        <Option value={2}>Согласование</Option>
+                        <Option value={3}>Подпись получателя</Option>
+                      </Select>
+                    </div>
+                  </File>
+                </List.Item>
+              )
+            }}
+          />
+        </Upload.List>
+      </Upload>
 
       {isModalVisible &&
       <Modal
@@ -353,29 +379,29 @@ export default function (props) {
         footer={null}
       >
         {modalType === 'upload' &&
-          <>
-            <p>Файлов к загрузке: {filesToUpload.length}</p>
-            <p>Файлов загружено: {filesUploaded.length}</p>
-            <Progress
-              status='active'
-              percent={Math.floor((filesUploaded.length / filesToUpload.length) * 100)}
-            />
-            <div>
-              <Button
-                onClick={isFilesUploaded ? handleHideModal : uploadingAFile}
-                disabled={isDisabled}
-                type='primary'
-              >
-                {isFilesUploaded
-                  ? 'Закрыть'
-                  : 'Загрузить'
-                }
-              </Button>
-            </div>
-          </>}
+        <>
+          <p>Файлов к загрузке: {filesToUpload.length}</p>
+          <p>Файлов загружено: {filesUploaded.length}</p>
+          <Progress
+            status='active'
+            percent={Math.floor((filesUploaded.length / filesToUpload.length) * 100)}
+          />
+          <div>
+            <Button
+              onClick={isFilesUploaded ? handleHideModal : uploadingAFile}
+              disabled={isDisabled}
+              type='primary'
+            >
+              {isFilesUploaded
+                ? 'Закрыть'
+                : 'Загрузить'
+              }
+            </Button>
+          </div>
+        </>}
         {modalType === 'esc' &&
         <>
-          <EscDataSlider data={fileInfo} onCancel={handleHideModal} />
+          <EscDataSlider data={fileInfo} onCancel={handleHideModal}/>
         </>}
       </Modal>
       }
