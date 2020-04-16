@@ -44,7 +44,7 @@ const defaultDocumentState = {
 }
 
 const SingleDocumentPage = props => {
-  const {
+  let {
     documents: { isFetching, singleDocument },
     match,
     getDocumentById,
@@ -63,6 +63,7 @@ const SingleDocumentPage = props => {
     let hash = params.get('hash')
     let attachmentId = params.get('attachment_id')
     if (hash && attachmentId) {
+      isFetching = true;
       setTimeout(() => {
         try {
           let id = match.params.id
@@ -73,10 +74,12 @@ const SingleDocumentPage = props => {
           })
             .then(response => {
               message.success('Совершено успешное подписание!')
+              history.push({ pathname: `/documents/${match.params.id}` })
             })
             .catch(error => {
               message.error('Система обрабатывает подпись. Пожалуйста подождите!')
               // message.error(error.message)
+              window.location.reload();
             })
         } catch (error) {
         }
