@@ -30,6 +30,7 @@ CompanyData.ItemContent = styled.div`
   padding-left: 1.5rem;
   font-size: 1.5rem;
   border-left: .1rem solid ${colors.alto};
+  overflow:hidden;
 `
 
 export {
