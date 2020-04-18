@@ -74,6 +74,7 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, redirect = false }) =
             <li><Text>У Вас установлен комплект абонента ГосСУОК</Text></li>
             <li><Text>Текущий браузер MS Internet Explorer</Text></li>
             <li><Text>Ключ ЭЦП вставлен в компьютер</Text></li>
+            <li><Text>Выполнена первичная настройка компьютера по </Text><a href="https://quidox.by/settings_download/"> инструкции</a></li>
           </ol>
         </Fragment>
         : <CompanyData>

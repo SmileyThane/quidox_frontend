@@ -16,7 +16,6 @@ class LoginPage extends React.Component {
     email: '',
     password: ''
   }
-
   handleSubmit = e => {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
@@ -43,6 +42,7 @@ class LoginPage extends React.Component {
   }
 
   render () {
+    let empty = "Fuck chrome";
     const { getFieldDecorator } = this.props.form
     const newPageUrl = `${process.env.REACT_APP_SIM_SCEP_URL}?`+
 `client_id=${process.env.REACT_APP_SIM_SCEP_CLIENT_ID}&`+
@@ -51,22 +51,22 @@ class LoginPage extends React.Component {
 `authentication=phone&`+
 `scope=sign&`+
 `redirect_uri=${process.env.REACT_APP_SIM_SCEP_CALLBACK}`;
-    console.log(newPageUrl)
     return (
       <Form onSubmit={this.handleSubmit} className='form form_login' style={{ minHeight: '40rem', maxWidth: '45rem' }}>
+        <label>E-mail:</label>
         <Form.Item>
-          {getFieldDecorator('email', {
+          {getFieldDecorator('email_item', {
             rules: [{ required: true, message: 'Пожалуйста, введите адрес электронной почты!' }]
           })(
             <Input
               prefix={<Icon type='user' style={{ color: 'rgba(0,0,0,.25)' }}/>}
-              placeholder='Адрес электронной почты'
+              placeholder='Введите адрес электронной почты'
             />
           )}
         </Form.Item>
-
+        <label>Пароль:</label>
         <Form.Item>
-          {getFieldDecorator('password', {
+          {getFieldDecorator('password_item', {
             rules: [{
               required: true,
               message: 'Пожалуйста, введите пароль!',
@@ -81,10 +81,6 @@ class LoginPage extends React.Component {
         </Form.Item>
 
         <Form.Item>
-          {getFieldDecorator('remember', {
-            valuePropName: 'checked',
-            initialValue: true
-          })(<Checkbox>Запомнить меня</Checkbox>)}
           <Link className='login-form-forgot' to={'/password-recovery'}>
             Забыли пароль?
           </Link>
