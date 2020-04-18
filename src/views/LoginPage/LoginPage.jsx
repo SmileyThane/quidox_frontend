@@ -55,7 +55,7 @@ class LoginPage extends React.Component {
       <Form onSubmit={this.handleSubmit} className='form form_login' style={{ minHeight: '40rem', maxWidth: '45rem' }}>
         <label>E-mail:</label>
         <Form.Item>
-          {getFieldDecorator('email_item', {
+          {getFieldDecorator('email', {
             rules: [{ required: true, message: 'Пожалуйста, введите адрес электронной почты!' }]
           })(
             <Input
@@ -66,7 +66,7 @@ class LoginPage extends React.Component {
         </Form.Item>
         <label>Пароль:</label>
         <Form.Item>
-          {getFieldDecorator('password_item', {
+          {getFieldDecorator('password', {
             rules: [{
               required: true,
               message: 'Пожалуйста, введите пароль!',
