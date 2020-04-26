@@ -63,14 +63,6 @@ const HeaderBlock = props => {
             message: 'Сертификаты обновлены!'
           })
         }).catch(error => console.log(error))
-        // axios.get(`${process.env.REACT_APP_BASE_URL}/kuc/get`, {
-        //   'responseType': 'arraybuffer',
-        //   headers: {
-        //     'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
-        //   }
-        // }).then(({ data }) => {
-        //   // fileDownload(data, `kuc.cer`)
-        // }).catch(error => console.log(error))
 
       }, 3000)
     }
@@ -78,14 +70,17 @@ const HeaderBlock = props => {
   }
 
   const { isModalVisible, activeCompany } = state
+  const coBrandLogo = data.co_brand_config ? data.co_brand_config.logo : logo
   return (
     <Fragment>
       <HeaderContent>
         <HeaderContent.Row>
           <HeaderContent.LeftAside>
-            <a href={'https://quidox.by'}>
-              <HeaderContent.Logo src={logo} alt='Quidox Logo' style={{ maxHeight: '5rem' }}/>
-            </a>
+            {!isFetching &&
+              <a href={'https://quidox.by'}>
+                <HeaderContent.Logo src={coBrandLogo} alt='Quidox Logo' style={{ maxHeight: '5rem' }}/>
+              </a>
+            }
           </HeaderContent.LeftAside>
           {(window.localStorage.getItem('authToken') || window.sessionStorage.getItem('authToken')) &&
           <Fragment>
