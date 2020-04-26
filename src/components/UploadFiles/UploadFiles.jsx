@@ -5,6 +5,7 @@ import { EscDataSlider } from '../'
 import { checkBrowser } from '../../utils'
 import { Button, Icon, List, message, Modal, notification, Progress, Select, Tag, Typography } from 'antd'
 import { File, Upload } from './styled'
+import axios from 'axios'
 
 //use this effect for modification
 // const isIE = /*@cc_on!@*/false || !!document.documentMode
@@ -289,6 +290,46 @@ export default function (props) {
     }
   }
 
+  const handleTZIVerifyFile = (item) => {
+    try {
+      api.files.getBase64File(item.id)
+        .then(({ data }) => {
+          let sign = {};
+          sign.data = data.data.encoded_base64_file;
+          sign.isDetached = true;
+          sign.token_qdx = '123';
+          console.log(sign)
+          // let uri  = "https://tzi.com/sign";
+          // console.log(uri)
+          const request = axios('http://127.0.0.1/sign',{
+            headers: {
+              'content-type': 'application/json'
+            },
+            method: 'post',
+            // port: 8083,
+            // host: 'http://127.0.0.1',
+            sign
+          })
+          // axios.post(uri, sign)
+            .then(({ data }) => {
+              console.log(data)
+              message.success('Подпись успешно выработана')
+            })
+            .catch(function (error) {
+              message.error(error.message)
+            })
+        })
+        .catch(error => {
+          message.error(error.message)
+        })
+    } catch (error) {
+      notification['error']({
+        message: error.message
+      })
+    }
+  }
+
+
   console.log(state)
   return (
     <Fragment>
@@ -331,6 +372,11 @@ export default function (props) {
                          onClick={() => isFileWithECP ? null : handleSimVerifyFile(file)}>
                       <Icon style={{ marginRight: 5, cursor: 'pointer' }} type={isFileWithECP ? 'like' : 'edit'}/>
                       {isFileWithECP ? '' : 'Подписать(SimЭЦП)'}
+                    </Tag>,
+                    <Tag disabled style={{ margin: 0 }} color='#87d068'
+                         onClick={() => isFileWithECP ? null : handleTZIVerifyFile(file)}>
+                      <Icon style={{ marginRight: 5, cursor: 'pointer' }} type={isFileWithECP ? 'like' : 'edit'}/>
+                      {isFileWithECP ? '' : 'Подписать(ТЗИ)'}
                     </Tag>,
                     <Tag color='#f50' onClick={() => handleRemoveFile(file)}
                     >
