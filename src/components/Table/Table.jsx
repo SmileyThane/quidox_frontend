@@ -16,7 +16,6 @@ import {
   Typography,
   Select,
   Modal,
-  Button,
   Spin,
   Pagination,
   Tooltip,
@@ -24,6 +23,7 @@ import {
   Tag
 } from 'antd'
 
+import { Button, RouterLink } from '../'
 import './Table.scss'
 import { findUsersByParams } from '../../services/api/user'
 import history from '../../history'
@@ -116,7 +116,7 @@ const AntdTable = props => {
       render: record =>
         <Fragment>
           {(status === 1 || status === 3 || status === 9 || status === 10)
-            ? <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }}>
+            ? <RouterLink to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }}>
               <div>
                 {record.recipient &&
                     record.recipient['user_email']
@@ -126,8 +126,8 @@ const AntdTable = props => {
                   <p>{`[ ${record.recipient['company_name']} ]`}</p>
                 }
               </div>
-            </Link>
-            : <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }}>
+            </RouterLink>
+            : <RouterLink to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }}>
               <div>
                 {record.sender &&
                     record.sender['user_email']
@@ -137,7 +137,7 @@ const AntdTable = props => {
                   <p>{`[ ${record.sender['company_name']} ]`}</p>
                 }
               </div>
-            </Link>
+            </RouterLink>
           }
         </Fragment>
     },
@@ -156,12 +156,12 @@ const AntdTable = props => {
     {
       title: 'Тема',
       key: 'descr',
-      render: record => <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }}>{record.document.name}</Link>
+      render: record => <RouterLink to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }}>{record.document.name}</RouterLink>
     },
     {
       title: () => <Icon type='paper-clip' />,
       key: 'attachments',
-      render: record => <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }} style={{ textAlign: 'center' }} >{record.document.attachments.length === 0 ? 'Нет приложенных документов' : record.document.attachments.length }</Link>,
+      render: record => <RouterLink to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }} style={{ textAlign: 'center' }} >{record.document.attachments.length === 0 ? 'Нет приложенных документов' : record.document.attachments.length }</RouterLink>,
       sorter: false
     },
     {
@@ -175,12 +175,6 @@ const AntdTable = props => {
     {
       title: (status === 9 ? 'ЭЦП' : '')
     },
-    // {
-    //   title: 'Статус',
-    //   key: 'status',
-    //   className: 'status-column',
-    //   render: record => <Text>{record.status_name}</Text>
-    // },
     {
       title: 'Квитанция',
       key: 'receipt',

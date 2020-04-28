@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react'
 
-import { Button, Modal, notification, Skeleton } from 'antd'
+import { Modal, notification, Skeleton } from 'antd'
+import { Button } from '../'
 import { HeaderTariff, HeaderUser } from './internal'
 import { CompanyCreate } from '../'
 import { HeaderContent } from './styled'
@@ -87,12 +88,8 @@ const HeaderBlock = props => {
             <Skeleton loading={isFetching} active paragraph={false}>
               <HeaderTariff/>
               {activeCompany && +activeCompany.company_number === 0 &&
-              <Button type='primary' ghost onClick={handleOpenModal}>Подключить ЭЦП</Button>
+              <Button ghost type='primary' onClick={handleOpenModal}>Подключить ЭЦП</Button>
               }
-              {/*{activeCompany && +activeCompany.company_number !== 0 && isIE &&*/}
-              {/*<Button type='primary' ghost onClick={importCerts}>Обновить СОС</Button>*/}
-              {/*}*/}
-
               <HeaderUser/>
             </Skeleton>
           </Fragment>

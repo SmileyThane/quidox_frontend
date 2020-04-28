@@ -3,7 +3,8 @@ import useForm from 'rc-form-hooks'
 import axios from 'axios'
 import fileDownload from 'js-file-download'
 
-import { message, notification, Modal, Form, Input, Button } from 'antd'
+import { message, notification, Modal, Form, Input } from 'antd'
+import { Button } from '../../../../components'
 import { ActionTooltip, ActionIcon } from './styled'
 import {
   agreeText,

@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from 'react'
 
-import { Button, Icon, Modal, notification } from 'antd'
-import { PageDescription, Table } from '../../components'
+import { Icon, Modal, notification } from 'antd'
+import { PageDescription, Table, Button } from '../../components'
 import { api } from '../../services'
 
 const defaultState = {

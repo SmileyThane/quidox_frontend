@@ -4,7 +4,7 @@ import moment from 'moment'
 
 import {
   Icon,
-  List, message, Modal, notification, Select, Spin,
+  List, Modal, notification,
   Tag, Tooltip,
   Typography
 } from 'antd'

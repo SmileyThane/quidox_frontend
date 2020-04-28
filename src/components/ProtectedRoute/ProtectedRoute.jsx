@@ -1,9 +1,8 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import { Route } from 'react-router-dom'
 
-import history from '../../history'
 import { Layout } from 'antd'
-import { checkActiveTariff, getActiveCompany } from '../../utils'
+import { getActiveCompany } from '../../utils'
 import { ContentBlock, FooterBlock, HeaderBlock, LayoutBlock, SiderBlock } from '../'
 
 const ProtectedRoute = ({ component: Component, user: { data }, getUser, getTariffications, ...rest }) => {

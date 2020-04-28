@@ -1,6 +1,7 @@
 import React, { useState, Fragment } from 'react'
 
-import { Button, Typography, notification, message } from 'antd'
+import { Typography, notification, message } from 'antd'
+import { Button } from '../'
 import { CompanyData } from './styled'
 import { decryptionCompanyData, checkBrowser } from '../../utils'
 import history from '../../history'

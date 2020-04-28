@@ -3,19 +3,10 @@ import React, { Fragment, useEffect, useReducer, useRef } from 'react'
 import { api } from '../../services'
 import { EscDataSlider } from '../'
 import { checkBrowser } from '../../utils'
-import { Button, Icon, List, message, Modal, notification, Progress, Select, Tag, Typography } from 'antd'
+import { Icon, List, message, Modal, notification, Progress, Select, Tag, Typography } from 'antd'
+import { Button } from '../'
 import { File, Upload } from './styled'
 import axios from 'axios'
-
-//use this effect for modification
-// const isIE = /*@cc_on!@*/false || !!document.documentMode
-// useEffect(() => {
-//   if (isIE) {
-//     setTimeout(() => {
-//       window.pluginLoaded()
-//     }, 1500)
-//   }
-// }, [isIE])
 
 const getSignedHex = base64 => {
   try {
@@ -79,6 +70,7 @@ function uploadReducer (state, action) {
 export default function (props) {
   const {
     document_id = null,
+    user: { data },
     files: { list },
     uploadFile,
     changeFileStatus,
@@ -144,8 +136,6 @@ export default function (props) {
   }
 
   const handleUploadFiles = ({ target: { files } }, type) => {
-    console.log('Uploaded:', list.length)
-    console.log('To upload:', [...files].length)
     if ([...files].length > 5 || (list.length + [...files].length) > 5) {
       notification.error({
         message: 'Превышен лимит файлов!',
@@ -301,16 +291,7 @@ export default function (props) {
           console.log(sign)
           // let uri  = "https://tzi.com/sign";
           // console.log(uri)
-          const request = axios('http://127.0.0.1/sign',{
-            headers: {
-              'content-type': 'application/json'
-            },
-            method: 'post',
-            // port: 8083,
-            // host: 'http://127.0.0.1',
-            sign
-          })
-          // axios.post(uri, sign)
+          const request = axios.post('http://127.0.0.1:8083/sign', sign)
             .then(({ data }) => {
               console.log(data)
               message.success('Подпись успешно выработана')
@@ -330,11 +311,12 @@ export default function (props) {
   }
 
 
-  console.log(state)
+  const coBrand = data.co_brand_config && data.co_brand_config
   return (
     <Fragment>
       <Upload>
         <Upload.Button
+          brand={coBrand}
           type='primary'
           htmlFor='uploadInput'
           ghost

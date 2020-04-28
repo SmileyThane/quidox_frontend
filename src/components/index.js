@@ -16,6 +16,8 @@ import EscDataSlider from './EscDataSlider'
 import CompanyCreate from './CompanyCreate'
 import AvestErrorHandling from './AvestErrorHandling'
 import UploadFiles from './UploadFiles'
+import RouterLink from './RouterLink'
+import GoBack from './GoBack'
 
 export {
   PrivateRoute,
@@ -35,5 +37,6 @@ export {
   EscDataSlider,
   CompanyCreate,
   AvestErrorHandling,
-  UploadFiles
+  UploadFiles,
+  RouterLink
 }

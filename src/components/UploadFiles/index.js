@@ -3,6 +3,7 @@ import actions from '../../store/actions'
 import UploadFiles from './UploadFiles'
 
 const mapStateToProps = state => ({
+  user: state.user,
   documents: state.documents,
   files: state.files
 })

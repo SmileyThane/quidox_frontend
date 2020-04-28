@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { Typography, Tooltip, Tag } from 'antd'
+import { Tooltip } from 'antd'
 import { Tariff } from './styled'
 import { getActiveCompany } from '../../../../utils'
 
@@ -22,12 +22,14 @@ const HeaderTariff = ({ user: { data } }) => {
   }, [data])
 
   const { activeCompany } = state
+
+  const coBrand = data.co_brand_config && data.co_brand_config
   return (
     <Tariff>
       <Tariff.Item>
         Тариф:
 
-        <Tariff.TagSpan>
+        <Tariff.TagSpan brand={coBrand}>
           {activeCompany && activeCompany.tarification.tarification_data.name}
         </Tariff.TagSpan>
       </Tariff.Item>
@@ -35,18 +37,19 @@ const HeaderTariff = ({ user: { data } }) => {
       <Tariff.Item>
         Доступно действий:
 
-        <Tariff.TagSpan>
+        <Tariff.TagSpan brand={coBrand}>
           {activeCompany && activeCompany.tarification.max_actions}
         </Tariff.TagSpan>
       </Tariff.Item>
+      {!coBrand &&
+        <Tariff.Item>
+          Баланс (BYN):
 
-      <Tariff.Item>
-        Баланс (BYN):
-
-        <Tariff.TagSpan>
-          {activeCompany && activeCompany.company_data.balance}
-        </Tariff.TagSpan>
-      </Tariff.Item>
+          <Tariff.TagSpan brand={coBrand}>
+            {activeCompany && activeCompany.company_data.balance}
+          </Tariff.TagSpan>
+        </Tariff.Item>
+      }
 
       <Tooltip
         title={activeCompany && activeCompany.company_data.name}

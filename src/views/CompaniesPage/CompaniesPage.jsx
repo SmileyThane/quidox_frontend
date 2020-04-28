@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react'
 import useForm from 'rc-form-hooks'
 import { Link } from 'react-router-dom'
 import { api } from '../../services'
-import { CompanyCreate } from '../../components'
+import { CompanyCreate, Button, RouterLink } from '../../components'
 import {
   Table,
   Tag,
@@ -14,8 +14,7 @@ import {
   Icon,
   Row,
   Col,
-  Input,
-  Button
+  Input
 } from 'antd'
 
 import history from '../../history'
@@ -115,7 +114,7 @@ const CompaniesPage = props => {
     {
       title: 'Наименование',
       key: 'name',
-      render: record => <Link to={{ pathname: `/companies/${+record.company_id}`, state: { from: history.location.pathname } }}>{record.company_data.name}</Link>
+      render: record => <RouterLink to={{ pathname: `/companies/${+record.company_id}`, state: { from: history.location.pathname } }}>{record.company_data.name}</RouterLink>
     },
     {
       title: 'УНП',

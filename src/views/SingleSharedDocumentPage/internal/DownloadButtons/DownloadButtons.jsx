@@ -2,7 +2,8 @@ import React, { Fragment, useState } from 'react'
 import axios from 'axios'
 import fileDownload from 'js-file-download'
 
-import { Button, message, Icon } from 'antd'
+import { message, Icon } from 'antd'
+import { Button } from '../../../../components'
 import { api } from '../../../../services'
 
 const defaultState = {

@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import moment from 'moment'
 
 import { decryptionData } from '../../utils'
-import { Typography, Icon, Button } from 'antd'
+import { Typography, Icon } from 'antd'
+import { Button } from '../'
 import { EscData } from './styled'
 
 const { Text } = Typography

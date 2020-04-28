@@ -1,7 +1,8 @@
 import React from 'react'
 
 import { getActiveCompany } from '../../utils'
-import { Icon, Typography, Button, message } from 'antd'
+import { Icon, Typography, message } from 'antd'
+import { Button } from '../'
 import { AvestError } from './styled'
 
 const { Text } = Typography

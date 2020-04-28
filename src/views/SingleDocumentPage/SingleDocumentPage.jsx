@@ -16,6 +16,7 @@ import { close } from '../../resources/img'
 import { api } from '../../services'
 import { copy2Clipboard } from '../../utils'
 import './SingleDocumentPage.scss'
+import GoBack from '../../components/GoBack'
 
 var signFetching = false
 const { Text, Paragraph } = Typography
@@ -315,9 +316,7 @@ const SingleDocumentPage = props => {
           <div className='document'>
             <div className='document__header'>
               <div className='document__header_left'>
-                <div className='back' onClick={() => history.goBack()}>
-                  <Icon type='left'/>
-                </div>
+                <GoBack><Icon type='left'/></GoBack>
 
                 {(statuses && statuses.length && statuses[0].user_company_document_list_id === 1)
                   ? <Paragraph

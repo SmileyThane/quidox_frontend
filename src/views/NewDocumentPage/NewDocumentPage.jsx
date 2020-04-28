@@ -3,9 +3,9 @@ import AddToCalendar from 'react-add-to-calendar'
 import _ from 'lodash'
 import moment from 'moment'
 
-import { Button, Icon, Input, notification, Select, Spin, Typography, } from 'antd'
+import { Icon, Input, notification, Select, Spin, Typography, } from 'antd'
 
-import { UploadFiles } from '../../components'
+import { UploadFiles, Button } from '../../components'
 
 import forbiddenEmails from '../../constants/forbiddenEmails'
 import history from '../../history'

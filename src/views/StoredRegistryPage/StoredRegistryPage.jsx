@@ -1,9 +1,8 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react'
 
-import { Button, Icon, Modal, notification, Progress, Steps, Table } from 'antd'
+import { notification,Table } from 'antd'
 import { api } from '../../services'
 import fileDownload from 'js-file-download'
-import { Base64 } from 'js-base64'
 import axios from 'axios'
 
 

@@ -184,3 +184,12 @@ table {
 .ant-typography.document-title {
   margin-bottom: 0 !important;
 }
+
+.ant-table-pagination {
+  .ant-pagination-item-active {
+    border-color: #000;
+    a {
+      color: #000;
+    }
+  }
+}

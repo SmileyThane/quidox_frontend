@@ -4,7 +4,8 @@ import { Base64 } from 'js-base64'
 import generateHash from 'random-hash'
 
 import history from '../../history'
-import { Button, Form, Input, message, Select, Steps, Typography } from 'antd'
+import { Form, Input, message, Select, Steps, Typography } from 'antd'
+import { Button } from '../../components'
 
 import './RegisterPage.scss'
 

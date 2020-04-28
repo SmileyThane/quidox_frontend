@@ -1,11 +1,7 @@
 import React, { Fragment, useEffect } from 'react'
-import { notification, Typography } from 'antd'
+import { Typography } from 'antd'
 
 import { Button } from '../../components'
-import { api } from '../../services'
-import history from '../../history'
-// import axios from 'axios'
-
 const { Text } = Typography
 
 const ExternalRedirectPage = props => {

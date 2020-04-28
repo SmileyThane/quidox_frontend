@@ -2,12 +2,13 @@ import React, { Fragment, useEffect, useState } from 'react'
 import { Redirect, Route } from 'react-router-dom'
 
 import history from '../../history'
-import { Layout, Modal, Button} from 'antd'
+import { Layout, Modal} from 'antd'
+import { Button } from '../'
 import { getActiveCompany, checkActiveTariff } from '../../utils'
 import { LayoutBlock, HeaderBlock, SiderBlock, ContentBlock, FooterBlock } from '../'
 import { useResponseStatus } from '../../hooks'
 
-const PrivateRoute = ({ component: Component, user: { data }, getUser, getTariffications, ...rest }) => {
+const PrivateRoute = ({ component: Component, user: { data, isFetching }, getUser, getTariffications, ...rest }) => {
   const [availableTariff, setAvailableTariff] = useState(false)
   const [activeCompany, setActiveCompany] = useState(null)
   // eslint-disable-next-line spaced-comment
@@ -42,9 +43,6 @@ const PrivateRoute = ({ component: Component, user: { data }, getUser, getTariff
   const handleChangeTariff = () => {
     history.push(history.push(`/companies/${activeCompany.company_id}`))
     setAvailableTariff(false)
-    // api.user.changeTariff({ company_id: activeCompany.company_id, tarification_id: 1 })
-    //   .then(({ data }) => {
-    //   })
   }
 
   const handleStayOnPage = () => {
@@ -52,7 +50,10 @@ const PrivateRoute = ({ component: Component, user: { data }, getUser, getTariff
   }
 
   const { status } = useResponseStatus()
-  console.log('STATUS', status)
+
+  if (isFetching) {
+    return 'Loading...'
+  }
 
   return <Route {...rest}
     render={props =>
@@ -64,14 +65,7 @@ const PrivateRoute = ({ component: Component, user: { data }, getUser, getTariff
               <SiderBlock />
               <Layout>
                 <ContentBlock>
-                  {/*{(status === 500 || status === 403) &&*/}
-                  {/*  <Result*/}
-                  {/*    status={status}*/}
-                  {/*    title={status}*/}
-                  {/*    subTitle={status === 500 ? 'Извините, ошибка сервера.' : 'Извините, но у вас нет прав доступа к этой странице.'}*/}
-                  {/*    extra={<Button onClick={history.push('/')} type="primary">Back Home</Button>}*/}
-                  {/*  />}*/}
-                  {status === 200 && <Component {...props} />}
+                  <Component {...props} />
                 </ContentBlock>
                 <FooterBlock />
               </Layout>

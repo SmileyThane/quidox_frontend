@@ -1,6 +1,7 @@
 import React from 'react'
 
-import { Typography, Button } from 'antd'
+import { Typography } from 'antd'
+import { Button } from '../../../../components'
 
 import './CompanyDescription.scss'
 

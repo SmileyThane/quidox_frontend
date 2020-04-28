@@ -2,7 +2,8 @@ import React, { Fragment } from 'react'
 import axios from 'axios'
 import { api } from '../../services'
 import MaskedInput from 'antd-mask-input'
-import { Button, Col, Form, Icon, Input, message, Modal, Row, Select, Spin, Tabs, List } from 'antd'
+import { Col, Form, Icon, Input, message, Modal, Row, Select, Spin, Tabs, List } from 'antd'
+import { Button } from '../../components'
 import './UserInfoPage.scss'
 
 const { Option } = Select

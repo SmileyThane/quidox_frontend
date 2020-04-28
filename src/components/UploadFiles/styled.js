@@ -15,14 +15,14 @@ Upload.Button = styled.label`
   text-align: center;
   padding: .7rem 1.5rem;
   width: 26.6rem;
-  color: ${colors.blue};
-  border: .1rem solid ${colors.blue};
+  color: ${({ brand }) => brand ? brand.link_color : '#40a9ff'};
+  border: .1rem solid  ${({ brand }) => brand ? brand.border_color : '#40a9ff'};
   background-color: transparent;
   transition: .3s linear;
   cursor: pointer;
   &:hover {
     color: ${colors.white};
-    background-color: ${colors.blue};
+    background-color: ${({ brand }) => brand ? brand.primary_color : '#40a9ff'};
   }
 `
 
