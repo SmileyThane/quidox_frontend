@@ -23,6 +23,7 @@ const ThemeButton = styled(Button)`
     
     &[disabled] {
       border: none;
+      background-color: #f5f5f5;
     }
     
     &:hover {
