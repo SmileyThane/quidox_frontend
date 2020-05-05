@@ -5,17 +5,47 @@ import axios from 'axios'
 
 import history from '../../history.js'
 import { Link } from 'react-router-dom'
-import { Button, Checkbox, Form, Icon, Input, message, Typography } from 'antd'
+import { Button, Form, Icon, Input, message, Typography, Spin } from 'antd'
 
 import './LoginPage.scss'
+
 
 const { Text, Title } = Typography
 
 class LoginPage extends React.Component {
   state = {
     email: '',
-    password: ''
+    password: '',
+    fetching: false
   }
+
+  componentWillMount() {
+    const userData = JSON.parse(this.useQuery().get('user'))
+    if (userData) {
+      this.setState({
+        fetching: true
+      })
+      axios.post(`${process.env.REACT_APP_BASE_URL}/login`, userData)
+        .then(({ data }) => {
+          if (data.success) {
+            window.localStorage.setItem('authToken', data.data.token)
+            history.push('/')
+            this.setState({
+              fetching: false
+            })
+          } else {
+            throw new Error(data.error)
+          }
+        })
+        .catch(error => {
+          this.setState({
+            fetching: false
+          })
+          message.error(error.message)
+        })
+    }
+  }
+
   handleSubmit = e => {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
@@ -41,16 +71,27 @@ class LoginPage extends React.Component {
     })
   }
 
+  useQuery = () => {
+    return new URLSearchParams(this.props.location.search)
+  }
+
   render () {
     let empty = "Fuck chrome";
+
     const { getFieldDecorator } = this.props.form
     const newPageUrl = `${process.env.REACT_APP_SIM_SCEP_URL}?`+
-`client_id=${process.env.REACT_APP_SIM_SCEP_CLIENT_ID}&`+
-`response_type=code&`+
-`state=1df12rt96cv12&`+
-`authentication=phone&`+
-`scope=sign&`+
-`redirect_uri=${process.env.REACT_APP_SIM_SCEP_CALLBACK}`;
+      `client_id=${process.env.REACT_APP_SIM_SCEP_CLIENT_ID}&`+
+      `response_type=code&`+
+      `state=1df12rt96cv12&`+
+      `authentication=phone&`+
+      `scope=sign&`+
+      `redirect_uri=${process.env.REACT_APP_SIM_SCEP_CALLBACK}`;
+
+    if (this.state.fetching) {
+      return <Spin />
+    }
+
+    console.log(this.state)
     return (
       <Form onSubmit={this.handleSubmit} className='form form_login' style={{ minHeight: '40rem', maxWidth: '45rem' }}>
         <label>E-mail:</label>
@@ -91,10 +132,10 @@ class LoginPage extends React.Component {
           <Link className="ant-btn ant-btn-default login-form-button" style={{ marginTop: '.5rem' }} to="/e-sign-login">Войти
             с помощью ЭЦП</Link>
           <Link className="ant-btn ant-btn-default login-form-button" style={{ marginTop: '.5rem' }} target="_blank"
-                onClick={(event) => {
-                  event.preventDefault()
-                  window.open(newPageUrl, '', 'width=800,height=600')
-                }}>Войти с помощью simЭЦП</Link>
+            onClick={(event) => {
+              event.preventDefault()
+              window.open(newPageUrl, '', 'width=800,height=600')
+            }}>Войти с помощью simЭЦП</Link>
           <div style={{ marginTop: '1.5rem' }}>
             <Title level={4}>Начните обмен документами сейчас!<br/>Нет аккаунта?</Title>
             <Link to={'/register'}>Зарегистрируйтесь! &nbsp;</Link>
