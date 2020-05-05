@@ -19,33 +19,6 @@ class LoginPage extends React.Component {
     fetching: false
   }
 
-  componentWillMount() {
-    const userData = JSON.parse(this.useQuery().get('user'))
-    if (userData) {
-      this.setState({
-        fetching: true
-      })
-      axios.post(`${process.env.REACT_APP_BASE_URL}/login`, userData)
-        .then(({ data }) => {
-          if (data.success) {
-            window.localStorage.setItem('authToken', data.data.token)
-            history.push('/')
-            this.setState({
-              fetching: false
-            })
-          } else {
-            throw new Error(data.error)
-          }
-        })
-        .catch(error => {
-          this.setState({
-            fetching: false
-          })
-          message.error(error.message)
-        })
-    }
-  }
-
   handleSubmit = e => {
     e.preventDefault()
     this.props.form.validateFields((err, values) => {
@@ -69,10 +42,6 @@ class LoginPage extends React.Component {
           })
       }
     })
-  }
-
-  useQuery = () => {
-    return new URLSearchParams(this.props.location.search)
   }
 
   render () {

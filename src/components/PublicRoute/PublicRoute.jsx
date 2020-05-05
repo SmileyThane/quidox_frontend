@@ -1,6 +1,9 @@
-import React, { Fragment } from 'react'
+import React, { useEffect, useState, Fragment } from 'react'
 import { Redirect, Route } from 'react-router-dom'
-import { Typography } from 'antd'
+import { useLocation } from 'react-router'
+import { Typography, message } from 'antd'
+import axios from 'axios'
+
 import {
   LayoutBlock,
   FooterBlock,
@@ -8,13 +11,46 @@ import {
   HeaderBlock
 } from '../'
 
+import history from '../../history'
 import './PublicRoute.scss'
 
 const { Title, Text } = Typography
 
 const PublicRoute = ({ component: Component, ...rest }) => {
+  const [fetching, setFetching] = useState(true)
 
-  console.log(rest)
+  function useQuery () {
+    return new URLSearchParams(useLocation().search)
+  }
+
+  const query = useQuery()
+
+  useEffect(() => {
+    if (query.get('user')) {
+      const userData = JSON.parse(query.get('user'))
+      setFetching(true)
+      axios.post(`${process.env.REACT_APP_BASE_URL}/login`, userData)
+        .then(({ data }) => {
+          if (data.success) {
+            setFetching(false)
+            window.localStorage.setItem('authToken', data.data.token)
+            history.push('/')
+          } else {
+            throw new Error(data.error)
+          }
+        })
+        .catch(error => {
+          message.error(error.message)
+          setFetching(false)
+        })
+    } else {
+      setFetching(false)
+    }
+  })
+
+  if (fetching) {
+    return 'Loading...'
+  }
 
   return <Route {...rest}
     render={props =>
