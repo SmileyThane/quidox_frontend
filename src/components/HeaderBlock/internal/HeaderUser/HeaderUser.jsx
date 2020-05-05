@@ -22,18 +22,23 @@ const HeaderUser = ({ user: { data }, userLogout }) => {
   }, [data])
 
   const handleLogout = () => {
+    const logoutUri = data.co_brand_config.logout_uri
     userLogout()
       .then(({ data }) => {
         if (data.success) {
           window.localStorage.clear()
           window.sessionStorage.clear()
-          history.push('/login')
+          if (logoutUri) {
+            window.open(`${logoutUri}`, '_self')
+          } else {
+            history.push('/login')
+          }
         } else {
           throw new Error(data.error)
         }
       })
       .catch(error => {
-        message.error(error.message())
+        message.error(error.message)
       })
   }
 
