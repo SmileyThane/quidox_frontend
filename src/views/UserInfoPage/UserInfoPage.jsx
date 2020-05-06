@@ -348,7 +348,7 @@ class UserInfoPage extends React.Component {
                     </Col>
 
                     <Col span={24}>
-                      <Form.Item style={{ width: '50%' }} label='Активаная компания:'>
+                      <Form.Item style={{ width: '50%' }} label='Активная компания:'>
                         {getFieldDecorator('active_company_id', {
                           initialValue: data.active_company_id,
                           rules: [

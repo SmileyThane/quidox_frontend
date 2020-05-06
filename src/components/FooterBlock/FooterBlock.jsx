@@ -11,7 +11,7 @@ const instruction = 'https://quidox.by/settings_download/'
 const FooterBlock = ({ ...rest }) => {
   return (
     <Footer className='footer' {...rest}>
-      <a className='footer__link' target='_blanck' href={instruction}>Инструцкия пользователя</a>
+      <a className='footer__link' target='_blanck' href={instruction}>Инструкция пользователя</a>
       <a className='footer__link' target='_blanck' href={publicContract}>Публичный договор</a>
       <a className='footer__link' target='_blanck' href={contacts}>Контакты</a>
       <a className='footer__link' target='_blanck' href={about}>О сервисе</a>
