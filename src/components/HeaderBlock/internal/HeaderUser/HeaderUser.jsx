@@ -22,7 +22,7 @@ const HeaderUser = ({ user: { data }, userLogout }) => {
   }, [data])
 
   const handleLogout = () => {
-    const logoutUri = data.co_brand_config.logout_uri
+    const logoutUri = data.co_brand_config ? data.co_brand_config.logout_uri : false
     userLogout()
       .then(({ data }) => {
         if (data.success) {
