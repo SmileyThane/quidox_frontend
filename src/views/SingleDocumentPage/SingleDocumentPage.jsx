@@ -77,15 +77,14 @@ const SingleDocumentPage = props => {
             }
           })
             .then(response => {
+              signFetching = false;
               const { data: { success } } = response
-              if (success == true) {
+              if (success) {
                 // message.success('Совершено успешное подписание!')
                 console.log(success)
-                signFetching = false;
                 getDocumentById(match.params.id)
               } else {
                 console.log(success)
-                signFetching = false;
               }
             })
             .catch(error => {
