@@ -3,7 +3,7 @@ import React, { Fragment, useEffect, useReducer, useRef } from 'react'
 import { api } from '../../services'
 import { EscDataSlider } from '../'
 import { checkBrowser } from '../../utils'
-import { Icon, List, message, Modal, notification, Progress, Select, Tag, Typography } from 'antd'
+import { Icon, List, message, Modal, notification, Progress, Select, Tag, Typography, Dropdown, Menu } from 'antd'
 import { Button } from '../'
 import { File, Upload } from './styled'
 import axios from 'axios'
@@ -344,28 +344,6 @@ export default function (props) {
                 <List.Item
                   key={idx}
                   style={{ padding: '5px 10px' }}
-                  actions={[
-                    <Tag disabled style={{ margin: 0 }} color='#87d068'
-                         onClick={() => isFileWithECP ? null : handleVerifyFile(file)}>
-                      <Icon style={{ marginRight: 5, cursor: 'pointer' }} type={isFileWithECP ? 'like' : 'edit'}/>
-                      {isFileWithECP ? 'Файл подписан' : 'Подписать'}
-                    </Tag>,
-                    <Tag disabled style={{ margin: 0 }} color='#87d068'
-                         onClick={() => isFileWithECP ? null : handleSimVerifyFile(file)}>
-                      <Icon style={{ marginRight: 5, cursor: 'pointer' }} type={isFileWithECP ? 'like' : 'edit'}/>
-                      {isFileWithECP ? '' : 'Подписать(SimЭЦП)'}
-                    </Tag>,
-                    <Tag disabled style={{ margin: 0 }} color='#87d068'
-                         onClick={() => isFileWithECP ? null : handleTZIVerifyFile(file)}>
-                      <Icon style={{ marginRight: 5, cursor: 'pointer' }} type={isFileWithECP ? 'like' : 'edit'}/>
-                      {isFileWithECP ? '' : 'Подписать(ТЗИ)'}
-                    </Tag>,
-                    <Tag color='#f50' onClick={() => handleRemoveFile(file)}
-                    >
-                      <Icon style={{ marginRight: 5, cursor: 'pointer' }} type='delete'/>
-                      Удалить
-                    </Tag>
-                  ]}
                 >
                   <File>
                     <div>
@@ -393,6 +371,45 @@ export default function (props) {
                       </Select>
                     </div>
                   </File>
+                  <Dropdown
+                    overlay={() => (
+                      <Menu>
+                        <Menu.Item>
+                          <Tag disabled style={{ margin: 0, width: '100%' }} color='#87d068'
+                               onClick={() => isFileWithECP ? null : handleVerifyFile(file)}>
+                            <Icon style={{ marginRight: 5, cursor: 'pointer' }} type={isFileWithECP ? 'like' : 'edit'}/>
+                            {isFileWithECP ? 'Файл подписан' : 'Подписать'}
+                          </Tag>
+                        </Menu.Item>
+                        <Menu.Item>
+                          <Tag disabled style={{ margin: 0, width: '100%' }} color='#87d068'
+                               onClick={() => isFileWithECP ? null : handleSimVerifyFile(file)}>
+                            <Icon style={{ marginRight: 5, cursor: 'pointer' }} type={isFileWithECP ? 'like' : 'edit'}/>
+                            {isFileWithECP ? '' : 'Подписать(SimЭЦП)'}
+                          </Tag>
+                        </Menu.Item>
+                        <Menu.Item>
+                          <Tag disabled style={{ margin: 0, width: '100%' }} color='#87d068'
+                               onClick={() => isFileWithECP ? null : handleTZIVerifyFile(file)}>
+                            <Icon style={{ marginRight: 5, cursor: 'pointer' }} type={isFileWithECP ? 'like' : 'edit'}/>
+                            {isFileWithECP ? '' : 'Подписать(ТЗИ)'}
+                          </Tag>
+                        </Menu.Item>
+                        <Menu.Item>
+                          <Tag color='#f50' style={{ width: '100%' }} onClick={() => handleRemoveFile(file)}
+                          >
+                            <Icon style={{ marginRight: 5, cursor: 'pointer' }} type='delete'/>
+                            Удалить
+                          </Tag>
+                        </Menu.Item>
+                      </Menu>
+                    )}
+                  >
+                    <Tag color="#E0E0E0" style={{  color: '#333', cursor: 'pointer',  padding: '0.8rem 1rem', fontSize: '1.5rem', width: '20rem', marginLeft: '2rem' }}>
+                      Выберите действие
+                      <Icon style={{ marginLeft: '1rem' }} type="down" />
+                    </Tag>
+                  </Dropdown>
                 </List.Item>
               )
             }}

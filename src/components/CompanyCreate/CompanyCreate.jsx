@@ -5,6 +5,7 @@ import { Button } from '../'
 import { CompanyData } from './styled'
 import { decryptionCompanyData, checkBrowser } from '../../utils'
 import history from '../../history'
+import { api } from '../../services'
 
 const defaultState = {
   companyData: null,
@@ -64,6 +65,26 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, redirect = false }) =
       .catch(error => {
         message.error(error.message)
       })
+  }
+
+  const handleSimVerifyFile = () => {
+    try {
+      api.documents.attachmentSimSign('new_company')
+        .then(({ data }) => {
+          if (data.success) {
+            window.open(data.data, '')
+          } else {
+            throw new Error(data.error)
+          }
+        })
+        .catch(error => {
+          message.error(error.message)
+        })
+    } catch (error) {
+      notification['error']({
+        message: error.message
+      })
+    }
   }
 
   const { companyData, isCreate } = state
@@ -163,7 +184,7 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, redirect = false }) =
           <Button
             type='primary'
             style={{ marginRight: '2rem' }}
-            // onClick={isCreate ? handleCreateCompany : handleAgreeCheck}
+            onClick={handleSimVerifyFile}
           >
             Подключить simЭЦП
           </Button>

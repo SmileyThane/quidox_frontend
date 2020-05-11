@@ -43,7 +43,7 @@ const attachmentSignCanConfirm = data => {
 const attachmentSimSign = id => {
   return http({
     url: '/attachment/sim-sign/create/' + id,
-    method: 'GET',
+    method: 'GET'
   })
 }
 
