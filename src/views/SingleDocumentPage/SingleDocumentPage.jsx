@@ -67,9 +67,8 @@ const SingleDocumentPage = props => {
     let hash = params.get('hash')
     let attachmentId = params.get('attachment_id')
     if (hash && attachmentId) {
-      signFetching = true;
-      setTimeout(() => {
         try {
+          signFetching = true;
           let id = match.params.id
           axios.get(`${process.env.REACT_APP_BASE_URL}/attachment/sim-sign/check/${attachmentId}?hash=${hash}`, {
             headers: {
@@ -98,7 +97,6 @@ const SingleDocumentPage = props => {
         } catch (error) {
           signFetching = false;
         }
-      }, 2000)
     }
   }, [])
 
