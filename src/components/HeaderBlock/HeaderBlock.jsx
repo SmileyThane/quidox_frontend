@@ -87,9 +87,7 @@ const HeaderBlock = props => {
           <Fragment>
             <Skeleton loading={isFetching} active paragraph={false}>
               <HeaderTariff/>
-              {activeCompany && +activeCompany.company_number === 0 &&
               <Button ghost type='primary' onClick={handleOpenModal}>Подключить ЭЦП</Button>
-              }
               <HeaderUser/>
             </Skeleton>
           </Fragment>

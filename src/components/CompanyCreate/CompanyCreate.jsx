@@ -1,6 +1,6 @@
 import React, { useState, Fragment } from 'react'
 
-import { Typography, notification, message } from 'antd'
+import { Typography, notification, message, Tabs } from 'antd'
 import { Button } from '../'
 import { CompanyData } from './styled'
 import { decryptionCompanyData, checkBrowser } from '../../utils'
@@ -11,6 +11,7 @@ const defaultState = {
   isCreate: false
 }
 
+const { TabPane } = Tabs
 const { Text } = Typography
 const CompanyCreate = ({ createCompany, onCancel, getUser, redirect = false }) => {
   const [state, setState] = useState({ ...defaultState })
@@ -67,92 +68,121 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, redirect = false }) =
 
   const { companyData, isCreate } = state
   return (
-    <Fragment>
-      {!isCreate
-        ? <Fragment>
+    <Tabs defaultActiveKey='1'>
+      <TabPane tab='ЭЦП' key='1'>
+        {!isCreate
+          ? <Fragment>
+            <p>Убедитесь в том, что:</p>
+            <ol>
+              <li><Text>У Вас установлен комплект абонента ГосСУОК</Text></li>
+              <li><Text>Текущий браузер MS Internet Explorer</Text></li>
+              <li><Text>Ключ ЭЦП вставлен в компьютер</Text></li>
+              <li><Text>Выполнена первичная настройка компьютера по </Text><a href="https://quidox.by/settings_download/"> инструкции</a></li>
+            </ol>
+          </Fragment>
+          : <CompanyData>
+            <CompanyData.Item>
+              <CompanyData.ItemTitle>
+                Дата создания
+              </CompanyData.ItemTitle>
+
+              <CompanyData.ItemContent>
+                {companyData && companyData.date}
+              </CompanyData.ItemContent>
+            </CompanyData.Item>
+
+            <CompanyData.Item>
+              <CompanyData.ItemTitle>
+                УНП
+              </CompanyData.ItemTitle>
+
+              <CompanyData.ItemContent>
+                {companyData && companyData.number}
+              </CompanyData.ItemContent>
+            </CompanyData.Item>
+
+            <CompanyData.Item>
+              <CompanyData.ItemTitle>
+                Имя компании
+              </CompanyData.ItemTitle>
+
+              <CompanyData.ItemContent>
+                {companyData && companyData.name}
+              </CompanyData.ItemContent>
+            </CompanyData.Item>
+
+            <CompanyData.Item>
+              <CompanyData.ItemTitle>
+                Место нахождения компании
+              </CompanyData.ItemTitle>
+
+              <CompanyData.ItemContent>
+                {companyData && companyData.city}
+              </CompanyData.ItemContent>
+            </CompanyData.Item>
+
+            <CompanyData.Item>
+              <CompanyData.ItemTitle>
+                Должность сотрудника
+              </CompanyData.ItemTitle>
+
+              <CompanyData.ItemContent>
+                {companyData && companyData.position}
+              </CompanyData.ItemContent>
+            </CompanyData.Item>
+
+            <CompanyData.Item>
+              <CompanyData.ItemTitle>
+                Цифровой ключ
+              </CompanyData.ItemTitle>
+
+              <CompanyData.ItemContent>
+                {companyData && companyData.key}
+              </CompanyData.ItemContent>
+            </CompanyData.Item>
+          </CompanyData>
+        }
+        <Button
+          type='primary'
+          style={{ marginRight: '2rem' }}
+          onClick={isCreate ? handleCreateCompany : handleAgreeCheck}>
+          {isCreate ? 'Подключить ЭЦП' : 'Продолжить'}
+        </Button>
+        <Button
+          type='primary'
+          ghost
+          onClick={onCancel}
+        >Отмена</Button>
+      </TabPane>
+      <TabPane tab='simЭЦП' key='2'>
+        <Fragment>
           <p>Убедитесь в том, что:</p>
           <ol>
-            <li><Text>У Вас установлен комплект абонента ГосСУОК</Text></li>
-            <li><Text>Текущий браузер MS Internet Explorer</Text></li>
-            <li><Text>Ключ ЭЦП вставлен в компьютер</Text></li>
-            <li><Text>Выполнена первичная настройка компьютера по </Text><a href="https://quidox.by/settings_download/"> инструкции</a></li>
+            <li><Text>У Вас есть сим карта с привязаной к ней ЭЦП</Text></li>
           </ol>
+          <Button
+            type='primary'
+            style={{ marginRight: '2rem' }}
+            // onClick={isCreate ? handleCreateCompany : handleAgreeCheck}
+          >
+            Подключить simЭЦП
+          </Button>
+          <Button
+            type='primary'
+            ghost
+            onClick={onCancel}
+          >Отмена</Button>
         </Fragment>
-        : <CompanyData>
-          <CompanyData.Item>
-            <CompanyData.ItemTitle>
-            Дата создания
-            </CompanyData.ItemTitle>
-
-            <CompanyData.ItemContent>
-              {companyData && companyData.date}
-            </CompanyData.ItemContent>
-          </CompanyData.Item>
-
-          <CompanyData.Item>
-            <CompanyData.ItemTitle>
-            УНП
-            </CompanyData.ItemTitle>
-
-            <CompanyData.ItemContent>
-              {companyData && companyData.number}
-            </CompanyData.ItemContent>
-          </CompanyData.Item>
-
-          <CompanyData.Item>
-            <CompanyData.ItemTitle>
-            Имя компании
-            </CompanyData.ItemTitle>
-
-            <CompanyData.ItemContent>
-              {companyData && companyData.name}
-            </CompanyData.ItemContent>
-          </CompanyData.Item>
-
-          <CompanyData.Item>
-            <CompanyData.ItemTitle>
-            Место нахождения компании
-            </CompanyData.ItemTitle>
-
-            <CompanyData.ItemContent>
-              {companyData && companyData.city}
-            </CompanyData.ItemContent>
-          </CompanyData.Item>
-
-          <CompanyData.Item>
-            <CompanyData.ItemTitle>
-            Должность сотрудника
-            </CompanyData.ItemTitle>
-
-            <CompanyData.ItemContent>
-              {companyData && companyData.position}
-            </CompanyData.ItemContent>
-          </CompanyData.Item>
-
-          <CompanyData.Item>
-            <CompanyData.ItemTitle>
-            Цифровой ключ
-            </CompanyData.ItemTitle>
-
-            <CompanyData.ItemContent>
-              {companyData && companyData.key}
-            </CompanyData.ItemContent>
-          </CompanyData.Item>
-        </CompanyData>
-      }
-      <Button
-        type='primary'
-        // disabled={!checkBrowser('ie')}
-        style={{ marginRight: '2rem' }}
-        onClick={isCreate ? handleCreateCompany : handleAgreeCheck}>
-        {isCreate ? 'Подключить ЭЦП' : 'Продолжить'}
-      </Button>
-      <Button
-        type='primary'
-        ghost
-        onClick={onCancel}
-      >Отмена</Button>
-    </Fragment>
+      </TabPane>
+      <TabPane tab='ТЗИ' key='3'>
+        ТЗИ
+        <Button
+          type='primary'
+          ghost
+          onClick={onCancel}
+        >Отмена</Button>
+      </TabPane>
+    </Tabs>
   )
 }
 

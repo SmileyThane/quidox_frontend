@@ -76,10 +76,12 @@ const SingleDocumentPage = props => {
               'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken'),
             }
           })
-            .then(response => {
-              message.success('Совершено успешное подписание!')
-              signFetching = false;
-              history.push({ pathname: `/documents/${match.params.id}` })
+            .then(({ success }) => {
+              if (success) {
+                message.success('Совершено успешное подписание!')
+                signFetching = false;
+                getDocumentById(match.params.id)
+              }
             })
             .catch(error => {
               message.error('Система обрабатывает подпись. Пожалуйста подождите!')
