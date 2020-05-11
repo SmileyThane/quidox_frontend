@@ -244,8 +244,7 @@ const SingleDocumentPage = props => {
             ...documentState,
             fetching: false,
             showModal: false,
-            isSelectVisible: false,
-            isFe
+            isSelectVisible: false
           })
         } else {
           throw new Error(response.error)
