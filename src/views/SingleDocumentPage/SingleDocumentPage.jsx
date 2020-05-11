@@ -46,7 +46,7 @@ const defaultDocumentState = {
 }
 
 const SingleDocumentPage = props => {
-
+  const [fetch, setFetch] = useState(false)
   const {
     documents: { isFetching, singleDocument },
     match,
@@ -68,7 +68,7 @@ const SingleDocumentPage = props => {
     let attachmentId = params.get('attachment_id')
     if (hash && attachmentId) {
         try {
-          signFetching = true;
+          setFetch(true)
           let id = match.params.id
           axios.get(`${process.env.REACT_APP_BASE_URL}/attachment/sim-sign/check/${attachmentId}?hash=${hash}`, {
             headers: {
@@ -76,7 +76,7 @@ const SingleDocumentPage = props => {
             }
           })
             .then(response => {
-              signFetching = false;
+              setFetch(false)
               const { data: { success } } = response
               if (success) {
                 // message.success('Совершено успешное подписание!')
@@ -95,7 +95,7 @@ const SingleDocumentPage = props => {
               }, 2000)
             })
         } catch (error) {
-          signFetching = false;
+          setFetch(false)
         }
     }
   }, [])
@@ -313,10 +313,10 @@ const SingleDocumentPage = props => {
       })
   }
 
-  console.log(isFetching, signFetching)
+  console.log(isFetching, signFetching, fetch)
   return (
     <Fragment>
-      <Spin spinning={(isFetching || signFetching)}>
+      <Spin spinning={(isFetching || fetch)}>
         <div className='content'>
           <div className='document'>
             <div className='document__header'>
