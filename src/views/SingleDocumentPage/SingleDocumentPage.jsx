@@ -82,6 +82,8 @@ const SingleDocumentPage = props => {
                 // message.success('Совершено успешное подписание!')
                 signFetching = false;
                 getDocumentById(match.params.id)
+              } else {
+                signFetching = false;
               }
             })
             .catch(error => {
