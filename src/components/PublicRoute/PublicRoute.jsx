@@ -26,8 +26,8 @@ const PublicRoute = ({ component: Component, ...rest }) => {
   const query = useQuery()
 
   useEffect(() => {
-    if (query.get('token')) {
-      const token = JSON.parse(query.get('token'))
+    const token = query.get('token')
+    if (token) {
       setFetching(true)
       window.localStorage.setItem('authToken', token)
       history.push('/')
