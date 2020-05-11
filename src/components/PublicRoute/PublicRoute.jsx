@@ -26,23 +26,12 @@ const PublicRoute = ({ component: Component, ...rest }) => {
   const query = useQuery()
 
   useEffect(() => {
-    if (query.get('user')) {
-      const userData = JSON.parse(query.get('user'))
+    const token = query.get('token')
+    if (token) {
       setFetching(true)
-      axios.post(`${process.env.REACT_APP_BASE_URL}/login`, userData)
-        .then(({ data }) => {
-          if (data.success) {
-            setFetching(false)
-            window.localStorage.setItem('authToken', data.data.token)
-            history.push('/')
-          } else {
-            throw new Error(data.error)
-          }
-        })
-        .catch(error => {
-          message.error(error.message)
-          setFetching(false)
-        })
+      window.localStorage.setItem('authToken', token)
+      history.push('/')
+      setFetching(false)
     } else {
       setFetching(false)
     }
