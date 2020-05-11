@@ -89,6 +89,7 @@ const SingleDocumentPage = props => {
               }
             })
             .catch(error => {
+              signFetching = false;
               message.error('Система обрабатывает подпись. Пожалуйста подождите!')
               // message.error(error.message)
               setTimeout(() => {
@@ -96,6 +97,7 @@ const SingleDocumentPage = props => {
               }, 2000)
             })
         } catch (error) {
+          signFetching = false;
         }
       }, 2000)
     }
