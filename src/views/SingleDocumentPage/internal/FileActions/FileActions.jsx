@@ -202,6 +202,7 @@ const {
           .then(({ data }) => {
             if (data.success) {
               window.open(data.data, '')
+              window.close()
             } else {
               throw new Error(data.error)
             }

@@ -31,6 +31,7 @@ const ExternalRedirectPage = props => {
           onClick={(event) => {
             event.preventDefault()
             window.open('/', '')
+            window.close()
           }}
         >
           Продолжить
