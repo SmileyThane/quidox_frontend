@@ -244,7 +244,8 @@ const SingleDocumentPage = props => {
             ...documentState,
             fetching: false,
             showModal: false,
-            isSelectVisible: false
+            isSelectVisible: false,
+            isFe
           })
         } else {
           throw new Error(response.error)
@@ -314,9 +315,8 @@ const SingleDocumentPage = props => {
         }
       })
   }
-  console.log(documentState.value)
-  // alert('res' + (isFetching || signFetching))
 
+  console.log(isFetching, signFetching)
   return (
     <Fragment>
       <Spin spinning={(isFetching || signFetching)}>
