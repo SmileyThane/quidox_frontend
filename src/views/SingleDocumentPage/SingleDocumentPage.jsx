@@ -79,17 +79,16 @@ const SingleDocumentPage = props => {
               setFetch(false)
               const { data: { success } } = response
               if (success) {
-                // message.success('Совершено успешное подписание!')
-                console.log(success)
+                message.success('Совершено успешное подписание!')
                 getDocumentById(match.params.id)
               } else {
-                console.log(success)
+                setFetch(false)
               }
             })
             .catch(error => {
               signFetching = false;
               message.error('Система обрабатывает подпись. Пожалуйста подождите!')
-              // message.error(error.message)
+              message.error(error.message)
               setTimeout(() => {
               window.location.reload();
               }, 2000)
@@ -313,7 +312,6 @@ const SingleDocumentPage = props => {
       })
   }
 
-  console.log(isFetching, signFetching, fetch)
   return (
     <Fragment>
       <Spin spinning={(isFetching || fetch)}>
