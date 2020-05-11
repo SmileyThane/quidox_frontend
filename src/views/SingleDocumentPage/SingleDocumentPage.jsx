@@ -76,7 +76,8 @@ const SingleDocumentPage = props => {
               'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken'),
             }
           })
-            .then(({ success }) => {
+            .then(response => {
+              const { data: { success } } = response
               if (success) {
                 message.success('Совершено успешное подписание!')
                 signFetching = false;
