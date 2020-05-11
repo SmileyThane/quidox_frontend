@@ -78,11 +78,13 @@ const SingleDocumentPage = props => {
           })
             .then(response => {
               const { data: { success } } = response
-              if (success) {
+              if (success == true) {
                 // message.success('Совершено успешное подписание!')
+                console.log(success)
                 signFetching = false;
                 getDocumentById(match.params.id)
               } else {
+                console.log(success)
                 signFetching = false;
               }
             })
@@ -316,7 +318,7 @@ const SingleDocumentPage = props => {
 
   return (
     <Fragment>
-      <Spin spinning={(isFetching ||signFetching)}>
+      <Spin spinning={(isFetching || signFetching)}>
         <div className='content'>
           <div className='document'>
             <div className='document__header'>
