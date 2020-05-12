@@ -17,6 +17,7 @@ import {
   Input
 } from 'antd'
 
+import axios from 'axios'
 import history from '../../history'
 import './CompaniesPage.scss'
 
@@ -48,6 +49,37 @@ const CompaniesPage = props => {
 
   useEffect(() => {
     getCompanies()
+  }, [])
+
+  useEffect(() => {
+    let search = window.location.search
+    let params = new URLSearchParams(search)
+    let hash = params.get('hash')
+
+    if (hash) {
+      try {
+        axios.get(`${process.env.REACT_APP_BASE_URL}/attachment/sim-sign/check/new_company?hash=${hash}`, {
+          headers: {
+            'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken'),
+          }
+        })
+          .then(response => {
+            const { data: { success } } = response
+            if (success) {
+              message.success('Совершено успешное обновление данных!')
+              getCompanies()
+            }
+          })
+          .catch(error => {
+            message.error('Система обрабатывает подпись. Пожалуйста подождите!')
+            message.error(error.message)
+            setTimeout(() => {
+              window.location.reload();
+            }, 2000)
+          })
+      } catch (error) {
+      }
+    }
   }, [])
 
   const onClick = () => {

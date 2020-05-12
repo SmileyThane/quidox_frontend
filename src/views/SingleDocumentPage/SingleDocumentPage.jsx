@@ -388,17 +388,18 @@ const SingleDocumentPage = props => {
                     dataSource={document && document.attachments}
                     style={{ maxHeight: '20rem' }}
                     renderItem={(item, index) => (
-                      <List.Item key={item.id}
-                                 extra={
-                                   <FileActions
-                                     file={item}
-                                     documentId={singleDocument.document.id}
-                                     getDocument={() => getDocumentById(match.params.id)}
-                                     // isHidden={singleDocument.status_name !== 'Отправленные'}
-                                     canBeSigned={singleDocument.can_be_signed}
-                                     messageId={singleDocument.status_id}
-                                   />
-                                 }
+                      <List.Item
+                        key={item.id}
+                         extra={
+                           <FileActions
+                             file={item}
+                             documentId={singleDocument.document.id}
+                             getDocument={() => getDocumentById(match.params.id)}
+                             // isHidden={singleDocument.status_name !== 'Отправленные'}
+                             canBeSigned={singleDocument.can_be_signed}
+                             messageId={singleDocument.status_id}
+                           />
+                         }
                       >
                         <div className='single-document'>
                           <Tooltip

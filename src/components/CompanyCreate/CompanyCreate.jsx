@@ -195,7 +195,7 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, redirect = false }) =
           >Отмена</Button>
         </Fragment>
       </TabPane>
-      <TabPane tab='ТЗИ' key='3'>
+      <TabPane disabled tab='ТЗИ' key='3'>
         ТЗИ
         <Button
           type='primary'
