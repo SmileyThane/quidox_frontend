@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import MenuItem from './MenuItem'
 
 const mapStateToProps = state => ({
-  user: state.user
+  config: state.config
 })
 
 const mapDispatchToProps = dispatch => ({})

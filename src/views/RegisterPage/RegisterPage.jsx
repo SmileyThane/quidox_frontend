@@ -8,13 +8,14 @@ import {
   Form,
   Input,
   Select,
-  Button,
   message,
   Typography,
   Checkbox,
   Spin,
   Result
 } from 'antd'
+
+import { Button } from '../../components'
 
 import './RegisterPage.scss'
 

@@ -5,7 +5,8 @@ import axios from 'axios'
 
 import history from '../../history.js'
 import { Link } from 'react-router-dom'
-import { Button, Form, Icon, Input, message, Typography, Spin } from 'antd'
+import { Button, RouterLink } from '../../components'
+import { Form, Icon, Input, message, Typography, Spin } from 'antd'
 
 import './LoginPage.scss'
 
@@ -91,9 +92,9 @@ class LoginPage extends React.Component {
         </Form.Item>
 
         <Form.Item>
-          <Link className='login-form-forgot' to={'/password-recovery'}>
+          <RouterLink className='login-form-forgot' to={'/password-recovery'}>
             Забыли пароль?
-          </Link>
+          </RouterLink>
           <Button type='primary' htmlType='submit' className='login-form-button' style={{ marginTop: '.5rem' }}>
             Войти
           </Button>
@@ -110,7 +111,7 @@ class LoginPage extends React.Component {
           </Link>
           <div style={{ marginTop: '1.5rem' }}>
             <Title level={4}>Начните обмен документами сейчас!<br/>Нет аккаунта?</Title>
-            <Link to={'/register'}>Зарегистрируйтесь! &nbsp;</Link>
+            <RouterLink to={'/register'}>Зарегистрируйтесь! &nbsp;</RouterLink>
             <Text type='secondary'>
               Вы сможете <strong>бесплатно</strong> обмениваться электронными документами с вашими контрагентами в
               течении <strong style={{ color: 'red' }}>90</strong> дней.

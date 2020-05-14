@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import Button from './Button'
 
 const mapStateToProps = state => ({
-  user: state.user
+  config: state.config
 })
 
 const mapDispatchToProps = dispatch => ({})

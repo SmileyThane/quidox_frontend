@@ -19,7 +19,8 @@ const defaultState = {
 
 const HeaderBlock = props => {
   const {
-    user: { data, isFetching }
+    user: { data, isFetching },
+    config
   } = props
 
   const [state, setState] = useState({ ...defaultState })
@@ -72,7 +73,7 @@ const HeaderBlock = props => {
   }
 
   const { isModalVisible, activeCompany } = state
-  const coBrandLogo = data.co_brand_config ? data.co_brand_config.logo : logo
+  const coBrandLogo = config.data.co_brand_config ? config.data.co_brand_config.logo : logo
   return (
     <Fragment>
       <HeaderContent>

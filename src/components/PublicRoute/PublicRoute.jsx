@@ -16,7 +16,7 @@ import './PublicRoute.scss'
 
 const { Title, Text } = Typography
 
-const PublicRoute = ({ component: Component, ...rest }) => {
+const PublicRoute = ({ component: Component, getConfig, config: { isFetching }, ...rest }) => {
   const [fetching, setFetching] = useState(true)
 
   function useQuery () {
@@ -37,7 +37,11 @@ const PublicRoute = ({ component: Component, ...rest }) => {
     }
   })
 
-  if (fetching) {
+  useEffect(() => {
+    getConfig()
+  }, [])
+
+  if (fetching || isFetching) {
     return 'Loading...'
   }
 

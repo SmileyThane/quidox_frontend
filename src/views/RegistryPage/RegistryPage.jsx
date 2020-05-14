@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react'
 
-import { Button, Icon, Modal, notification, Progress, Steps, Table } from 'antd'
+import { Icon, Modal, notification, Progress, Steps, Table } from 'antd'
+import { Button } from '../../components'
 import { Upload } from './styled'
 import { api } from '../../services'
 

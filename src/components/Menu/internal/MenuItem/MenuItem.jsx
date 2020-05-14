@@ -4,7 +4,7 @@ import { Menu, Icon } from 'antd'
 
 import ThemeMenuItem from './styled'
 
-export default function ({ user: { data }, url, id, icon, isInner = false, menuKey = '', iconColor = '', messages, heading, status, ...rest }) {
+export default function ({ config: { data }, url, id, icon, isInner = false, menuKey = '', iconColor = '', messages, heading, status, ...rest }) {
   const to = {
     pathname: url,
     state: { id, isInner, menuKey }

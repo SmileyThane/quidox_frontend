@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import RouterLink from './RouterLink'
 
 const mapStateToProps = state => ({
-  user: state.user
+  config: state.config
 })
 
 const mapDispatchToProps = dispatch => ({})

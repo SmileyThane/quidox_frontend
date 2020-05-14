@@ -14,6 +14,11 @@ const getUser = () => dispatch => {
           type: t.GET_USER_SUCCESS,
           payload: data
         })
+
+        dispatch({
+          type: t.GET_CONFIG_SUCCESS,
+          payload: { co_brand_config: data.data.co_brand_config }
+        })
       }
       dispatch({
         type: t.GET_USER_FETCHING,

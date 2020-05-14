@@ -6,13 +6,15 @@ import tariff from './tariff'
 import companies from './companies'
 import documents from './documents'
 import files from './files'
+import config from './config'
 
 const appReducer = combineReducers({
   user,
   documents,
   companies,
   files,
-  tariff
+  tariff,
+  config
 })
 
 const rootReducer = (state, action) => {
