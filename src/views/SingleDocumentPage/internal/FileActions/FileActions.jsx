@@ -282,7 +282,7 @@ const {
         <ActionTooltip
           arrowPointAtCenter
           placement='topRight'
-          title={'Подписать документ (simЭЦП)'}
+          title={'Подписать документ (MTC ID)'}
         >
           <ActionIcon
             key={3}

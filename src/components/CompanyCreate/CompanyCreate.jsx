@@ -175,7 +175,7 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, redirect = false }) =
           onClick={onCancel}
         >Отмена</Button>
       </TabPane>
-      <TabPane tab='simЭЦП' key='2'>
+      <TabPane tab='MTC ID' key='2'>
         <Fragment>
           <p>Убедитесь в том, что:</p>
           <ol>
@@ -186,7 +186,7 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, redirect = false }) =
             style={{ marginRight: '2rem' }}
             onClick={handleSimVerifyFile}
           >
-            Подключить simЭЦП
+            Подключить MTC ID
           </Button>
           <Button
             type='primary'
