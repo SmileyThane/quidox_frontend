@@ -33,7 +33,7 @@ import WhitePageRoute from './components/WhitePageRoute'
 function App () {
   return (
     <Fragment>
-      <Router history={history}>
+      <Router history={history} basename={'application'}>
         <Switch>
           <PrivateRoute exact path='/'><Redirect to={{ pathname: '/documents', search: '?status=2', state: { id: '/documents/2' } }} /></PrivateRoute>
 
