@@ -54,18 +54,6 @@ const PublicRoute = ({ component: Component, getConfig, config: { isFetching }, 
             <ContentBlock logWrapp>
               <HeaderBlock />
               <div className='app'>
-                <div className='app-preview'>
-                  <Text style={{ color: '#fff', fontSize: '2rem' }} level={2}>
-                    Благодаря сервису<br />
-                    <span style={{ fontWeight: 'bold' }}>QuiDox.by</span><br />
-                    Вы сможете с легкостью обмениваться электронными
-                    документами с ЭЦП.<br /><br />
-                    Доставка происходит мгновенно!<br /><br />
-                    Пакет услуг "Легкий старт" подписание БЕСПЛАТНО первые 90 дней!
-                    Все входящие сообщения ВСЕГДА БЕСПЛАТНО!
-                  </Text>
-                  <a style={{ color: '#000', fontSize: '2rem' }} href={'https://quidox.by/release'}>Список изменений(ver:3.2.3)</a>
-                </div>
                 <div className='app-content'>
                   <Component {...props} />
                   <FooterBlock className='footer public-footer' />
