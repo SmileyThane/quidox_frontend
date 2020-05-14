@@ -88,7 +88,7 @@ const NewDocumentPage = props => {
     })
       .then(({ data }) => {
         if (is2Draft) {
-          history.push({ pathname: '/documents', search: '?status=1', state: { id: '/documents/1' } })
+          history.push({ pathname: '/application/documents', search: '?status=1', state: { id: '/documents/1' } })
         } else {
           if (!documentState.value.length > 0 && !documentState.coNumbers.length > 0) {
             message.error('Введите получателя!')

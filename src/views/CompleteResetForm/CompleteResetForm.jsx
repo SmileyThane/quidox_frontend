@@ -74,7 +74,7 @@ class CompleteResetForm extends React.Component {
         axios.post(`${process.env.REACT_APP_BASE_URL}/user/update/phone`, { phone_data: secretData })
           .then(({ data }) => {
             if (data.success) {
-              history.push('/login')
+              history.push('/application/login')
             } else {
               throw new Error(data.error)
             }

@@ -146,7 +146,7 @@ const CompaniesPage = props => {
     {
       title: 'Наименование',
       key: 'name',
-      render: record => <RouterLink to={{ pathname: `/companies/${+record.company_id}`, state: { from: history.location.pathname } }}>{record.company_data.name}</RouterLink>
+      render: record => <RouterLink to={{ pathname: `/application/companies/${+record.company_id}`, state: { from: history.location.pathname } }}>{record.company_data.name}</RouterLink>
     },
     {
       title: 'УНП',

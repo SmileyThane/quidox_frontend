@@ -26,7 +26,7 @@ class LoginPage extends React.Component {
         if (data.success) {
           message.success('Заявка на восстановление пароля успешно отправлена!')
           setTimeout(() => {
-            history.push('/login')
+            history.push('/application/login')
           }, 1000)
         } else {
           throw new Error(data.error)

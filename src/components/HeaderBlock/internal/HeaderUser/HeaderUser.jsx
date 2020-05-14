@@ -31,7 +31,7 @@ const HeaderUser = ({ user: { data }, userLogout }) => {
           if (logoutUri) {
             window.open(`${logoutUri}`, '_self')
           } else {
-            history.push('/login')
+            history.push('/application/login')
           }
         } else {
           throw new Error(data.error)
@@ -63,7 +63,7 @@ const HeaderUser = ({ user: { data }, userLogout }) => {
             }
 
             <User.DropdownItem
-              onClick={() => history.push('/user-me')}
+              onClick={() => history.push('/application/user-me')}
             >
               <User.DropdownIcon type='profile' />
 
