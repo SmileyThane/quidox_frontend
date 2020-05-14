@@ -116,7 +116,7 @@ const AntdTable = props => {
       render: record =>
         <Fragment>
           {(status === 1 || status === 3 || status === 9 || status === 10)
-            ? <RouterLink to={{ pathname: `/application/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }}>
+            ? <RouterLink to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }}>
               <div>
                 {record.recipient &&
                     record.recipient['user_email']
@@ -127,7 +127,7 @@ const AntdTable = props => {
                 }
               </div>
             </RouterLink>
-            : <RouterLink to={{ pathname: `/application/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }}>
+            : <RouterLink to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }}>
               <div>
                 {record.sender &&
                     record.sender['user_email']
@@ -156,12 +156,12 @@ const AntdTable = props => {
     {
       title: 'Тема',
       key: 'descr',
-      render: record => <RouterLink to={{ pathname: `/application/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }}>{record.document.name}</RouterLink>
+      render: record => <RouterLink to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }}>{record.document.name}</RouterLink>
     },
     {
       title: () => <Icon type='paper-clip' />,
       key: 'attachments',
-      render: record => <RouterLink to={{ pathname: `/application/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }} style={{ textAlign: 'center' }} >{record.document.attachments.length === 0 ? 'Нет приложенных документов' : record.document.attachments.length }</RouterLink>,
+      render: record => <RouterLink to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }} style={{ textAlign: 'center' }} >{record.document.attachments.length === 0 ? 'Нет приложенных документов' : record.document.attachments.length }</RouterLink>,
       sorter: false
     },
     {
