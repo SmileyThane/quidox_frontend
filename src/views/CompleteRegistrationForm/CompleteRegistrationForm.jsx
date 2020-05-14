@@ -114,7 +114,7 @@ class CompleteRegistrationForm extends React.Component {
                   axios.post(`${process.env.REACT_APP_BASE_URL}/user/update/phone`, { phone_data: secretData })
                     .then(({ data }) => {
                       if (data.success) {
-                        history.push('/application/login')
+                        history.push('/login')
                       } else {
                         throw new Error(data.error)
                       }

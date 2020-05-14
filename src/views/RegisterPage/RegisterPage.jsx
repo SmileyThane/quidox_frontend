@@ -156,7 +156,7 @@ class RegistrationForm extends React.Component {
               })
             break
           case 3:
-            history.push('/application/login')
+            history.push('/login')
             break
           default: // Do nothing
         }

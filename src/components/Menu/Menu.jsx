@@ -37,7 +37,7 @@ const AntMenu = props => {
         size='large'
         icon='plus'
         block
-        onClick={() => history.push('/application/new-document')}
+        onClick={() => history.push('/new-document')}
         style={{ maxWidth: '26rem', marginLeft: '1.5rem', padding: '1rem 1.5rem', height: 'auto' }}
       >
         Новое сообщение
@@ -51,52 +51,52 @@ const AntMenu = props => {
         <Menu.ItemGroup title={<span><Icon type="import" />Входящие</span>}>
           <MenuItem
             heading='Входящие'
-            url='/application/documents'
+            url='/documents'
             status={2}
-            key='/application/documents/2'
+            key='/documents/2'
             icon='import'
-            id={'/application/documents/2'}
+            id={'/documents/2'}
           />
 
           <MenuItem
             heading='УНП@qdx.by'
-            url='/application/documents'
-            key='/application/documents/11'
+            url='/documents'
+            key='/documents/11'
             icon='file-protect'
             status={11}
-            id={'/application/documents/11'}
+            id={'/documents/11'}
           />
         </Menu.ItemGroup>
         <MenuItem
           heading='Отправленные'
-          url='/application/documents'
+          url='/documents'
           status={3}
-          key='/application/documents/3'
+          key='/documents/3'
           icon='export'
-          id={'/application/documents/3'}
+          id={'/documents/3'}
         />
         <MenuItem
           heading='Черновики'
-          url='/application/documents'
+          url='/documents'
           status={1}
-          key='/application/documents/1'
+          key='/documents/1'
           icon='file-text'
-          id={'/application/documents/1'}
+          id={'/documents/1'}
         />
         <MenuItem
           heading='Архив'
-          url='/application/documents'
+          url='/documents'
           status={4}
-          key='/application/documents/4'
+          key='/documents/4'
           icon='delete'
-          id={'/application/documents/4'}
+          id={'/documents/4'}
         />
         <MenuItem
           heading='Компании'
-          url='/application/companies'
-          key='/application/companies'
+          url='/companies'
+          key='/companies'
           icon='cluster'
-          id={'/application/companies'}
+          id={'/companies'}
         />
         <SubMenu
           disabled
@@ -115,7 +115,7 @@ const AntMenu = props => {
               id={i.id}
               menuKey='sub1'
               isInner
-              url='/application/attachments'
+              url='/attachments'
               status={i.id}
               icon='file-text'
               heading={i.name}
@@ -142,7 +142,7 @@ const AntMenu = props => {
                   id={i.id}
                   menuKey='sub2'
                   isInner
-                  url='/application/documents'
+                  url='/documents'
                   status={i.id}
                   icon='file-text'
                   heading={i.name}
@@ -154,43 +154,43 @@ const AntMenu = props => {
         </SubMenu>
         <MenuItem
           heading='Проверка ЭЦП'
-          url='/application/esc-checking'
-          key='/application/esc-checking'
+          url='/esc-checking'
+          key='/esc-checking'
           icon='file-protect'
-          id={'/application/esc-checking'}
+          id={'/esc-checking'}
         />
         <MenuItem
           heading='Сторонние источники'
-          url='/application/documents'
-          key='/application/documents/9'
+          url='/documents'
+          key='/documents/9'
           icon='file-text'
           status={9}
-          id={'/application/documents/9'}
+          id={'/documents/9'}
 
         />
         <MenuItem
             heading='Сообщения реестра'
-            url='/application/documents'
-            key='/application/documents/10'
+            url='/documents'
+            key='/documents/10'
             icon='file-text'
             status={10}
-            id={'/application/documents/10'}
+            id={'/documents/10'}
 
         />
         <MenuItem
           heading='Работа с реестром документов'
-          url='/application/registry'
-          key='/application/registry'
+          url='/registry'
+          key='/registry'
           icon='code'
-          id={'/application/registry'}
+          id={'/registry'}
 
         />
         <MenuItem
           heading='Загруженные реестры'
-          url='/application/registry-stored'
-          key='/application/registry-stored'
+          url='/registry-stored'
+          key='/registry-stored'
           icon='file-select'
-          id={'/application/registry-stored'}
+          id={'/registry-stored'}
 
         />
 

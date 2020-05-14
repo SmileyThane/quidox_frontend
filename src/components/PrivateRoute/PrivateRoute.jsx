@@ -41,7 +41,7 @@ const PrivateRoute = ({ component: Component, user: { data, isFetching }, getUse
   }, [activeCompany && Object.keys(activeCompany).length])
 
   const handleChangeTariff = () => {
-    history.push(history.push(`/application/companies/${activeCompany.company_id}`))
+    history.push(history.push(`/companies/${activeCompany.company_id}`))
     setAvailableTariff(false)
   }
 

@@ -56,7 +56,7 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, redirect = false }) =
           getUser()
           onCancel()
           if (redirect) {
-            history.push('/application/companies')
+            history.push('/companies')
           }
         } else {
           throw new Error(response.error)

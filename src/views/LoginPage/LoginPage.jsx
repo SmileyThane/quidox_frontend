@@ -92,7 +92,7 @@ class LoginPage extends React.Component {
         </Form.Item>
 
         <Form.Item>
-          <RouterLink className='login-form-forgot' to={'/application/password-recovery'}>
+          <RouterLink className='login-form-forgot' to={'/password-recovery'}>
             Забыли пароль?
           </RouterLink>
           <Button type='primary' htmlType='submit' className='login-form-button' style={{ marginTop: '.5rem' }}>
@@ -111,7 +111,7 @@ class LoginPage extends React.Component {
           </Link>
           <div style={{ marginTop: '1.5rem' }}>
             <Title level={4}>Начните обмен документами сейчас!<br/>Нет аккаунта?</Title>
-            <RouterLink to={'/application/register'}>Зарегистрируйтесь! &nbsp;</RouterLink>
+            <RouterLink to={'/register'}>Зарегистрируйтесь! &nbsp;</RouterLink>
             <Text type='secondary'>
               Вы сможете <strong>бесплатно</strong> обмениваться электронными документами с вашими контрагентами в
               течении <strong style={{ color: 'red' }}>90</strong> дней.

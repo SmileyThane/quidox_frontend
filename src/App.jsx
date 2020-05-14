@@ -35,32 +35,32 @@ function App () {
     <Fragment>
       <Router history={history}>
         <Switch>
-          <PrivateRoute exact path='/'><Redirect to={{ pathname: '/application/documents', search: '?status=2', state: { id: '/documents/2' } }} /></PrivateRoute>
+          <PrivateRoute exact path='/'><Redirect to={{ pathname: '/documents', search: '?status=2', state: { id: '/documents/2' } }} /></PrivateRoute>
 
-          <PrivateRoute path='/application/new-document' component={NewDocumentPage} />
+          <PrivateRoute path='/new-document' component={NewDocumentPage} />
 
-          <ProtectedRoute path='/application/esc-checking' component={EcsCheckingPage} />
+          <ProtectedRoute path='/esc-checking' component={EcsCheckingPage} />
 
-          <PrivateRoute exact path='/application/companies' component={CompaniesPage} />
-          <PrivateRoute path='/application/companies/:id' component={SingleCompanyPage} />
+          <PrivateRoute exact path='/companies' component={CompaniesPage} />
+          <PrivateRoute path='/companies/:id' component={SingleCompanyPage} />
 
-          <PrivateRoute exact path='/application/documents' component={DocumentsPage} />
-          <PrivateRoute exact path='/application/attachments' component={AttachmentsPage} />
-          <PrivateRoute path='/application/documents/:id' component={SingleDocumentPage} />
-          <PrivateRoute path='/application/attachments/:id' component={SingleDocumentPage} />
-          <PrivateRoute path='/application/registry' component={RegistryPage} />
-          <PrivateRoute path='/application/registry-stored' component={StoredRegistryPage} />
-          <PrivateRoute path='/application/user-me' component={UserInfoPage} />
+          <PrivateRoute exact path='/documents' component={DocumentsPage} />
+          <PrivateRoute exact path='/attachments' component={AttachmentsPage} />
+          <PrivateRoute path='/documents/:id' component={SingleDocumentPage} />
+          <PrivateRoute path='/attachments/:id' component={SingleDocumentPage} />
+          <PrivateRoute path='/registry' component={RegistryPage} />
+          <PrivateRoute path='/registry-stored' component={StoredRegistryPage} />
+          <PrivateRoute path='/user-me' component={UserInfoPage} />
 
-          <PublicRoute path='/application/login' component={LoginPage} />
-          <PublicRoute path='/application/register' component={RegisterPage} />
-          <PublicRoute path='/application/complete-registration/:id' component={CompleteRegistrationForm} />
-          <PublicRoute path='/application/complete-reset/:id' component={CompleteResetForm} />
-          <PublicRoute path='/application/password-recovery' component={ResetPasswordPage} />
-          <ProtectedRoute path='/application/document/:id/shared/:code' component={SingleSharedDocumentPage} />
-          <WhitePageRoute path='/application/e-sign-first-step' component={EsignFirstStepPage} />
-          <WhitePageRoute path='/application/e-sign-login' component={EsignLoginPage} />
-          <WhitePageRoute path='/application/external/auth' component={ExternalRedirectPage} />
+          <PublicRoute path='/login' component={LoginPage} />
+          <PublicRoute path='/register' component={RegisterPage} />
+          <PublicRoute path='/complete-registration/:id' component={CompleteRegistrationForm} />
+          <PublicRoute path='/complete-reset/:id' component={CompleteResetForm} />
+          <PublicRoute path='/password-recovery' component={ResetPasswordPage} />
+          <ProtectedRoute path='/document/:id/shared/:code' component={SingleSharedDocumentPage} />
+          <WhitePageRoute path='/e-sign-first-step' component={EsignFirstStepPage} />
+          <WhitePageRoute path='/e-sign-login' component={EsignLoginPage} />
+          <WhitePageRoute path='/external/auth' component={ExternalRedirectPage} />
           <PublicRoute path='*' component={LoginPage} />
         </Switch>
       </Router>

@@ -5,7 +5,7 @@ export default (instance) => {
     if (err.response && err.response.status === 401) {
       if (window.localStorage.getItem('authToken') !== null) {
         window.localStorage.clear('authToken')
-        history.push('/application/login')
+        history.push('/login')
       }
     }
     return Promise.reject(err)
