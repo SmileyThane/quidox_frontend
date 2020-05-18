@@ -1,8 +1,6 @@
 import React, { useEffect, useState, Fragment } from 'react'
 import { Redirect, Route } from 'react-router-dom'
 import { useLocation } from 'react-router'
-import { Typography, message } from 'antd'
-import axios from 'axios'
 
 import {
   LayoutBlock,
@@ -13,8 +11,6 @@ import {
 
 import history from '../../history'
 import './PublicRoute.scss'
-
-const { Title, Text } = Typography
 
 const PublicRoute = ({ component: Component, getConfig, config: { isFetching }, ...rest }) => {
   const [fetching, setFetching] = useState(true)

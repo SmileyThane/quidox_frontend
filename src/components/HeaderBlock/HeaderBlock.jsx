@@ -73,7 +73,7 @@ const HeaderBlock = props => {
   }
 
   const { isModalVisible, activeCompany } = state
-  const coBrandLogo = config.data.co_brand_config ? config.data.co_brand_config.logo : logo
+  const coBrandLogo = config.data.co_brand_config ? config.data.co_brand_config.logo_png : logo
   const LogoUri = config.data.co_brand_config ? config.data.co_brand_config.logout_uri : 'https://quidox.by'
   return (
     <Fragment>

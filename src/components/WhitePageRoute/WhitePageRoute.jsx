@@ -1,6 +1,6 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import { Redirect, Route } from 'react-router-dom'
-import { Typography } from 'antd'
+
 import {
   LayoutBlock,
   FooterBlock,
@@ -10,11 +10,15 @@ import {
 
 import './WhitePageRoute.scss'
 
-const { Title, Text } = Typography
+const WhitePageRoute = ({ component: Component, getConfig, config: { isFetching }, ...rest }) => {
 
-const WhitePageRoute = ({ component: Component, ...rest }) => {
+  useEffect(() => {
+    getConfig()
+  }, [])
 
-  console.log(rest)
+  if (isFetching) {
+    return 'Loading...'
+  }
 
   return <Route {...rest}
     render={props =>

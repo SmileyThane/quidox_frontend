@@ -51,8 +51,6 @@ const EsignLoginPage = props => {
   }
   return (
     <Fragment>
-      <Text>
-      </Text>
       <Text style={{ padding: '30px', maxWidth: '60%', textAlign: 'center', color: '#000', fontSize: '1.5rem' }}
             level={2}>
         Продолжая процедуру входа Вы подтверждаете
