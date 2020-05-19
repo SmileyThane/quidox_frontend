@@ -5,7 +5,7 @@ import moment from 'moment'
  */
 export const decryptionCompanyData = (data) => ({
   date: moment().format('DD/MM/YYYY HH:mm'),
-  name: data.verifiedData.subject['2.5.4.3'] ? data.verifiedData.subject['2.5.4.3'].replace(data.verifiedData.subject['2.5.4.5'], '') : 'Данные отсутствуют',
+  name: data.verifiedData.subject['2.5.4.3'] ? data.verifiedData.subject['2.5.4.3'] : 'Данные отсутствуют',
   key: data.verifiedData.cert['2.5.29.14'] ? data.verifiedData.cert['2.5.29.14'] : 'Невозможно создать цифровой ключ',
   city: (data.verifiedData.subject['2.5.4.7'] || data.verifiedData.subject['2.5.4.9']) ? data.verifiedData.subject['2.5.4.7'] + ', ' + data.verifiedData.subject['2.5.4.9'] : 'Данные отсутствуют',
   number: data.verifiedData.cert['1.2.112.1.2.1.1.1.1.2'] ? data.verifiedData.cert['1.2.112.1.2.1.1.1.1.2'] : window.strToHex(data.verifiedData.subject['2.5.4.3']),
