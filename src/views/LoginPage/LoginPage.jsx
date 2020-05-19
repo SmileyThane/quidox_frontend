@@ -112,10 +112,6 @@ class LoginPage extends React.Component {
           <div style={{ marginTop: '1.5rem' }}>
             <Title level={4}>Начните обмен документами сейчас!<br/>Нет аккаунта?</Title>
             <RouterLink to={'/register'}>Зарегистрируйтесь! &nbsp;</RouterLink>
-            <Text type='secondary'>
-              Вы сможете <strong>бесплатно</strong> обмениваться электронными документами с вашими контрагентами в
-              течении <strong style={{ color: 'red' }}>90</strong> дней.
-            </Text>
           </div>
         </Form.Item>
       </Form>

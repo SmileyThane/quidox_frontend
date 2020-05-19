@@ -143,6 +143,43 @@ const {
       })
   }
 
+  const handleSimVerifyFile = (file, documentId, status) => {
+    if (status === 3 || canBeSigned) {
+      try {
+        api.documents.attachmentSimSign(file.id)
+          .then(({ data }) => {
+            if (data.success) {
+              const file = {
+                attachment_id: file.id,
+                status: 5,
+                color: '#808000',
+                name: 'Файл подписан',
+                comment: ''
+              }
+              changeStatus(file)
+                .then(( data ) => {
+                  if (data.success) {
+                    window.open(data.data, '')
+                    window.close()
+                  } else {
+                    throw new Error(data.error)
+                  }
+              })
+            } else {
+              throw new Error(data.error)
+            }
+          })
+          .catch(error => {
+            message.error(error.message)
+          })
+      } catch (error) {
+        notification['error']({
+          message: error.message
+        })
+      }
+    }
+  }
+
   const handleVerifyFile = (item, documentId, status) => {
     if ((checkBrowser('ie') && status === 3) || canBeSigned) {
       api.files.getBase64File(item.id)
@@ -192,29 +229,6 @@ const {
             }
           }
         })
-    }
-  }
-
-  const handleSimVerifyFile = (item, documentId, status) => {
-    if (status === 3 || canBeSigned) {
-      try {
-        api.documents.attachmentSimSign(item.id)
-          .then(({ data }) => {
-            if (data.success) {
-              window.open(data.data, '')
-              window.close()
-            } else {
-              throw new Error(data.error)
-            }
-          })
-          .catch(error => {
-            message.error(error.message)
-          })
-      } catch (error) {
-        notification['error']({
-          message: error.message
-        })
-      }
     }
   }
 
