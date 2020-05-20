@@ -168,7 +168,7 @@ const NewDocumentPage = props => {
       })
     }
 
-    updateDocumentById(documentState.message.id, { user_company_ids: validEmails.map(i => i.key) });
+    updateDocumentById(documentState.message.id, { user_company_ids: JSON.stringify(validEmails.map(i => i.key)) });
 
     setDocumentState({
       ...documentState,
