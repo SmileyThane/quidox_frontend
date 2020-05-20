@@ -162,10 +162,13 @@ const NewDocumentPage = props => {
     })
 
     if (v.length !== validEmails.length) {
+      console.log('123')
       notification['error']({
         message: 'Не правильный электронный адрес'
       })
     }
+
+    updateDocumentById(documentState.message.id, { user_company_ids: validEmails.map(i => i.key) });
 
     setDocumentState({
       ...documentState,
