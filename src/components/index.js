@@ -18,6 +18,7 @@ import AvestErrorHandling from './AvestErrorHandling'
 import UploadFiles from './UploadFiles'
 import RouterLink from './RouterLink'
 import GoBack from './GoBack'
+import TariffTimePeriod from './TariffTimePeriod'
 
 export {
   PrivateRoute,
@@ -38,5 +39,7 @@ export {
   CompanyCreate,
   AvestErrorHandling,
   UploadFiles,
-  RouterLink
+  RouterLink,
+  GoBack,
+  TariffTimePeriod
 }

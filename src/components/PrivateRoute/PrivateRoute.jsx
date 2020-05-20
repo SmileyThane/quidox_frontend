@@ -5,7 +5,7 @@ import history from '../../history'
 import { Layout, Modal} from 'antd'
 import { Button } from '../'
 import { getActiveCompany, checkActiveTariff } from '../../utils'
-import { LayoutBlock, HeaderBlock, SiderBlock, ContentBlock, FooterBlock } from '../'
+import { LayoutBlock, HeaderBlock, SiderBlock, ContentBlock, FooterBlock, TariffTimePeriod } from '../'
 import { useResponseStatus } from '../../hooks'
 
 const PrivateRoute = ({ component: Component, user: { data, isFetching }, getUser, getTariffications, ...rest }) => {
@@ -67,6 +67,7 @@ const PrivateRoute = ({ component: Component, user: { data, isFetching }, getUse
                 <ContentBlock>
                   <Component {...props} />
                 </ContentBlock>
+                <TariffTimePeriod />
                 <FooterBlock />
               </Layout>
             </Layout>
