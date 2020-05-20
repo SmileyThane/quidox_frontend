@@ -59,7 +59,7 @@ const AntMenu = props => {
           />
 
           <MenuItem
-            heading='УНП@qdx.by'
+            heading='УНП@'
             url='/documents'
             key='/documents/11'
             icon='file-protect'

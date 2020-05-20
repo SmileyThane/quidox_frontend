@@ -165,7 +165,7 @@ class UserInfoPage extends React.Component {
         this.props.shareUser(values)
           .then(data => {
             if (data.success) {
-              message.success('Пользователь расшарен. передайте ему пароль: ' + data.data.verification_code)
+              message.success('Доступ предоставлен. Передайте доверенному лицу пароль: ' + data.data.verification_code)
               this.setState({ isModalVisible: !this.state.isModalVisible })
             } else {
               throw new Error(data.error)
@@ -414,7 +414,7 @@ class UserInfoPage extends React.Component {
             tab={
               <span>
           <Icon type="team" />
-          Расшаренные пользователи
+          Доверительный доступ
         </span>
             }
             key="2"
@@ -438,11 +438,11 @@ class UserInfoPage extends React.Component {
               <div>
                 <Button type='primary' onClick={() => this.openModal('share')}>
                   <Icon type='cloud'/>
-                  Расшарить пользователя
+                  Предоставить доступ
                 </Button>
                 <Button type='primary' style={{ marginLeft: '2rem' }} onClick={() => this.openModal('getShared')}>
                   <Icon type='cloud-download'/>
-                  Перейти к активному расшареному пользователю
+                  Перейти в учетную запись доверителя
                 </Button>
               </div>
             </div>
@@ -453,7 +453,7 @@ class UserInfoPage extends React.Component {
           title={`
                   ${this.state.modalType === 'password' ? 'Изменить пароль' : ''}
                   ${this.state.modalType === 'phone' ? 'Изменить номер телефона' : ''}
-                  ${this.state.modalType === 'share' ? 'Расшарить пользователя' : ''}
+                  ${this.state.modalType === 'share' ? 'Предоставить доступ' : ''}
                   ${this.state.modalType === 'getShared' ? 'Перейти к активному расшареному пользователю' : ''}
            `}
           visible
@@ -604,7 +604,7 @@ class UserInfoPage extends React.Component {
               : null
             }
             {this.state.modalType === 'share'
-              ? <Button type='primary' onClick={this.shareUser}>Подтвердить шаринг</Button>
+              ? <Button type='primary' onClick={this.shareUser}>Создать пароль доступа</Button>
               : null
             }
             {this.state.modalType === 'getShared'
