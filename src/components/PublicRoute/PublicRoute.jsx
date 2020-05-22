@@ -26,7 +26,8 @@ const PublicRoute = ({ component: Component, getConfig, config: { isFetching }, 
     if (token) {
       setFetching(true)
       window.localStorage.setItem('authToken', token)
-      history.push('/')
+      window.open('/', '')
+      window.close()
       setFetching(false)
     } else {
       setFetching(false)
