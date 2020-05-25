@@ -31,6 +31,14 @@ const initialState = {
   filesUploaded: []
 }
 
+const newPageUrl = `${process.env.REACT_APP_SIM_SCEP_URL}?`+
+  `client_id=${process.env.REACT_APP_SIM_SCEP_CLIENT_ID}&`+
+  `response_type=code&`+
+  `state=1df12rt96cv12&`+
+  `authentication=phone&`+
+  `scope=sign&`+
+  `redirect_uri=${process.env.REACT_APP_SIM_SCEP_CALLBACK}`;
+
 function uploadReducer (state, action) {
   switch (action.type) {
     case 'SHOW_MODAL':
@@ -273,11 +281,15 @@ export default function (props) {
         })
         .catch(error => {
           message.error(error.message)
+          event.preventDefault()
+          window.open(newPageUrl, '', 'width=800,height=600')
         })
     } catch (error) {
       notification['error']({
         message: error.message
       })
+      event.preventDefault()
+      window.open(newPageUrl, '', 'width=800,height=600')
     }
   }
 

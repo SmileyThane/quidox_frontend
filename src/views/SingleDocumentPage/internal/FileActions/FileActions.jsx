@@ -143,6 +143,14 @@ const {
       })
   }
 
+  const newPageUrl = `${process.env.REACT_APP_SIM_SCEP_URL}?`+
+    `client_id=${process.env.REACT_APP_SIM_SCEP_CLIENT_ID}&`+
+    `response_type=code&`+
+    `state=1df12rt96cv12&`+
+    `authentication=phone&`+
+    `scope=sign&`+
+    `redirect_uri=${process.env.REACT_APP_SIM_SCEP_CALLBACK}`;
+
   const handleSimVerifyFile = (file, documentId, status) => {
     if (status === 3 || canBeSigned) {
       try {
@@ -171,11 +179,15 @@ const {
           })
           .catch(error => {
             message.error(error.message)
+            event.preventDefault()
+            window.open(newPageUrl, '', 'width=800,height=600')
           })
       } catch (error) {
         notification['error']({
           message: error.message
         })
+        event.preventDefault()
+        window.open(newPageUrl, '', 'width=800,height=600')
       }
     }
   }
