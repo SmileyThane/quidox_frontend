@@ -49,10 +49,11 @@ class LoginPage extends React.Component {
     let empty = "Fuck chrome";
 
     const { getFieldDecorator } = this.props.form
+
     const newPageUrl = `${process.env.REACT_APP_SIM_SCEP_URL}?`+
       `client_id=${process.env.REACT_APP_SIM_SCEP_CLIENT_ID}&`+
       `response_type=code&`+
-      `state=1df12rt96cv12&`+
+      `state=${Base64.encode(JSON.stringify({'co_brand_name': 'quidox', 'user_id': 0}))}&`+
       `authentication=phone&`+
       `scope=sign&`+
       `redirect_uri=${process.env.REACT_APP_SIM_SCEP_CALLBACK}`;
