@@ -87,14 +87,12 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, redirect = false }) =
         })
         .catch(error => {
           message.error(error.message)
-          event.preventDefault()
           window.open(newPageUrl, '', 'width=800,height=600')
         })
     } catch (error) {
       notification['error']({
         message: error.message
       })
-      event.preventDefault()
       window.open(newPageUrl, '', 'width=800,height=600')
     }
   }
