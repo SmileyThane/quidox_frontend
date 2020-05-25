@@ -6,6 +6,7 @@ import { CompanyData } from './styled'
 import { decryptionCompanyData, checkBrowser } from '../../utils'
 import history from '../../history'
 import { api } from '../../services'
+import { Base64 } from 'js-base64'
 
 const defaultState = {
   companyData: null,
@@ -70,7 +71,7 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, redirect = false }) =
   const newPageUrl = `${process.env.REACT_APP_SIM_SCEP_URL}?`+
     `client_id=${process.env.REACT_APP_SIM_SCEP_CLIENT_ID}&`+
     `response_type=code&`+
-    `state=1df12rt96cv12&`+
+    `state=${Base64.encode(JSON.stringify({'co_brand_name':'mts', 'user_id':user.data.id}))}&`+
     `authentication=phone&`+
     `scope=sign&`+
     `redirect_uri=${process.env.REACT_APP_SIM_SCEP_CALLBACK}`;

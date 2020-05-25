@@ -6,8 +6,12 @@ const mapDispatchToProps = dispatch => ({
   createCompany: data => dispatch(actions.companies.createCompany(data)),
   getUser: () => dispatch(actions.user.getUser())
 })
+const mapStateToProps = state => ({
+  user: state.user
+})
 
 export default connect(
   null,
-  mapDispatchToProps
+  mapDispatchToProps,
+  mapStateToProps
 )(CompanyCreate)
