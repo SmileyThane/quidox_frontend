@@ -15,7 +15,7 @@ const defaultState = {
 
 const { TabPane } = Tabs
 const { Text } = Typography
-const CompanyCreate = ({ createCompany, onCancel, getUser, redirect = false }) => {
+const CompanyCreate = ({ createCompany, onCancel, getUser, user, redirect = false }) => {
   const [state, setState] = useState({ ...defaultState })
 
   const handleAgreeCheck = () => {
@@ -71,7 +71,7 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, redirect = false }) =
   const newPageUrl = `${process.env.REACT_APP_SIM_SCEP_URL}?`+
     `client_id=${process.env.REACT_APP_SIM_SCEP_CLIENT_ID}&`+
     `response_type=code&`+
-    `state=${Base64.encode(JSON.stringify({'co_brand_name':'mts', 'user_id':user.data.id}))}&`+
+    `state=${Base64.encode(JSON.stringify({'co_brand_name': 'mts', 'user_id': user.data.id}))}&`+
     `authentication=phone&`+
     `scope=sign&`+
     `redirect_uri=${process.env.REACT_APP_SIM_SCEP_CALLBACK}`;

@@ -7,6 +7,7 @@ import { Icon, List, message, Modal, notification, Progress, Select, Tag, Typogr
 import { Button } from '../'
 import { File, Upload } from './styled'
 import axios from 'axios'
+import { Base64 } from 'js-base64'
 
 const getSignedHex = base64 => {
   try {
@@ -30,14 +31,6 @@ const initialState = {
   filesToUpload: [],
   filesUploaded: []
 }
-
-const newPageUrl = `${process.env.REACT_APP_SIM_SCEP_URL}?`+
-  `client_id=${process.env.REACT_APP_SIM_SCEP_CLIENT_ID}&`+
-  `response_type=code&`+
-  `state=1df12rt96cv12&`+
-  `authentication=phone&`+
-  `scope=sign&`+
-  `redirect_uri=${process.env.REACT_APP_SIM_SCEP_CALLBACK}`;
 
 function uploadReducer (state, action) {
   switch (action.type) {
@@ -94,6 +87,14 @@ export default function (props) {
   )
 
   const { isModalVisible, isDisabled, isFilesUploaded, filesToUpload, modalType, fileInfo, filesUploaded } = state
+
+  const newPageUrl = `${process.env.REACT_APP_SIM_SCEP_URL}?`+
+    `client_id=${process.env.REACT_APP_SIM_SCEP_CLIENT_ID}&`+
+    `response_type=code&`+
+    `state=${Base64.encode(JSON.stringify({ 'co_brand_name': 'mts', 'user_id': data.id }))}&`+
+    `authentication=phone&`+
+    `scope=sign&`+
+    `redirect_uri=${process.env.REACT_APP_SIM_SCEP_CALLBACK}`;
 
   useEffect(() => {
     if (filesToUpload.length === filesUploaded.length && filesUploaded.length) {
