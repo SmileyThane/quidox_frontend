@@ -68,6 +68,8 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, user, config, redirec
       })
   }
 
+  console.log(clientId, callback)
+
   const clientId = Object.keys(config.data).length ? config.data.co_brand_config.client_id : process.env.REACT_APP_SIM_SCEP_URL
   const callback = Object.keys(config.data).length ? config.data.co_brand_config.callback : process.env.REACT_APP_SIM_SCEP_URL
 
