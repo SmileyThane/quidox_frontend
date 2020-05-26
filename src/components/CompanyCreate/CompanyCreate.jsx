@@ -15,7 +15,7 @@ const defaultState = {
 
 const { TabPane } = Tabs
 const { Text } = Typography
-const CompanyCreate = ({ createCompany, onCancel, getUser, user, redirect = false }) => {
+const CompanyCreate = ({ createCompany, onCancel, getUser, user, config, redirect = false }) => {
   const [state, setState] = useState({ ...defaultState })
 
   const handleAgreeCheck = () => {
@@ -68,13 +68,16 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, user, redirect = fals
       })
   }
 
+  const clientId = Object.keys(config.data).length ? config.data.co_brand_config.client_id : process.env.REACT_APP_SIM_SCEP_URL
+  const callback = Object.keys(config.data).length ? config.data.co_brand_config.callback : process.env.REACT_APP_SIM_SCEP_URL
+
   const newPageUrl = `${process.env.REACT_APP_SIM_SCEP_URL}?`+
-    `client_id=${process.env.REACT_APP_SIM_SCEP_CLIENT_ID}&`+
+    `client_id=${clientId}&`+
     `response_type=code&`+
-    `state=${Base64.encode(JSON.stringify({'co_brand_name': 'mts', 'user_id': user.data.id}))}&`+
+    `state=${Base64.encode(JSON.stringify({'co_brand_name': Object.keys(config.data).length ? 'mts' : 'quidox', 'user_id': user.data.id}))}&`+
     `authentication=phone&`+
     `scope=sign&`+
-    `redirect_uri=${process.env.REACT_APP_SIM_SCEP_CALLBACK}`;
+    `redirect_uri=${callback}`;
 
   const handleSimVerifyFile = () => {
     try {

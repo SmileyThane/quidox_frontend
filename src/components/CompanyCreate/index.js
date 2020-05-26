@@ -7,7 +7,8 @@ const mapDispatchToProps = dispatch => ({
   getUser: () => dispatch(actions.user.getUser())
 })
 const mapStateToProps = state => ({
-  user: state.user
+  user: state.user,
+  config: state.config
 })
 
 export default connect(
