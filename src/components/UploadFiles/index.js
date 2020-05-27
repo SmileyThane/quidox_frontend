@@ -4,6 +4,7 @@ import UploadFiles from './UploadFiles'
 
 const mapStateToProps = state => ({
   user: state.user,
+  config: state.config,
   documents: state.documents,
   files: state.files
 })

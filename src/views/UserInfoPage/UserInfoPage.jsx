@@ -293,7 +293,7 @@ class UserInfoPage extends React.Component {
                               message: 'Пожалуйста, введите ваше имя!'
                             }
                           ]
-                        })(<Input disabled/>)}
+                        })(<Input disabled />)}
                       </Form.Item>
                     </Col>
 

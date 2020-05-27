@@ -56,7 +56,8 @@ const FileActions = props => {
     getDocument,
     changeStatus,
     verifyFile,
-    user
+    user,
+    config
   } = props
 
 const [state, dispatch] = useReducer(
@@ -145,13 +146,16 @@ const {
       })
   }
 
+  const clientId = Object.keys(config.data).length ? config.data.co_brand_config.client_id : process.env.REACT_APP_SIM_SCEP_URL
+  const callback = Object.keys(config.data).length ? config.data.co_brand_config.callback : process.env.REACT_APP_SIM_SCEP_URL
+
   const newPageUrl = `${process.env.REACT_APP_SIM_SCEP_URL}?`+
-    `client_id=${process.env.REACT_APP_SIM_SCEP_CLIENT_ID}&`+
+    `client_id=${clientId}&`+
     `response_type=code&`+
-    `state=${Base64.encode(JSON.stringify({ 'co_brand_name': 'mts', 'user_id': user.data.id }))}&`+
+    `state=${Base64.encode(JSON.stringify({ 'co_brand_name': Object.keys(config.data).length ? 'mts' : 'quidox', 'user_id': user.data.id }))}&`+
     `authentication=phone&`+
     `scope=sign&`+
-    `redirect_uri=${process.env.REACT_APP_SIM_SCEP_CALLBACK}`;
+    `redirect_uri=${callback}`;
 
   const handleSimVerifyFile = (file, documentId, status) => {
     if (status === 3 || canBeSigned) {
