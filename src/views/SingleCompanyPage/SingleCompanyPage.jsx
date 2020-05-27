@@ -30,7 +30,7 @@ const SingleCompanyPage = props => {
   }, [match, getCompanyById])
 
   const coBrand = data.co_brand_config && data.co_brand_config
-  console.log('coBrand', coBrand)
+
   return (
     <Fragment>
       <Spin spinning={isFetching}>

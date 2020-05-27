@@ -5,7 +5,6 @@ import './Button.scss'
 
 export default function ({ config: { data }, children, ...rest }) {
   const coBrand = data.co_brand_config && data.co_brand_config
-  console.log(data)
   return (
     <ThemeButton brand={coBrand} {...rest}>{children}</ThemeButton>
   )

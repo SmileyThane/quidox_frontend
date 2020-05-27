@@ -170,7 +170,6 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
     }
   }
 
-  console.log(state)
   const columns = [
     {
       title: 'File',

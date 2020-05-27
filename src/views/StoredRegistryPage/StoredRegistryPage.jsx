@@ -54,7 +54,6 @@ const StoredRegistryPage = () => {
     })
       .then(({ data }) => {
         if (data) {
-          console.log(data)
           fileDownload(data, `registry.xls`)
           notification['success']({
             message: ' Файл подготовлен к загрузке!'
@@ -73,7 +72,6 @@ const StoredRegistryPage = () => {
       handleImportRegistry();
   }, [])
 
-  console.log(state)
   const columns = [
     {
       title: 'Имя файла',

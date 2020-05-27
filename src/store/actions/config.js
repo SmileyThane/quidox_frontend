@@ -10,7 +10,6 @@ const getConfig = () => dispatch => {
 
   return api.config.getConfig()
     .then(response => {
-      console.log(response)
 
       dispatch({
         type: t.GET_CONFIG_SUCCESS,

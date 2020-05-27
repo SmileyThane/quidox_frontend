@@ -264,7 +264,7 @@ const {
   }
 
   const statusId = file.status.status_data.id
-  console.log(state)
+
   return (
     <Fragment>
       <Fragment>

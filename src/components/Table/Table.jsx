@@ -103,9 +103,6 @@ const AntdTable = props => {
   useEffect(() => {
     if (parameterState.status) {
       getDocumentsWithParams(activeCompany, parameterState)
-        .then(response => {
-          console.log(response)
-        })
     }
   }, [parameterState.status])
 
@@ -196,8 +193,7 @@ const AntdTable = props => {
       ...tableState,
       isFetching: true
     })
-    console.log(window.localStorage.getItem('authToken'))
-    console.log(window.sessionStorage.getItem('authToken'))
+
     let auth = window.localStorage.getItem('authToken') != null ? window.localStorage.getItem('authToken') : window.sessionStorage.getItem('authToken')
     axios.get(`${process.env.REACT_APP_BASE_URL}/receipt/${type}/${id}`, {
       'responseType': 'arraybuffer',

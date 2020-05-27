@@ -65,7 +65,7 @@ const HeaderBlock = props => {
           notification.success({
             message: 'Сертификаты обновлены!'
           })
-        }).catch(error => console.log(error))
+        }).catch(error => console.error(error))
 
       }, 3000)
     }

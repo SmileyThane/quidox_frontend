@@ -171,8 +171,6 @@ const SingleSharedDocumentPage = props => {
       })
   }
 
-  // const { document, sender, recipient, statuses } = message
-  console.log(message)
   return (
     <Fragment>
       {message && Object.keys(message).length &&

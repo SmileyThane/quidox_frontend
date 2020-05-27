@@ -10,7 +10,6 @@ const ExternalRedirectPage = props => {
     let search = window.location.search;
     let params = new URLSearchParams(search);
     let token = params.get('token');
-    console.log(token)
     window.localStorage.setItem('authToken', token)
   }, [])
 

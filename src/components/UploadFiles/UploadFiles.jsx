@@ -198,11 +198,7 @@ export default function (props) {
       .then(({ data }) => {
         if (data.success) {
           try {
-            // window.pluginClosed()
-            // console.log('pluginClosed')
             window.pluginLoaded()
-            console.log('pluginLoaded_')
-            console.log(window.conn)
             const certificate = window.signProcess(data.data.encoded_base64_file, file.hash_for_sign)
             const verifiedData = {
               id: file.id,
@@ -225,12 +221,10 @@ export default function (props) {
                       } else {
                         message.error('Ошибка подписания. Повторите операцию')
                         // throw new Error(response.error)
-                        console.log(response.error)
                       }
                     })
                     .catch(error => {
                       message.error('Ошибка подписания. Повторите операцию')
-                      console.log(error)
                     })
                 } else {
                   message.error('Ошибка подписания. Повторите операцию')
@@ -238,20 +232,16 @@ export default function (props) {
               })
               .catch(error => {
                 message.error('Ошибка подписания. Повторите операцию')
-                console.log(error)
               })
           } catch (error) {
             message.error('Ошибка подписания. Повторите операцию')
-            console.log(error)
           }
         } else {
           message.error('Ошибка подписания. Повторите операцию')
-          console.log(data.error)
         }
       })
       .catch(error => {
         message.error('Ошибка подписания. Повторите операцию')
-        console.log(error.message)
       })
   }
 
@@ -264,7 +254,6 @@ export default function (props) {
   const getECP = arr => {
     if (arr.length) {
       const ECP = arr.filter(i => i.verification_hash !== null && i.verification_info !== null)
-      console.log(ECP)
       return ECP
     }
   }
@@ -300,12 +289,8 @@ export default function (props) {
           sign.data = data.data.encoded_base64_file;
           sign.isDetached = true;
           sign.token_qdx = '123';
-          console.log(sign)
-          // let uri  = "https://tzi.com/sign";
-          // console.log(uri)
           const request = axios.post('http://127.0.0.1:8083/sign', sign)
             .then(({ data }) => {
-              console.log(data)
               message.success('Подпись успешно выработана')
             })
             .catch(function (error) {

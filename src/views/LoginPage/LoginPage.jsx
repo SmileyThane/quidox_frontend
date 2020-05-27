@@ -62,7 +62,6 @@ class LoginPage extends React.Component {
       return <Spin />
     }
 
-    console.log(this.state)
     return (
       <Form onSubmit={this.handleSubmit} className='form form_login' style={{ minHeight: '40rem', maxWidth: '45rem' }}>
         <label>E-mail:</label>

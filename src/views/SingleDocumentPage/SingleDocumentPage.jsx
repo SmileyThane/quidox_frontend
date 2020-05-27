@@ -227,7 +227,7 @@ const SingleDocumentPage = props => {
       })
       return false
     }
-    console.log(documentState.value.filter(i => forbiddenEmails.includes(i)))
+
     const docDataToUser = {
       document_ids: [document.id],
       user_company_id: JSON.stringify(documentState.value.map(i => i.key))

@@ -11,7 +11,6 @@ const mapStateToProps = state => ({
   user: state.user
 })
 export default connect(
-  null,
-  mapDispatchToProps,
-  mapStateToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(FileActions)

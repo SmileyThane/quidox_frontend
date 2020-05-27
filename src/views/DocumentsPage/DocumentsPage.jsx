@@ -50,11 +50,9 @@ const DocumentsPage = props => {
             messages: data.data.data,
             not_applied_attachments_count: notApplied
           })
-        } else {
-          console.log('errorFF22')
         }
       })
-      .catch(error => console.log(error))
+      .catch(error => console.error(error))
   }
 
   const showRemoveModal = () => {
@@ -80,11 +78,9 @@ const DocumentsPage = props => {
             idsForRemove: ids,
             not_applied_attachments_count: notApplied
           })
-        } else {
-          console.log('errorFF22')
         }
       })
-      .catch(error => console.log(error))
+      .catch(error => console.error(error))
   }
 
   const showSendModal = () => {
@@ -110,12 +106,9 @@ const DocumentsPage = props => {
             idsForSend: ids,
             not_applied_attachments_count: notApplied
           })
-        } else {
-          console.log('errorFF22')
-
         }
       })
-      .catch(error => console.log(error))
+      .catch(error => console.error(error))
   }
 
   const proccesFilesForVerifyFile = async (bool, files) => {
@@ -138,7 +131,6 @@ const DocumentsPage = props => {
           if (confirm.data.success) {
             api.files.verifyFile(verifiedData)
           }
-          console.log(file.id + ': sign is ' + confirm.data.success)
         } catch (error) {
           break
         }
@@ -155,9 +147,7 @@ const DocumentsPage = props => {
 
   const multipleVerifyPreparation = () => {
     window.pluginLoaded()
-    console.log('multiple verify preparation was started')
     // setTimeout(() => {
-      console.log('plugin loaded')
       multipleVerify()
     // }, 3000)
 
@@ -171,8 +161,6 @@ const DocumentsPage = props => {
     })
     proccesMessageForVerifyFiles(state.messages).then(() =>
         {
-        // window.location.reload()
-        // console.log('success')
         setState({
           ...state,
           disabledCloseButton: false
@@ -211,8 +199,6 @@ const DocumentsPage = props => {
     await api.documents.sendDocumentToUser({ document_ids: [id], user_company_id: JSON.stringify([]) })
   }
 
-  // && checkBrowser('ie')
-  console.log(state)
   return (
     <Fragment>
       <div className='content'>

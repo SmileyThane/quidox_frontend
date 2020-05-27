@@ -162,7 +162,6 @@ const NewDocumentPage = props => {
     })
 
     if (v.length !== validEmails.length) {
-      console.log('123')
       notification['error']({
         message: 'Не правильный электронный адрес'
       })
