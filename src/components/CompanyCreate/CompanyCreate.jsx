@@ -84,20 +84,20 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, user, config, redirec
       api.documents.attachmentSimSign('new_company')
         .then(({ data }) => {
           if (data.success) {
-            window.open(data.data, '')
+            window.open(data.data, '_self')
           } else {
             throw new Error(data.error)
           }
         })
         .catch(error => {
           message.error(error.message)
-          window.open(newPageUrl, '', 'width=800,height=600')
+          window.open(newPageUrl, '_self')
         })
     } catch (error) {
       notification['error']({
         message: error.message
       })
-      window.open(newPageUrl, '', 'width=800,height=600')
+      window.open(newPageUrl, '_self')
     }
   }
 

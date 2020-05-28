@@ -145,7 +145,7 @@ const FileActions = props => {
               api.documents.attachmentSimSign(item.id)
                 .then(({ data }) => {
                   if (data.success) {
-                    window.open(data, '')
+                    window.open(data, '_self')
                   } else {
                     throw new Error(data.error)
                   }

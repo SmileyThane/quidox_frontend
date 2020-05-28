@@ -173,7 +173,7 @@ const {
               changeStatus(file)
                 .then(( data ) => {
                   if (data.success) {
-                    window.open(data.data, '')
+                    window.open(data.data, '_self')
                     window.close()
                   } else {
                     throw new Error(data.error)
@@ -185,13 +185,13 @@ const {
           })
           .catch(error => {
             message.error(error.message)
-            window.open(newPageUrl, '', 'width=800,height=600')
+            window.open(newPageUrl, '_self')
           })
       } catch (error) {
         notification['error']({
           message: error.message
         })
-        window.open(newPageUrl, '', 'width=800,height=600')
+        window.open(newPageUrl, '_self')
       }
     }
   }

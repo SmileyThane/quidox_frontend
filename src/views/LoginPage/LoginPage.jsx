@@ -103,10 +103,10 @@ class LoginPage extends React.Component {
           <Link className="ant-btn ant-btn-default login-form-button" style={{ marginTop: '.5rem' }} to="/e-sign-login">
             Войти с помощью ЭЦП
           </Link>
-          <Link className="ant-btn ant-btn-default login-form-button" style={{ marginTop: '.5rem' }} target="_blank"
+          <Link className="ant-btn ant-btn-default login-form-button" style={{ marginTop: '.5rem' }}
             onClick={(event) => {
               event.preventDefault()
-              window.open(newPageUrl, '', 'width=800,height=600')
+              window.open(newPageUrl, '_self')
             }}>
             Войти с помощью MTC ID
           </Link>

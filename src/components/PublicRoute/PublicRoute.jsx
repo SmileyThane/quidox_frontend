@@ -9,7 +9,6 @@ import {
   HeaderBlock
 } from '../'
 
-import history from '../../history'
 import './PublicRoute.scss'
 
 const PublicRoute = ({ component: Component, getConfig, config: { isFetching }, ...rest }) => {
@@ -26,8 +25,7 @@ const PublicRoute = ({ component: Component, getConfig, config: { isFetching }, 
     if (token) {
       setFetching(true)
       window.localStorage.setItem('authToken', token)
-      window.open('/', '')
-      window.close()
+      window.open('/', '_self')
       setFetching(false)
     } else {
       setFetching(false)
