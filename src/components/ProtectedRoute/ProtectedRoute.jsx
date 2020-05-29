@@ -8,7 +8,7 @@ import { ContentBlock, FooterBlock, HeaderBlock, LayoutBlock, SiderBlock } from 
 
 const favicon = document.querySelector(('[rel=icon]'))
 
-const ProtectedRoute = ({ component: Component, user: { data }, getUser, getTariffications, ...rest }) => {
+const ProtectedRoute = ({ component: Component, config, user: { data }, getUser, getTariffications, ...rest }) => {
    const [activeCompany, setActiveCompany] = useState(null)
   // eslint-disable-next-line spaced-comment
   const isIE = /*@cc_on!@*/false || !!document.documentMode
