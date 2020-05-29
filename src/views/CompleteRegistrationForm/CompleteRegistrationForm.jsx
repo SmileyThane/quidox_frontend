@@ -213,7 +213,7 @@ class CompleteRegistrationForm extends React.Component {
         <div className='register'>
           <div className='preview-header'>
             <Title level={3}>
-              Регистрация в Quidox.by
+              Регистрация
             </Title>
 
             <Text>Обмен электронными документами с ЭЦП</Text>
@@ -340,17 +340,6 @@ class CompleteRegistrationForm extends React.Component {
                     }
 
                   </div>
-                  {currentStep === 0 &&
-                  <Fragment>
-                    <Text type='secondary'>Благодаря сервису QuiDox.by<br/>
-                      Вы сможете с легкостью обмениваться электронными документами с ЭЦП с Вашими контрагентами.
-                    </Text>
-                    <br/>
-                    <Text type='secondary'>Доставка происходит мгновенно.</Text>
-                    <br/>
-                    <Text type='secondary'>Бесплатно первые 90 дней!</Text>
-                  </Fragment>
-                  }
                   <div style={{ marginTop: '2rem' }}>
                     <Button type='primary' htmlType='submit' disabled={currentStep === 0 && !this.state.isChecked}>
                       {currentStep === 2 ? 'Завершить регистрацию' : 'Продолжить'}

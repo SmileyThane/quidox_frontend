@@ -7,8 +7,11 @@ import { Button } from '../'
 import { getActiveCompany, checkActiveTariff } from '../../utils'
 import { LayoutBlock, HeaderBlock, SiderBlock, ContentBlock, FooterBlock, TariffTimePeriod } from '../'
 import { useResponseStatus } from '../../hooks'
+import { faviconIcon } from '../../resources/img'
 
-const PrivateRoute = ({ component: Component, user: { data, isFetching }, getUser, getTariffications, ...rest }) => {
+const favicon = document.querySelector(('[rel=icon]'))
+
+const PrivateRoute = ({ component: Component, config, user: { data, isFetching }, getUser, getTariffications, ...rest }) => {
   const [availableTariff, setAvailableTariff] = useState(false)
   const [activeCompany, setActiveCompany] = useState(null)
   // eslint-disable-next-line spaced-comment
@@ -27,6 +30,13 @@ const PrivateRoute = ({ component: Component, user: { data, isFetching }, getUse
       }
     }
   }, [getUser, isIE])
+
+  useEffect(() => {
+    if (Object.keys(config).length) {
+      document.title = 'MTC SmartDoc'
+      favicon.href = faviconIcon
+    }
+  }, [Object.keys(config).length])
 
   useEffect(() => {
     if (data) {
