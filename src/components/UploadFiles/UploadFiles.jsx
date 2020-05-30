@@ -89,13 +89,13 @@ export default function (props) {
 
   const { isModalVisible, isDisabled, isFilesUploaded, filesToUpload, modalType, fileInfo, filesUploaded } = state
 
-  const clientId = Object.keys(config.data).length ? config.data.co_brand_config.client_id : process.env.REACT_APP_SIM_SCEP_URL
-  const callback = Object.keys(config.data).length ? config.data.co_brand_config.callback : process.env.REACT_APP_SIM_SCEP_URL
+  const clientId = config.data.co_brand_config ? config.data.co_brand_config.client_id : process.env.REACT_APP_SIM_SCEP_URL
+  const callback = config.data.co_brand_config ? config.data.co_brand_config.callback : process.env.REACT_APP_SIM_SCEP_URL
 
   const newPageUrl = `${process.env.REACT_APP_SIM_SCEP_URL}?`+
     `client_id=${clientId}&`+
     `response_type=code&`+
-    `state=${Base64.encode(JSON.stringify({ 'co_brand_name': Object.keys(config.data).length ? 'mts' : 'quidox', 'user_id': data.id }))}&`+
+    `state=${Base64.encode(JSON.stringify({ 'co_brand_name': config.data.co_brand_config ? 'mts' : 'quidox', 'user_id': data.id }))}&`+
     `authentication=phone&`+
     `scope=sign&`+
     `redirect_uri=${callback}`;

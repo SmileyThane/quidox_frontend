@@ -24,11 +24,11 @@ const PublicRoute = ({ component: Component, getConfig, config, ...rest }) => {
   const query = useQuery()
 
   useEffect(() => {
-    if (Object.keys(config).length) {
+    if (config.data.co_brand_config) {
       document.title = 'MTC SmartDoc'
       favicon.href = faviconIcon
     }
-  }, [Object.keys(config).length])
+  }, [config.data.co_brand_config])
 
   useEffect(() => {
     const token = query.get('token')
@@ -49,7 +49,7 @@ const PublicRoute = ({ component: Component, getConfig, config, ...rest }) => {
   if (fetching || config.isFetching) {
     return 'Loading...'
   }
-  console.log(favicon)
+
   return <Route {...rest}
     render={props =>
       (window.localStorage.getItem('authToken') || window.sessionStorage.getItem('authToken'))

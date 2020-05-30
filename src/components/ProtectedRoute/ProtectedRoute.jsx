@@ -14,11 +14,11 @@ const ProtectedRoute = ({ component: Component, config, user: { data }, getUser,
   const isIE = /*@cc_on!@*/false || !!document.documentMode
 
   useEffect(() => {
-    if (Object.keys(config).length) {
+    if (config.data.co_brand_config) {
       document.title = 'MTC SmartDoc'
       favicon.href = faviconIcon
     }
-  }, [Object.keys(config).length])
+  }, [config.data.co_brand_config])
 
   useEffect(() => {
     if (window.localStorage.getItem('authToken') || window.sessionStorage.getItem('authToken')) {

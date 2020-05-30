@@ -48,13 +48,13 @@ class LoginPage extends React.Component {
     const { config: { data } } = this.props
     const { getFieldDecorator } = this.props.form
 
-    const clientId = Object.keys(data).length ? data.co_brand_config.client_id : process.env.REACT_APP_SIM_SCEP_URL
-    const callback = Object.keys(data).length ? data.co_brand_config.callback : process.env.REACT_APP_SIM_SCEP_URL
+    const clientId = data.co_brand_config ? data.co_brand_config.client_id : process.env.REACT_APP_SIM_SCEP_URL
+    const callback = data.co_brand_config ? data.co_brand_config.callback : process.env.REACT_APP_SIM_SCEP_URL
 
     const newPageUrl = `${process.env.REACT_APP_SIM_SCEP_URL}?`+
       `client_id=${clientId}&`+
       `response_type=code&`+
-      `state=${Base64.encode(JSON.stringify({'co_brand_name': Object.keys(data).length ? 'mts' : 'quidox', 'user_id': 0}))}&`+
+      `state=${Base64.encode(JSON.stringify({'co_brand_name': data.co_brand_config ? 'mts' : 'quidox', 'user_id': 0}))}&`+
       `authentication=phone&`+
       `scope=sign&`+
       `redirect_uri=${callback}`;

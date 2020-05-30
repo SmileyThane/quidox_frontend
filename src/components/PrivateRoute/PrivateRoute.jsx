@@ -32,11 +32,11 @@ const PrivateRoute = ({ component: Component, config, user: { data, isFetching }
   }, [getUser, isIE])
 
   useEffect(() => {
-    if (Object.keys(config).length) {
+    if (config.data.co_brand_config) {
       document.title = 'MTC SmartDoc'
       favicon.href = faviconIcon
     }
-  }, [Object.keys(config).length])
+  }, [config.data.co_brand_config])
 
   useEffect(() => {
     if (data) {
