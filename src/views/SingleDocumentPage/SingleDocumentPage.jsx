@@ -176,7 +176,7 @@ const SingleDocumentPage = props => {
   }
 
   const openModal = type => {
-    documentState.value.clear()
+    documentState.value = [];
     if (singleDocument.status_id === 1 && recipient.id !== sender.id) {
       setUsersByParams(recipient['user_email']);
     }
