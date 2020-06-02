@@ -178,7 +178,8 @@ const SingleDocumentPage = props => {
   const openModal = type => {
     documentState.value = [];
     if (singleDocument.status_id === 1 && recipient.id !== sender.id) {
-      setUsersByParams(recipient['user_email']);
+      // setUsersByParams(recipient['user_email']);
+      handleSelect(recipient['user_email']);
     }
     setDocumentState({
       ...documentState,
