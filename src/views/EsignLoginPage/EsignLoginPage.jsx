@@ -11,14 +11,14 @@ const { Text } = Typography
 const EsignLoginPage = props => {
   const isIE = /*@cc_on!@*/false || !!document.documentMode
 
-  useEffect(() => {
+  {
     document.getElementById('eSignLogin').disabled = true
     if (isIE) {
       window.pluginLoaded()
-      console.log('esign plugin');
+      console.log('esign plugin')
       document.getElementById('eSignLogin').disabled = false
     }
-  })
+  }
 
   const signLogin = () => {
     try {
