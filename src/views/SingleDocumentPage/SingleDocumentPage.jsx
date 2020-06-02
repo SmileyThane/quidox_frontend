@@ -188,7 +188,6 @@ const SingleDocumentPage = props => {
   }
 
   const setUsersByParams = (v) => {
-    documentState.value = [];
     findUsersByParams(v)
       .then(({ data }) => {
         const dataIds = documentState.data.map(i => i.key)
@@ -217,7 +216,7 @@ const SingleDocumentPage = props => {
         fetching: true
       })
       setUsersByParams(v);
-      console.log(documentState.value)
+      console.log(documentState.data)
     }
   }, 200)
 
