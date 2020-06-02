@@ -179,6 +179,7 @@ const SingleDocumentPage = props => {
     documentState.value = [];
     if (singleDocument.status_id === 1 && recipient.id !== sender.id) {
       documentState.data.push({"key": recipient['user_email'], "label": recipient['user_email'] });
+      documentState.value.push({"key": recipient['user_email'], "label": recipient['user_email'] });
     }
     console.log(documentState.data);
     setDocumentState({
