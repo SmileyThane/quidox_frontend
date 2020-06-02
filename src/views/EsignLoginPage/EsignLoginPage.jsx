@@ -9,11 +9,8 @@ import history from '../../history'
 const { Text } = Typography
 
 const EsignLoginPage = props => {
-  const isIE = /*@cc_on!@*/false || !!document.documentMode
 
-    if (isIE) {
-      window.pluginLoaded()
-    }
+
   const signLogin = () => {
     try {
       const sertificationObject = window.signProcess('111', '111')

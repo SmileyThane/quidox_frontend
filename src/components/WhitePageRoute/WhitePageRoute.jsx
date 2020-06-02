@@ -18,6 +18,13 @@ const WhitePageRoute = ({ component: Component, getConfig, config: { isFetching 
 
   if (isFetching) {
     return 'Loading...'
+  } else {
+    const isIE = /*@cc_on!@*/!!document.documentMode
+    useEffect(() => {
+      if (isIE) {
+        window.pluginLoaded()
+      }
+    }, [isIE])
   }
 
   return <Route {...rest}
