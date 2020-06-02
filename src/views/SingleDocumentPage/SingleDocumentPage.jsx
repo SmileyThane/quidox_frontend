@@ -176,6 +176,9 @@ const SingleDocumentPage = props => {
   }
 
   const openModal = type => {
+    if (singleDocument.status_id === 1 && recipient.id !== sender.id) {
+      documentState.value.push(recipient['user_email'])
+    }
     setDocumentState({
       ...documentState,
       modalType: type,
