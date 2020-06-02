@@ -67,34 +67,34 @@ const SingleDocumentPage = props => {
     let hash = params.get('hash')
     let attachmentId = params.get('attachment_id')
     if (hash && attachmentId) {
-        try {
-          setFetch(true)
-          let id = match.params.id
-          axios.get(`${process.env.REACT_APP_BASE_URL}/attachment/sim-sign/check/${attachmentId}?hash=${hash}`, {
-            headers: {
-              'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken'),
+      try {
+        setFetch(true)
+        let id = match.params.id
+        axios.get(`${process.env.REACT_APP_BASE_URL}/attachment/sim-sign/check/${attachmentId}?hash=${hash}`, {
+          headers: {
+            'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken'),
+          }
+        })
+          .then(response => {
+            setFetch(false)
+            const { data: { success } } = response
+            if (success) {
+              message.success('Совершено успешное подписание!')
+              getDocumentById(match.params.id)
+            } else {
+              setFetch(false)
             }
           })
-            .then(response => {
-              setFetch(false)
-              const { data: { success } } = response
-              if (success) {
-                message.success('Совершено успешное подписание!')
-                getDocumentById(match.params.id)
-              } else {
-                setFetch(false)
-              }
-            })
-            .catch(error => {
-              signFetching = false;
-              message.error('Извините, что-то пошло не так. Перезагрузите страницу и попробуйте еще раз.')
-              // setTimeout(() => {
-              // window.location.reload();
-              // }, 2000)
-            })
-        } catch (error) {
-          setFetch(false)
-        }
+          .catch(error => {
+            signFetching = false
+            message.error('Извините, что-то пошло не так. Перезагрузите страницу и попробуйте еще раз.')
+            // setTimeout(() => {
+            // window.location.reload();
+            // }, 2000)
+          })
+      } catch (error) {
+        setFetch(false)
+      }
     }
   }, [])
 
@@ -176,10 +176,9 @@ const SingleDocumentPage = props => {
   }
 
   const openModal = type => {
+    documentState.value.clear()
     if (singleDocument.status_id === 1 && recipient.id !== sender.id) {
-      documentState.value.push(recipient['user_email'])
-      console.log(singleDocument.status_id)
-      console.log(recipient.id +' = '+sender.id)
+      setUsersByParams(recipient['user_email']);
     }
     setDocumentState({
       ...documentState,
@@ -188,30 +187,35 @@ const SingleDocumentPage = props => {
     })
   }
 
+  const setUsersByParams = (v) => {
+    findUsersByParams(v)
+      .then(({ data }) => {
+        const dataIds = documentState.data.map(i => i.key)
+        const dataArray = data.data
+          .map(user => ({
+            label: `${user.user_data.email} (УНП:${user.company_data.company_number}; Компания:${user.company_data.name})`,
+            key: `${user.id}`
+          }))
+          .filter(i => !dataIds.includes(i.key))
+        setDocumentState({
+          ...documentState,
+          data: [...documentState.data, ...dataArray],
+          fetching: false
+        })
+      })
+      .catch(error => {
+        message.error(error.message)
+      })
+
+  }
+
   const fetchUser = _.debounce(v => {
     if (v.length > 2) {
       setDocumentState({
         ...documentState,
         fetching: true
       })
-      findUsersByParams(v)
-        .then(({ data }) => {
-          const dataIds = documentState.data.map(i => i.key)
-          const dataArray = data.data
-            .map(user => ({
-              label: `${user.user_data.email} (УНП:${user.company_data.company_number}; Компания:${user.company_data.name})`,
-              key: `${user.id}`
-            }))
-            .filter(i => !dataIds.includes(i.key))
-          setDocumentState({
-            ...documentState,
-            data: [...documentState.data, ...dataArray],
-            fetching: false
-          })
-        })
-        .catch(error => {
-          message.error(error.message)
-        })
+      setUsersByParams(v);
     }
   }, 200)
 
@@ -394,16 +398,16 @@ const SingleDocumentPage = props => {
                     renderItem={(item, index) => (
                       <List.Item
                         key={item.id}
-                         extra={
-                           <FileActions
-                             file={item}
-                             documentId={singleDocument.document.id}
-                             getDocument={() => getDocumentById(match.params.id)}
-                             // isHidden={singleDocument.status_name !== 'Отправленные'}
-                             canBeSigned={singleDocument.can_be_signed}
-                             messageId={singleDocument.status_id}
-                           />
-                         }
+                        extra={
+                          <FileActions
+                            file={item}
+                            documentId={singleDocument.document.id}
+                            getDocument={() => getDocumentById(match.params.id)}
+                            // isHidden={singleDocument.status_name !== 'Отправленные'}
+                            canBeSigned={singleDocument.can_be_signed}
+                            messageId={singleDocument.status_id}
+                          />
+                        }
                       >
                         <div className='single-document'>
                           <Tooltip
@@ -465,7 +469,7 @@ const SingleDocumentPage = props => {
                   {singleDocument.status_id == 1 &&
                   <Button onClick={() => openModal('send')} type='primary' style={{ marginRight: '1rem' }}>
                     <Icon type='redo'/>
-                     Отправить
+                    Отправить
                   </Button>
                   }
                   {singleDocument.status_id != 1 &&
