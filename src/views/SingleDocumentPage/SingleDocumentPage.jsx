@@ -176,12 +176,12 @@ const SingleDocumentPage = props => {
   }
 
   const openModal = type => {
-    documentState.value = [];
+    documentState.data = documentState.value = [];
     if (singleDocument.status_id === 1 && recipient.id !== sender.id) {
-      documentState.data.push({"key": recipient['user_email'], "label": recipient['user_email'] });
-      documentState.value.push({"key": recipient['user_email'], "label": recipient['user_email'] });
+      let value = {"key": recipient['user_email'], "label": recipient['user_email'] };
+      documentState.data.push(value);
+      documentState.value.push(value);
     }
-    console.log(documentState.data);
     setDocumentState({
       ...documentState,
       modalType: type,
@@ -218,7 +218,6 @@ const SingleDocumentPage = props => {
         fetching: true
       })
       setUsersByParams(v);
-      console.log(documentState.data)
     }
   }, 200)
 
