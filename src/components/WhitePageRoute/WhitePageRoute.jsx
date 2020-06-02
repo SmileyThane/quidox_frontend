@@ -18,33 +18,32 @@ const WhitePageRoute = ({ component: Component, getConfig, config: { isFetching 
 
   if (isFetching) {
     return 'Loading...'
-  } else {
-    const isIE = /*@cc_on!@*/!!document.documentMode
-    useEffect(() => {
-      if (isIE) {
-        window.pluginLoaded()
-      }
-    }, [isIE])
   }
+  const isIE = /*@cc_on!@*/!!document.documentMode
+  useEffect(() => {
+    if (isIE && !isFetching) {
+      window.pluginLoaded()
+    }
+  }, [isIE])
 
   return <Route {...rest}
-    render={props =>
-      (window.localStorage.getItem('authToken') || window.sessionStorage.getItem('authToken'))
-        ? (<Redirect to={{ pathname: '/', state: { from: props.location } }} />)
-        : <Fragment>
-          <LayoutBlock>
-            <ContentBlock logWrapp>
-              <HeaderBlock />
-              <div className='app'>
-                <div className='app-content-white'>
-                  <Component {...props} />
-                  <FooterBlock className='footer public-footer white-background' />
-                </div>
-              </div>
-            </ContentBlock>
-          </LayoutBlock>
-        </Fragment>
-    }
+                render={props =>
+                  (window.localStorage.getItem('authToken') || window.sessionStorage.getItem('authToken'))
+                    ? (<Redirect to={{ pathname: '/', state: { from: props.location } }}/>)
+                    : <Fragment>
+                      <LayoutBlock>
+                        <ContentBlock logWrapp>
+                          <HeaderBlock/>
+                          <div className='app'>
+                            <div className='app-content-white'>
+                              <Component {...props} />
+                              <FooterBlock className='footer public-footer white-background'/>
+                            </div>
+                          </div>
+                        </ContentBlock>
+                      </LayoutBlock>
+                    </Fragment>
+                }
   />
 }
 
