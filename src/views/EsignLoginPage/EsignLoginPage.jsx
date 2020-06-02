@@ -12,16 +12,11 @@ const EsignLoginPage = props => {
   const isIE = /*@cc_on!@*/false || !!document.documentMode
 
   useEffect(() => {
-    document.getElementById('eSignLogin').disabled = true;
+    document.getElementById('eSignLogin').disabled = true
     if (isIE) {
-      // setTimeout(() => {
-      //   window.pluginLoaded()
-      // }, 1500)
+      window.pluginLoaded()
+      document.getElementById('eSignLogin').disabled = false
     }
-    setTimeout(() => {
-      document.getElementById('eSignLogin').disabled = false;
-    }, 3000)
-
   }, [isIE])
 
   const signLogin = () => {
