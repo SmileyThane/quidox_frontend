@@ -178,24 +178,7 @@ const SingleDocumentPage = props => {
   const openModal = type => {
     documentState.value = [];
     if (singleDocument.status_id === 1 && recipient.id !== sender.id) {
-      findUsersByParams(recipient['user_email'])
-        .then(({ data }) => {
-          const dataIds = documentState.data.map(i => i.key)
-          const dataArray = data.data
-            .map(user => ({
-              label: `${user.user_data.email} (УНП:${user.company_data.company_number}; Компания:${user.company_data.name})`,
-              key: `${user.id}`
-            }))
-            .filter(i => !dataIds.includes(i.key))
-          setDocumentState({
-            ...documentState,
-            data: [...documentState.data, ...dataArray],
-            fetching: false
-          })
-        })
-        .catch(error => {
-          message.error(error.message)
-        })
+      documentState.data.push(recipient['user_email']);
     }
     setDocumentState({
       ...documentState,
