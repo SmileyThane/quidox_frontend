@@ -176,10 +176,9 @@ const SingleDocumentPage = props => {
   }
 
   const openModal = type => {
-    documentState.data = documentState.value = [];
+    documentState.value = [];
     if (singleDocument.status_id === 1 && recipient.id !== sender.id) {
       let value = {"key": recipient['user_email'], "label": recipient['user_email'] };
-      documentState.data.push(value);
       documentState.value.push(value);
     }
     setDocumentState({
