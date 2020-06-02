@@ -15,6 +15,7 @@ const EsignLoginPage = props => {
     document.getElementById('eSignLogin').disabled = true
     if (isIE) {
       window.pluginLoaded()
+      console.log('esign plugin');
       document.getElementById('eSignLogin').disabled = false
     }
   }, [isIE])
