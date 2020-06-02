@@ -11,20 +11,21 @@ import {
 import './WhitePageRoute.scss'
 
 const WhitePageRoute = ({ component: Component, getConfig, config: { isFetching }, ...rest }) => {
+  const isIE = /*@cc_on!@*/!!document.documentMode;
 
   useEffect(() => {
     getConfig()
   }, [])
 
-  if (isFetching) {
-    return 'Loading...'
-  }
-  const isIE = /*@cc_on!@*/!!document.documentMode
   useEffect(() => {
     if (isIE && !isFetching) {
       window.pluginLoaded()
     }
   }, [isIE])
+
+  if (isFetching) {
+    return 'Loading...'
+  }
 
   return <Route {...rest}
                 render={props =>
