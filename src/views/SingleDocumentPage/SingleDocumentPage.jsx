@@ -178,7 +178,7 @@ const SingleDocumentPage = props => {
   const openModal = type => {
     documentState.value = [];
     if (singleDocument.status_id === 1 && recipient.id !== sender.id) {
-      documentState.data.push(recipient['user_email']);
+      documentState.value.push(recipient['user_email']);
     }
     setDocumentState({
       ...documentState,
@@ -217,6 +217,7 @@ const SingleDocumentPage = props => {
         fetching: true
       })
       setUsersByParams(v);
+      console.log(documentState.value)
     }
   }, 200)
 
