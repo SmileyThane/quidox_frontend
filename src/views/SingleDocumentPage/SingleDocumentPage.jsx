@@ -176,7 +176,7 @@ const SingleDocumentPage = props => {
   }
 
   const openModal = type => {
-    documentState.value = [];
+    documentState.data = documentState.value = [];
     if (singleDocument.status_id === 1 && recipient.id !== sender.id) {
       let value = {"key": recipient['user_email'], "label": recipient['user_email'] };
       documentState.value.push(value);
@@ -539,7 +539,7 @@ const SingleDocumentPage = props => {
           >
             {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
           </Select>
-          <Text><strong>Проверьте указанных Вами получателей!</strong></Text>
+          <p><strong>Проверьте указанных Вами получателей!</strong></p>
           <Button
             type='primary'
             style={{ marginTop: 20 }}
