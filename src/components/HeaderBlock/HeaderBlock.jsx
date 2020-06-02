@@ -52,7 +52,7 @@ const HeaderBlock = props => {
   const importCerts = () => {
 
     if (isIE) {
-      window.pluginLoaded()
+      // window.pluginLoaded()
       setTimeout(() => {
         axios.get(`${process.env.REACT_APP_BASE_URL}/ruc/get`, {
           'responseType': 'arraybuffer',
