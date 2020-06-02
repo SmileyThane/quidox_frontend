@@ -539,7 +539,7 @@ const SingleDocumentPage = props => {
           >
             {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
           </Select>
-
+          <Text><strong>Проверьте указанных Вами получателей!</strong></Text>
           <Button
             type='primary'
             style={{ marginTop: 20 }}
