@@ -32,8 +32,8 @@ const { TextArea } = Input
 const { Text, Paragraph } = Typography
 
 const initialState = {
-  isChainMessage: true,
-  isTableVisible: true,
+  isChainMessage: false,
+  isTableVisible: false,
   users: [{
     id: 0,
     email: '',
