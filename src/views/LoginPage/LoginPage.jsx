@@ -110,7 +110,7 @@ class LoginPage extends React.Component {
               event.preventDefault()
               window.open(newPageUrl, '_self')
             }}>
-            Войти с помощью {{simButtonName }} ID
+            Войти с помощью `${simButtonName }` ID
           </Link>
           <div style={{ marginTop: '1.5rem' }}>
             <Title level={4}>Начните обмен документами сейчас!<br/>Нет аккаунта?</Title>
