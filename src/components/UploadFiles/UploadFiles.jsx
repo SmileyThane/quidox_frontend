@@ -387,7 +387,7 @@ export default function (props) {
                           <Tag disabled style={{ margin: 0, width: '100%' }} color='#87d068'
                                onClick={() => isFileWithECP ? null : handleSimVerifyFile(file)}>
                             <Icon style={{ marginRight: 5, cursor: 'pointer' }} type={isFileWithECP ? 'like' : 'edit'}/>
-                            {isFileWithECP ? '' : `Подписать(${simButtonName})`}
+                            {isFileWithECP ? '' : `Подписать(${simButtonName} ID)`}
                           </Tag>
                         </Menu.Item>
                         <Menu.Item>
