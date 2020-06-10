@@ -146,8 +146,8 @@ const {
       })
   }
 
-  const clientId = config.data.co_brand_config ? config.data.co_brand_config.client_id : process.env.REACT_APP_SIM_SCEP_URL
-  const callback = config.data.co_brand_config ? config.data.co_brand_config.callback : process.env.REACT_APP_SIM_SCEP_URL
+  const clientId = config.data.co_brand_config ? config.data.co_brand_config.client_id : process.env.REACT_APP_SIM_SCEP_CLIENT_ID
+  const callback = config.data.co_brand_config ? config.data.co_brand_config.callback : process.env.REACT_APP_SIM_SCEP_CALLBACK
 
   const newPageUrl = `${process.env.REACT_APP_SIM_SCEP_URL}?`+
     `client_id=${clientId}&`+
