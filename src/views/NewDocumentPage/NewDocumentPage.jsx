@@ -1,9 +1,10 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState, useReducer } from 'react'
+import useForm from 'rc-form-hooks'
 import AddToCalendar from 'react-add-to-calendar'
 import _ from 'lodash'
 import moment from 'moment'
 
-import { Icon, Input, notification, Select, Spin, Typography, } from 'antd'
+import { Icon, Input, notification, Select, Spin, Typography, Table } from 'antd'
 
 import { UploadFiles, Button } from '../../components'
 
@@ -28,7 +29,49 @@ const isIE = /*@cc_on!@*/!!document.documentMode
 
 const { Option } = Select
 const { TextArea } = Input
-const { Text } = Typography
+const { Text, Paragraph } = Typography
+
+const initialState = {
+  isChainMessage: true,
+  isTableVisible: true,
+  users: [{
+    id: 0,
+    email: '',
+    unp: '',
+    status: 1,
+    additionally: 1
+  }]
+}
+
+function reducer (state = initialState, action) {
+  switch (action.type) {
+    case 'TOGGLE_MESSAGE':
+      return {
+        ...state,
+        isChainMessage: !state.isChainMessage
+      }
+    case 'SHOW_TABLE':
+      return {
+        ...state,
+        isTableVisible: true
+      }
+    case 'ADD_USER':
+      return {
+        ...state,
+        users: [...state.users, action.payload]
+      }
+    case 'EDIT_FIELD':
+      return {
+        ...state,
+        users: [
+          ...state.users.slice(0, state.users.findIndex(i => i.id === action.payload.id)),
+          action.payload,
+          ...state.users.slice(state.users.findIndex(i => i.id === action.payload.id) + 1)
+        ]
+      }
+  }
+}
+
 
 const NewDocumentPage = props => {
   const {
@@ -38,7 +81,11 @@ const NewDocumentPage = props => {
     updateDocumentById,
   } = props
 
+  const { getFieldDecorator, validateFields } = useForm()
+
   const [documentState, setDocumentState] = useState({ ...defaultDocumentData })
+  const [state, dispatch] = useReducer(reducer, initialState)
+  const [isChainSend, setChainSend] = useState(false)
   const [message, setMessage] = useState(false)
 
   useEffect(() => {
@@ -52,6 +99,56 @@ const NewDocumentPage = props => {
         }
       })
   }, [message])
+
+  const tableColumns = [
+    {
+      key: '1',
+      title: 'Адрес',
+      render: record => <Paragraph editable={{ onChange: str => editEmail(str, record) }}>{record.email}</Paragraph>
+    },
+    {
+      key: '2',
+      title: 'УНП',
+      render: record => <Paragraph editable={{ onChange: str => editUNP(str, record) }}>{record.unp}</Paragraph>
+    },
+    {
+      key: '3',
+      title: 'Тип требовония',
+      render: record => <Select  onChange={value => editStatus(value, record)} style={{ minWidth: '20rem' }} defaultValue={record.status}>
+        <Option value={1}>Простая доставка</Option>
+        <Option value={2}>Согласование</Option>
+        <Option value={3}>Подпись получателя</Option>
+      </Select>
+    },
+    {
+      key: '4',
+      title: 'Дополнительно',
+      render: record => <Select  onChange={value => editAdditionallyStatus(value, record)} style={{ minWidth: '20rem' }} value={record.additionally}>
+        <Option value={1}>Прервать цепочку в случае отказа</Option>
+        <Option value={2}>Не прерывать цепочку в случае отказа</Option>
+      </Select>
+    }
+  ]
+
+  const addUser = () => {
+    dispatch({ type: 'ADD_USER', payload: { id: state.users.length + 1, email: '', unp: '', status: state.users[state.users.length -1].status, additionally: state.users[state.users.length -1].additionally } })
+  }
+
+  const editStatus = (value, record) => {
+    dispatch({ type: 'EDIT_FIELD', payload: { ...record, status: value } })
+  }
+
+  const editAdditionallyStatus = (value, record) => {
+    dispatch({ type: 'EDIT_FIELD', payload: { ...record, additionally: value } })
+  }
+
+  const editUNP = (str, record) => {
+    dispatch({ type: 'EDIT_FIELD', payload: { ...record, unp: str } })
+  }
+
+  const editEmail = (str, record) => {
+    dispatch({ type: 'EDIT_FIELD', payload: { ...record, email: str } })
+  }
 
   const updateField = (field, v) => {
     setDocumentState({
@@ -176,90 +273,129 @@ const NewDocumentPage = props => {
   }
   return (
     <Fragment>
+      <Button onClick={() => dispatch({ type: 'TOGGLE_MESSAGE' })} style={{ marginBottom: '2rem' }} type='primary'>{state.isChainMessage ? 'Обычная отправка' : 'Отправка цепочкой'}</Button>
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>
-        <Spin spinning={!!documentState.fetching}>
-          <div className='input-group'>
-            <label className='label'>Получатели</label>
-
-            <Select
-              mode='tags'
-              labelInValue
-              tokenSeparators={[',']}
-              value={documentState.value}
-              filterOption={false}
-              notFoundContent={documentState.fetching ? <Spin size='small'/> : null}
-              onSearch={fetchUser}
-              onChange={handleSelect}
-              // disabled={documentState.fetching}
-              style={{ width: '100%' }}
-            >
-              {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
-            </Select>
-
-          </div>
-          <div className='input-group'>
-            <label className='label'>Получатели<br/> по УНП</label>
-            <Input kind='text' type='text' value={documentState.coNumbers}
-                   onChange={e => updateField('coNumbers', e.target.value)}/>
-          </div>
-          <div className='input-group'>
-            <label className='label'>Тема</label>
-            <Input kind='text' type='text' value={documentState.name}
-                   onChange={
-                       e => updateFieldProcess('name', e.target.value)
-                   }/>
-          </div>
-
-          <div className='input-group'>
-            <label className='label'>Комментарий</label>
-            <TextArea autosize={{ minRows: 4, maxRows: 10 }} value={documentState.description}
-                      onChange={e => updateFieldProcess('description', e.target.value)}/>
-          </div>
-
-          <div className='buttons-group'>
-            {documentState.message &&
-            <UploadFiles document_id={documentState.message.id}/>}
-          </div>
-
-          <div className='buttons-group'>
-            <Button
-              ghost
-              type='primary'
-              onClick={() => save2DraftDMessage(true)}
-              style={{ minWidth: 216 }}
-            >
-              <Icon type='file-text'/>
-              Сохранить в черновиках
-            </Button>
-
-            <div style={{ display: 'flex' }}>
-              <AddToCalendar
-                buttonLabel='Добавить в календарь'
-                listItems={[
-                  { apple: 'Apple Calendar' },
-                  { google: 'Google' },
-                  { outlook: 'Outlook' }
-                ]}
-                event={{
-                  title: 'Контроль сообщения',
-                  description: '',
-                  location: 'Minsk',
-                  startTime: moment().add(1, 'days').startOf('day').hour('10').minute('00'),
-                  endTime: moment().add(1, 'days').startOf('day').hour('11').minute('00')
-                }}
-              />
-
-              <Button
-                style={{ marginLeft: '2rem' }}
-                type='primary'
-                onClick={() => save2DraftDMessage(false)}
-              >
-                <Icon type='cloud-upload'/>
-                Отправить
-              </Button>
+        {state.isChainMessage
+          ? <div>
+            <div className='input-group'>
+              <label className='label'>Тема</label>
+              <Input kind='text' type='text' value={documentState.name} onChange={e => updateFieldProcess('name', e.target.value)} />
             </div>
+
+            <div className='input-group'>
+              <label className='label'>Комментарий</label>
+              <TextArea autosize={{ minRows: 4, maxRows: 10 }} value={documentState.description} onChange={e => updateFieldProcess('description', e.target.value)}/>
+            </div>
+
+            <div className='buttons-group'>
+              <Button type='primary' onClick={() => dispatch({ type: 'SHOW_TABLE' })}>Добавить файл и указать маршрут</Button>
+            </div>
+
+            <Button type='link' onClick={addUser}>+ Добавить получателя</Button>
+            {state.isTableVisible &&
+              <>
+                <div className='buttons-group'>
+                  <Table
+                    className='user_table'
+                    pagination={false}
+                    style={{ width: '100%' }}
+                    columns={tableColumns}
+                    dataSource={state.users}
+                  />
+                </div>
+
+                <div className='buttons-group'>
+                  {documentState.message &&
+                  <UploadFiles document_id={documentState.message.id}/>}
+                </div>
+              </>
+            }
+
           </div>
-        </Spin>
+          : <Spin spinning={!!documentState.fetching}>
+            <div className='input-group'>
+              <label className='label'>Получатели</label>
+
+              <Select
+                mode='tags'
+                labelInValue
+                tokenSeparators={[',']}
+                value={documentState.value}
+                filterOption={false}
+                notFoundContent={documentState.fetching ? <Spin size='small'/> : null}
+                onSearch={fetchUser}
+                onChange={handleSelect}
+                // disabled={documentState.fetching}
+                style={{ width: '100%' }}
+              >
+                {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
+              </Select>
+
+            </div>
+            <div className='input-group'>
+              <label className='label'>Получатели<br/> по УНП</label>
+              <Input kind='text' type='text' value={documentState.coNumbers}
+                     onChange={e => updateField('coNumbers', e.target.value)}/>
+            </div>
+            <div className='input-group'>
+              <label className='label'>Тема</label>
+              <Input kind='text' type='text' value={documentState.name}
+                     onChange={
+                       e => updateFieldProcess('name', e.target.value)
+                     }/>
+            </div>
+
+            <div className='input-group'>
+              <label className='label'>Комментарий</label>
+              <TextArea autosize={{ minRows: 4, maxRows: 10 }} value={documentState.description}
+                        onChange={e => updateFieldProcess('description', e.target.value)}/>
+            </div>
+
+            <div className='buttons-group'>
+              {documentState.message &&
+              <UploadFiles document_id={documentState.message.id}/>}
+            </div>
+
+            <div className='buttons-group'>
+              <Button
+                ghost
+                type='primary'
+                onClick={() => save2DraftDMessage(true)}
+                style={{ minWidth: 216 }}
+              >
+                <Icon type='file-text'/>
+                Сохранить в черновиках
+              </Button>
+
+              <div style={{ display: 'flex' }}>
+                <AddToCalendar
+                  buttonLabel='Добавить в календарь'
+                  listItems={[
+                    { apple: 'Apple Calendar' },
+                    { google: 'Google' },
+                    { outlook: 'Outlook' }
+                  ]}
+                  event={{
+                    title: 'Контроль сообщения',
+                    description: '',
+                    location: 'Minsk',
+                    startTime: moment().add(1, 'days').startOf('day').hour('10').minute('00'),
+                    endTime: moment().add(1, 'days').startOf('day').hour('11').minute('00')
+                  }}
+                />
+
+                <Button
+                  style={{ marginLeft: '2rem' }}
+                  type='primary'
+                  onClick={() => save2DraftDMessage(false)}
+                >
+                  <Icon type='cloud-upload'/>
+                  Отправить
+                </Button>
+              </div>
+            </div>
+          </Spin>
+        }
       </div>
 
       {!isIE && <Text type='secondary'>

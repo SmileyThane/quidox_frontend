@@ -1,6 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import useForm from 'rc-form-hooks'
-import { Link } from 'react-router-dom'
 import { api } from '../../services'
 import { CompanyCreate, Button, RouterLink } from '../../components'
 import {
@@ -210,7 +209,7 @@ const CompaniesPage = props => {
                     ]
                   })(
                     <Input
-                      prefix={<Icon type='user' style={{ color: 'rgba(0,0,0,.25)' }} />}
+                      prefix={<Icon type='user' style={{ color: 'rgba(0, 0, 0,.25)' }} />}
                       placeholder='Электронный адрес пользователя'
                       onChange={e => updateField('newUserEmail', e.target.value)}
                       type='email'
