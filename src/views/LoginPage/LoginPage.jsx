@@ -48,8 +48,8 @@ class LoginPage extends React.Component {
     const { config: { data } } = this.props
     const { getFieldDecorator } = this.props.form
 
-    const clientId = data.co_brand_config ? data.co_brand_config.client_id : process.env.REACT_APP_SIM_SCEP_URL
-    const callback = data.co_brand_config ? data.co_brand_config.callback : process.env.REACT_APP_SIM_SCEP_URL
+    const clientId = data.co_brand_config ? data.co_brand_config.client_id : process.env.REACT_APP_SIM_SCEP_CLIENT_ID
+    const callback = data.co_brand_config ? data.co_brand_config.callback : process.env.REACT_APP_SIM_SCEP_CALLBACK
 
     const simButtonName = data.co_brand_config ? data.co_brand_config.co_brand_name : 'Mobile'
 
