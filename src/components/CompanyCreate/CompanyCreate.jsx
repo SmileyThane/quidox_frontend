@@ -190,7 +190,7 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, user, config, redirec
           onClick={onCancel}
         >Отмена</Button>
       </TabPane>
-      <TabPane tab=simButtonName key='2'>
+      <TabPane tab='Mobile ID' key='2'>
         <Fragment>
           <p>Убедитесь в том, что:</p>
           <ol>
