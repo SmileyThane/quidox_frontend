@@ -201,7 +201,7 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, user, config, redirec
             style={{ marginRight: '2rem' }}
             onClick={handleSimVerifyFile}
           >
-            Подключить {{ simButtonName }}
+            Подключить {simButtonName}
           </Button>
           <Button
             type='primary'
