@@ -295,6 +295,11 @@ const NewDocumentPage = props => {
             {state.isTableVisible &&
               <>
                 <div className='buttons-group'>
+                  {documentState.message &&
+                  <UploadFiles isStatus={false} document_id={documentState.message.id}/>}
+                </div>
+
+                <div className='buttons-group'>
                   <Table
                     className='user_table'
                     pagination={false}
@@ -302,11 +307,6 @@ const NewDocumentPage = props => {
                     columns={tableColumns}
                     dataSource={state.users}
                   />
-                </div>
-
-                <div className='buttons-group'>
-                  {documentState.message &&
-                  <UploadFiles document_id={documentState.message.id}/>}
                 </div>
               </>
             }

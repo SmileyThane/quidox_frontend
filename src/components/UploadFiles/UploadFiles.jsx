@@ -70,6 +70,7 @@ function uploadReducer (state, action) {
 
 export default function (props) {
   const {
+    isStatus = true,
     document_id = null,
     user: { data },
     config,
@@ -361,6 +362,7 @@ export default function (props) {
                       </Tag>
                       }
                     </div>
+                    {isStatus &&
                     <div>
                       <Select
                         style={{ minWidth: '20rem' }}
@@ -372,6 +374,7 @@ export default function (props) {
                         <Option value={3}>Подпись получателя</Option>
                       </Select>
                     </div>
+                    }
                   </File>
                   <Dropdown
                     overlay={() => (
