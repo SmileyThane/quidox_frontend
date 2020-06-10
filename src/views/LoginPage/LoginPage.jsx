@@ -51,6 +51,8 @@ class LoginPage extends React.Component {
     const clientId = data.co_brand_config ? data.co_brand_config.client_id : process.env.REACT_APP_SIM_SCEP_URL
     const callback = data.co_brand_config ? data.co_brand_config.callback : process.env.REACT_APP_SIM_SCEP_URL
 
+    const simButtonName = data.co_brand_config ? data.co_brand_config.co_brand_name : 'Mobile'
+
     const newPageUrl = `${process.env.REACT_APP_SIM_SCEP_URL}?`+
       `client_id=${clientId}&`+
       `response_type=code&`+
@@ -108,7 +110,7 @@ class LoginPage extends React.Component {
               event.preventDefault()
               window.open(newPageUrl, '_self')
             }}>
-            Войти с помощью MTC ID
+            Войти с помощью {{simButtonName }} ID
           </Link>
           <div style={{ marginTop: '1.5rem' }}>
             <Title level={4}>Начните обмен документами сейчас!<br/>Нет аккаунта?</Title>

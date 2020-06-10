@@ -181,6 +181,8 @@ const FileActions = props => {
   }
 
   const statusId = file.status.status_data.id
+  // const simButtonName = data.co_brand_config ? data.co_brand_config.co_brand_name : 'Mobile'
+
   return [
     <Fragment>
       { statusId !== 5 && ![1, 3, 4, 9, 10, 11].includes(messageId) &&
@@ -221,7 +223,7 @@ const FileActions = props => {
       <ActionTooltip
         arrowPointAtCenter
         placement='topRight'
-        title={canBeSigned ? 'Подписать документ (MTC ID)' : receivingTooltipText(statusId, verifyText)}
+        title={canBeSigned ? `Подписать документ (Mobile ID)` : receivingTooltipText(statusId, verifyText)}
       >
         <ActionIcon
           key={3}

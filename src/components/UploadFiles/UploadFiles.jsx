@@ -312,6 +312,8 @@ export default function (props) {
 
 
   const coBrand = data.co_brand_config && data.co_brand_config
+  const simButtonName = config.data.co_brand_config ? config.data.co_brand_config.co_brand_name : 'Mobile'
+
   return (
     <Fragment>
       <Upload>
@@ -385,7 +387,7 @@ export default function (props) {
                           <Tag disabled style={{ margin: 0, width: '100%' }} color='#87d068'
                                onClick={() => isFileWithECP ? null : handleSimVerifyFile(file)}>
                             <Icon style={{ marginRight: 5, cursor: 'pointer' }} type={isFileWithECP ? 'like' : 'edit'}/>
-                            {isFileWithECP ? '' : 'Подписать(MTC ID)'}
+                            {isFileWithECP ? '' : `Подписать(${simButtonName})`}
                           </Tag>
                         </Menu.Item>
                         <Menu.Item>

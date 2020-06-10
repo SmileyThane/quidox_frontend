@@ -70,6 +70,7 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, user, config, redirec
 
   const clientId = config.data.co_brand_config ? config.data.co_brand_config.client_id : process.env.REACT_APP_SIM_SCEP_URL
   const callback = config.data.co_brand_config ? config.data.co_brand_config.callback : process.env.REACT_APP_SIM_SCEP_URL
+  const simButtonName = config.data.co_brand_config ? config.data.co_brand_config.co_brand_name + " ID" : 'Mobile  ID'
 
   const newPageUrl = `${process.env.REACT_APP_SIM_SCEP_URL}?`+
     `client_id=${clientId}&`+
@@ -189,7 +190,7 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, user, config, redirec
           onClick={onCancel}
         >Отмена</Button>
       </TabPane>
-      <TabPane tab='MTC ID' key='2'>
+      <TabPane tab=simButtonName key='2'>
         <Fragment>
           <p>Убедитесь в том, что:</p>
           <ol>
@@ -200,7 +201,7 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, user, config, redirec
             style={{ marginRight: '2rem' }}
             onClick={handleSimVerifyFile}
           >
-            Подключить MTC ID
+            Подключить {{ simButtonName }}
           </Button>
           <Button
             type='primary'

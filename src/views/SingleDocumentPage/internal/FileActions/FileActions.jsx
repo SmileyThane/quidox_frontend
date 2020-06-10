@@ -268,6 +268,7 @@ const {
   }
 
   const statusId = file.status.status_data.id
+  const simButtonName = config.data.co_brand_config ? config.data.co_brand_config.co_brand_name : 'Mobile'
 
   return (
     <Fragment>
@@ -312,7 +313,7 @@ const {
         <ActionTooltip
           arrowPointAtCenter
           placement='topRight'
-          title={'Подписать документ (MTC ID)'}
+          title={`Подписать документ (${simButtonName} ID)`}
         >
           <ActionIcon
             key={3}
