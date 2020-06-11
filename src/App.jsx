@@ -54,7 +54,7 @@ function App () {
 
           <PublicRoute path='/login' component={LoginPage} />
           <PublicRoute path='/register' component={RegisterPage} />
-          <PublicRoute path='/complete-registration' component={CompleteRegistrationForm} />
+          <PublicRoute path='/complete-registration/:id' component={CompleteRegistrationForm} />
           <PublicRoute path='/complete-reset/:id' component={CompleteResetForm} />
           <PublicRoute path='/password-recovery' component={ResetPasswordPage} />
           <ProtectedRoute path='/document/:id/shared/:code' component={SingleSharedDocumentPage} />
