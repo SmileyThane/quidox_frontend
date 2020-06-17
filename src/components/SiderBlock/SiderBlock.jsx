@@ -5,7 +5,8 @@ import { Menu } from '../'
 
 const { Sider } = Layout
 
-const SiderBlock = ({ children }) => {
+const SiderBlock = ({ children, config: { data } }) => {
+
   return (
     <Sider
       className='sidebar'
@@ -17,7 +18,7 @@ const SiderBlock = ({ children }) => {
       }}
       width={300}
     >
-      <Menu />
+      <Menu config={data} isBrand={!!data.co_brand_config} />
     </Sider>
   )
 }

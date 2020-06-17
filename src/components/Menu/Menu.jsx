@@ -7,8 +7,9 @@ import history from '../../history.js'
 import { Button } from '../'
 import { MenuItem } from './internal'
 import './Menu.scss'
+import { logger } from 'redux-logger/src'
 
-const AntMenu = props => {
+const AntMenu = props  => {
   const [menuData, setMenuData] = useState({})
 
   useEffect(() => {
@@ -30,6 +31,7 @@ const AntMenu = props => {
 
   const { SubMenu } = Menu
   const { data } = menuData
+  console.log(props.config)
   return (
     <Fragment>
       <Button
@@ -158,6 +160,7 @@ const AntMenu = props => {
           key='/esc-checking'
           icon='file-protect'
           id={'/esc-checking'}
+          onClick={() => props.isBrand && window.open(`${props.config.co_brand_config.logout_uri}/check`, '_self')}
         />
         <MenuItem
           heading='Сторонние источники'

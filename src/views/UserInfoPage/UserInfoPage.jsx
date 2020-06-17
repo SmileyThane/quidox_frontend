@@ -403,10 +403,10 @@ class UserInfoPage extends React.Component {
                   Сменить пароль
                 </Button>
 
-                <Button type='primary' style={{ marginLeft: '2rem' }} onClick={() => this.openModal('phone')}>
-                  <Icon type='edit'/>
-                  Сменить номер телефона
-                </Button>
+                {/*<Button type='primary' style={{ marginLeft: '2rem' }} onClick={() => this.openModal('phone')}>*/}
+                {/*  <Icon type='edit'/>*/}
+                {/*  Сменить номер телефона*/}
+                {/*</Button>*/}
               </div>
             </div>
           </TabPane>
