@@ -160,7 +160,7 @@ const AntMenu = props  => {
           key='/esc-checking'
           icon='file-protect'
           id={'/esc-checking'}
-          onClick={() => props.isBrand && window.open(`${props.config.co_brand_config.logout_uri}/check`, '_self')}
+          onClick={() => props.isBrand && window.open(`${props.config.co_brand_config.logout_uri}/esc-check`, '_self')}
         />
         <MenuItem
           heading='Сторонние источники'
