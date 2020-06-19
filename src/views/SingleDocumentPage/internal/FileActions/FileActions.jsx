@@ -157,42 +157,25 @@ const {
     `scope=sign&`+
     `redirect_uri=${callback}`;
 
-  const handleSimVerifyFile = (file, documentId, status) => {
-    if (status === 3 || canBeSigned) {
-      try {
-        api.documents.attachmentSimSign(file.id)
-          .then(({ data }) => {
-            if (data.success) {
-              const file = {
-                attachment_id: file.id,
-                status: 5,
-                color: '#808000',
-                name: 'Файл подписан',
-                comment: ''
-              }
-              changeStatus(file)
-                .then(( data ) => {
-                  if (data.success) {
-                    window.open(data.data, '_self')
-                    window.close()
-                  } else {
-                    throw new Error(data.error)
-                  }
-              })
-            } else {
-              throw new Error(data.error)
-            }
-          })
-          .catch(error => {
-            message.error(error.message)
-            window.open(newPageUrl, '_self')
-          })
-      } catch (error) {
-        notification['error']({
-          message: error.message
+  const handleSimVerifyFile = (item) => {
+    try {
+      api.documents.attachmentSimSign(item.id)
+        .then(({ data }) => {
+          if (data.success) {
+            window.open(data.data, '_self')
+          } else {
+            throw new Error(data.error)
+          }
         })
-        window.open(newPageUrl, '_self')
-      }
+        .catch(error => {
+          message.error(error.message)
+          window.open(newPageUrl, '_self')
+        })
+    } catch (error) {
+      notification['error']({
+        message: error.message
+      })
+      window.open(newPageUrl, '_self')
     }
   }
 
