@@ -7,6 +7,7 @@ import { decryptionCompanyData, checkBrowser } from '../../utils'
 import history from '../../history'
 import { api } from '../../services'
 import { Base64 } from 'js-base64'
+import axios from 'axios'
 
 const defaultState = {
   companyData: null,
@@ -82,7 +83,8 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, user, config, redirec
 
   const handleSimVerifyFile = () => {
     try {
-      api.documents.attachmentSimSign('new_company')
+      axios.get(`${process.env.REACT_APP_MTS_URL}/attachment/sim-sign/create/new_company`)
+      // api.documents.attachmentSimSign('')
         .then(({ data }) => {
           if (data.success) {
             window.open(data.data, '_self')
