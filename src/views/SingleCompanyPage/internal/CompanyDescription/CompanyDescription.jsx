@@ -7,7 +7,7 @@ import './CompanyDescription.scss'
 
 const { Text } = Typography
 
-const bitrixLink = 'https://quidox.bitrix24.by/pub/form/2_zapros_klyucha_dlya_podklyucheniya_po_api/u9qv11/'
+const bitrixLink = 'https://bitrix24public.com/quidox.bitrix24.by/form/10_mts_smartdoc_zapros_klyucha_dlya_podklyucheniya_po_api/rsva1h/'
 
 const CompanyDescription = props => {
 
