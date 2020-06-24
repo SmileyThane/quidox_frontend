@@ -83,7 +83,11 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, user, config, redirec
 
   const handleSimVerifyFile = () => {
     try {
-      axios.get(`${process.env.REACT_APP_MTS_URL}/attachment/sim-sign/create/new_company`)
+      axios.get(`${process.env.REACT_APP_MTS_URL}/attachment/sim-sign/create/new_company`, {
+        headers: {
+          'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken'),
+        }
+      })
       // api.documents.attachmentSimSign('')
         .then(({ data }) => {
           if (data.success) {
