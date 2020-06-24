@@ -8,9 +8,10 @@ import history from '../../history'
 
 const { Text } = Typography
 
-const EsignLoginPage = props => {
+const EsignLoginPage = ({ config: { data } }) => {
 
 
+  const isConfig = data.co_brand_config
   const signLogin = () => {
     try {
       const sertificationObject = window.signProcess('111', '111')
@@ -41,12 +42,18 @@ const EsignLoginPage = props => {
             level={2}>
         Продолжая процедуру входа Вы подтверждаете
         факт ознакомления <br/>
-        и принятия условий <a href='https://quidox.by/agreement/'>Публичного договора</a>,<br/>
-        согласие с <a href='https://quidox.by/agreement/'>Политикой конфиденциальности</a><br/>
+        и принятия условий {isConfig
+        ? <a href={data.co_brand_config.terms_link}>Правил использования.</a>
+        : <>
+          <a href='https://quidox.by/agreement/'>Публичного договора,</a>
+          <br/>
+          согласие с <a href='https://quidox.by/agreement/'>Политикой конфиденциальности</a><br/>
+        </> }
         <Button
           id={'eSignLogin'}
           type='primary'
-          style={{ margin: '30px', fontSize: '1.8rem' }}
+          block
+          style={{ margin: '30px', fontSize: '1.8rem', maxWidth: 200 }}
           onClick={signLogin}
         >
           Продолжить

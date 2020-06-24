@@ -1,3 +1,11 @@
+import { connect } from 'react-redux'
 import CompleteRegistrationForm from './CompleteRegistrationForm'
 
-export default CompleteRegistrationForm
+const mapStateToProps = state => ({
+  config: state.config
+})
+
+export default connect(
+  mapStateToProps,
+  null
+)(CompleteRegistrationForm)

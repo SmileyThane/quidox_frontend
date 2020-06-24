@@ -195,6 +195,7 @@ class CompleteRegistrationForm extends React.Component {
 
   render () {
     const { currentStep, seconds } = this.state
+    const { config: { data } } = this.props
     const { getFieldDecorator } = this.props.form
 
     const prefixSelector = getFieldDecorator('prefix', {
@@ -248,8 +249,12 @@ class CompleteRegistrationForm extends React.Component {
                     style={{ width: '100%' }}
                   />)}
                 </Form.Item>
-                <Checkbox style={{ marginBottom: '1rem' }} onClick={this.handleCheck}>Я ознакомился и принимаю условия
-                  Публичного договора и Политику конфиденцальности.</Checkbox>
+                <Checkbox style={{ marginBottom: '1rem' }} onClick={this.handleCheck}>Я ознакомился и принимаю условия &nbsp;
+                  {data.co_brand_config
+                    ? <a href={data.co_brand_config.terms_link}>Правил использования</a>
+                    : <span><a href='https://quidox.by/agreement/'>Публичного договора, <a href='https://quidox.by/agreement/'>Политикой конфиденциальности</a></a></span>
+                  }.
+                </Checkbox>
                 <div style={{ marginBottom: '1rem' }}>
                   <Text>
                     Для начала регистрации и обеспечения безопасной двухфакторной аутентификации, пожалуйста введите
