@@ -32,12 +32,12 @@ const { TextArea } = Input
 const { Text, Paragraph } = Typography
 
 const initialState = {
-  isChainMessage: false,
-  isTableVisible: false,
+  isChainMessage: true,
+  isTableVisible: true,
   users: [{
     id: 0,
     email: '',
-    unp: '',
+    unp: [],
     status: 1,
     additionally: 1
   }]
@@ -109,7 +109,15 @@ const NewDocumentPage = props => {
     {
       key: '2',
       title: 'УНП',
-      render: record => <Paragraph editable={{ onChange: str => editUNP(str, record) }}>{record.unp}</Paragraph>
+      render: record => <Fragment>
+        {!!record.unp.length &&
+          <Select style={{ minWidth: '20rem' }} placeholder='Выберете УНП'>
+            {record.unp.map(i => (
+              <Option value={i.id} key={i.company_number}>{i.company_number}</Option>
+            ))}
+          </Select>
+      }
+      </Fragment>
     },
     {
       key: '3',
@@ -131,7 +139,7 @@ const NewDocumentPage = props => {
   ]
 
   const addUser = () => {
-    dispatch({ type: 'ADD_USER', payload: { id: state.users.length + 1, email: '', unp: '', status: state.users[state.users.length -1].status, additionally: state.users[state.users.length -1].additionally } })
+    dispatch({ type: 'ADD_USER', payload: { id: state.users.length + 1, email: '', unp: [], status: state.users[state.users.length -1].status, additionally: state.users[state.users.length -1].additionally } })
   }
 
   const editStatus = (value, record) => {
@@ -142,12 +150,22 @@ const NewDocumentPage = props => {
     dispatch({ type: 'EDIT_FIELD', payload: { ...record, additionally: value } })
   }
 
-  const editUNP = (str, record) => {
-    dispatch({ type: 'EDIT_FIELD', payload: { ...record, unp: str } })
-  }
-
   const editEmail = (str, record) => {
-    dispatch({ type: 'EDIT_FIELD', payload: { ...record, email: str } })
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    if (re.test(String(str).toLowerCase())) {
+      dispatch({ type: 'EDIT_FIELD', payload: { ...record, email: str } })
+      findUsersByParams(str)
+        .then(({ data }) => {
+          console.log(data)
+          dispatch({ type: 'EDIT_FIELD', payload: { ...record, unp: data.data, email: str } })
+        })
+    } else {
+      dispatch({ type: 'EDIT_FIELD', payload: { ...record, email: '' } })
+      notification['error']({
+        message: 'Не правильный электронный адрес'
+      })
+    }
+
   }
 
   const updateField = (field, v) => {
@@ -271,6 +289,7 @@ const NewDocumentPage = props => {
       value: validEmails
     })
   }
+  console.log(state)
   return (
     <Fragment>
       <Button onClick={() => dispatch({ type: 'TOGGLE_MESSAGE' })} style={{ marginBottom: '2rem' }} type='primary'>{state.isChainMessage ? 'Обычная отправка' : 'Отправка цепочкой'}</Button>
@@ -291,7 +310,6 @@ const NewDocumentPage = props => {
               <Button type='primary' onClick={() => dispatch({ type: 'SHOW_TABLE' })}>Добавить файл и указать маршрут</Button>
             </div>
 
-            <Button type='link' onClick={addUser}>+ Добавить получателя</Button>
             {state.isTableVisible &&
               <>
                 <div className='buttons-group'>
@@ -308,6 +326,7 @@ const NewDocumentPage = props => {
                     dataSource={state.users}
                   />
                 </div>
+                <Button type='link' onClick={addUser}>+ Добавить получателя</Button>
               </>
             }
 
