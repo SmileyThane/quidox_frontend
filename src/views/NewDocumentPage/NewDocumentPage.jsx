@@ -188,25 +188,27 @@ const NewDocumentPage = props => {
         is_disabled: idx !== 0
       }
     })
-    sendDocumentToUser(sendData)
-      .then(({ success, error }) => {
-      if (success) {
-        notification['success']({
-          message: 'Ваше сообщение успешно отправлено'
+    sendData.forEach(element => {
+      sendDocumentToUser(element)
+        .then(({ success, error }) => {
+          if (success) {
+          } else {
+            throw new Error(error)
+          }
         })
-        setDocumentState({ ...defaultDocumentData })
-        setMessage(!message)
-        dispatch({ type: 'RESET' })
-        getUser()
-      } else {
-        throw new Error(error)
-      }
+        .catch(error => {
+          notification.error({
+            message: error.message
+          })
+        })
     })
-    .catch(error => {
-      notification.error({
-        message: error.message
-      })
+    notification['success']({
+      message: 'Ваше сообщение успешно отправлено'
     })
+    setDocumentState({ ...defaultDocumentData })
+    setMessage(!message)
+    dispatch({ type: 'RESET' })
+    getUser()
   }
 
   const updateField = (field, v) => {
