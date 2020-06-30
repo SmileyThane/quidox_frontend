@@ -32,11 +32,12 @@ const { TextArea } = Input
 const { Text, Paragraph } = Typography
 
 const initialState = {
-  isChainMessage: true,
-  isTableVisible: true,
+  isChainMessage: false,
+  isTableVisible: false,
   users: [{
     id: 0,
     email: '',
+    activeUNP: '',
     unp: [],
     status: 1,
     additionally: 1
@@ -68,6 +69,10 @@ function reducer (state = initialState, action) {
           action.payload,
           ...state.users.slice(state.users.findIndex(i => i.id === action.payload.id) + 1)
         ]
+      }
+    case 'RESET':
+      return {
+        ...initialState
       }
   }
 }
@@ -111,7 +116,7 @@ const NewDocumentPage = props => {
       title: 'УНП',
       render: record => <Fragment>
         {!!record.unp.length &&
-          <Select style={{ minWidth: '20rem' }} placeholder='Выберете УНП'>
+          <Select style={{ minWidth: '20rem' }} onChange={value => editUNP(value, record)} placeholder='Выберете УНП'>
             {record.unp.map(i => (
               <Option value={i.id} key={i.company_number}>{i.company_number}</Option>
             ))}
@@ -139,11 +144,15 @@ const NewDocumentPage = props => {
   ]
 
   const addUser = () => {
-    dispatch({ type: 'ADD_USER', payload: { id: state.users.length + 1, email: '', unp: [], status: state.users[state.users.length -1].status, additionally: state.users[state.users.length -1].additionally } })
+    dispatch({ type: 'ADD_USER', payload: { id: state.users.length + 1, email: '', activeUNP: '', unp: [], status: state.users[state.users.length -1].status, additionally: state.users[state.users.length -1].additionally } })
   }
 
   const editStatus = (value, record) => {
     dispatch({ type: 'EDIT_FIELD', payload: { ...record, status: value } })
+  }
+
+  const editUNP = (value, record) => {
+    dispatch({ type: 'EDIT_FIELD', payload: { ...record, activeUNP: value } })
   }
 
   const editAdditionallyStatus = (value, record) => {
@@ -153,11 +162,11 @@ const NewDocumentPage = props => {
   const editEmail = (str, record) => {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     if (re.test(String(str).toLowerCase())) {
-      dispatch({ type: 'EDIT_FIELD', payload: { ...record, email: str } })
+      dispatch({ type: 'EDIT_FIELD', payload: { ...record, email: str, activeUNP: str } })
       findUsersByParams(str)
         .then(({ data }) => {
           console.log(data)
-          dispatch({ type: 'EDIT_FIELD', payload: { ...record, unp: data.data, email: str } })
+          dispatch({ type: 'EDIT_FIELD', payload: { ...record, unp: data.data, email: str, activeUNP: str } })
         })
     } else {
       dispatch({ type: 'EDIT_FIELD', payload: { ...record, email: '' } })
@@ -166,6 +175,38 @@ const NewDocumentPage = props => {
       })
     }
 
+  }
+
+  const chainSend = () => {
+    const { message } = documentState
+    const { users } = state
+    const sendData = users.map((i, idx) => {
+      return {
+        doc_id: message.id,
+        user_companies: [JSON.stringify(i.activeUNP)],
+        continues_action: i.additionally !== 1,
+        is_disabled: idx !== 0
+      }
+    })
+    sendDocumentToUser(sendData)
+      .then(({ success, error }) => {
+      if (success) {
+        notification['success']({
+          message: 'Ваше сообщение успешно отправлено'
+        })
+        setDocumentState({ ...defaultDocumentData })
+        setMessage(!message)
+        dispatch({ type: 'RESET' })
+        getUser()
+      } else {
+        throw new Error(error)
+      }
+    })
+    .catch(error => {
+      notification.error({
+        message: error.message
+      })
+    })
   }
 
   const updateField = (field, v) => {
@@ -289,7 +330,7 @@ const NewDocumentPage = props => {
       value: validEmails
     })
   }
-  console.log(state)
+
   return (
     <Fragment>
       <Button onClick={() => dispatch({ type: 'TOGGLE_MESSAGE' })} style={{ marginBottom: '2rem' }} type='primary'>{state.isChainMessage ? 'Обычная отправка' : 'Отправка цепочкой'}</Button>
@@ -327,6 +368,10 @@ const NewDocumentPage = props => {
                   />
                 </div>
                 <Button type='link' onClick={addUser}>+ Добавить получателя</Button>
+
+                <div className='buttons-group'>
+                  <Button onClick={chainSend} type='primary'>Отправить</Button>
+                </div>
               </>
             }
 
