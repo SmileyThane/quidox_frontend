@@ -183,7 +183,7 @@ const NewDocumentPage = props => {
     const sendData = users.map((i, idx) => {
       return {
         document_ids: [message.id],
-        user_companies: [JSON.stringify(i.activeUNP)],
+        user_company_id: JSON.stringify([i.activeUNP]),
         continues_action: i.additionally !== 1,
         is_disabled: idx !== 0
       }
