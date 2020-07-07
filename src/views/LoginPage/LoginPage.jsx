@@ -72,7 +72,7 @@ class LoginPage extends React.Component {
           {getFieldDecorator('email', {
             rules: [{ required: true, message: 'Пожалуйста, введите адрес электронной почты!' }]
           })(
-            <Input
+            <Input name={'email'}
               prefix={<Icon type='user' style={{ color: 'rgba(0,0,0,.25)' }}/>}
               placeholder='Введите адрес электронной почты'
             />
@@ -87,6 +87,7 @@ class LoginPage extends React.Component {
             }]
           })(
             <Input.Password
+              name={'password'}
               prefix={<Icon type='lock' style={{ color: 'rgba(0,0,0,.25)' }}/>}
               type='password'
               placeholder='Введите пароль'
@@ -98,7 +99,7 @@ class LoginPage extends React.Component {
           <RouterLink className='login-form-forgot' to={'/password-recovery'}>
             Забыли пароль?
           </RouterLink>
-          <Button type='primary' htmlType='submit' className='login-form-button' style={{ marginTop: '.5rem' }}>
+          <Button type='primary' name={'loginButton'} htmlType='submit' className='login-form-button' style={{ marginTop: '.5rem' }}>
             Войти
           </Button>
 
