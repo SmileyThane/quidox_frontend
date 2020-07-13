@@ -124,15 +124,15 @@ const NewDocumentPage = props => {
       }
       </Fragment>
     },
-    {
-      key: '3',
-      title: 'Тип требовония',
-      render: record => <Select  onChange={value => editStatus(value, record)} style={{ minWidth: '20rem' }} defaultValue={record.status}>
-        <Option value={1}>Простая доставка</Option>
-        <Option value={2}>Согласование</Option>
-        <Option value={3}>Подпись получателя</Option>
-      </Select>
-    },
+    // {
+    //   key: '3',
+    //   title: 'Тип требовония',
+    //   render: record => <Select  onChange={value => editStatus(value, record)} style={{ minWidth: '20rem' }} defaultValue={record.status}>
+    //     <Option value={1}>Простая доставка</Option>
+    //     <Option value={2}>Согласование</Option>
+    //     <Option value={3}>Подпись получателя</Option>
+    //   </Select>
+    // },
     {
       key: '4',
       title: 'Дополнительно',

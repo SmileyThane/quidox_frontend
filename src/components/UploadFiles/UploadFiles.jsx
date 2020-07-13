@@ -362,7 +362,7 @@ export default function (props) {
                       </Tag>
                       }
                     </div>
-                    {isStatus &&
+                    {/*{isStatus &&*/}
                     <div>
                       <Select
                         style={{ minWidth: '20rem' }}
@@ -374,7 +374,7 @@ export default function (props) {
                         <Option value={3}>Подпись получателя</Option>
                       </Select>
                     </div>
-                    }
+                    {/*}*/}
                   </File>
                   <Dropdown
                     overlay={() => (
