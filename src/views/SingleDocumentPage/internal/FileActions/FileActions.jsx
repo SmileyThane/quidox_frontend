@@ -179,6 +179,45 @@ const {
     }
   }
 
+  const handleTZIVerifyFile = (item) => {
+    try {
+      api.files.getBase64File(item.id)
+        .then(({ data }) => {
+          let sign = {};
+          sign.data = data.data.encoded_base64_file;
+          sign.isDetached = true;
+          sign.token_qdx = '123';
+          const request = axios.post('http://127.0.0.1:8083/sign', sign)
+            .then(({ data }) => {
+              if (data.cms) {
+                let signObj = {}
+                signObj.raw_sign = data.cms
+                signObj.comment = 'Подписано при помощи сервиса НИИ ТЗИ'
+                axios.post(`${process.env.REACT_APP_BASE_URL}/api/attachment/${item.id}/sign/add`, signObj)
+                  .then(({ data }) => {
+                    if (data.success === true) {
+                      message.success('Подпись успешно выработана')
+                    }
+                  })
+                  .catch(function (error) {
+                    message.error(error.message)
+                  })
+              }
+            })
+            .catch(function (error) {
+              message.error(error.message)
+            })
+        })
+        .catch(error => {
+          message.error(error.message)
+        })
+    } catch (error) {
+      notification['error']({
+        message: error.message
+      })
+    }
+  }
+
   const handleVerifyFile = (item, documentId, status) => {
     if ((checkBrowser('ie') && status === 3) || canBeSigned) {
       api.files.getBase64File(item.id)
@@ -320,6 +359,23 @@ const {
             type='edit'
             style={canBeSigned ? normal : receivingIconColor(statusId, verifyStyle)}
             onClick={() => handleVerifyFile(file, documentId, statusId)}
+          />
+        </ActionTooltip>
+        }
+      </Fragment>,
+
+      <Fragment>
+        {statusId !== 5 && ![3, 4].includes(messageId) &&
+        <ActionTooltip
+          arrowPointAtCenter
+          placement='topRight'
+          title={canBeSigned ? 'Подписать документ (ТЗИ)' : receivingTooltipText(statusId, verifyText)}
+        >
+          <ActionIcon
+            key={3}
+            type='edit'
+            style={canBeSigned ? normal : receivingIconColor(statusId, verifyStyle)}
+            onClick={() => handleTZIVerifyFile(file)}
           />
         </ActionTooltip>
         }
