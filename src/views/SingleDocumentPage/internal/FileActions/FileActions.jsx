@@ -1,21 +1,13 @@
-import React, { useReducer, Fragment, useEffect } from 'react'
+import React, { Fragment, useReducer } from 'react'
 import useForm from 'rc-form-hooks'
 import axios from 'axios'
 import fileDownload from 'js-file-download'
 import { Base64 } from 'js-base64'
 
-import { message, notification, Modal, Form, Input } from 'antd'
+import { Form, Input, message, Modal, notification } from 'antd'
 import { Button } from '../../../../components'
-import { ActionTooltip, ActionIcon } from './styled'
-import {
-  agreeText,
-  declineText,
-  verifyText,
-  agreeStyle,
-  declineStyle,
-  verifyStyle,
-  normal
-} from './static'
+import { ActionIcon, ActionTooltip } from './styled'
+import { agreeStyle, agreeText, declineStyle, declineText, normal, verifyStyle, verifyText } from './static'
 import { api } from '../../../../services'
 import { checkBrowser } from '../../../../utils'
 
@@ -60,17 +52,17 @@ const FileActions = props => {
     config
   } = props
 
-const [state, dispatch] = useReducer(
-  reducer,
-  initialState
-)
+  const [state, dispatch] = useReducer(
+    reducer,
+    initialState
+  )
 
-const {
-  isModalVisible,
-  modalType,
-  selected_file,
-  status
-} = state
+  const {
+    isModalVisible,
+    modalType,
+    selected_file,
+    status
+  } = state
 
   const { getFieldDecorator, validateFields, values } = useForm()
 
@@ -149,13 +141,16 @@ const {
   const clientId = config.data.co_brand_config ? config.data.co_brand_config.client_id : process.env.REACT_APP_SIM_SCEP_CLIENT_ID
   const callback = config.data.co_brand_config ? config.data.co_brand_config.callback : process.env.REACT_APP_SIM_SCEP_CALLBACK
 
-  const newPageUrl = `${process.env.REACT_APP_SIM_SCEP_URL}?`+
-    `client_id=${clientId}&`+
-    `response_type=code&`+
-    `state=${Base64.encode(JSON.stringify({ 'co_brand_name': config.data.co_brand_config ? 'mts' : 'quidox', 'user_id': user.data.id }))}&`+
-    `authentication=phone&`+
-    `scope=sign&`+
-    `redirect_uri=${callback}`;
+  const newPageUrl = `${process.env.REACT_APP_SIM_SCEP_URL}?` +
+    `client_id=${clientId}&` +
+    `response_type=code&` +
+    `state=${Base64.encode(JSON.stringify({
+      'co_brand_name': config.data.co_brand_config ? 'mts' : 'quidox',
+      'user_id': user.data.id
+    }))}&` +
+    `authentication=phone&` +
+    `scope=sign&` +
+    `redirect_uri=${callback}`
 
   const handleSimVerifyFile = (item) => {
     try {
@@ -183,17 +178,21 @@ const {
     try {
       api.files.getBase64File(item.id)
         .then(({ data }) => {
-          let sign = {};
-          sign.data = data.data.encoded_base64_file;
-          sign.isDetached = true;
-          sign.token_qdx = '123';
+          let sign = {}
+          sign.data = data.data.encoded_base64_file
+          sign.isDetached = true
+          sign.token_qdx = '123'
           const request = axios.post('http://127.0.0.1:8083/sign', sign)
             .then(({ data }) => {
               if (data.cms) {
                 let signObj = {}
                 signObj.raw_sign = data.cms
                 signObj.comment = 'Подписано при помощи сервиса НИИ ТЗИ'
-                axios.post(`${process.env.REACT_APP_BASE_URL}/attachment/${item.id}/sign/add`, signObj)
+                axios.post(`${process.env.REACT_APP_BASE_URL}/attachment/${item.id}/sign/add`, signObj, {
+                  headers: {
+                    'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken'),
+                  }
+                })
                   .then(({ data }) => {
                     if (data.success === true) {
                       message.success('Подпись успешно выработана')
@@ -226,39 +225,42 @@ const {
             try {
               const isIE = /*@cc_on!@*/false || !!document.documentMode
               window.pluginLoaded()
-                  const sertificationObject = window.signProcess(data.data.encoded_base64_file, item.hash_for_sign)
-                  const newData = {
-                    id: item.id,
-                    hash: sertificationObject.signedData,
-                    data: sertificationObject.verifiedData,
-                    hash_for_sign: sertificationObject.hex,
-                    status: canBeSigned ? null : 5
-                  }
+              const sertificationObject = window.signProcess(data.data.encoded_base64_file, item.hash_for_sign)
+              const newData = {
+                id: item.id,
+                hash: sertificationObject.signedData,
+                data: sertificationObject.verifiedData,
+                hash_for_sign: sertificationObject.hex,
+                status: canBeSigned ? null : 5
+              }
 
-                  api.documents.attachmentSignCanConfirm({ key: sertificationObject.verifiedData.key, attachment_id: item.id })
-                    .then(({ data }) => {
-                      if (data.success) {
-                        verifyFile(newData)
-                          .then((response) => {
-                            if (response.success) {
-                              message.success('Файл успешно подписан!')
-                              getDocument()
-                              window.pluginClosed()
-                            } else {
-                              message.error('Ошибка подписания. Повторите операцию')
-                              // throw new Error(response.error)
-                            }
-                          })
-                          .catch(error => {
-                            message.error(error.message)
-                          })
-                      } else {
-                        throw new Error(data.error)
-                      }
-                    })
-                    .catch(error => {
-                      message.error(error.message)
-                    })
+              api.documents.attachmentSignCanConfirm({
+                key: sertificationObject.verifiedData.key,
+                attachment_id: item.id
+              })
+                .then(({ data }) => {
+                  if (data.success) {
+                    verifyFile(newData)
+                      .then((response) => {
+                        if (response.success) {
+                          message.success('Файл успешно подписан!')
+                          getDocument()
+                          window.pluginClosed()
+                        } else {
+                          message.error('Ошибка подписания. Повторите операцию')
+                          // throw new Error(response.error)
+                        }
+                      })
+                      .catch(error => {
+                        message.error(error.message)
+                      })
+                  } else {
+                    throw new Error(data.error)
+                  }
+                })
+                .catch(error => {
+                  message.error(error.message)
+                })
 
             } catch (error) {
               notification['error']({
@@ -295,7 +297,7 @@ const {
   return (
     <Fragment>
       <Fragment>
-        { statusId !== 5 && ![1, 3, 4, 9, 10].includes(messageId) &&
+        {statusId !== 5 && ![1, 3, 4, 9, 10].includes(messageId) &&
         <ActionTooltip
           arrowPointAtCenter
           placement='topRight'
@@ -306,7 +308,10 @@ const {
             type='check-circle'
             style={receivingIconColor(statusId, agreeStyle)}
             // onClick={() => handleAgreeFile(file, statusId)}
-            onClick={() => dispatch({ type:'SHOW_MODAL', payload: { isModalVisible: true, modal_type: 'agree', status: statusId, selected_file: file }})}
+            onClick={() => dispatch({
+              type: 'SHOW_MODAL',
+              payload: { isModalVisible: true, modal_type: 'agree', status: statusId, selected_file: file }
+            })}
           />
         </ActionTooltip>
         },
@@ -324,7 +329,10 @@ const {
             type='stop'
             style={receivingIconColor(statusId, declineStyle)}
             // onClick={() => handleDeclineFile(file, statusId)}
-            onClick={() => dispatch({ type:'SHOW_MODAL', payload: { isModalVisible: true, modal_type: 'decline', status: statusId, selected_file: file }})}
+            onClick={() => dispatch({
+              type: 'SHOW_MODAL',
+              payload: { isModalVisible: true, modal_type: 'decline', status: statusId, selected_file: file }
+            })}
           />
         </ActionTooltip>
         }
@@ -401,25 +409,26 @@ const {
       >
         <Fragment>
           {modalType === 'decline' &&
-            <Form onSubmit={handleDeclineFile}>
-              <Form.Item label='Введите причину отклонения'>
-                {getFieldDecorator('decline_message', {
-                  rules: [{ required: true, message: 'Текст отлконения является обязательным' }]
-                })(
-                  <TextArea style={{ resize: 'none' }} autoSize={{ minRows: 3, maxRows: 5 }} size='large' placeholder='Введите причину отклонения' />
-                )}
-              </Form.Item>
-              <Button type='primary' htmlType='submit'>Подтвердить отклонение</Button>
-            </Form>
+          <Form onSubmit={handleDeclineFile}>
+            <Form.Item label='Введите причину отклонения'>
+              {getFieldDecorator('decline_message', {
+                rules: [{ required: true, message: 'Текст отлконения является обязательным' }]
+              })(
+                <TextArea style={{ resize: 'none' }} autoSize={{ minRows: 3, maxRows: 5 }} size='large'
+                          placeholder='Введите причину отклонения'/>
+              )}
+            </Form.Item>
+            <Button type='primary' htmlType='submit'>Подтвердить отклонение</Button>
+          </Form>
           }
         </Fragment>
         <Fragment>
           {modalType === 'agree' &&
           <Form onSubmit={handleAgreeFile}>
             <Form.Item label='Введите текст согласования'>
-              {getFieldDecorator('agree_message', {
-              })(
-                <TextArea style={{ resize: 'none' }} autoSize={{ minRows: 3, maxRows: 5 }} size='large' placeholder='Введите текс согласования' />
+              {getFieldDecorator('agree_message', {})(
+                <TextArea style={{ resize: 'none' }} autoSize={{ minRows: 3, maxRows: 5 }} size='large'
+                          placeholder='Введите текс согласования'/>
               )}
             </Form.Item>
             <Button type='primary' htmlType='submit'>Подтвердить согласование</Button>
