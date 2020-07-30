@@ -299,8 +299,11 @@ export default function (props) {
                 let signObj = {}
                 signObj.raw_sign = data.cms
                 signObj.comment = 'Подписано при помощи сервиса НИИ ТЗИ'
-                axios.post(`${process.env.REACT_APP_BASE_URL}/attachment/${item.id}/sign/add`, signObj)
-                  .then(({ data }) => {
+                axios.post(`${process.env.REACT_APP_BASE_URL}/attachment/${item.id}/sign/add`, signObj, {
+                  headers: {
+                    'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken'),
+                  }
+                }).then(({ data }) => {
                     if (data.success === true) {
                       message.success('Подпись успешно выработана')
                     }
