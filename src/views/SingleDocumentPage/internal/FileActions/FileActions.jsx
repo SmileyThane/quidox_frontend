@@ -376,7 +376,7 @@ const FileActions = props => {
         <ActionTooltip
           arrowPointAtCenter
           placement='topRight'
-          title={'Подписать документ (ТЗИ)'}
+          title={canBeSigned ?  receivingTooltipText(statusId, verifyText) : 'Подписать документ (ТЗИ)'}
         >
           <ActionIcon
             key={3}
