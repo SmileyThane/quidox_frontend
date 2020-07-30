@@ -187,6 +187,7 @@ const FileActions = props => {
               if (data.cms) {
                 let signObj = {}
                 signObj.raw_sign = data.cms
+                signObj.status_id = 1
                 signObj.comment = 'Подписано при помощи сервиса НИИ ТЗИ'
                 axios.post(`${process.env.REACT_APP_BASE_URL}/attachment/${item.id}/sign/add`, signObj, {
                   headers: {
@@ -194,9 +195,8 @@ const FileActions = props => {
                   }
                 })
                   .then(({ data }) => {
-                    if (data.success === true) {
-                      message.success('Подпись успешно выработана')
-                    }
+                    getDocument()
+                    message.success('Подпись успешно выработана')
                   })
                   .catch(function (error) {
                     message.error(error.message)
