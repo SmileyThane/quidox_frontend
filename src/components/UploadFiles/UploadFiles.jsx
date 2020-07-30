@@ -1,10 +1,9 @@
 import React, { Fragment, useEffect, useReducer, useRef } from 'react'
 
 import { api } from '../../services'
-import { EscDataSlider } from '../'
+import { Button, EscDataSlider } from '../'
 import { checkBrowser } from '../../utils'
-import { Icon, List, message, Modal, notification, Progress, Select, Tag, Typography, Dropdown, Menu } from 'antd'
-import { Button } from '../'
+import { Dropdown, Icon, List, Menu, message, Modal, notification, Progress, Select, Tag, Typography } from 'antd'
 import { File, Upload } from './styled'
 import axios from 'axios'
 import { Base64 } from 'js-base64'
@@ -93,13 +92,16 @@ export default function (props) {
   const clientId = config.data.co_brand_config ? config.data.co_brand_config.client_id : process.env.REACT_APP_SIM_SCEP_CLIENT_ID
   const callback = config.data.co_brand_config ? config.data.co_brand_config.callback : process.env.REACT_APP_SIM_SCEP_CALLBACK
 
-  const newPageUrl = `${process.env.REACT_APP_SIM_SCEP_URL}?`+
-    `client_id=${clientId}&`+
-    `response_type=code&`+
-    `state=${Base64.encode(JSON.stringify({ 'co_brand_name': config.data.co_brand_config ? 'mts' : 'quidox', 'user_id': data.id }))}&`+
-    `authentication=phone&`+
-    `scope=sign&`+
-    `redirect_uri=${callback}`;
+  const newPageUrl = `${process.env.REACT_APP_SIM_SCEP_URL}?` +
+    `client_id=${clientId}&` +
+    `response_type=code&` +
+    `state=${Base64.encode(JSON.stringify({
+      'co_brand_name': config.data.co_brand_config ? 'mts' : 'quidox',
+      'user_id': data.id
+    }))}&` +
+    `authentication=phone&` +
+    `scope=sign&` +
+    `redirect_uri=${callback}`
 
   useEffect(() => {
     if (filesToUpload.length === filesUploaded.length && filesUploaded.length) {
@@ -289,25 +291,24 @@ export default function (props) {
     try {
       api.files.getBase64File(item.id)
         .then(({ data }) => {
-          let sign = {};
-          sign.data = data.data.encoded_base64_file;
-          sign.isDetached = true;
-          sign.token_qdx = '123';
+          let sign = {}
+          sign.data = data.data.encoded_base64_file
+          sign.isDetached = true
+          sign.token_qdx = '123'
           const request = axios.post('http://127.0.0.1:8083/sign', sign)
             .then(({ data }) => {
               if (data.cms) {
                 let signObj = {}
                 signObj.raw_sign = data.cms
+                signObj.status_id = 1
                 signObj.comment = 'Подписано при помощи сервиса НИИ ТЗИ'
                 axios.post(`${process.env.REACT_APP_BASE_URL}/attachment/${item.id}/sign/add`, signObj, {
                   headers: {
                     'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken'),
                   }
                 }).then(({ data }) => {
-                    if (data.success === true) {
-                      message.success('Подпись успешно выработана')
-                    }
-                  })
+                  message.success('Подпись успешно выработана')
+                })
                   .catch(function (error) {
                     message.error(error.message)
                   })
@@ -326,7 +327,6 @@ export default function (props) {
       })
     }
   }
-
 
   const coBrand = data.co_brand_config && data.co_brand_config
   const simButtonName = config.data.co_brand_config ? config.data.co_brand_config.co_brand_name : 'Mobile'
@@ -426,9 +426,16 @@ export default function (props) {
                       </Menu>
                     )}
                   >
-                    <Tag color="#E0E0E0" style={{  color: '#333', cursor: 'pointer',  padding: '0.8rem 1rem', fontSize: '1.5rem', width: '20rem', marginLeft: '2rem' }}>
+                    <Tag color="#E0E0E0" style={{
+                      color: '#333',
+                      cursor: 'pointer',
+                      padding: '0.8rem 1rem',
+                      fontSize: '1.5rem',
+                      width: '20rem',
+                      marginLeft: '2rem'
+                    }}>
                       Выберите действие
-                      <Icon style={{ marginLeft: '1rem' }} type="down" />
+                      <Icon style={{ marginLeft: '1rem' }} type="down"/>
                     </Tag>
                   </Dropdown>
                 </List.Item>
