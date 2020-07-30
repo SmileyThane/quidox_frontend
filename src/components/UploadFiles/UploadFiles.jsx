@@ -295,7 +295,20 @@ export default function (props) {
           sign.token_qdx = '123';
           const request = axios.post('http://127.0.0.1:8083/sign', sign)
             .then(({ data }) => {
-              message.success('Подпись успешно выработана')
+              if (data.cms) {
+                let signObj = {}
+                signObj.raw_sign = data.cms
+                signObj.comment = 'Подписано при помощи сервиса НИИ ТЗИ'
+                axios.post(`${process.env.REACT_APP_BASE_URL}/api/attachment/${item.id}/sign/add`, signObj)
+                  .then(({ data }) => {
+                    if (data.success === true) {
+                      message.success('Подпись успешно выработана')
+                    }
+                  })
+                  .catch(function (error) {
+                    message.error(error.message)
+                  })
+              }
             })
             .catch(function (error) {
               message.error(error.message)
