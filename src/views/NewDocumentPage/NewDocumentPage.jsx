@@ -267,6 +267,7 @@ const NewDocumentPage = props => {
               setDocumentState({ ...defaultDocumentData })
               setMessage(!message)
               getUser()
+              history.push({ pathname: '/documents', search: '?status=3', state: { id: '/documents/3' } })
             }
           })
         }
