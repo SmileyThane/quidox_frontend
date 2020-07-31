@@ -14,6 +14,7 @@ const mapDispatchToProps = dispatch => ({
   changeFileStatus: data => dispatch(actions.files.changeFileStatus(data)),
   removeFile: id => dispatch(actions.files.removeFile(id)),
   verifyFile: data => dispatch(actions.files.verifyFile(data)),
+  verifyFileTZI: (fileId,sign) => dispatch(actions.files.verifyFileTZI(fileId,sign)),
 })
 
 export default connect(

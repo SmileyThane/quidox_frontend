@@ -77,7 +77,8 @@ export default function (props) {
     uploadFile,
     changeFileStatus,
     removeFile,
-    verifyFile
+    verifyFile,
+    verifyFileTZI
   } = props
 
   const inputRef = useRef()
@@ -294,7 +295,7 @@ export default function (props) {
           let sign = {}
           sign.data = data.data.encoded_base64_file
           sign.isDetached = true
-          sign.token_qdx = '123'
+          sign.token_qdx = window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken')
           const request = axios.post('http://127.0.0.1:8083/sign', sign)
             .then(({ data }) => {
               if (data.cms) {
@@ -307,6 +308,8 @@ export default function (props) {
                     'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken'),
                   }
                 }).then(({ data }) => {
+                  // item.users_companies.push(data.data)
+                  verifyFileTZI(item.id, data.data)
                   message.success('Подпись успешно выработана')
                 })
                   .catch(function (error) {
@@ -330,7 +333,6 @@ export default function (props) {
 
   const coBrand = data.co_brand_config && data.co_brand_config
   const simButtonName = config.data.co_brand_config ? config.data.co_brand_config.co_brand_name : 'Mobile'
-
   return (
     <Fragment>
       <Upload>

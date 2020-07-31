@@ -37,13 +37,24 @@ export default (state = initialState, action) => {
         status: action.payload
       }
     case t.VERIFY_FILE_SUCCESS:
-      const index =  state.list.findIndex(i => i.id === action.payload.data.id)
+      const index = state.list.findIndex(i => i.id === action.payload.data.id)
       return {
         ...state,
         list: [
           ...state.list.slice(0, index),
           action.payload.data,
           ...state.list.slice(index + 1)
+        ]
+      }
+    case t.VERIFY_FILE_TZI:
+      let file = state.list[state.list.findIndex(i => i.id === action.payload.fileId)]
+      const updatedFile = { ...file, users_companies: [...file.users_companies, action.payload.sign] }
+      return {
+        ...state,
+        list: [
+          ...state.list.slice(0, state.list.findIndex(i => i.id === action.payload.fileId)),
+          updatedFile,
+          ...state.list.slice(state.list.findIndex(i => i.id === action.payload.fileId) + 1)
         ]
       }
     case t.REMOVE_FILE_FETCHING:
