@@ -17,6 +17,8 @@ import { api } from '../../services'
 import { copy2Clipboard } from '../../utils'
 import './SingleDocumentPage.scss'
 import GoBack from '../../components/GoBack'
+import { Link } from 'react-router-dom'
+import fileDownload from "js-file-download"
 
 var signFetching = false
 const { Text, Paragraph } = Typography
@@ -28,6 +30,8 @@ const defaultDocumentState = {
   fileType: '',
   showModal: false,
   comment: '',
+  commentFile:'',
+  commentLink:'',
   data: [],
   value: [],
   fetching: false,
@@ -166,12 +170,14 @@ const SingleDocumentPage = props => {
     }
   }
 
-  const showComment = (type, comment) => {
+  const showComment = (type, status) => {
     setDocumentState({
       ...documentState,
       showModal: true,
       modalType: type,
-      comment: comment
+      comment: status.comment,
+      commentLink: status.comment_link,
+      commentFile: status.comment_link_basename
     })
   }
 
@@ -321,6 +327,25 @@ const SingleDocumentPage = props => {
       })
   }
 
+  const downloadCommentFile = () => {
+    axios.get(documentState.commentLink, {
+      'responseType': 'arraybuffer',
+      headers: {
+        'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken'),
+        'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
+      }
+    })
+      .then(({ data }) => {
+        if (data) {
+          fileDownload(data, documentState.commentFile)
+          message.success('Файл успешно загружен!')
+        }
+      })
+      .catch(error => {
+        message.error(error.message)
+      })
+  }
+
   return (
     <Fragment>
       <Spin spinning={(isFetching || fetch)}>
@@ -445,7 +470,7 @@ const SingleDocumentPage = props => {
                             placement='top'
                             arrowPointAtCenter
                           >
-                            <Icon type='question-circle' onClick={() => showComment('comment', item.status.comment)}/>
+                            <Icon type='question-circle' onClick={() => showComment('comment', item.status)}/>
                           </Tooltip>
                           }
                         </div>
@@ -520,6 +545,8 @@ const SingleDocumentPage = props => {
         {documentState.modalType === 'comment' &&
         <div>
           <Text>{documentState.comment}</Text><br/>
+          <Button  style={{ marginTop: 20 }} disabled={documentState.commentFile == ""} type='primary' onClick={downloadCommentFile}>Скачать вложение</Button>
+          <br/>
           <Button style={{ marginTop: 20 }} type='primary' onClick={handleCloseModal}>Закрыть</Button>
         </div>
         }

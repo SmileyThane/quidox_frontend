@@ -51,17 +51,6 @@
         try {
           var params = avcmx.CreateParameters(0)
           conn = avcmx.CreateConnection(params, 0);
-
-          // conn = avcmx.CreateConnectionAsync(params, 0, function (e, cnn) {
-          //   if (e) {
-          //     alert(avcmx.GetErrorInformation(e, 0))
-          //     return
-          //   }
-          //
-          //   conn = cnn
-          //
-          //   console.log('connections is: ' + Math.random())
-          // })
         } catch (e) {
           console.log(e)
         }

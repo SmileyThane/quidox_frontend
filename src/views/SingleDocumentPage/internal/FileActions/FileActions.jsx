@@ -1,15 +1,16 @@
-import React, { Fragment, useReducer } from 'react'
+import React, { Fragment, useReducer, useRef } from 'react'
 import useForm from 'rc-form-hooks'
 import axios from 'axios'
 import fileDownload from 'js-file-download'
 import { Base64 } from 'js-base64'
 
-import { Form, Input, message, Modal, notification } from 'antd'
+import { Form, Icon, Input, message, Modal, notification } from 'antd'
 import { Button } from '../../../../components'
 import { ActionIcon, ActionTooltip } from './styled'
 import { agreeStyle, agreeText, declineStyle, declineText, normal, verifyStyle, verifyText } from './static'
 import { api } from '../../../../services'
 import { checkBrowser } from '../../../../utils'
+import { Upload } from '../../../../components/UploadFiles/styled'
 
 const { TextArea } = Input
 
@@ -52,6 +53,8 @@ const FileActions = props => {
     config
   } = props
 
+  const inputRef = useRef()
+
   const [state, dispatch] = useReducer(
     reducer,
     initialState
@@ -63,7 +66,7 @@ const FileActions = props => {
     selected_file,
     status
   } = state
-
+  let commentAttachment = null
   const { getFieldDecorator, validateFields, values } = useForm()
 
   const receivingTooltipText = (status, array = []) => {
@@ -86,19 +89,20 @@ const FileActions = props => {
       return null
     }
 
-    const data = {
-      attachment_id: file.id,
-      status: 4,
-      color: '#808000',
-      name: 'Согласовано',
-      comment: values.agree_message
-    }
-
+    const data = new FormData();
+    data.append('attachment_id', file.id)
+    data.append('status', 4)
+    data.append('color','#808000')
+    data.append('name', 'Согласовано')
+    data.append('comment', values.agree_message)
+    data.append('file', commentAttachment)
     changeStatus(data)
       .then(({ data }) => {
         if (data.success) {
+          commentAttachment = null;
           message.success('Файл успешно согласован')
           dispatch({ type: 'HIDE_MODAL' })
+          window.location.reload()
         } else {
           throw new Error(data.error)
         }
@@ -113,18 +117,20 @@ const FileActions = props => {
     validateFields()
       .then(() => {
         if (status === 2 || status === 3) {
-          const data = {
-            attachment_id: file.id,
-            status: 6,
-            color: '#800000',
-            name: 'Отклонен',
-            comment: values.decline_message
-          }
+          const data = new FormData();
+          data.append('attachment_id', file.id)
+          data.append('status', 6)
+          data.append('color','#800000')
+          data.append('name', 'Отклонен')
+          data.append('comment', values.decline_message)
+          data.append('file', commentAttachment)
           changeStatus(data)
             .then(({ data }) => {
               if (data.success) {
+                commentAttachment = null;
                 message.success('Файл успешно отклонен')
                 dispatch({ type: 'HIDE_MODAL' })
+                window.location.reload()
               } else {
                 throw new Error(data.error)
               }
@@ -136,6 +142,12 @@ const FileActions = props => {
           return null
         }
       })
+  }
+
+  const onCommentAttachmentChange = event => {
+
+    commentAttachment = event.target.files[0]
+    console.log(commentAttachment)
   }
 
   const clientId = config.data.co_brand_config ? config.data.co_brand_config.client_id : process.env.REACT_APP_SIM_SCEP_CLIENT_ID
@@ -215,6 +227,7 @@ const FileActions = props => {
       })
     }
   }
+  const coBrand = user.co_brand_config && user.co_brand_config
 
   const handleVerifyFile = (item, documentId, status) => {
     if ((checkBrowser('ie') && status === 3) || canBeSigned) {
@@ -376,7 +389,7 @@ const FileActions = props => {
         <ActionTooltip
           arrowPointAtCenter
           placement='topRight'
-          title={canBeSigned ?  receivingTooltipText(statusId, verifyText) : 'Подписать документ (ТЗИ)'}
+          title={canBeSigned ? receivingTooltipText(statusId, verifyText) : 'Подписать документ (ТЗИ)'}
         >
           <ActionIcon
             key={3}
@@ -417,6 +430,25 @@ const FileActions = props => {
                           placeholder='Введите причину отклонения'/>
               )}
             </Form.Item>
+            <Form.Item>
+              <Upload.Button
+                brand={coBrand}
+                type='primary'
+                htmlFor='commentAttachment'
+                ghost
+              >
+                <Icon type='upload' style={{ marginRight: 10 }}/>
+                Прикрепить файл(ы)
+                <Upload.Input
+                  type='file'
+                  id='commentAttachment'
+                  ref={inputRef}
+                  onChange={onCommentAttachmentChange}
+                  hidden
+                />
+              </Upload.Button>
+
+            </Form.Item>
             <Button type='primary' htmlType='submit'>Подтвердить отклонение</Button>
           </Form>
           }
@@ -429,6 +461,25 @@ const FileActions = props => {
                 <TextArea style={{ resize: 'none' }} autoSize={{ minRows: 3, maxRows: 5 }} size='large'
                           placeholder='Введите текс согласования'/>
               )}
+            </Form.Item>
+            <Form.Item>
+              <Upload.Button
+                brand={coBrand}
+                type='primary'
+                htmlFor='commentAttachment'
+                ghost
+              >
+                <Icon type='upload' style={{ marginRight: 10 }}/>
+                Прикрепить файл(ы)
+                <Upload.Input
+                  type='file'
+                  id='commentAttachment'
+                  ref={inputRef}
+                  onChange={onCommentAttachmentChange}
+                  hidden
+                />
+              </Upload.Button>
+
             </Form.Item>
             <Button type='primary' htmlType='submit'>Подтвердить согласование</Button>
           </Form>
