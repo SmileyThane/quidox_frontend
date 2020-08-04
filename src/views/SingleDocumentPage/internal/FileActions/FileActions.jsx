@@ -95,7 +95,7 @@ const FileActions = props => {
     data.append('color','#808000')
     data.append('name', 'Согласовано')
     data.append('comment', values.agree_message)
-    data.append('file', commentAttachment)
+    data.append('comment_file', commentAttachment)
     changeStatus(data)
       .then(({ data }) => {
         if (data.success) {
@@ -123,7 +123,7 @@ const FileActions = props => {
           data.append('color','#800000')
           data.append('name', 'Отклонен')
           data.append('comment', values.decline_message)
-          data.append('file', commentAttachment)
+          data.append('comment_file', commentAttachment)
           changeStatus(data)
             .then(({ data }) => {
               if (data.success) {
