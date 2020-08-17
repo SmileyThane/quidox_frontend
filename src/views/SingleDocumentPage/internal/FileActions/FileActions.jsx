@@ -63,10 +63,11 @@ const FileActions = props => {
   const {
     isModalVisible,
     modalType,
-    selected_file,
+    selectedFile,
     status
   } = state
   let commentAttachment = null
+  let commentAttachmentName = null
   const { getFieldDecorator, validateFields, values } = useForm()
 
   const receivingTooltipText = (status, array = []) => {
@@ -89,17 +90,17 @@ const FileActions = props => {
       return null
     }
 
-    const data = new FormData();
+    const data = new FormData()
     data.append('attachment_id', file.id)
     data.append('status', 4)
-    data.append('color','#808000')
+    data.append('color', '#808000')
     data.append('name', 'Согласовано')
     data.append('comment', values.agree_message)
     data.append('comment_file', commentAttachment)
     changeStatus(data)
       .then(({ data }) => {
         if (data.success) {
-          commentAttachment = null;
+          commentAttachment = null
           message.success('Файл успешно согласован')
           dispatch({ type: 'HIDE_MODAL' })
           window.location.reload()
@@ -117,17 +118,17 @@ const FileActions = props => {
     validateFields()
       .then(() => {
         if (status === 2 || status === 3) {
-          const data = new FormData();
+          const data = new FormData()
           data.append('attachment_id', file.id)
           data.append('status', 6)
-          data.append('color','#800000')
+          data.append('color', '#800000')
           data.append('name', 'Отклонен')
           data.append('comment', values.decline_message)
           data.append('comment_file', commentAttachment)
           changeStatus(data)
             .then(({ data }) => {
               if (data.success) {
-                commentAttachment = null;
+                commentAttachment = null
                 message.success('Файл успешно отклонен')
                 dispatch({ type: 'HIDE_MODAL' })
                 window.location.reload()
@@ -147,7 +148,11 @@ const FileActions = props => {
   const onCommentAttachmentChange = event => {
 
     commentAttachment = event.target.files[0]
-    console.log(commentAttachment)
+    if (document.getElementById('commentFileNameDecline')) {
+      document.getElementById('commentFileNameDecline').innerText = commentAttachment.name
+    } else {
+      document.getElementById('commentFileNameAccept').innerText = commentAttachment.name
+    }
   }
 
   const clientId = config.data.co_brand_config ? config.data.co_brand_config.client_id : process.env.REACT_APP_SIM_SCEP_CLIENT_ID
@@ -447,7 +452,10 @@ const FileActions = props => {
                   hidden
                 />
               </Upload.Button>
-
+              <br/>
+              <br/>
+              <label id={'commentFileNameDecline'}>
+              </label>
             </Form.Item>
             <Button type='primary' htmlType='submit'>Подтвердить отклонение</Button>
           </Form>
@@ -479,6 +487,10 @@ const FileActions = props => {
                   hidden
                 />
               </Upload.Button>
+              <br/>
+              <br/>
+              <label id={'commentFileNameAccept'}>
+              </label>
 
             </Form.Item>
             <Button type='primary' htmlType='submit'>Подтвердить согласование</Button>
