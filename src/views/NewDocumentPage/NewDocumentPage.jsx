@@ -336,7 +336,7 @@ const NewDocumentPage = props => {
 
   return (
     <Fragment>
-      <Button disabled onClick={() => dispatch({ type: 'TOGGLE_MESSAGE' })} style={{ marginBottom: '2rem' }} type='primary'>{state.isChainMessage ? 'Обычная отправка' : 'Отправка цепочкой'}</Button>
+      <Button onClick={() => dispatch({ type: 'TOGGLE_MESSAGE' })} style={{ marginBottom: '2rem' }} type='primary'>{state.isChainMessage ? 'Обычная отправка' : 'Отправка цепочкой'}</Button>
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>
         {state.isChainMessage
           ? <div>
