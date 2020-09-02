@@ -8,7 +8,7 @@ import history from '../../history'
 import PDFJSBACKEND from '../../backends/pdfjs'
 
 import { Icon, List, message, Modal, notification, Select, Spin, Tag, Tooltip, Typography } from 'antd'
-import { DownloadButtons, FileActions } from './internal'
+import { DownloadButtons, FileActions, FileHistory } from './internal'
 import { findUsersByParams } from '../../services/api/user'
 import { AvestErrorHandling, Button, EscDataSlider, PDFViewer, UploadFiles } from '../../components'
 import { close } from '../../resources/img'
@@ -36,6 +36,8 @@ const defaultDocumentState = {
   value: [],
   fetching: false,
   modalType: 'ecp',
+  isHistoryModalOpen: false,
+  fileHistory: [],
   base64files: '',
   certs: '',
   fileHashes: '',
@@ -178,6 +180,22 @@ const SingleDocumentPage = props => {
       comment: status.comment,
       commentLink: status.comment_link,
       commentFile: status.comment_link_basename
+    })
+  }
+
+  const openHistoryModal = (history) => {
+    setDocumentState({
+      ...documentState,
+      isHistoryModalOpen: true,
+      fileHistory: history,
+    })
+  }
+
+  const closeHistoryModal = () => {
+    setDocumentState({
+      ...documentState,
+      isHistoryModalOpen: false,
+      fileHistory: []
     })
   }
 
@@ -345,7 +363,7 @@ const SingleDocumentPage = props => {
         message.error(error.message)
       })
   }
-
+  console.log(documentState)
   return (
     <Fragment>
       <Spin spinning={(isFetching || fetch)}>
@@ -459,8 +477,10 @@ const SingleDocumentPage = props => {
                             ЭЦП {getEcpCount(item.users_companies)}
                           </Tag>
                           }
-
-                          {item.status &&
+                          {singleDocument.status_id === 3 &&
+                          <Tag color='blue' style={{ cursor: 'pointer' }} onClick={() => openHistoryModal(item.users_companies)}>История</Tag>
+                          }
+                          {item.status && singleDocument.status_id !== 3 &&
                           <Tag color={item.status.status_data.color}>{item.status.status_data.name}</Tag>
                           }
 
@@ -532,6 +552,16 @@ const SingleDocumentPage = props => {
         }
 
       </div>
+      }
+      {documentState.isHistoryModalOpen &&
+      <Modal
+        visible
+        footer={null}
+        closable={false}
+      >
+        <FileHistory history={documentState.fileHistory} />
+        <Button type='primary' onClick={closeHistoryModal}>Закрыть</Button>
+      </Modal>
       }
       {documentState.showModal &&
       <Modal
