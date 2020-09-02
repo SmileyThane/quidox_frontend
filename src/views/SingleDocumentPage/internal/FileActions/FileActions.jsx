@@ -332,7 +332,7 @@ const FileActions = props => {
           />
         </ActionTooltip>
         },
-      </Fragment>,
+      </Fragment>
 
       <Fragment>
         {statusId !== 5 && ![1, 3, 4, 9, 10].includes(messageId) &&
@@ -353,7 +353,7 @@ const FileActions = props => {
           />
         </ActionTooltip>
         }
-      </Fragment>,
+      </Fragment>
 
       <Fragment>
         {statusId !== 5 && ![3, 4].includes(messageId) &&
@@ -370,7 +370,7 @@ const FileActions = props => {
           />
         </ActionTooltip>
         }
-      </Fragment>,
+      </Fragment>
 
       <Fragment>
         {statusId !== 5 && ![3, 4].includes(messageId) &&
@@ -387,7 +387,7 @@ const FileActions = props => {
           />
         </ActionTooltip>
         }
-      </Fragment>,
+      </Fragment>
 
       <Fragment>
         {statusId !== 5 && ![3, 4].includes(messageId) &&
@@ -404,7 +404,7 @@ const FileActions = props => {
           />
         </ActionTooltip>
         }
-      </Fragment>,
+      </Fragment>
 
       <ActionTooltip
         arrowPointAtCenter
