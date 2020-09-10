@@ -30,7 +30,7 @@ export default function ({ history }) {
             {status.comment_link_basename && status.comment_link_basename !== ''
               ? <>
               <Text strong>Прикрепленный файл:</Text><br/>
-              <a href={status.comment_link}>status.comment_link_basename</a>
+              <a href={status.comment_link}>{status.comment_link_basename}</a>
               </>
               : <Text strong></Text>
             }
