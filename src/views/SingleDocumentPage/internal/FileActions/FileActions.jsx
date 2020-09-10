@@ -1,4 +1,4 @@
-import React, { Fragment, useReducer, useRef } from 'react'
+import React, { Fragment, useReducer, useRef, useState } from 'react'
 import useForm from 'rc-form-hooks'
 import axios from 'axios'
 import fileDownload from 'js-file-download'
@@ -52,7 +52,7 @@ const FileActions = props => {
     user,
     config
   } = props
-
+  const [attachFile, setAttachFile] = useState({})
   const inputRef = useRef()
 
   const [state, dispatch] = useReducer(
@@ -86,17 +86,21 @@ const FileActions = props => {
 
   const handleAgreeFile = e => {
     e.preventDefault()
+    const agreeMessage = values.agree_message === undefined ? '' : values.agree_message
+
     if (status !== 2) {
       return null
     }
-
+    console.log(attachFile)
+    console.log(agreeMessage)
     const data = new FormData()
     data.append('attachment_id', file.id)
     data.append('status', 4)
     data.append('color', '#808000')
     data.append('name', 'Согласовано')
-    data.append('comment', values.agree_message)
-    data.append('comment_file', commentAttachment)
+    data.append('comment', agreeMessage)
+    data.append('comment_file', attachFile)
+
     changeStatus(data)
       .then(({ data }) => {
         if (data.success) {
@@ -124,7 +128,7 @@ const FileActions = props => {
           data.append('color', '#800000')
           data.append('name', 'Отклонен')
           data.append('comment', values.decline_message)
-          data.append('comment_file', commentAttachment)
+          data.append('comment_file', attachFile)
           changeStatus(data)
             .then(({ data }) => {
               if (data.success) {
@@ -146,7 +150,7 @@ const FileActions = props => {
   }
 
   const onCommentAttachmentChange = event => {
-
+    setAttachFile(event.target.files[0])
     commentAttachment = event.target.files[0]
     if (document.getElementById('commentFileNameDecline')) {
       document.getElementById('commentFileNameDecline').innerText = commentAttachment.name
