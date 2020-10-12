@@ -214,6 +214,7 @@ const DocumentsPage = props => {
           </Button>
           <Button
             type='primary'
+            disabled={Number(status) !== 11}
             style={{ marginLeft: '1rem' }}
             onClick={showRemoveModal}
           >

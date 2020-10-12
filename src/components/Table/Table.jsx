@@ -488,7 +488,7 @@ const AntdTable = props => {
                 <div className='table__header table-header'>
                   <div className='table-header__actions'>
                     <Button style={{ marginRight: '1rem' }} disabled={!(!!tableState.selectedRowKeys.length)} icon='cloud-upload' type='primary' onClick={() => openModal()}>Отправить выделенное</Button>
-                    <Button style={{ marginRight: '1rem' }} disabled={!(!!tableState.selectedRowKeys.length)} icon='delete' type='primary' onClick={() => handleRemove(type)}>Переместить в архив</Button>
+                    <Button style={{ marginRight: '1rem' }} disabled={!(!!tableState.selectedRowKeys.length) || status === 11} icon='delete' type='primary' onClick={() => handleRemove(type)}>Переместить в архив</Button>
                     <Button disabled={!(!!tableState.selectedRowKeys.length && status !== 3)} type='primary' icon={tableState.loading ? 'loading' : 'edit'} onClick={reloadPlugin}>Групповое подписание</Button>
                   </div>
                   <div className='table-header__search'>
