@@ -1,13 +1,35 @@
 import React from 'react'
 
-import { Typography } from 'antd'
+import { message, notification, Typography } from 'antd'
 import { Button } from '../../../../components'
 
 import './CompanyDescription.scss'
+import axios from 'axios'
 
 const { Text } = Typography
 
 const bitrixLink = 'https://bitrix24public.com/quidox.bitrix24.by/form/10_mts_smartdoc_zapros_klyucha_dlya_podklyucheniya_po_api/rsva1h/'
+
+const continueTariff = () => {
+  try {
+    let auth = window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken')
+    axios.get(`${process.env.REACT_APP_BASE_URL}/mts/service/add`, {
+      headers: {
+        'Authorization': 'Bearer ' + auth
+      }
+    })
+      .then(({}) => {
+        message.success('Тариф успешно продлен.')
+      })
+      .catch(error => {
+        message.error('Вам недоступно продление тарифа!')
+      })
+  } catch (error) {
+    notification['error']({
+      message: error.message
+    })
+  }
+}
 
 const CompanyDescription = props => {
 
@@ -35,6 +57,13 @@ const CompanyDescription = props => {
         ghost
         onClick={() => window.open(bitrixLink, '_blank')}>
         Запросить ключ для подключения по API
+      </Button>
+
+      <Button
+        type='primary'
+        ghost
+        onClick={() => continueTariff}>
+        Продлить тариф
       </Button>
     </div>
   )
