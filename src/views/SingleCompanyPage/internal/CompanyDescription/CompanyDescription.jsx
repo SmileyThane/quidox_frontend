@@ -59,7 +59,7 @@ const CompanyDescription = props => {
         Запросить ключ для подключения по API
       </Button>
       <br/>
-
+      <br/>
       {data.co_brand_id !== null &&
       <Button
         type='primary'
