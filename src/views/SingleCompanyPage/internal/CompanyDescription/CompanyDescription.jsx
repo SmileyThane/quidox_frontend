@@ -60,7 +60,6 @@ const CompanyDescription = props => {
       </Button>
       {data.co_brand_id === null &&
       <Button
-        {}
         type='primary'
         ghost
         onClick={() => continueTariff}>
