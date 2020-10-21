@@ -58,11 +58,13 @@ const CompanyDescription = props => {
         onClick={() => window.open(bitrixLink, '_blank')}>
         Запросить ключ для подключения по API
       </Button>
-      {data.co_brand_id === null &&
+      <br/>
+
+      {data.co_brand_id !== null &&
       <Button
         type='primary'
         ghost
-        onClick={() => continueTariff}>
+        onClick={continueTariff}>
         Продлить тариф
       </Button>
       }
