@@ -13,7 +13,7 @@ const bitrixLink = 'https://bitrix24public.com/quidox.bitrix24.by/form/10_mts_sm
 const continueTariff = () => {
   try {
     let auth = window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken')
-    axios.get(`${process.env.REACT_APP_BASE_URL}/mts/service/add`, {
+    axios.get(`${process.env.REACT_APP_BASE_URL}/mts/service/continue`, {
       headers: {
         'Authorization': 'Bearer ' + auth
       }
