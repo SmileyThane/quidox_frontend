@@ -101,7 +101,9 @@ const PrivateRoute = ({ component: Component, config, user: { data, isFetching }
                             'Кнопка - "Пополнить баланс"'
                         }
                         <div style={{ marginTop: '2rem' }}>
-                          <Button type='primary' onClick={handleChangeTariff}>Пополнить баланс</Button>
+                          <Button type='primary' onClick={handleChangeTariff}>
+                            {config.data.co_brand_config ? 'Перейти к продлению тарифа' : 'Перейти к пополнению баланса'}
+                          </Button>
                           <Button type='link' onClick={handleStayOnPage}>Пополнить позже</Button>
                         </div>
                       </Modal>
