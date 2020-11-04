@@ -53,7 +53,6 @@ const CompanyDescription = props => {
       </div>
 
       <Button
-        disabled={!(data.is_owner === false && data.tariff_was_expired === false) }
         type='primary'
         ghost
         onClick={() => window.open(bitrixLink, '_blank')}>
@@ -63,6 +62,7 @@ const CompanyDescription = props => {
       <br/>
       {data.co_brand_id !== null &&
       <Button
+        disabled={!(data.is_owner === false && data.tariff_was_expired === false) }
         type='primary'
         ghost
         onClick={continueTariff}>
