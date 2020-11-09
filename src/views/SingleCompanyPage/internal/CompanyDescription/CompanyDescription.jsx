@@ -62,7 +62,7 @@ const CompanyDescription = props => {
       <br/>
       {data.co_brand_id !== null &&
       <Button
-        disabled={!(data.is_owner === false && data.tariff_was_expired === false) }
+        disabled={(data.is_owner === false && data.tariff_was_expired === false) === false }
         type='primary'
         ghost
         onClick={continueTariff}>
