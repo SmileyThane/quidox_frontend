@@ -9,7 +9,6 @@ import axios from 'axios'
 const { Text } = Typography
 
 const bitrixLink = 'https://bitrix24public.com/quidox.bitrix24.by/form/10_mts_smartdoc_zapros_klyucha_dlya_podklyucheniya_po_api/rsva1h/'
-
 const continueTariff = () => {
   try {
     let auth = window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken')
@@ -62,7 +61,7 @@ const CompanyDescription = props => {
       <br/>
       {data.co_brand_id !== null &&
       <Button
-        disabled={(data.is_owner === false && data.tariff_was_expired === false) === false }
+        disabled={(data.is_owner === true && data.tariff_was_expired === true) ? '' : 'disabled'}
         type='primary'
         ghost
         onClick={continueTariff}>
