@@ -19,6 +19,7 @@ const continueTariff = () => {
     })
       .then(({}) => {
         message.success('Тариф успешно продлен.')
+        window.location.reload()
       })
       .catch(error => {
         message.error('Вам недоступно продление тарифа!')
