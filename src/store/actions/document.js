@@ -2,6 +2,27 @@ import * as t from '../types'
 
 import { api } from '../../services'
 
+const createMessage = body => dispatch => {
+  dispatch({
+    type: t.CREATE_MESSAGE_FETCHING,
+    payload: true
+  })
+  return api.document.createDocument(body)
+    .then(({ data }) => {
+      if (data) {
+        dispatch({
+          type: t.CREATE_MESSAGE_SUCCESS,
+          payload: data
+        })
+      }
+      dispatch({
+        type: t.CREATE_MESSAGE_FETCHING,
+        payload: false
+      })
+      return data
+    })
+}
+
 const getDocumentById = id => dispatch => {
   dispatch({
     type: t.GET_DOCUMENT_BY_ID_FETCHING,
@@ -64,21 +85,21 @@ const verifyDocument = data => dispatch => {
     })
 }
 
-const agreeFile = data => dispatch => {
+const changeStatus = status => dispatch => {
   dispatch({
-    type: t.AGREE_FILE_FETCHING,
+    type: t.CHANGE_FILEE_STATUS_FETCHING,
     payload: true
   })
-  return api.document.agreeFile(data)
+  return api.document.changeStatus(status)
     .then(data => {
       if (data) {
         dispatch({
-          type: t.AGREE_FILE_SUCCESS,
-          payload: data
+          type: t.CHANGE_FILEE_STATUS_SUCCESS,
+          payload: status
         })
       }
       dispatch({
-        type: t.AGREE_FILE_FETCHING,
+        type: t.CHANGE_FILEE_STATUS_FETCHING,
         payload: false
       })
       return data
@@ -107,9 +128,10 @@ const removeDocumentById = id => dispatch => {
 }
 
 export {
+  createMessage,
   getDocumentById,
   removeDocumentById,
   updateDocumentById,
-  agreeFile,
+  changeStatus,
   verifyDocument
 }

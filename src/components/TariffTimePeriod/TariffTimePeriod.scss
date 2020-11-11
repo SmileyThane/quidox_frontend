@@ -1,0 +1,46 @@
+@import "src/styles/variables";
+
+.c-period {
+  padding: 0 2rem 6rem;
+  display: flex;
+  justify-content: flex-end;
+
+  &__content {
+    width: 100%;
+    padding: 2rem;
+    border: .1rem solid map_get($colors, gray);
+    background-color: map_get($colors, white);
+    position: relative;
+  }
+
+  &__close {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    cursor: pointer;
+  }
+
+  &__links {
+    button {
+      display: block;
+      padding: 0;
+      height: 2rem;
+    }
+  }
+
+  .ant-statistic {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    .ant-statistic-title {
+      margin-bottom: 0;
+    }
+
+    .ant-statistic-content {
+      font-size: 1.6rem;
+      margin-left: 1rem;
+      color: map_get($colors, grayThird);
+    }
+  }
+}

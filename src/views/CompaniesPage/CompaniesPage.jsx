@@ -1,9 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import moment from 'moment'
 import useForm from 'rc-form-hooks'
-
-import { Link } from 'react-router-dom'
 import { api } from '../../services'
+import { CompanyCreate, Button, RouterLink } from '../../components'
 import {
   Table,
   Tag,
@@ -12,14 +10,13 @@ import {
   message,
   Modal,
   Typography,
-  Spin,
   Icon,
   Row,
   Col,
-  Input,
-  Button
+  Input
 } from 'antd'
 
+import axios from 'axios'
 import history from '../../history'
 import './CompaniesPage.scss'
 
@@ -29,23 +26,17 @@ const defaultCompanyState = {
   showInput: false,
   showModal: false,
   modalFetching: false,
-  newCompanyDate: '', // Дата создания
-  newCompanyNumber: null, // УНП компании
-  newCompanyName: '', // Полное имя компании
-  newCompanyCity: '', // Место регистрации компании
-  newCompanyFullName: '', // Полное имя компании?
-  newCompanyKey: null // Ключ компании
+  newCompany: {}
 }
 
 const { Text } = Typography
 
 // eslint-disable-next-line spaced-comment
-const isIE = /*@cc_on!@*/false || !!document.documentMode
+  const isIE = /*@cc_on!@*/!!document.documentMode
 
 const CompaniesPage = props => {
   const {
     getCompanies,
-    createCompany,
     changeActiveCompanyById,
     companies: { isFetching, list },
     user: { data }
@@ -59,21 +50,42 @@ const CompaniesPage = props => {
     getCompanies()
   }, [])
 
+  useEffect(() => {
+    let search = window.location.search
+    let params = new URLSearchParams(search)
+    let hash = params.get('hash')
+
+    if (hash) {
+      try {
+        axios.get(`${process.env.REACT_APP_BASE_URL}/attachment/sim-sign/check/new_company?hash=${hash}`, {
+          headers: {
+            'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken'),
+          }
+        })
+          .then(response => {
+            const { data: { success } } = response
+            if (success) {
+              message.success('Совершено успешное обновление данных!')
+              getCompanies()
+            }
+          })
+          .catch(error => {
+            message.error('Извините, что-то пошло не так. Перезагрузите страницу и попробуйте еще раз.')
+            // setTimeout(() => {
+            //   window.location.reload();
+            // }, 2000)
+          })
+      } catch (error) {
+      }
+    }
+  }, [])
+
   const onClick = () => {
-    window.sign('NewCompany')
-    setTimeout(() => {
-      const flashData = JSON.parse(decodeURIComponent(document.getElementById('verifiedDataNewCompany').value))
-      setCompanyState({
-        ...companyState,
-        showModal: true,
-        newCompanyDate: moment().format('DD/MM/YYYY HH:mm'),
-        newCompanyName: flashData.subject['2.5.4.3'] ? flashData.subject['2.5.4.3'] : 'Данные отсутствуют',
-        newCompanyKey: flashData.cert['2.5.29.14'] ? flashData.cert['2.5.29.14'] : 'Невозможно создать цифровой ключ',
-        newCompanyCity: (flashData.subject['2.5.4.7'] || flashData.subject['2.5.4.9']) ? flashData.subject['2.5.4.7'] + ', ' + flashData.subject['2.5.4.9'] : 'Данные отсутствуют',
-        newCompanyNumber: flashData.cert['1.2.112.1.2.1.1.1.1.2'] ? +flashData.cert['1.2.112.1.2.1.1.1.1.2'] : 'Данные отсутствуют',
-        yourPosition: flashData.cert['1.2.112.1.2.1.1.5.1'] ? flashData.cert['1.2.112.1.2.1.1.5.1'] : 'Данные отсутствуют'
-      })
-    }, 1000)
+    setCompanyState({
+      ...companyState,
+      showModal: true
+      // newCompany: getCompanyData()
+    })
   }
 
   const changeActiveCompany = company => {
@@ -86,7 +98,6 @@ const CompaniesPage = props => {
           message.success('Активная компания изменена успешно!')
 
           const inputVerifiedDataArray = Array.from(document.getElementsByClassName('verifiedData'))
-          console.log('verified input', inputVerifiedDataArray)
           inputVerifiedDataArray.forEach(i => {
             i.parentNode.removeChild(i)
           })
@@ -94,7 +105,6 @@ const CompaniesPage = props => {
             try {
               window.pluginLoaded()
             } catch (error) {
-              console.log(error)
             }
           }, 1000)
         })
@@ -130,35 +140,11 @@ const CompaniesPage = props => {
       })
   }
 
-  const handleCreateCompany = () => {
-    const newCompanyData = {
-      name: companyState.newCompanyName,
-      company_number: companyState.newCompanyNumber,
-      description: companyState.newCompanyCity,
-      registration_date: companyState.newCompanyDate,
-      your_position: companyState.yourPosition,
-      key: companyState.newCompanyKey
-    }
-    createCompany(newCompanyData)
-      .then(response => {
-        if (response.success) {
-          setCompanyState({ ...defaultCompanyState })
-          message.success('Компания создана успешно!!')
-        } else {
-          throw new Error(response.error)
-        }
-      })
-      .catch(error => {
-        message.error(error.message)
-        setCompanyState({ ...defaultCompanyState })
-      })
-  }
-
   const columns = [
     {
       title: 'Наименование',
       key: 'name',
-      render: record => <Link to={{ pathname: `/companies/${+record.company_id}`, state: { from: history.location.pathname } }}>{record.company_data.name}</Link>
+      render: record => <RouterLink to={{ pathname: `/companies/${+record.company_id}`, state: { from: history.location.pathname } }}>{record.company_data.name}</RouterLink>
     },
     {
       title: 'УНП',
@@ -223,7 +209,7 @@ const CompaniesPage = props => {
                     ]
                   })(
                     <Input
-                      prefix={<Icon type='user' style={{ color: 'rgba(0,0,0,.25)' }} />}
+                      prefix={<Icon type='user' style={{ color: 'rgba(0, 0, 0,.25)' }} />}
                       placeholder='Электронный адрес пользователя'
                       onChange={e => updateField('newUserEmail', e.target.value)}
                       type='email'
@@ -252,10 +238,9 @@ const CompaniesPage = props => {
 
       <Button
         type='primary'
-        disabled={!isIE}
         onClick={onClick}
       >
-        Создать компанию
+        Подключить ЭЦП
       </Button>
 
       <Button
@@ -272,75 +257,14 @@ const CompaniesPage = props => {
         <Text type='secondary'>Создание компании возможно только в браузере Internet Explorer</Text>
         }
       </div>
-
-      <input type='hidden' id='dataNewCompany' value={window.btoa(data.email)} />
-
-      <input type='hidden' id='companyData' />
-
-      <div id='attrCertSelectContainer' style={{ display: 'none' }}>
-        <span id='certExtAbsent' />
-
-        <select style={{ visibility: 'hidden' }} id='attrCertSelect' />
-      </div>
-
-      <input type='hidden' id='attrValue' size='80' disabled='disabled' />
-
       <Modal
-        title='Данные цифрового накопителя'
+        title='Подключение ЭЦП'
         visible={companyState.showModal}
         width={600}
         closable={false}
         footer={null}
-        onCancel={() => setCompanyState({ ...companyState, showModal: !companyState.showModal })}
       >
-        <div className='document document_modal'>
-          <Spin spinning={companyState.modalFetching}>
-            <div className='info'>
-              <div className='info__item'>
-                <div className='info__title'>Дата создания</div>
-                <div className='info__content'>{companyState.newCompanyDate}</div>
-              </div>
-
-              {companyState.newCompanyNumber &&
-                <div className='info__item'>
-                  <div className='info__title'>УНП</div>
-                  <div className='info__content'>{companyState.newCompanyNumber}</div>
-                </div>
-              }
-
-              {companyState.newCompanyName &&
-                <div className='info__item'>
-                  <div className='info__title'>Имя компании</div>
-                  <div className='info__content'>{companyState.newCompanyName}</div>
-                </div>
-              }
-
-              {companyState.newCompanyCity &&
-                <div className='info__item'>
-                  <div className='info__title'>Место нахождения компании</div>
-                  <div className='info__content'>{companyState.newCompanyCity}</div>
-                </div>
-              }
-
-              {companyState.yourPosition &&
-                <div className='info__item'>
-                  <div className='info__title'>Должность сотруднка</div>
-                  <div className='info__content'>{companyState.yourPosition}</div>
-                </div>
-              }
-
-              {companyState.newCompanyKey &&
-                <div className='info__item'>
-                  <div className='info__title'>Цифровой ключ</div>
-                  <div className='info__content'>{companyState.newCompanyKey}</div>
-                </div>
-              }
-            </div>
-
-            <Button style={{ margin: '20px 0 0 20px' }} onClick={handleCreateCompany} type='primary'>Создать</Button>
-          </Spin>
-        </div>
-
+        <CompanyCreate onCancel={() => setCompanyState({ ...companyState, showModal: !companyState.showModal })} />
       </Modal>
     </Fragment>
   )

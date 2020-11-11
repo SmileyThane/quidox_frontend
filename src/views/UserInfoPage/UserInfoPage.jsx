@@ -1,22 +1,14 @@
 import React, { Fragment } from 'react'
 import axios from 'axios'
-import MaskedInput from 'antd-mask-input'
-import {
-  Select,
-  Spin,
-  message,
-  Row,
-  Col,
-  Icon,
-  Input,
-  Button,
-  Modal,
-  Form
-} from 'antd'
-import './UserInfoPage.scss'
 import { api } from '../../services'
+import MaskedInput from 'antd-mask-input'
+import { Col, Form, Icon, Input, message, Modal, Row, Select, Spin, Tabs, List } from 'antd'
+import { Button } from '../../components'
+import './UserInfoPage.scss'
 
 const { Option } = Select
+
+const { TabPane } = Tabs
 
 class UserInfoPage extends React.Component {
   state = {
@@ -26,7 +18,8 @@ class UserInfoPage extends React.Component {
     isModalVisible: false,
     phone: '',
     modalType: '',
-    isCode: false
+    isCode: false,
+    sharedUsers: []
   }
 
   inputPhoneNode = React.createRef()
@@ -37,17 +30,24 @@ class UserInfoPage extends React.Component {
     }
   }
 
-  getOneMinuteTimer = () => {
-    const timeInterval = setInterval(() => {
-      if (this.state.seconds > 0) {
-        this.setState(prevState => {
-          return { seconds: prevState.seconds - 1 }
-        })
-      } else {
-        clearInterval(timeInterval)
-        return null
-      }
-    }, 1000)
+  componentWillMount () {
+    this.getSharedUsers()
+  }
+
+  getSharedUsers = () => {
+    api.user.getSharedUsers()
+      .then(({ data }) => {
+        if (data.success) {
+          this.setState({
+            sharedUsers: data.data
+          })
+        } else {
+          throw new Error(data.error)
+        }
+      })
+      .catch(error => {
+        message.error(error.message)
+      })
   }
 
   handleChange = (value, field) => {
@@ -70,9 +70,7 @@ class UserInfoPage extends React.Component {
   }
 
   changeMode = () => {
-    if (!this.state.isEditMode) {
-      this.setState({ isEditMode: true })
-    }
+    this.setState({ isEditMode: true })
   }
 
   validateToNextPassword = (rule, value, callback) => {
@@ -142,13 +140,55 @@ class UserInfoPage extends React.Component {
 
   changeUserPassword = e => {
     e.preventDefault()
-    this.props.form.validateFieldsAndScroll(['old_password', 'password'], (err, values) => {
+    this.props.form.validateFieldsAndScroll([/*'old_password',*/ 'password'], (err, values) => {
       if (!err) {
         this.props.updateUser(values)
           .then(data => {
             if (data.success) {
               message.success('Пароль обновлен')
               this.setState({ isModalVisible: !this.state.isModalVisible })
+            } else {
+              throw new Error(data.error)
+            }
+          })
+          .catch(error => {
+            message.error(error.message)
+          })
+      }
+    })
+  }
+
+  shareUser = e => {
+    e.preventDefault()
+    this.props.form.validateFieldsAndScroll(['email'], (err, values) => {
+      if (!err) {
+        this.props.shareUser(values)
+          .then(data => {
+            if (data.success) {
+              message.success('Доступ предоставлен. Передайте доверенному лицу пароль: ' + data.data.verification_code)
+              this.setState({ isModalVisible: !this.state.isModalVisible })
+            } else {
+              throw new Error(data.error)
+            }
+          })
+          .catch(error => {
+            message.error(error.message)
+          })
+      }
+    })
+  }
+
+  getSharedUser = e => {
+    e.preventDefault()
+    this.props.form.validateFieldsAndScroll(['value'], (err, values) => {
+      if (!err) {
+        this.props.getSharedUser(values)
+          .then(data => {
+            if (data.success) {
+              window.localStorage.setItem('authToken', data.data.token)
+              message.success('Пользователь переключен')
+              this.setState({ isModalVisible: !this.state.isModalVisible })
+              window.location.reload();
             } else {
               throw new Error(data.error)
             }
@@ -191,7 +231,7 @@ class UserInfoPage extends React.Component {
     const prefixSelector = getFieldDecorator('prefix', {
       initialValue: '37529'
     })(
-      <Select  disabled={this.state.isCode} style={{ width: 100 }}>
+      <Select disabled={this.state.isCode} style={{ width: 100 }}>
         <Option value='37529'>+375(29)</Option>
         <Option value='37525'>+375(25)</Option>
         <Option value='37533'>+375(33)</Option>
@@ -205,161 +245,217 @@ class UserInfoPage extends React.Component {
 
     const ActiveCompany = data.hasOwnProperty('companies') && data.companies.find(i => i.company_id === data.active_company_id)
 
-    console.log(data)
-    console.log('ActiveCompany', ActiveCompany)
     return (
       <Fragment>
-        <Form className='content content_user form-user'>
-          <Spin spinning={isFetching} style={{ maxWidth: '50rem', margin: '0 auto' }}>
-            <Row gutter={30}>
-              <Col span={24}>
-                <Form.Item style={{ width: '50%' }} label='Адрес электронной почты'>
-                  {getFieldDecorator('email', {
-                    initialValue: data.email,
-                    rules: [
-                      {
-                        type: 'email',
-                        message: 'Не правильный адрес электронной почты!'
-                      },
-                      {
-                        required: true,
-                        message: 'Пожалуйста, введите адрес электронной почты!'
-                      }
-                    ]
-                  })(<Input disabled />)}
-                </Form.Item>
-              </Col>
+        <Tabs defaultActiveKey="1">
+          <TabPane
+            tab={
+              <span>
+          <Icon type="user" />
+          Данные пользователя
+        </span>
+            }
+            key="1"
+          >
+            <div className='tab-content'>
+              <Form className='content content_user form-user'>
+                <Spin spinning={isFetching} style={{ maxWidth: '50rem', margin: '0 auto' }}>
+                  <Row gutter={30}>
+                    <Col span={24}>
+                      <Form.Item style={{ width: '50%' }} label='Адрес электронной почты'>
+                        {getFieldDecorator('email', {
+                          initialValue: data.email,
+                          rules: [
+                            {
+                              type: 'email',
+                              message: 'Не правильный адрес электронной почты!'
+                            },
+                            {
+                              required: true,
+                              message: 'Пожалуйста, введите адрес электронной почты!'
+                            }
+                          ]
+                        })(<Input disabled/>)}
+                      </Form.Item>
+                    </Col>
 
-              <Col span={24}>
-                <Form.Item style={{ width: '50%' }} label='Мобильный телефон:'>
-                  {getFieldDecorator('phone', {
-                    initialValue: data.phone,
-                    rules: [
-                      {
-                        type: 'string',
-                        message: 'Не похоже, что это имя!'
-                      },
-                      {
-                        required: true,
-                        message: 'Пожалуйста, введите ваше имя!'
-                      }
-                    ]
-                  })(<Input disabled />)}
-                </Form.Item>
-              </Col>
+                    <Col span={24}>
+                      <Form.Item style={{ width: '50%' }} label='Мобильный телефон:'>
+                        {getFieldDecorator('phone', {
+                          initialValue: data.phone,
+                          rules: [
+                            {
+                              type: 'string',
+                              message: 'Не похоже, что это имя!'
+                            },
+                            {
+                              required: true,
+                              message: 'Пожалуйста, введите ваше имя!'
+                            }
+                          ]
+                        })(<Input disabled />)}
+                      </Form.Item>
+                    </Col>
 
-              <Col span={24}>
-                <Form.Item style={{ width: '50%' }} label='Имя:'>
-                  {getFieldDecorator('name', {
-                    initialValue: data.name,
-                    rules: [
-                      {
-                        type: 'string',
-                        message: 'Не похоже, что это имя!'
-                      },
-                      {
-                        required: true,
-                        message: 'Пожалуйста, введите ваше имя!'
-                      }
-                    ]
-                  })(<Input disabled={!isEditMode} />)}
-                </Form.Item>
-              </Col>
+                    <Col span={24}>
+                      <Form.Item style={{ width: '50%' }} label='Имя:'>
+                        {getFieldDecorator('name', {
+                          initialValue: data.name,
+                          rules: [
+                            {
+                              type: 'string',
+                              message: 'Не похоже, что это имя!'
+                            },
+                            {
+                              required: true,
+                              message: 'Пожалуйста, введите ваше имя!'
+                            }
+                          ]
+                        })(<Input disabled={!isEditMode}/>)}
+                      </Form.Item>
+                    </Col>
 
-              <Col span={24}>
-                <Form.Item style={{ width: '50%' }} label='Отчество:'>
-                  {getFieldDecorator('patronymic', {
-                    initialValue: data.patronymic,
-                    rules: [
-                      {
-                        type: 'string',
-                        message: 'Не похоже, что это отчество!'
-                      }
-                    ]
-                  })(<Input disabled={!isEditMode} />)}
-                </Form.Item>
-              </Col>
+                    <Col span={24}>
+                      <Form.Item style={{ width: '50%' }} label='Отчество:'>
+                        {getFieldDecorator('patronymic', {
+                          initialValue: data.patronymic,
+                          rules: [
+                            {
+                              type: 'string',
+                              message: 'Не похоже, что это отчество!'
+                            }
+                          ]
+                        })(<Input disabled={!isEditMode}/>)}
+                      </Form.Item>
+                    </Col>
 
-              <Col span={24}>
-                <Form.Item style={{ width: '50%' }} label='Фамилия:'>
-                  {getFieldDecorator('lastname', {
-                    initialValue: data.lastname,
-                    rules: [
-                      {
-                        type: 'string',
-                        message: 'Не похоже, что это фамилия!'
-                      },
-                      {
-                        required: true,
-                        message: 'Пожалуйста, введите вашу фамилию!'
-                      }
-                    ]
-                  })(<Input disabled={!isEditMode} />)}
-                </Form.Item>
-              </Col>
+                    <Col span={24}>
+                      <Form.Item style={{ width: '50%' }} label='Фамилия:'>
+                        {getFieldDecorator('lastname', {
+                          initialValue: data.lastname,
+                          rules: [
+                            {
+                              type: 'string',
+                              message: 'Не похоже, что это фамилия!'
+                            },
+                            {
+                              required: true,
+                              message: 'Пожалуйста, введите вашу фамилию!'
+                            }
+                          ]
+                        })(<Input disabled={!isEditMode}/>)}
+                      </Form.Item>
+                    </Col>
 
-              <Col span={24}>
-                <Form.Item style={{ width: '50%' }} label='Активаная компания:'>
-                  {getFieldDecorator('active_company_id', {
-                    initialValue: data.active_company_id,
-                    rules: [
-                      {
-                        type: 'number',
-                        message: 'Пожалуйста, укажите активную'
-                      },
-                      {
-                        required: true,
-                        message: 'Пожалуйста, укажите активную компанию'
-                      }
-                    ]
-                  })(<Select disabled={!isEditMode}>
-                    {(data.companies && data.companies.length) &&
-                      data.companies.map(i => (
-                        <Option key={i.company_id} value={i.company_id}>{i.company_name}</Option>
-                      ))
-                    }
-                  </Select>)}
-                </Form.Item>
-              </Col>
+                    <Col span={24}>
+                      <Form.Item style={{ width: '50%' }} label='Активная компания:'>
+                        {getFieldDecorator('active_company_id', {
+                          initialValue: data.active_company_id,
+                          rules: [
+                            {
+                              type: 'number',
+                              message: 'Пожалуйста, укажите активную'
+                            },
+                            {
+                              required: true,
+                              message: 'Пожалуйста, укажите активную компанию'
+                            }
+                          ]
+                        })(<Select disabled={!isEditMode}>
+                          {(data.companies && data.companies.length) &&
+                          data.companies.map(i => (
+                            <Option key={i.company_id} value={i.company_id}>{i.company_name}</Option>
+                          ))
+                          }
+                        </Select>)}
+                      </Form.Item>
+                    </Col>
 
-              <Col span={24}>
-                <Form.Item style={{ width: '50%' }} label='Должность:'>
-                  {getFieldDecorator('position', {
-                    initialValue: ActiveCompany.position ? ActiveCompany.position : 'Отсутствует'
-                  })(<Input disabled />)}
-                </Form.Item>
-              </Col>
+                    <Col span={24}>
+                      <Form.Item style={{ width: '50%' }} label='Должность:'>
+                        {getFieldDecorator('position', {
+                          initialValue: ActiveCompany.position ? ActiveCompany.position : 'Отсутствует'
+                        })(<Input disabled/>)}
+                      </Form.Item>
+                    </Col>
 
 
-              {/*<Col span={24}>*/}
-              {/*  <Form.Item style={{ width: '50%' }} label='Роль:'>*/}
-              {/*    {getFieldDecorator('role_name', {*/}
-              {/*      initialValue: ActiveCompany.role_name ? ActiveCompany.role_name : 'Отсутствует'*/}
-              {/*    })(<Input disabled/>)}*/}
-              {/*  </Form.Item>*/}
-              {/*</Col>*/}
-            </Row>
-          </Spin>
-        </Form>
-        <div>
-          <Button style={{ margin: '2rem 2rem 0 0' }} type='primary' onClick={isEditMode ? e => this.changeUserInfo(e) : (() => this.changeMode())}>
-            <Icon type='edit' />
-            {isEditMode ? 'Сохранить изменения' : 'Изменить данные'}
-          </Button>
+                    {/*<Col span={24}>*/}
+                    {/*  <Form.Item style={{ width: '50%' }} label='Роль:'>*/}
+                    {/*    {getFieldDecorator('role_name', {*/}
+                    {/*      initialValue: ActiveCompany.role_name ? ActiveCompany.role_name : 'Отсутствует'*/}
+                    {/*    })(<Input disabled/>)}*/}
+                    {/*  </Form.Item>*/}
+                    {/*</Col>*/}
+                  </Row>
+                </Spin>
+              </Form>
 
-          <Button type='primary' onClick={() => this.openModal('password')}>
-            <Icon type='edit'/>
-            Сменить пароль
-          </Button>
+              <div>
+                <Button style={{ margin: '2rem 2rem 0 0' }} type='primary'
+                        onClick={isEditMode ? e => this.changeUserInfo(e) : (() => this.changeMode())}>
+                  <Icon type='edit'/>
+                  {isEditMode ? 'Сохранить изменения' : 'Изменить данные'}
+                </Button>
 
-          <Button type='primary' style={{ marginLeft: '2rem' }} onClick={() => this.openModal('phone')}>
-            <Icon type='edit'/>
-            Сменить номер телефона
-          </Button>
-        </div>
+                <Button type='primary' onClick={() => this.openModal('password')}>
+                  <Icon type='edit'/>
+                  Сменить пароль
+                </Button>
+
+                {/*<Button type='primary' style={{ marginLeft: '2rem' }} onClick={() => this.openModal('phone')}>*/}
+                {/*  <Icon type='edit'/>*/}
+                {/*  Сменить номер телефона*/}
+                {/*</Button>*/}
+              </div>
+            </div>
+          </TabPane>
+          <TabPane
+            tab={
+              <span>
+          <Icon type="team" />
+          Доверительный доступ
+        </span>
+            }
+            key="2"
+          >
+            <div className='tab-content'>
+              <List
+                className='content content_user'
+                dataSource={this.state.sharedUsers}
+                rowKey='id'
+                locale={{ emptyText: 'Нет расшаренных пользователей' }}
+                style={{ marginBottom: 20 }}
+                renderItem={item => (
+                  <List.Item>
+                    <List.Item.Meta
+                      title={<h4>{item.shared.company_name}</h4>}
+                      description={item.shared.user_email}
+                    />
+                  </List.Item>
+                )}
+              ></List>
+              <div>
+                <Button type='primary' onClick={() => this.openModal('share')}>
+                  <Icon type='cloud'/>
+                  Предоставить доступ
+                </Button>
+                <Button type='primary' style={{ marginLeft: '2rem' }} onClick={() => this.openModal('getShared')}>
+                  <Icon type='cloud-download'/>
+                  Перейти в учетную запись доверителя
+                </Button>
+              </div>
+            </div>
+          </TabPane>
+        </Tabs>
         {isModalVisible &&
         <Modal
-          title={`Изменить ${this.state.modalType === 'password' ? 'пароль' : 'номер телефона'}`}
+          title={`
+                  ${this.state.modalType === 'password' ? 'Изменить пароль' : ''}
+                  ${this.state.modalType === 'phone' ? 'Изменить номер телефона' : ''}
+                  ${this.state.modalType === 'share' ? 'Предоставить доступ' : ''}
+                  ${this.state.modalType === 'getShared' ? 'Перейти к активному расшареному пользователю' : ''}
+           `}
           visible
           closable={false}
           footer={null}
@@ -368,30 +464,30 @@ class UserInfoPage extends React.Component {
           <Form>
             {this.state.modalType === 'password'
               ? <Fragment>
-                <Form.Item label='Старый пароль' hasFeedback>
-                  {getFieldDecorator('old_password', {
-                    rules: [
-                      {
-                        required: true,
-                        message: 'Введите старый пароль'
-                      }
-                    ]
-                  })(<Input.Password />)}
-                </Form.Item>
+                {/*<Form.Item label='Старый пароль' hasFeedback>*/}
+                {/*  {getFieldDecorator('old_password', {*/}
+                {/*    rules: [*/}
+                {/*      {*/}
+                {/*        required: true,*/}
+                {/*        message: 'Введите старый пароль'*/}
+                {/*      }*/}
+                {/*    ]*/}
+                {/*  })(<Input.Password/>)}*/}
+                {/*</Form.Item>*/}
 
                 <Form.Item label='Новый пароль' hasFeedback>
                   {getFieldDecorator('password', {
                     rules: [
                       {
                         required: true,
-                        message: 'Минимум восемь символов, как минимум одна буква, одна цифра и один специальный символ',
-                        pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,}$/
+                        message: 'Минимум восемь символов.',
+                        pattern: /^.{8,128}$/
                       },
                       {
                         validator: this.validateToNextPassword
                       }
                     ]
-                  })(<Input.Password />)}
+                  })(<Input.Password/>)}
                 </Form.Item>
 
                 <Form.Item label='Подтвердите новый пароль' hasFeedback>
@@ -399,17 +495,21 @@ class UserInfoPage extends React.Component {
                     rules: [
                       {
                         required: true,
-                        message: 'Минимум восемь символов, как минимум одна буква, одна цифра и один специальный символ',
-                        pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&.])[A-Za-z\d@$!%*#?&.]{8,}$/
+                        message: 'Минимум восемь символов.',
+                        pattern: /^.{8,128}$/
                       },
                       {
                         validator: this.compareToFirstPassword
                       }
                     ]
-                  })(<Input.Password />)}
+                  })(<Input.Password/>)}
                 </Form.Item>
               </Fragment>
               : <Fragment>
+              </Fragment>
+            }
+            {this.state.modalType === 'phone'
+              ? <Fragment>
                 <Form.Item
                   validateStatus={this.state.validateStatus}
                   label='Введите номер мобильного телефона'
@@ -449,18 +549,67 @@ class UserInfoPage extends React.Component {
                 </Form.Item>
                 }
               </Fragment>
+              : <Fragment>
+              </Fragment>
             }
+            {this.state.modalType === 'share'
+              ? <Fragment>
+                <Form.Item
+                  validateStatus={this.state.validateStatus}
+                  label='Введите E-mail'
+                >
+                  {getFieldDecorator('email', {
+                    rules: [{ required: true, message: 'Пожалуйста, введите E-mail' }]
+                  })(<Input
+                    placeholder='email'
+                    style={{ width: '100%' }}
+                  />)}
+                </Form.Item>
+              </Fragment>
+              : <Fragment>
+              </Fragment>
+            }
+            {this.state.modalType === 'getShared'
+              ? <Fragment>
+                <Form.Item
+                  validateStatus={this.state.validateStatus}
+                  label='Введите код'
+                >
+                  {getFieldDecorator('value', {
+                    rules: [{ required: true, message: 'Пожалуйста, введите секретный код' }]
+                  })(<Input
+                    placeholder='Код'
+                    style={{ width: '100%' }}
+                  />)}
+                </Form.Item>
+              </Fragment>
+              : <Fragment>
+              </Fragment>
+            }
+
           </Form>
 
           <div style={{ marginTop: '2rem' }}>
             {this.state.modalType === 'password'
               ? <Button type='primary' onClick={this.changeUserPassword}>Сохранить новый пароль</Button>
-              : <Button type='primary' onClick={this.changeUserPhone}>
-                { this.state.isCode
+              : null
+            }
+            {this.state.modalType === 'phone'
+              ? <Button type='primary' onClick={this.changeUserPhone}>
+                {this.state.isCode
                   ? 'Отправить код'
                   : 'Изменить номер телефона'
                 }
               </Button>
+              : null
+            }
+            {this.state.modalType === 'share'
+              ? <Button type='primary' onClick={this.shareUser}>Создать пароль доступа</Button>
+              : null
+            }
+            {this.state.modalType === 'getShared'
+              ? <Button type='primary' onClick={this.getSharedUser}>Подтвердить переход</Button>
+              : null
             }
             <Button type='primary' ghost onClick={this.openModal} style={{ marginLeft: '1rem' }}>Закрыть</Button>
           </div>

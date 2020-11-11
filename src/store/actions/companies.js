@@ -63,27 +63,22 @@ const changeActiveCompanyById = id => dispatch => {
     })
 }
 
-const createCompany = body => (dispatch, getState) => {
-  const state = getState()
+const createCompany = body => (dispatch) => {
   dispatch({
     type: t.CREATE_COMPANY_FETCHING,
     payload: true
   })
   return api.companies.createCompany(body)
     .then(({ data }) => {
-      console.log(data)
       if (data && data.success) {
         dispatch({
           type: t.CREATE_COMPANY_SUCCESS,
           payload: data
         })
-
-        if (!state.companies.list.length) {
-          dispatch({
-            type: t.CHANGE_ACTIVE_COMPANY_BY_ID_SUCCESS,
-            payload: data.data.id
-          })
-        }
+        dispatch({
+          type: t.CHANGE_ACTIVE_COMPANY_BY_ID_SUCCESS,
+          payload: data.data.id
+        })
       } else {
         dispatch({
           type: t.CREATE_COMPANY_FETCHING,

@@ -1,12 +1,35 @@
 import React from 'react'
 
-import { Typography, Button } from 'antd'
+import { message, notification, Typography } from 'antd'
+import { Button } from '../../../../components'
 
 import './CompanyDescription.scss'
+import axios from 'axios'
 
 const { Text } = Typography
 
-const bitrixLink = 'https://quidox.bitrix24.by/pub/form/2_zapros_klyucha_dlya_podklyucheniya_po_api/u9qv11/'
+const bitrixLink = 'https://bitrix24public.com/quidox.bitrix24.by/form/10_mts_smartdoc_zapros_klyucha_dlya_podklyucheniya_po_api/rsva1h/'
+const continueTariff = () => {
+  try {
+    let auth = window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken')
+    axios.get(`${process.env.REACT_APP_BASE_URL}/mts/service/continue`, {
+      headers: {
+        'Authorization': 'Bearer ' + auth
+      }
+    })
+      .then(({}) => {
+        message.success('Тариф успешно продлен.')
+        window.location.reload()
+      })
+      .catch(error => {
+        message.error('Вам недоступно продление тарифа!')
+      })
+  } catch (error) {
+    notification['error']({
+      message: error.message
+    })
+  }
+}
 
 const CompanyDescription = props => {
 
@@ -35,6 +58,18 @@ const CompanyDescription = props => {
         onClick={() => window.open(bitrixLink, '_blank')}>
         Запросить ключ для подключения по API
       </Button>
+      <br/>
+      <br/>
+      {data.co_brand_id !== null &&
+      <Button
+        disabled={(data.is_owner === true && data.tariff_was_expired === true) ? '' : 'disabled'}
+        type='primary'
+        ghost
+        onClick={continueTariff}>
+        Продлить тариф
+      </Button>
+      }
+
     </div>
   )
 }

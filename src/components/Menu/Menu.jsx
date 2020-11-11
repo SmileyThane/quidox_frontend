@@ -7,8 +7,9 @@ import history from '../../history.js'
 import { Button } from '../'
 import { MenuItem } from './internal'
 import './Menu.scss'
+import { logger } from 'redux-logger/src'
 
-const AntMenu = props => {
+const AntMenu = props  => {
   const [menuData, setMenuData] = useState({})
 
   useEffect(() => {
@@ -30,6 +31,7 @@ const AntMenu = props => {
 
   const { SubMenu } = Menu
   const { data } = menuData
+  console.log(props.config)
   return (
     <Fragment>
       <Button
@@ -48,14 +50,25 @@ const AntMenu = props => {
         // selectedKeys={[props.match.url, (props.location.pathname || {}).from]}
         selectedKeys={[`${props.location.state ? props.location.state.id : ''}`]}
       >
-        <MenuItem
-          heading='Входящие'
-          url='/documents'
-          status={2}
-          key='/documents/2'
-          icon='import'
-          id={'/documents/2'}
-        />
+        <Menu.ItemGroup title={<span><Icon type="import" />Входящие</span>}>
+          <MenuItem
+            heading='Входящие'
+            url='/documents'
+            status={2}
+            key='/documents/2'
+            icon='import'
+            id={'/documents/2'}
+          />
+
+          <MenuItem
+            heading='УНП@'
+            url='/documents'
+            key='/documents/11'
+            icon='file-protect'
+            status={11}
+            id={'/documents/11'}
+          />
+        </Menu.ItemGroup>
         <MenuItem
           heading='Отправленные'
           url='/documents'
@@ -88,6 +101,7 @@ const AntMenu = props => {
           id={'/companies'}
         />
         <SubMenu
+
           key='sub1'
           onTitleClick={({ key: menuKey }) => handleTitleClick(menuKey)}
           title={
@@ -111,8 +125,8 @@ const AntMenu = props => {
             />
           ))}
         </SubMenu>
-        {0 &&
         <SubMenu
+          disabled
           key='sub2'
           title={
             <span>
@@ -140,21 +154,49 @@ const AntMenu = props => {
             }
           })}
         </SubMenu>
-        }
         <MenuItem
           heading='Проверка ЭЦП'
           url='/esc-checking'
           key='/esc-checking'
           icon='file-protect'
           id={'/esc-checking'}
+          onClick={() => props.isBrand && window.open(`${props.config.co_brand_config.logout_uri}/esc-check`, '_self')}
         />
         <MenuItem
           heading='Сторонние источники'
-          url='/externals'
-          key='/externals'
+          url='/documents'
+          key='/documents/9'
           icon='file-text'
-          disabled
+          status={9}
+          id={'/documents/9'}
+
         />
+        <MenuItem
+            heading='Сообщения реестра'
+            url='/documents'
+            key='/documents/10'
+            icon='file-text'
+            status={10}
+            id={'/documents/10'}
+
+        />
+        <MenuItem
+          heading='Работа с реестром документов'
+          url='/registry'
+          key='/registry'
+          icon='code'
+          id={'/registry'}
+
+        />
+        <MenuItem
+          heading='Загруженные реестры'
+          url='/registry-stored'
+          key='/registry-stored'
+          icon='file-select'
+          id={'/registry-stored'}
+
+        />
+
         <MenuItem
           heading='Панель администратора'
           url=''

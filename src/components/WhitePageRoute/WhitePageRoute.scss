@@ -1,0 +1,38 @@
+@import "../../styles/variables";
+.public-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: map_get($colors, white);
+  border-bottom: .1rem solid map_get($colors, gray);
+  padding: 2rem;
+  .logo {
+    max-width: 25rem;
+    height: 6.5rem;
+    max-height: 6.5rem;
+  }
+}
+.app {
+  position: absolute;
+  top: 80px;
+  width: 100%;
+  bottom: 0;
+  display: flex;
+
+  .app-content-white {
+    position: relative;
+    height: 100%;
+    flex-basis: 100%;
+    background-color: white;
+    //overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 5rem;
+  }
+  .white-background {
+    background-color: white!important;
+  }
+}

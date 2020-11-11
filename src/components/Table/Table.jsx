@@ -1,6 +1,8 @@
 import React, { useState, useEffect, Fragment, useRef } from 'react'
 import axios from 'axios'
+import { useLocation } from 'react-router-dom'
 import fileDownload from 'js-file-download'
+import { api } from '../../services'
 
 import _ from 'lodash'
 import { Link } from 'react-router-dom'
@@ -14,16 +16,19 @@ import {
   Typography,
   Select,
   Modal,
-  Button,
   Spin,
   Pagination,
-  Tooltip
+  Tooltip,
+  notification,
+  Tag
 } from 'antd'
 
+import { Button, RouterLink } from '../'
 import './Table.scss'
 import { findUsersByParams } from '../../services/api/user'
 import history from '../../history'
 import moment from 'moment'
+import forbiddenEmails from '../../constants/forbiddenEmails'
 
 const defaultTableState = {
   selectedRowKeys: [],
@@ -33,7 +38,8 @@ const defaultTableState = {
   data: [],
   showModal: false,
   sorter: '',
-  isFetching: false
+  isFetching: false,
+  loading: false
 }
 
 const defaultParameterState = {
@@ -53,6 +59,7 @@ const AntdTable = props => {
   const {
     getDocumentsWithParams,
     activeCompany,
+    verifyFile,
     children,
     type,
     getUser,
@@ -62,14 +69,24 @@ const AntdTable = props => {
     sendDocumentToUser,
     tableData,
     status,
+    files,
     ...rest
   } = props
+
+  const location = useLocation()
 
   const input = useRef(null)
 
   const [tableState, setTableState] = useState({ ...defaultTableState })
 
   const [parameterState, setParameterState] = useState({ ...defaultParameterState })
+
+  useEffect(() => {
+      setTableState({
+        ...tableState,
+        selectedRowKeys: []
+      })
+  }, [location.state.id])
 
   useEffect(() => {
     if (activeCompany && status && type) {
@@ -91,12 +108,12 @@ const AntdTable = props => {
 
   const columns = [
     {
-      title: (status === 1 || status === 3) ? 'Получатель' : 'Отправитель',
+      title: (status === 1 || status === 3 || status === 9 || status === 10) ? 'Получатель' : 'Отправитель',
       key: type,
       render: record =>
         <Fragment>
-          {(status === 1 || status === 3)
-            ? <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }}>
+          {(status === 1 || status === 3 || status === 9 || status === 10)
+            ? <RouterLink to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }}>
               <div>
                 {record.recipient &&
                     record.recipient['user_email']
@@ -106,8 +123,8 @@ const AntdTable = props => {
                   <p>{`[ ${record.recipient['company_name']} ]`}</p>
                 }
               </div>
-            </Link>
-            : <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }}>
+            </RouterLink>
+            : <RouterLink to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }}>
               <div>
                 {record.sender &&
                     record.sender['user_email']
@@ -117,67 +134,77 @@ const AntdTable = props => {
                   <p>{`[ ${record.sender['company_name']} ]`}</p>
                 }
               </div>
-            </Link>
+            </RouterLink>
           }
         </Fragment>
     },
     {
+      title: (status === 9 ? 'УНП' : ''),
+      key: 'unp'
+    },
+    {
+      title: (status === 10 ? 'ЭЦП' : ''),
+      key: 'file-status',
+      render: (status === 10
+        ? record => <Tag color={!!record.document.applied_attachments_count ? 'green' : 'orange'}>{!!record.document.applied_attachments_count ? 'ЭЦП имеется' : 'ЭЦП отсутствует'}</Tag>
+        : ''
+      )
+    },
+    {
       title: 'Тема',
       key: 'descr',
-      render: record => <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }}>{record.document.name}</Link>
+      render: record => <RouterLink to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }}>{record.document.name}</RouterLink>
     },
     {
       title: () => <Icon type='paper-clip' />,
       key: 'attachments',
-      render: record => <Link to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }} style={{ textAlign: 'center' }} >{record.document.attachments.length === 0 ? 'Нет приложенных документов' : record.document.attachments.length }</Link>,
+      render: record => <RouterLink to={{ pathname: `/documents/${record.id}`, state: { from: history.location.pathname, id: history.location.state.id, menuKey: history.location.state.menuKey, type: status } }} style={{ textAlign: 'center' }} >{record.document.attachments.length === 0 ? 'Нет приложенных документов' : record.document.attachments.length }</RouterLink>,
       sorter: false
     },
     {
-      title: 'Дата',
+      title: 'Дата создания',
       key: 'created_at',
       className: 'date-column',
-      render: record => <Text>{moment.utc(record.document.created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD/MM/YYYY HH:mm:ss')}</Text>,
+      render: record => <Text>{moment.utc(record.created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD/MM/YYYY HH:mm:ss')}</Text>,
       sorter: true,
       defaultSortOrder: 'descend'
     },
-    // {
-    //   title: 'Статус',
-    //   key: 'status',
-    //   className: 'status-column',
-    //   render: record => <Text>{record.status_name}</Text>
-    // },
+    {
+      title: (status === 9 ? 'ЭЦП' : '')
+    },
     {
       title: 'Квитанция',
       key: 'receipt',
       className: 'table-download',
       render: record => <Fragment>
         <Tooltip placement='topRight' title='Скачать квитанцию в формате pdf' arrowPointAtCenter>
-          {/* <Icon onClick={() => downloadReceipt(record.id, record.document.name)} type='file-pdf' style={{ marginRight: '0.5rem', fontSize: '1.8rem', cursor: 'pointer' }} /> */}
-          <Icon type='file-pdf' style={{ marginRight: '0.5rem', fontSize: '1.8rem', cursor: 'pointer' }} />
+          <Icon onClick={() => downloadReceipt(record.id, record.document.name, 'pdf')} type='file-pdf' style={{ marginRight: '0.5rem', fontSize: '1.8rem', cursor: 'pointer' }} />
         </Tooltip>
 
         <Tooltip placement='topRight' title='Скачать квитанцию в формате xml  (Скоро...)' arrowPointAtCenter>
-          <Icon type='file-text' style={{ fontSize: '1.8rem', cursor: 'pointer' }} />
+          <Icon onClick={() => downloadReceipt(record.id, record.document.name, 'xml')} type='file-text' style={{ marginRight: '0.5rem', fontSize: '1.8rem', cursor: 'pointer' }} />
         </Tooltip>
       </Fragment>
     }
   ]
 
-  const downloadReceipt = (id, name) => {
+  const downloadReceipt = (id, name, type) => {
     setTableState({
       ...tableState,
       isFetching: true
     })
-    axios.get(`${process.env.REACT_APP_BASE_URL}/receipt/pdf/${id}`, {
+
+    let auth = window.localStorage.getItem('authToken') != null ? window.localStorage.getItem('authToken') : window.sessionStorage.getItem('authToken')
+    axios.get(`${process.env.REACT_APP_BASE_URL}/receipt/${type}/${id}`, {
       'responseType': 'arraybuffer',
       headers: {
-        'Authorization': 'Bearer ' + window.localStorage.getItem('authToken'),
+        'Authorization': 'Bearer ' + auth ,
         'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
       }
     })
       .then(({ data }) => {
         if (data) {
-          fileDownload(data, `${name}.pdf`)
+          fileDownload(data, `${name}.${type}`)
           setTableState({
             ...tableState,
             isFetching: false
@@ -296,34 +323,33 @@ const AntdTable = props => {
     })
   }
 
+  const asyncSendMessage = async (id, users) => {
+    await sendDocumentToUser({ document_ids: [id], user_company_id: users })
+  }
+
   const sendToUser = () => {
+
+    if (tableState.value.filter(i => forbiddenEmails.includes(i.key)).length) {
+      notification.error({
+        message: 'Отправка/перенаправление по реквизиту УНП для данного адресата запрещено. Укажите точный адрес (E-mail) получателя.'
+      })
+      return false
+    }
+
     const docsDataToUser = {
-      document_ids: [...new Set(tableData.data
-        .filter(i => tableState.selectedRowKeys.includes(i.id))
-        .map(i => i.document_id))],
+      messages: tableData.data
+        .filter(i => tableState.selectedRowKeys.includes(i.id)).map(i => i.document_id),
       user_company_id: JSON.stringify(tableState.value.map(i => i.key))
     }
-    console.log(docsDataToUser)
-    sendDocumentToUser(docsDataToUser)
-      .then(response => {
-        if (response.success) {
-          message.success('Сообщение успешно отправлено!')
-          getDocumentsWithParams(activeCompany, parameterState)
-          getUser()
-          setTableState({
-            ...tableState,
-            fetching: false,
-            selectedRowKeys: [],
-            showModal: false
-          })
-        } else {
-          throw new Error(response.error)
-        }
-      })
-      .catch(error => {
-        message.error(error.message)
-        setTableState({ ...defaultTableState })
-      })
+    let chain = Promise.resolve()
+    const uniqueMessagesIds = [...new Set(docsDataToUser.messages)]
+
+    uniqueMessagesIds.forEach(id => {
+      chain = chain.then(() => asyncSendMessage(id, docsDataToUser.user_company_id))
+    })
+    chain.finally(() => {
+      window.location.reload()
+    })
   }
 
   const handleChangePerPage = value => {
@@ -342,12 +368,62 @@ const AntdTable = props => {
   }
 
   const handleTableChange = (pagination, filters, sorter) => {
-    console.log(sorter)
     setParameterState({
       ...parameterState,
       sort_by: sorter.columnKey,
       sort_value: sorter.order
     })
+  }
+
+  const proccesFilesForVerifyFile = async (bool, files) => {
+    for (const file of files) {
+      if (bool || file.status.status_data.id === 3) {
+        const base64 = await api.files.getBase64File(file.id)
+        try {
+          const sertificationObject = await window.signProcess(base64.data.data.encoded_base64_file, file.hash_for_sign, true)
+          const verifiedData = {
+            id: file.id,
+            hash: sertificationObject.signedData,
+            data: sertificationObject.verifiedData,
+            hash_for_sign: sertificationObject.hex,
+            status: bool ? null : 5
+          }
+          const confirm = await api.documents.attachmentSignCanConfirm({ key: sertificationObject.verifiedData.key, attachment_id: file.id })
+          if (confirm.data.success) {
+            api.files.verifyFile(verifiedData)
+          }
+        } catch (error) {
+          notification['error']({
+            message: error.message
+          })
+        }
+      }
+    }
+  }
+
+  const multipleVerify = () => {
+    setTableState({
+      ...tableState,
+      loading: true
+    })
+    proccesMessageForVerifyFiles(tableData.data.filter(i => tableState.selectedRowKeys.includes(i.id)))
+      .then(() => {
+        setTableState({ ...defaultTableState })
+        notification.success({
+          message: 'Подпись завершена! закройте окно и перезагрузите страницу.'
+        })
+      })
+  }
+
+  const reloadPlugin = () => {
+     window.pluginLoaded()
+    multipleVerify()
+  }
+
+  const proccesMessageForVerifyFiles = async (messages) => {
+     for (const [index, message] of messages.entries()) {
+      await proccesFilesForVerifyFile(message.can_be_signed, message.document.attachments)
+    }
   }
 
   useEffect(() => {
@@ -400,7 +476,7 @@ const AntdTable = props => {
           scroll={{ x: true }}
           columns={columns}
           rowSelection={rowSelection}
-          dataSource={tableData.hasOwnProperty('data') ? tableData.data : []}
+          dataSource={tableData ? tableData.data : []}
           rowKey='id'
           locale={{ emptyText: 'Нет данных' }}
           rowClassName={record => record.is_read === 0 ? 'unread' : ''}
@@ -408,32 +484,24 @@ const AntdTable = props => {
           onChange={handleTableChange}
           title={() =>
             (
-              <div className='table__header table-header'>
-                <div className='table-header__actions'>
-                  <Tooltip title='Перенаправление документа(ов)' placement='topRight' arrowPointAtCenter>
-                    <Icon type='cloud-upload' onClick={() => openModal()} />
-                  </Tooltip>
-                  <Tooltip title='Удаление документа(ов)' placement='topRight' arrowPointAtCenter>
-                    <Popconfirm
-                      title='Вы уверены?'
-                      onConfirm={() => handleRemove(type)}
-                      okText='Удалить'
-                      cancelText='Отмена'
-                    >
-                      <Icon type='delete' style={{ color: '#FF7D1D' }} />
-                    </Popconfirm>
-                  </Tooltip>
+              <div>
+                <div className='table__header table-header'>
+                  <div className='table-header__actions'>
+                    <Button style={{ marginRight: '1rem' }} disabled={!(!!tableState.selectedRowKeys.length)} icon='cloud-upload' type='primary' onClick={() => openModal()}>Отправить выделенное</Button>
+                    <Button style={{ marginRight: '1rem' }} disabled={!(!!tableState.selectedRowKeys.length) || status === 11} icon='delete' type='primary' onClick={() => handleRemove(type)}>Переместить в архив</Button>
+                    <Button disabled={!(!!tableState.selectedRowKeys.length && status !== 3)} type='primary' icon={tableState.loading ? 'loading' : 'edit'} onClick={reloadPlugin}>Групповое подписание</Button>
+                  </div>
+                  <div className='table-header__search'>
+                    <AutoComplete onSearch={_.debounce(handleSearch, 500)} placeholder={`Введите тему, ${(status === 1 || status === 3) ? '  получателя' : 'отправителя'}...`} />
+                    <Pagination
+                      simple
+                      current={parameterState.page}
+                      hideOnSinglePage
+                      total={tableData && !isNaN(Math.ceil(tableData.total / +tableData.per_page) * 10) ? Math.ceil(tableData.total / +tableData.per_page) * 10 : 0}
+                      onChange={handleChangePage}
+                    />
+                  </div>
                 </div>
-                <div className='table-header__search'>
-                  <AutoComplete onSearch={_.debounce(handleSearch, 500)} placeholder={`Введите тему, ${(status === 1 || status === 3) ? '  получателя' : 'отправителя'}...`} />
-                </div>
-                <Pagination
-                  simple
-                  current={parameterState.page}
-                  hideOnSinglePage
-                  total={!isNaN(Math.ceil(tableData.total / +tableData.per_page) * 10) ? Math.ceil(tableData.total / +tableData.per_page) * 10 : 0}
-                  onChange={handleChangePage}
-                />
               </div>
             )}
           footer={() =>
@@ -444,7 +512,7 @@ const AntdTable = props => {
                     <Text>Отмечено: {tableState.selectedRowKeys.length}</Text>
                   </div>
                   <div className='table-footer__item'>
-                    <Text>Всего: {tableData.hasOwnProperty('data') && tableData.data.length}</Text>
+                    <Text>Всего: {tableData && tableData.hasOwnProperty('data') && tableData.data.length}</Text>
                   </div>
                 </div>
                 <div>

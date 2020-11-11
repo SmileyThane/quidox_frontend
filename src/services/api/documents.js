@@ -32,11 +32,18 @@ const removeDocumentsByIds = data => {
   })
 }
 
-const checkFlashKey = data => {
+const attachmentSignCanConfirm = data => {
   return http({
-    url: 'documents/sign/confirm',
+    url: 'attachment/sign/can_confirm',
     method: 'POST',
     data
+  })
+}
+
+const attachmentSimSign = id => {
+  return http({
+    url: '/attachment/sim-sign/create/' + id,
+    method: 'GET'
   })
 }
 
@@ -52,6 +59,7 @@ export {
   sendDocumentToUser,
   getDocumentsByActiveCompanyId,
   removeDocumentsByIds,
-  checkFlashKey,
+  attachmentSignCanConfirm,
+  attachmentSimSign,
   getDocumentsStatuses
 }

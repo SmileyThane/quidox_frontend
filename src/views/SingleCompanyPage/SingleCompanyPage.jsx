@@ -3,19 +3,20 @@ import React, { Fragment, useEffect } from 'react'
 import history from '../../history'
 import {
   Spin,
-  Tabs,
   Icon
 } from 'antd'
+
 import {
   CompanyUsers,
   CompanyDescription,
   CompanyBalance
 } from './internal'
 
-const { TabPane } = Tabs
+import ThemeTabs from './styled'
 
 const SingleCompanyPage = props => {
   const {
+    user: { data },
     match,
     location,
     getCompanyById,
@@ -28,7 +29,8 @@ const SingleCompanyPage = props => {
     }
   }, [match, getCompanyById])
 
-  console.log(singleCompany)
+  const coBrand = data.co_brand_config && data.co_brand_config
+
   return (
     <Fragment>
       <Spin spinning={isFetching}>
@@ -36,10 +38,11 @@ const SingleCompanyPage = props => {
           <div style={{ marginBottom: '2rem' }} className='back' onClick={() => history.goBack()} >
             <Icon type='left' />
           </div>
-          <Tabs
-            defaultActiveKey={location.state.fromBalance ? '3' : '1'}
+          <ThemeTabs
+            brand={coBrand}
+            defaultActiveKey={'1'}
           >
-            <TabPane
+            <ThemeTabs.Pane
               key='1'
               tab={
                 <Fragment>
@@ -49,9 +52,9 @@ const SingleCompanyPage = props => {
               }
             >
               <CompanyDescription data={singleCompany} />
-            </TabPane>
+            </ThemeTabs.Pane>
 
-            <TabPane
+            <ThemeTabs.Pane
               key='2'
               tab={
                 <Fragment>
@@ -61,9 +64,9 @@ const SingleCompanyPage = props => {
               }
             >
               <CompanyUsers users={singleCompany.users} />
-            </TabPane>
+            </ThemeTabs.Pane>
 
-            <TabPane
+            <ThemeTabs.Pane
               key='3'
               tab={
                 <Fragment>
@@ -73,9 +76,9 @@ const SingleCompanyPage = props => {
               }
             >
               <CompanyBalance balance={singleCompany.balance} />
-            </TabPane>
+            </ThemeTabs.Pane>
 
-            <TabPane
+            <ThemeTabs.Pane
               key='4'
               tab={
                 <Fragment>
@@ -85,7 +88,7 @@ const SingleCompanyPage = props => {
               }
               disabled
             />
-          </Tabs>
+          </ThemeTabs>
         </div>
       </Spin>
     </Fragment>

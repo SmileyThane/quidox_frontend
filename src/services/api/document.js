@@ -7,12 +7,27 @@ const getDocumentById = id => {
   })
 }
 
-const createDocument = (data, headers) => {
+const createDocument = data => {
   return http({
     url: 'document/create',
     method: 'POST',
+    data
+  })
+}
+
+const uploadFile = (data, headers) => {
+  return http({
+    url: '/document/attachment/create',
+    method: 'POST',
     data,
     headers
+  })
+}
+
+const removeFile = id => {
+  return http({
+    url: `/attachment/delete/${id}`,
+    method: 'GET'
   })
 }
 
@@ -53,7 +68,7 @@ const verifyDocument = data => {
   })
 }
 
-const agreeFile = data => {
+const changeStatus = data => {
   return http({
     url: 'attachment/status/update',
     method: 'POST',
@@ -69,6 +84,13 @@ const updateDocumentById = (id, data) => {
   })
 }
 
+const getDocumentLink = id => {
+  return http({
+    url: `/document/${id}/share`,
+    method: 'POST'
+  })
+}
+
 export {
   getDocumentById,
   createDocument,
@@ -76,7 +98,8 @@ export {
   removeDocumentById,
   downloadDocument,
   verifyDocument,
-  agreeFile,
+  changeStatus,
   updateDocumentById,
-  downloadReciept
+  downloadReciept,
+  getDocumentLink
 }

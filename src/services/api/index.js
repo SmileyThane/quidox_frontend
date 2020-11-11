@@ -2,10 +2,18 @@ import * as user from './user'
 import * as document from './document'
 import * as documents from './documents'
 import * as companies from './companies'
+import * as files from './files'
+import * as registry from './registry'
+import * as helpers from './helpers'
+import * as config from './config'
 
 export default {
   user,
   document,
   documents,
-  companies
+  companies,
+  files,
+  registry,
+  helpers,
+  config
 }

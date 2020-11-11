@@ -1,12 +1,14 @@
 import React, { Fragment } from 'react'
 
-import { Typography, Button } from 'antd'
+import { Typography } from 'antd'
 import {
   pdf20,
   pdf100,
   pdf500,
   pdf1000
 } from '../../../../resources/pdf'
+
+import { Button } from '../../../../components'
 
 import './CompanyBalance.scss'
 

@@ -7,6 +7,13 @@ const getUser = () => {
   })
 }
 
+const getSharedUsers = () => {
+  return http({
+    url: '/user/shared',
+    method: 'GET'
+  })
+}
+
 const userLogout = () => {
   return http({
     url: 'logout',
@@ -29,9 +36,40 @@ const updateUser = data => {
   })
 }
 
-const updateUserPhone = data => {
+const shareUser = data => {
   return http({
-    url: 'user/update/phone',
+    url: '/user/share',
+    method: 'POST',
+    data
+  })
+}
+
+const getSharedUser = data => {
+  return http({
+    url: '/user/shared/token/get',
+    method: 'POST',
+    data
+  })
+}
+
+const getTariffications = () => {
+  return http({
+    url: '/tarifications',
+    method: 'GET'
+  })
+}
+
+const changeTariff = data => {
+  return http({
+    url: '/tarification/add',
+    method: 'POST',
+    data
+  })
+}
+
+const loginByEsign = data => {
+  return http({
+    url: '/esign/login',
     method: 'POST',
     data
   })
@@ -39,8 +77,13 @@ const updateUserPhone = data => {
 
 export {
   getUser,
+  shareUser,
+  getSharedUser,
+  getSharedUsers,
   userLogout,
   updateUser,
-  updateUserPhone,
-  findUsersByParams
+  findUsersByParams,
+  getTariffications,
+  changeTariff,
+  loginByEsign
 }

@@ -1,130 +1,115 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 
-import {
-  Layout,
-  Icon,
-  Skeleton,
-  Tag,
-  Dropdown,
-  message,
-  Tooltip,
-  Avatar
-} from 'antd'
-
-import history from '../../history.js'
+import { message, Modal, notification, Skeleton } from 'antd'
+import { Button } from '../'
+import { HeaderTariff, HeaderUser } from './internal'
+import { CompanyCreate } from '../'
+import { HeaderContent } from './styled'
 import { logo } from '../../resources/img'
-import './HeaderBlock.scss'
+import { getActiveCompany } from '../../utils'
+import axios from 'axios'
 
-const { Header } = Layout
+import fileDownload from 'js-file-download'
+import { api } from '../../services'
+
+const defaultState = {
+  isModalVisible: false,
+  activeCompany: null
+}
 
 const HeaderBlock = props => {
   const {
-    user: { isFetching, data },
-    userLogout
+    user: { data, isFetching },
+    config
   } = props
 
-  const handleLogout = () => {
-    userLogout()
-      .then(({ data }) => {
-        if (data.success) {
-          window.localStorage.clear()
-          history.push('/login')
-        } else {
-          throw new Error(data.error)
-        }
+  const [state, setState] = useState({ ...defaultState })
+
+  useEffect(() => {
+    if (data) {
+      setState({
+        ...state,
+        activeCompany: data.hasOwnProperty('companies') && getActiveCompany(data)
       })
-      .catch(error => {
-        message.error(error.message)
-      })
+    }
+  }, [data])
+
+  const handleOpenModal = () => {
+    setState({
+      ...state,
+      isModalVisible: true
+    })
   }
 
-  const activeCompany = data.hasOwnProperty('companies') && data.companies.find(i => i.company_id === data.active_company_id)
+  const handleCloseModal = () => {
+    setState({
+      ...defaultState
+    })
+  }
 
+  const isIE = /*@cc_on!@*/false || !!document.documentMode
+
+  const importCerts = () => {
+
+    if (isIE) {
+      // window.pluginLoaded()
+      setTimeout(() => {
+        axios.get(`${process.env.REACT_APP_BASE_URL}/ruc/get`, {
+          'responseType': 'arraybuffer',
+          headers: {
+            'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
+          }
+        }).then(({ data }) => {
+          fileDownload(data, `ruc.cer`)
+          window.importCerts(data)
+          notification.success({
+            message: 'Сертификаты обновлены!'
+          })
+        }).catch(error => console.error(error))
+
+      }, 3000)
+    }
+
+  }
+
+  const { isModalVisible, activeCompany } = state
+  const coBrandLogo = config.data.co_brand_config ? config.data.co_brand_config.logo_png : logo
+  const LogoUri = config.data.co_brand_config ? config.data.co_brand_config.logout_uri : 'https://quidox.by'
   return (
-    <Header className='header'>
-      <div className='header__content'>
-        <aside className='header__left'>
-          <img className='header__logo' src={logo} alt='Quidox Logo' style={{ maxHeight: '5rem' }} />
-        </aside>
-        {window.localStorage.getItem('authToken') &&
+    <Fragment>
+      <HeaderContent>
+        <HeaderContent.Row>
+          <HeaderContent.LeftAside>
+            {!isFetching &&
+              <a href={LogoUri}>
+                <HeaderContent.Logo src={coBrandLogo} alt='Quidox Logo' style={{ maxHeight: '5rem' }}/>
+              </a>
+            }
+          </HeaderContent.LeftAside>
+          {(window.localStorage.getItem('authToken') || window.sessionStorage.getItem('authToken')) &&
           <Fragment>
             <Skeleton loading={isFetching} active paragraph={false}>
-              <div className='header-data'>
-                <div className='header-data--item'>
-                  Тариф:
-                  <span className='tag-span'>
-                    {activeCompany && activeCompany.tarification.tarification_data.name}
-                  </span>
-                </div>
-
-                <div className='header-data--item'>
-                  Доступно действий:
-                  <span className='tag-span'>
-                    {activeCompany && activeCompany.tarification.max_actions}
-                  </span>
-                </div>
-
-                <div className='header-data--item'>
-                  Баланс (BYN):
-                  <span className='tag-span'>
-                    {activeCompany && activeCompany.company_data.balance}
-                  </span>
-                </div>
-                <div className='header-data--item'>
-                  {activeCompany &&
-                  <Tooltip arrowPointAtCenter title={activeCompany.company_data.name}>
-                    <Tag
-                      color='#87d068'
-                      style={{ width: '100%', maxWidth: '15rem', textOverflow: 'ellipsis', overflow: 'hidden' }}
-                    >
-                      {+activeCompany.company_data.company_number === 0
-                        ? activeCompany.company_data.name
-                        : activeCompany.company_data.company_number
-                      }
-                    </Tag>
-                  </Tooltip>
-                  }
-                </div>
-              </div>
-              <div className='user header__user'>
-                <Dropdown
-                  overlay={
-                    (
-                      <ul className='user__dropdown'>
-                        <li className='user__dropdown__item' style={{ textAlign: 'center' }}>
-                          {(data && data.companies) && data.companies.map(i => {
-                            if (i.company_id === data.active_company_id) {
-                              return <Tag key={i.company_id} color='#87d068' style={{ width: '100%', overflow: 'hidden', textOverflow: 'ellipsis' }}>{+i.company_number === 0 ? i.company_name : (`УНП: ${i.company_number}`)}</Tag>
-                            } else {
-                              return null
-                            }
-                          })}
-                        </li>
-                        <li className='user__dropdown__item' onClick={() => history.push('/user-me')}>
-                          <Icon type='profile' style={{ marginRight: 10 }} />
-                          <span>Профиль</span>
-                        </li>
-                        <li className='user__dropdown__item' onClick={() => handleLogout()}>
-                          <Icon type='logout' style={{ marginRight: 10 }} />
-                          <span>Выйти</span>
-                        </li>
-                      </ul>
-                    )
-                  }
-                  trigger={['click']}
-                >
-                  <a className='ant-dropdown-link user-link'>
-                    <Avatar className='user-avatar' icon='user' />
-                    <span className='user-email'>{data.email && data.email}</span>
-                    <Icon type='down' style={{ marginLeft: '.5rem' }} />
-                  </a>
-                </Dropdown>
-              </div>
+              <HeaderTariff/>
+              <Button ghost type='primary' onClick={handleOpenModal}>Подключить ЭЦП</Button>
+              <HeaderUser/>
             </Skeleton>
           </Fragment>
-        }
-      </div>
-    </Header>
+          }
+        </HeaderContent.Row>
+      </HeaderContent>
+
+      {isModalVisible &&
+      <Modal
+        title='Подключение ЭЦП'
+        visible
+        width={600}
+        closable={false}
+        footer={null}
+      >
+        <CompanyCreate onCancel={handleCloseModal} redirect/>
+      </Modal>
+      }
+    </Fragment>
   )
 }
 

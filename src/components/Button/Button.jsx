@@ -1,12 +1,11 @@
 import React from 'react'
 
-import { Button } from 'antd'
+import ThemeButton from './styled'
 import './Button.scss'
-const AntdButton = ({ children, ...rest }) => {
 
+export default function ({ config: { data }, children, ...rest }) {
+  const coBrand = data.co_brand_config && data.co_brand_config
   return (
-    <Button {...rest}>{children}</Button>
+    <ThemeButton brand={coBrand} {...rest}>{children}</ThemeButton>
   )
 }
-
-export default AntdButton

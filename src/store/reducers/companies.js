@@ -35,7 +35,6 @@ export default (state = initialState, action) => {
       }
     case t.CREATE_COMPANY_SUCCESS:
       const res = action.payload.data
-      console.log('data:', res)
       return {
         ...state,
         list: [...state.list, { id: res.id, company_data: res }]

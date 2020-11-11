@@ -42,7 +42,7 @@ const CompanyUsers = props => {
   const { users } = props
 
   return (
-    <Table dataSource={users} columns={columns} rowKey='id' locale={{ emptyText: 'Нет данных' }} />
+    <Table scroll={{ x: true }} dataSource={users} columns={columns} rowKey='id' locale={{ emptyText: 'Нет данных' }} />
   )
 }
 
