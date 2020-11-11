@@ -447,7 +447,6 @@ const SingleDocumentPage = props => {
                             file={item}
                             documentId={singleDocument.document.id}
                             getDocument={() => getDocumentById(match.params.id)}
-                            // isHidden={singleDocument.status_name !== 'Отправленные'}
                             canBeSigned={singleDocument.can_be_signed}
                             messageId={singleDocument.status_id}
                           />
