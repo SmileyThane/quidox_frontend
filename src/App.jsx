@@ -11,17 +11,24 @@ import {
   CompleteRegistrationForm,
   ResetPasswordPage,
   UserInfoPage,
-  Home,
   SingleDocumentPage,
   SingleCompanyPage,
   NewDocumentPage,
-  ExternalsPage,
+  SingleSharedDocumentPage,
   CompaniesPage,
   DocumentsPage,
   AttachmentsPage,
   EcsCheckingPage,
-  RegistryPage
+  RegistryPage,
+  StoredRegistryPage,
+  EsignLoginPage,
+  EsignFirstStepPage,
+  ExternalRedirectPage,
+  CompleteResetForm
 } from './views'
+
+import ProtectedRoute from './components/ProtectedRoute'
+import WhitePageRoute from './components/WhitePageRoute'
 
 function App () {
   return (
@@ -32,7 +39,7 @@ function App () {
 
           <PrivateRoute path='/new-document' component={NewDocumentPage} />
 
-          <PrivateRoute path='/esc-checking' component={EcsCheckingPage} />
+          <ProtectedRoute path='/esc-checking' component={EcsCheckingPage} />
 
           <PrivateRoute exact path='/companies' component={CompaniesPage} />
           <PrivateRoute path='/companies/:id' component={SingleCompanyPage} />
@@ -42,14 +49,19 @@ function App () {
           <PrivateRoute path='/documents/:id' component={SingleDocumentPage} />
           <PrivateRoute path='/attachments/:id' component={SingleDocumentPage} />
           <PrivateRoute path='/registry' component={RegistryPage} />
+          <PrivateRoute path='/registry-stored' component={StoredRegistryPage} />
           <PrivateRoute path='/user-me' component={UserInfoPage} />
 
           <PublicRoute path='/login' component={LoginPage} />
           <PublicRoute path='/register' component={RegisterPage} />
           <PublicRoute path='/complete-registration/:id' component={CompleteRegistrationForm} />
+          <PublicRoute path='/complete-reset/:id' component={CompleteResetForm} />
           <PublicRoute path='/password-recovery' component={ResetPasswordPage} />
-
-          <Route path='*' render={() => <div>404</div>} />
+          <ProtectedRoute path='/document/:id/shared/:code' component={SingleSharedDocumentPage} />
+          <WhitePageRoute path='/e-sign-first-step' component={EsignFirstStepPage} />
+          <WhitePageRoute path='/e-sign-login' component={EsignLoginPage} />
+          <WhitePageRoute path='/external/auth' component={ExternalRedirectPage} />
+          <PublicRoute path='*' component={LoginPage} />
         </Switch>
       </Router>
     </Fragment>

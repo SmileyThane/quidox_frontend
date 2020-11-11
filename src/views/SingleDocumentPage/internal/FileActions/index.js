@@ -6,7 +6,12 @@ const mapDispatchToProps = dispatch => ({
   verifyFile: data => dispatch(actions.files.verifyFile(data)),
   changeStatus: data => dispatch(actions.document.changeStatus(data))
 })
+
+const mapStateToProps = state => ({
+  user: state.user,
+  config: state.config
+})
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(FileActions)

@@ -84,6 +84,13 @@ const updateDocumentById = (id, data) => {
   })
 }
 
+const getDocumentLink = id => {
+  return http({
+    url: `/document/${id}/share`,
+    method: 'POST'
+  })
+}
+
 export {
   getDocumentById,
   createDocument,
@@ -93,5 +100,6 @@ export {
   verifyDocument,
   changeStatus,
   updateDocumentById,
-  downloadReciept
+  downloadReciept,
+  getDocumentLink
 }

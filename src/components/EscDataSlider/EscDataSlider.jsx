@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import moment from 'moment'
 
 import { decryptionData } from '../../utils'
-import { Typography, Icon, Button } from 'antd'
+import { Typography, Icon } from 'antd'
+import { Button } from '../'
 import { EscData } from './styled'
 
 const { Text } = Typography
@@ -129,7 +130,7 @@ const EscDataSlider = ({ data = [], onCancel, }) => {
           <EscData.BodyItemRight>
             <EscData.BodyItemRightCert>
               <Text type='secondary'>
-                {moment.utc(data[activeEscSlide].created_at, 'YYYY-MM-DD HH:mm:ss')
+                {moment.utc(data[activeEscSlide].verification_date, 'YYYY-MM-DD HH:mm:ss')
                   .local().format('DD/MM/YYYY HH:mm:ss')}
               </Text>
             </EscData.BodyItemRightCert>

@@ -28,7 +28,7 @@ Tariff.TagSpan = styled.span`
   padding: 0 8px;
   max-width: 100%;
   overflow: hidden;
-  background-color: #1890ff;
+  background-color: ${({ brand }) => brand ? brand.brand_color : '#40a9ff'};
   margin: 0.5rem;
   color: #fff;
 `

@@ -11,9 +11,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 2.2rem;
+  padding: 1rem 2rem;
+  flex-wrap: wrap;
   .table-header__actions {
-    min-width: 2rem;
+    padding: 0 0 1rem 1.4rem;
   }
   &.table-header-bottom {
     justify-content: flex-start;
@@ -21,6 +22,8 @@
   }
   .table-header__search {
     width: 100%;
+    display: flex;
+    align-items: center;
     // max-width: 55rem;
   }
 }

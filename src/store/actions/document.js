@@ -2,12 +2,12 @@ import * as t from '../types'
 
 import { api } from '../../services'
 
-const createMessage = data => dispatch => {
+const createMessage = body => dispatch => {
   dispatch({
     type: t.CREATE_MESSAGE_FETCHING,
     payload: true
   })
-  return api.document.createDocument(data)
+  return api.document.createDocument(body)
     .then(({ data }) => {
       if (data) {
         dispatch({

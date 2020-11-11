@@ -79,6 +79,19 @@ const verifyFile = body => dispatch => {
     })
 }
 
+const verifyFileTZI = (fileId, sign) => dispatch => {
+  console.log(fileId)
+  console.log(sign)
+  dispatch({
+    type: t.VERIFY_FILE_TZI,
+    payload: {
+      fileId,
+      sign
+    }
+  })
+
+}
+
 const changeFileStatus = body => dispatch => {
   dispatch({
     type: t.CHANGE_FILE_STATUS_FETCHING,
@@ -104,5 +117,6 @@ export {
   uploadFile,
   removeFile,
   verifyFile,
+  verifyFileTZI,
   changeFileStatus
 }

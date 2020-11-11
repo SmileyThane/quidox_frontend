@@ -4,7 +4,8 @@ import axios from 'axios'
 
 import {
   token,
-  connection
+  connection,
+  status_code
 } from './interceptors'
 
 const instance = axios.create({
@@ -17,6 +18,7 @@ const instance = axios.create({
   timeout: 180000
 })
 token(instance)
+// status_code(instance)
 connection(instance)
 
 export default instance

@@ -1,8 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import useForm from 'rc-form-hooks'
-import { Link } from 'react-router-dom'
 import { api } from '../../services'
-import { CompanyCreate } from '../../components'
+import { CompanyCreate, Button, RouterLink } from '../../components'
 import {
   Table,
   Tag,
@@ -14,10 +13,10 @@ import {
   Icon,
   Row,
   Col,
-  Input,
-  Button
+  Input
 } from 'antd'
 
+import axios from 'axios'
 import history from '../../history'
 import './CompaniesPage.scss'
 
@@ -49,6 +48,36 @@ const CompaniesPage = props => {
 
   useEffect(() => {
     getCompanies()
+  }, [])
+
+  useEffect(() => {
+    let search = window.location.search
+    let params = new URLSearchParams(search)
+    let hash = params.get('hash')
+
+    if (hash) {
+      try {
+        axios.get(`${process.env.REACT_APP_BASE_URL}/attachment/sim-sign/check/new_company?hash=${hash}`, {
+          headers: {
+            'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken'),
+          }
+        })
+          .then(response => {
+            const { data: { success } } = response
+            if (success) {
+              message.success('Совершено успешное обновление данных!')
+              getCompanies()
+            }
+          })
+          .catch(error => {
+            message.error('Извините, что-то пошло не так. Перезагрузите страницу и попробуйте еще раз.')
+            // setTimeout(() => {
+            //   window.location.reload();
+            // }, 2000)
+          })
+      } catch (error) {
+      }
+    }
   }, [])
 
   const onClick = () => {
@@ -115,7 +144,7 @@ const CompaniesPage = props => {
     {
       title: 'Наименование',
       key: 'name',
-      render: record => <Link to={{ pathname: `/companies/${+record.company_id}`, state: { from: history.location.pathname } }}>{record.company_data.name}</Link>
+      render: record => <RouterLink to={{ pathname: `/companies/${+record.company_id}`, state: { from: history.location.pathname } }}>{record.company_data.name}</RouterLink>
     },
     {
       title: 'УНП',
@@ -180,7 +209,7 @@ const CompaniesPage = props => {
                     ]
                   })(
                     <Input
-                      prefix={<Icon type='user' style={{ color: 'rgba(0,0,0,.25)' }} />}
+                      prefix={<Icon type='user' style={{ color: 'rgba(0, 0, 0,.25)' }} />}
                       placeholder='Электронный адрес пользователя'
                       onChange={e => updateField('newUserEmail', e.target.value)}
                       type='email'

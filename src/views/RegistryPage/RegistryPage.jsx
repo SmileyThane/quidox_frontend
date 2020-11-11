@@ -1,13 +1,17 @@
-import React, { useState, useEffect, useRef, Fragment } from 'react'
+import React, { Fragment, useEffect, useRef, useState } from 'react'
 
-import { Table, Steps, Icon, notification, Button, Modal, Progress } from 'antd'
+import { Icon, Modal, notification, Progress, Steps, Table } from 'antd'
+import { Button } from '../../components'
 import { Upload } from './styled'
 import { api } from '../../services'
+
+
 
 const { Step } = Steps
 
 const defaultState = {
   registryData: [],
+  registryHash: '',
   files: [],
   sync: false,
   fetching: false,
@@ -18,7 +22,8 @@ const defaultState = {
 
 const getSignedHex = (base64) => {
   try {
-    return window.sign(base64).hex
+    let result = window.signProcess(base64).hex
+    return result
   } catch (error) {
     return ''
   }
@@ -28,6 +33,15 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
   const [state, setState] = useState(defaultState)
   const inputNode = useRef(null)
   const filesNode = useRef(null)
+
+  const isIE = /*@cc_on!@*/false || !!document.documentMode
+  useEffect(() => {
+    if (isIE) {
+      // setTimeout(() => {
+        window.pluginLoaded()
+      // }, 1500)
+    }
+  }, [isIE])
 
   useEffect(() => {
     if (state.files.length) {
@@ -60,7 +74,8 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
         if (data.success) {
           setState({
             ...state,
-            registryData: data.data
+            registryData: data.data.registry,
+            registryHash: data.data.registryHash
           })
           notification['success']({
             message: 'Файл реестра успешно добавлен'
@@ -89,18 +104,21 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
     const newMessage = await createMessage({
       name: message.name,
       description: message.description,
+      idx: idx,
+      registryHash: state.registryHash,
       user_company_ids: JSON.stringify([message.e_mail]),
-      status: 10 })
+      status: 10
+    })
 
     const base64 = asyncFileReader(state.files[idx])
 
     const formData = api.helpers.buildForm({
-        'hash_for_sign': getSignedHex(base64),
-        'document_id': newMessage.data.id,
-        'file': state.files.find(i => i.name === message.file)
-      })
-      const newFile = await uploadFile(formData, { 'Content-Type': 'multipart/form-data' })
-      const updateStatus = await changeFileStatus({ attachment_id: newFile.data.id, status: message.status })
+      'hash_for_sign': getSignedHex(base64),
+      'document_id': newMessage.data.id,
+      'file': state.files.find(i => i.name === message.file)
+    })
+    const newFile = await uploadFile(formData, { 'Content-Type': 'multipart/form-data' })
+    const updateStatus = await changeFileStatus({ attachment_id: newFile.data.id, status: message.status })
     if (updateStatus.success) {
       setState({
         ...state,
@@ -152,7 +170,6 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
     }
   }
 
-  console.log(state)
   const columns = [
     {
       title: 'File',
@@ -193,11 +210,13 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
   return (
     <div className='content' style={{ padding: '1rem' }}>
       <Steps size='small' style={{ maxWidth: '100%' }}>
-        <Step status={state.registryData.length ? 'finish' : 'process'} title='Шаг 1' description='Загрузите файл реестра' icon={<Icon type='file-excel' />} />
+        <Step status={state.registryData.length ? 'finish' : 'process'} title='Шаг 1'
+              description='Загрузите файл реестра' icon={<Icon type='file-excel'/>}/>
         <Step status={
           state.registryData.length && !!state.registryData.reduce((a, b) => a.system_status * b.system_status) ? 'finish' : 'wait'
-        } title='Шаг 2' description='Загрузите файлы, указанные в реестре' icon={<Icon type='file' />} />
-        <Step status={state.sync ? 'finish' : 'wait'} title='Шаг 3' description='Синхронизация окончена, сохраните сообщения' icon={<Icon type='file-done' />} />
+        } title='Шаг 2' description='Загрузите файлы, указанные в реестре' icon={<Icon type='file'/>}/>
+        <Step status={state.sync ? 'finish' : 'wait'} title='Шаг 3'
+              description='Синхронизация окончена, сохраните сообщения' icon={<Icon type='file-done'/>}/>
       </Steps>
       <div className='buttons-group'>
         <input
@@ -209,15 +228,16 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
           ref={inputNode}
         />
 
-        <label style={{ minWidth: 216 }} className='ant-btn ant-btn-primary ant-btn-background-ghost label-btn' htmlFor='upload'>
-          <Icon type='upload' style={{ marginRight: 10 }} />
+        <label style={{ minWidth: 216 }} className='ant-btn ant-btn-primary ant-btn-background-ghost label-btn'
+               htmlFor='upload'>
+          <Icon type='upload' style={{ marginRight: 10 }}/>
           Загрузить реестр
         </label>
       </div>
       <Upload>
         {!!state.registryData.length &&
         <Fragment>
-          <Table rowKey='file' scroll={{ x: true }} dataSource={state.registryData} columns={columns} />
+          <Table rowKey='file' scroll={{ x: true }} dataSource={state.registryData} columns={columns}/>
           <div className='buttons-group'>
             <input
               type='file'
@@ -228,13 +248,14 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
               ref={filesNode}
             />
 
-            <label style={{ minWidth: 216 }} className='ant-btn ant-btn-primary ant-btn-background-ghost label-btn' htmlFor='upload-file'>
-              <Icon type='upload' style={{ marginRight: 10 }} />
+            <label style={{ minWidth: 216 }} className='ant-btn ant-btn-primary ant-btn-background-ghost label-btn'
+                   htmlFor='upload-file'>
+              <Icon type='upload' style={{ marginRight: 10 }}/>
               Загрузить файл(ы)
             </label>
             {state.sync &&
             <Button type='primary' onClick={() => setState({ ...state, showModal: true })}>
-              <Icon type={state.fetching ? 'loading' : 'upload'} />
+              <Icon type={state.fetching ? 'loading' : 'upload'}/>
               Сохранить</Button>
             }
           </div>
@@ -243,21 +264,22 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
       </Upload>
       {state.showModal &&
       <Modal
-      visible
-      closable={false}
-      footer={null}
+        visible
+        closable={false}
+        footer={null}
       >
         <p>Сообщений к загрузке: {state.registryData.length}</p>
         <p>Сообщений сохранено: {state.filesUploaded}</p>
         <Progress
-            status='active'
-            percent={Math.floor(
-                (state.filesUploaded / state.registryData.length) * 100
-            )}
+          status='active'
+          percent={Math.floor(
+            (state.filesUploaded / state.registryData.length) * 100
+          )}
         />
         {state.filesUploaded !== state.registryData.length
-            ? <Button type='primary' disabled={state.disabled} onClick={() => handleCreateMessages()}>Сохранить сообщения</Button>
-            : <Button type='primary' ghost onClick={() => { setState({ ...defaultState })}}>Закрыть</Button>
+          ? <Button type='primary' disabled={state.disabled} onClick={() => handleCreateMessages()}>Сохранить
+            сообщения</Button>
+          : <Button type='primary' ghost onClick={() => { setState({ ...defaultState }) }}>Закрыть</Button>
         }
       </Modal>
       }

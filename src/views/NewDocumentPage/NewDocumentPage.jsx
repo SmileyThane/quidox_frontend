@@ -1,64 +1,27 @@
-import React, { useRef, useState, Fragment, useEffect } from 'react'
+import React, { Fragment, useEffect, useState, useReducer } from 'react'
+import useForm from 'rc-form-hooks'
 import AddToCalendar from 'react-add-to-calendar'
 import _ from 'lodash'
 import moment from 'moment'
 
-import { api } from '../../services'
-import {
-  Icon,
-  Select,
-  Spin,
-  notification,
-  Typography,
-  Button,
-  Input,
-  Modal,
-  List,
-  Tag,
-  Progress
-} from 'antd'
+import { Icon, Input, notification, Select, Spin, Typography, Table } from 'antd'
 
-import { EscDataSlider } from '../../components'
+import { UploadFiles, Button } from '../../components'
 
-import { checkBrowser } from '../../utils'
+import forbiddenEmails from '../../constants/forbiddenEmails'
 import history from '../../history'
 import './NewDocumentPage.scss'
+import { findUsersByParams } from '../../services/api/user'
 
 const defaultDocumentData = {
   name: '',
   description: '',
   document: {},
-  files: [],
-  base64files: [],
-  certs: [],
-  fileHashes: [],
-  fileData: [],
-  statuses: [],
   data: [],
   value: [],
   fetching: false,
-  ids: [],
-  verifyFetching: false,
-  isClicked: false,
-  isErrorWitchEcp: false,
-  userAddress: '', /// started new logic,
-  showModal: false,
-  modalType: '',
   message: null,
-  filesArray: [],
-  fileFetch: [],
-  fileInfo: [],
-  isNewMessage: false,
-  uploadFetch: false,
-  disabled: false
-}
-
-const getSignedHex = (base64) => {
-  try {
-    return window.sign(base64).hex
-  } catch (error) {
-    return ''
-  }
+  coNumbers: ''
 }
 
 // eslint-disable-next-line spaced-comment
@@ -66,24 +29,68 @@ const isIE = /*@cc_on!@*/!!document.documentMode
 
 const { Option } = Select
 const { TextArea } = Input
-const { Text } = Typography
+const { Text, Paragraph } = Typography
+
+const initialState = {
+  isChainMessage: false,
+  isTableVisible: false,
+  users: [{
+    id: 0,
+    email: '',
+    activeUNP: '',
+    unp: [],
+    status: 1,
+    additionally: 1
+  }]
+}
+
+function reducer (state = initialState, action) {
+  switch (action.type) {
+    case 'TOGGLE_MESSAGE':
+      return {
+        ...state,
+        isChainMessage: !state.isChainMessage
+      }
+    case 'SHOW_TABLE':
+      return {
+        ...state,
+        isTableVisible: true
+      }
+    case 'ADD_USER':
+      return {
+        ...state,
+        users: [...state.users, action.payload]
+      }
+    case 'EDIT_FIELD':
+      return {
+        ...state,
+        users: [
+          ...state.users.slice(0, state.users.findIndex(i => i.id === action.payload.id)),
+          action.payload,
+          ...state.users.slice(state.users.findIndex(i => i.id === action.payload.id) + 1)
+        ]
+      }
+    case 'RESET':
+      return {
+        ...initialState
+      }
+  }
+}
+
 
 const NewDocumentPage = props => {
-  const inputRef = useRef(null)
-  const inputNode = useRef(null)
   const {
     createMessage,
     getUser,
     sendDocumentToUser,
-    uploadFile,
-    removeFile,
-    verifyFile,
-    changeFileStatus,
     updateDocumentById,
-    files: { list, isFetching, status }
   } = props
 
+  const { getFieldDecorator, validateFields } = useForm()
+
   const [documentState, setDocumentState] = useState({ ...defaultDocumentData })
+  const [state, dispatch] = useReducer(reducer, initialState)
+  const [isChainSend, setChainSend] = useState(false)
   const [message, setMessage] = useState(false)
 
   useEffect(() => {
@@ -98,11 +105,111 @@ const NewDocumentPage = props => {
       })
   }, [message])
 
-  useEffect(() => {
-    if (!documentState.fetching) {
-      inputRef.current.focus()
+  const tableColumns = [
+    {
+      key: '1',
+      title: 'Адрес',
+      render: record => <Paragraph editable={{ onChange: str => editEmail(str, record) }}>{record.email}</Paragraph>
+    },
+    {
+      key: '2',
+      title: 'УНП',
+      render: record => <Fragment>
+        {!!record.unp.length &&
+          <Select style={{ minWidth: '20rem' }} onChange={value => editUNP(value, record)} placeholder='Выберете УНП'>
+            {record.unp.map(i => (
+              <Option value={i.id} key={i.company_number}>{i.company_number}</Option>
+            ))}
+          </Select>
+      }
+      </Fragment>
+    },
+    // {
+    //   key: '3',
+    //   title: 'Тип требовония',
+    //   render: record => <Select  onChange={value => editStatus(value, record)} style={{ minWidth: '20rem' }} defaultValue={record.status}>
+    //     <Option value={1}>Простая доставка</Option>
+    //     <Option value={2}>Согласование</Option>
+    //     <Option value={3}>Подпись получателя</Option>
+    //   </Select>
+    // },
+    {
+      key: '4',
+      title: 'Дополнительно',
+      render: record => <Select  onChange={value => editAdditionallyStatus(value, record)} style={{ minWidth: '20rem' }} value={record.additionally}>
+        <Option value={1}>Прервать цепочку в случае отказа</Option>
+        <Option value={2}>Не прерывать цепочку в случае отказа</Option>
+      </Select>
     }
-  }, [documentState.fetching])
+  ]
+
+  const addUser = () => {
+    dispatch({ type: 'ADD_USER', payload: { id: state.users.length + 1, email: '', activeUNP: '', unp: [], status: state.users[state.users.length -1].status, additionally: state.users[state.users.length -1].additionally } })
+  }
+
+  const editStatus = (value, record) => {
+    dispatch({ type: 'EDIT_FIELD', payload: { ...record, status: value } })
+  }
+
+  const editUNP = (value, record) => {
+    dispatch({ type: 'EDIT_FIELD', payload: { ...record, activeUNP: value } })
+  }
+
+  const editAdditionallyStatus = (value, record) => {
+    dispatch({ type: 'EDIT_FIELD', payload: { ...record, additionally: value } })
+  }
+
+  const editEmail = (str, record) => {
+    const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    if (re.test(String(str).toLowerCase())) {
+      dispatch({ type: 'EDIT_FIELD', payload: { ...record, email: str, activeUNP: str } })
+      findUsersByParams(str)
+        .then(({ data }) => {
+          console.log(data)
+          dispatch({ type: 'EDIT_FIELD', payload: { ...record, unp: data.data, email: str, activeUNP: str } })
+        })
+    } else {
+      dispatch({ type: 'EDIT_FIELD', payload: { ...record, email: '' } })
+      notification['error']({
+        message: 'Не правильный электронный адрес'
+      })
+    }
+
+  }
+
+  const chainSend = () => {
+    const { message } = documentState
+    const { users } = state
+    const sendData = users.map((i, idx) => {
+      return {
+        document_ids: [message.id],
+        user_company_id: JSON.stringify([i.activeUNP]),
+        continues_action: i.additionally !== 1,
+        is_disabled: idx !== 0
+      }
+    })
+    sendData.forEach(element => {
+      sendDocumentToUser(element)
+        .then(({ success, error }) => {
+          if (success) {
+          } else {
+            throw new Error(error)
+          }
+        })
+        .catch(error => {
+          notification.error({
+            message: error.message
+          })
+        })
+    })
+    notification['success']({
+      message: 'Ваше сообщение успешно отправлено'
+    })
+    setDocumentState({ ...defaultDocumentData })
+    setMessage(!message)
+    dispatch({ type: 'RESET' })
+    getUser()
+  }
 
   const updateField = (field, v) => {
     setDocumentState({
@@ -111,232 +218,37 @@ const NewDocumentPage = props => {
     })
   }
 
-  const showUploadingModal = (e, type) => {
-    const files = [...e.target.files]
-    if (files.length > 5) {
-      notification['error']({
-        message: 'Максимальное количество файлов для однопоточной загрузки 5'
-      })
-      return null
-    }
-    setDocumentState({
-      ...documentState,
-      files: [...files],
-      showModal: !documentState.showModal,
-      modalType: type
-    })
-  }
-
-  const hideUploadedModal = () => {
-    setDocumentState({
-      ...documentState,
-      files: [],
-      showModal: !documentState.showModal,
-      modalType: ''
-    })
-    inputNode.current.value = ''
-  }
-
-  const getFiles = () => {
-    let chain = Promise.resolve()
-    const files = documentState.files
-    setDocumentState({
-      ...documentState,
-      disabled: true
-    })
-
-    files.forEach((file, idx) => {
-      const fileReader = new window.FileReader()
-      fileReader.readAsDataURL(file)
-
-      fileReader.onload = function () {
-        const base64 = fileReader.result.split(',').pop()
-
-        const formData = api.helpers.buildForm({
-          'hash_for_sign': getSignedHex(base64),
-          'document_id': documentState.message.id,
-          'file': file
-        })
-        chain = chain
-          .then(() =>{
-            uploadFile(formData, { 'Content-Type': 'multipart/form-data' })
-          })
-          .catch(error => {
-            console.error(error)
-          })
-      }
-    })
-  }
-
-  const handleRemoveFile = (id, index) => {
-    removeFile(id)
-      .then(response => {
-        if (response.success) {
-          notification['success']({
-            message: 'Файл успешно удален'
-          })
-          setDocumentState({
-            ...documentState,
-            fileFetch: documentState.files.filter((e, i) => i !== index)
-          })
-        } else {
-          throw new Error(response.error)
-        }
-      })
-      .catch(error => {
-        notification['error']({
-          message: error.message
-        })
-      })
-  }
-
-  const handleVerifyAll = () => {
-    if (!checkBrowser('ie')) {
-      notification['error']({
-        message: 'Ошибка подписания',
-        description: 'Подписание файла возможно только в браузере IE'
-      })
-      return null
-    }
-
-    for (let file of list) {
-      api.files.getBase64File(file.id)
-        .then(({ data }) => {
-          if (data.success) {
-            try {
-              const sertificationObject = window.sign(data.data, file.hash_for_sign)
-
-              const verifiedData = {
-                id: file.id,
-                hash: sertificationObject.signedData,
-                data: sertificationObject.verifiedData,
-                hash_for_sign: sertificationObject.hex,
-                status: file.status.status_data.id ? file.status.status_data.id : null
-              }
-
-              verifyFile(verifiedData)
-                .then(response => {
-                  if (response.success) {
-                    notification['success']({
-                      message: 'Файл успешно подписан'
-                    })
-                  } else {
-                    throw new Error(response.error)
-                  }
-                })
-            } catch (error) {
-              notification['error']({
-                message: error.message
-              })
-            }
-          } else {
-            throw new Error(data.error)
-          }
-        })
-        .catch(error => {
-          message.error(error.message)
-        })
-    }
-  }
-
-  const handleVerifyFile = (item, index) => {
-    if (!checkBrowser('ie')) {
-      notification['error']({
-        message: 'Ошибка подписания',
-        description: 'Подписание файла возможно только в браузере IE'
-      })
-      return null
-    }
-
-    api.files.getBase64File(item.id)
-      .then(({ data }) => {
-        if (data.success) {
-          try {
-            const sertificationObject = window.sign(data.data.encoded_base64_file, item.hash_for_sign)
-
-            const verifiedData = {
-              id: item.id,
-              hash: sertificationObject.signedData,
-              data: sertificationObject.verifiedData,
-              hash_for_sign: sertificationObject.hex,
-              status: item.status.status_data.id ? item.status.status_data.id : null
-            }
-
-            api.documents.attachmentSignCanConfirm({ key: sertificationObject.verifiedData.key, attachment_id: item.id })
-              .then(({ data }) => {
-                if (data.success) {
-                  verifyFile(verifiedData)
-                    .then(response => {
-                      if (response.success) {
-                        notification['success']({
-                          message: 'Файл успешно подписан'
-                        })
-                      } else {
-                        throw new Error(response.error)
-                      }
-                    })
-                    .catch(error => {
-                      notification['error']({
-                        message: error.message
-                      })
-                    })
-                } else {
-                  throw new Error(data.error)
-                }
-              })
-              .catch(error => {
-                notification['error']({
-                  message: error.message
-                })
-              })
-          } catch (error) {
-            notification['error']({
-              message: error.message
-            })
-          }
-        } else {
-          throw new Error(data.error)
-        }
-      })
-      .catch(error => {
-        message.error(error.message)
-      })
-  }
-
-  const handleChangeStatus = (file, index) => value => {
-    changeFileStatus({ attachment_id: file.id, status: value, index: index })
-      .then(response => {
-      })
-  }
-
-  const showEscInfo = (info, type) => {
-    setDocumentState({
-      ...documentState,
-      showModal: true,
-      fileInfo: info,
-      modalType: type
-    })
-  }
-
-  const hideEscInfo = () => {
-    setDocumentState({
-      ...documentState,
-      showModal: false,
-      fileInfo: []
-    })
+  const updateFieldProcess = (field, v) => {
+    updateField(field, v);
+    updateDocumentById(documentState.message.id, { [field]: v });
   }
 
   const save2DraftDMessage = is2Draft => {
+    let coEmails = []
+    let UCIds = []
+    if (documentState.coNumbers.length > 0) {
+      let coNumbersArray = documentState.coNumbers.split(',')
+      coNumbersArray.forEach(element => coEmails.push(element + '@qdx.by'))
+    }
+    UCIds = documentState.value.length ? documentState.value.map(i => i.key).concat(coEmails) : [].concat(coEmails)
+
+    if (UCIds.filter(UCId => forbiddenEmails.includes(UCId)).length) {
+      notification.error({
+        message: 'Отправка/перенаправление по реквизиту УНП для данного адресата запрещено. Укажите точный адрес (E-mail) получателя.'
+      })
+      return false
+    }
+
     updateDocumentById(documentState.message.id, {
       name: documentState.name ? documentState.name : 'Без темы',
       description: documentState.description,
-      user_company_ids: documentState.value.length ? JSON.stringify(documentState.value.map(i => i.key)) : JSON.stringify([])
+      user_company_ids: JSON.stringify(UCIds)
     })
       .then(({ data }) => {
         if (is2Draft) {
           history.push({ pathname: '/documents', search: '?status=1', state: { id: '/documents/1' } })
         } else {
-          if (!documentState.value.length > 0) {
+          if (!documentState.value.length > 0 && !documentState.coNumbers.length > 0) {
             message.error('Введите получателя!')
             setDocumentState({
               ...documentState,
@@ -350,11 +262,12 @@ const NewDocumentPage = props => {
           }).then(({ success }) => {
             if (success) {
               notification['success']({
-                message: 'Сообещние успешно доставлено'
+                message: 'Ваше сообщение успешно отправлено'
               })
               setDocumentState({ ...defaultDocumentData })
               setMessage(!message)
               getUser()
+              history.push({ pathname: '/documents', search: '?status=3', state: { id: '/documents/3' } })
             }
           })
         }
@@ -366,36 +279,29 @@ const NewDocumentPage = props => {
   const fetchUser = _.debounce(v => {
     if (v.length > 2) {
       setDocumentState({
-        ...documentState,
-        fetching: true
+        ...documentState
+        // fetching: true
       })
-      api.user.findUsersByParams(v)
+      findUsersByParams(v)
         .then(({ data }) => {
-          if (data.success) {
-            const dataIds = documentState.data.map(i => i.key)
-            const dataArray = data.data
-              .map(user => ({
-                label: `${user.user_data.email} (УНП:${user.company_data.company_number}; Компания:${user.company_data.name})`,
-                key: `${user.id}`
-              }))
-              .filter(i => !dataIds.includes(i.key))
-
-            setDocumentState({
-              ...documentState,
-              data: [...documentState.data, ...dataArray],
-              fetching: false
-            })
-          } else {
-            throw new Error(data.error)
-          }
-        })
-        .catch(error => {
-          notification['error']({
-            message: error.message()
+          const dataIds = documentState.data.map(i => i.key)
+          const dataArray = data.data
+            .map(user => ({
+              label: `${user.user_data.email} (УНП:${user.company_data.company_number}; Компания:${user.company_data.name})`,
+              key: `${user.id}`
+            }))
+            .filter(i => !dataIds.includes(i.key))
+          setDocumentState({
+            ...documentState,
+            data: [...documentState.data, ...dataArray],
+            // fetching: false
           })
         })
+        .catch(error => {
+          message.error(error.message)
+        })
     }
-  }, 800)
+  }, 200)
 
   const validateEmail = label => {
     const email = label.split(' ')[0]
@@ -420,6 +326,8 @@ const NewDocumentPage = props => {
       })
     }
 
+    updateDocumentById(documentState.message.id, { user_company_ids: JSON.stringify(validEmails.map(i => i.key)) });
+
     setDocumentState({
       ...documentState,
       value: validEmails
@@ -428,176 +336,138 @@ const NewDocumentPage = props => {
 
   return (
     <Fragment>
-      {!!status &&
-        <p>{status}</p>
-      }
+      <Button onClick={() => dispatch({ type: 'TOGGLE_MESSAGE' })} style={{ marginBottom: '2rem' }} type='primary'>{state.isChainMessage ? 'Обычная отправка' : 'Отправка цепочкой'}</Button>
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>
-        <Spin spinning={!!documentState.fetching}>
-          <div className='input-group'>
-            <label className='label'>Получатели</label>
-
-            <Select
-              ref={inputRef}
-              mode='tags'
-              labelInValue
-              tokenSeparators={[',']}
-              value={documentState.value}
-              filterOption={false}
-              notFoundContent={documentState.fetching ? <Spin size='small' /> : null}
-              onSearch={fetchUser}
-              onChange={handleSelect}
-              disabled={documentState.fetching}
-              style={{ width: '100%' }}
-            >
-              {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
-            </Select>
-          </div>
-
-          <div className='input-group'>
-            <label className='label'>Тема</label>
-            <Input kind='text' type='text' value={documentState.name} onChange={e => updateField('name', e.target.value)} />
-          </div>
-
-          <div className='input-group'>
-            <label className='label'>Комментарий</label>
-            <TextArea autosize={{ minRows: 4, maxRows: 10 }} value={documentState.description} onChange={e => updateField('description', e.target.value)} />
-          </div>
-
-          <div className='buttons-group'>
-            <input
-              type='file'
-              id='upload'
-              hidden
-              multiple
-              onChange={event => showUploadingModal(event, 'filesLoad')}
-              ref={inputNode}
-            />
-
-            <label style={{ minWidth: 216 }} className='ant-btn ant-btn-primary ant-btn-background-ghost label-btn' htmlFor='upload'>
-              <Icon type='upload' style={{ marginRight: 10 }} />
-            Прикрепить файл(ы)
-            </label>
-          </div>
-
-          <List
-            itemLayout='horizontal'
-            dataSource={list && list}
-            locale={{ emptyText: 'Нет прикрепленных файлов' }}
-            style={{ maxHeight: '20rem', overflowY: 'scroll', padding: '1rem' }}
-            loading={isFetching}
-            renderItem={(i, idx) => (
-              <List.Item
-                key={i.id}
-                actions={[
-                  <Icon style={{ color: '#3278fb' }} type={documentState.fileFetch[idx] ? 'loading' : 'edit'} onClick={() => handleVerifyFile(i, idx)} />,
-                  <Icon style={{ color: '#3278fb' }} type='delete' onClick={() => handleRemoveFile(i.id)} />
-                ]}
-              >
-                <div className='file-item'>
-                  <Text type='secondary' style={{ marginRight: '1rem' }}>{idx + 1}</Text>
-
-                  <Text strong>{i.original_name}</Text>
-                </div>
-                {!!i.users_companies.length &&
-                  <Tag
-                    color='#3278fb'
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => showEscInfo(i.users_companies, 'info')}
-                  >ЭЦП</Tag>
-                }
-                <Select value={i.status.status_data.id} onChange={handleChangeStatus(i, idx)} style={{ marginLeft: 10, minWidth: '20rem' }}>
-                  <Option value={1}>Простая доставка</Option>
-                  <Option value={2}>Согласование</Option>
-                  <Option value={3}>Подпись получателя</Option>
-                </Select>
-              </List.Item>
-            )}
-          />
-
-          <div className='buttons-group'>
-            <Button
-              ghost
-              type='primary'
-              onClick={() => save2DraftDMessage(true)}
-              style={{ minWidth: 216 }}
-              disabled={documentState.isClicked}
-            >
-              <Icon type='file-text' />
-              Сохранить в черновиках
-            </Button>
-
-            <div style={{ display: 'flex' }}>
-              <AddToCalendar
-                buttonLabel='Добавить в календарь'
-                listItems={[
-                  { apple: 'Apple Calendar' },
-                  { google: 'Google' },
-                  { outlook: 'Outlook' }
-                ]}
-                event={{
-                  title: 'Контроль сообщения',
-                  description: '',
-                  location: 'Minsk',
-                  startTime: moment().add(1, 'days').startOf('day').hour('10').minute('00'),
-                  endTime: moment().add(1, 'days').startOf('day').hour('11').minute('00')
-                }}
-              />
-
-              <Button
-                style={{ marginLeft: '2rem' }}
-                type='primary'
-                onClick={() => save2DraftDMessage(false)}
-              >
-                <Icon type='cloud-upload' />
-                Отправить
-              </Button>
-              {list && list.length > 2 && false &&
-              <Button
-                style={{ marginLeft: '2rem' }}
-                type='primary'
-                onClick={handleVerifyAll}
-              >Подписать все
-              </Button>
-              }
+        {state.isChainMessage
+          ? <div>
+            <div className='input-group'>
+              <label className='label'>Тема</label>
+              <Input kind='text' type='text' value={documentState.name} onChange={e => updateFieldProcess('name', e.target.value)} />
             </div>
+
+            <div className='input-group'>
+              <label className='label'>Комментарий</label>
+              <TextArea autosize={{ minRows: 4, maxRows: 10 }} value={documentState.description} onChange={e => updateFieldProcess('description', e.target.value)}/>
+            </div>
+
+            <div className='buttons-group'>
+              <Button type='primary' onClick={() => dispatch({ type: 'SHOW_TABLE' })}>Добавить файл и указать маршрут</Button>
+            </div>
+
+            {state.isTableVisible &&
+              <>
+                <div className='buttons-group'>
+                  {documentState.message &&
+                  <UploadFiles isStatus={false} document_id={documentState.message.id}/>}
+                </div>
+
+                <div className='buttons-group'>
+                  <Table
+                    className='user_table'
+                    pagination={false}
+                    style={{ width: '100%' }}
+                    columns={tableColumns}
+                    dataSource={state.users}
+                  />
+                </div>
+                <Button type='link' onClick={addUser}>+ Добавить получателя</Button>
+
+                <div className='buttons-group'>
+                  <Button onClick={chainSend} type='primary'>Отправить</Button>
+                </div>
+              </>
+            }
+
           </div>
-        </Spin>
+          : <Spin spinning={!!documentState.fetching}>
+            <div className='input-group'>
+              <label className='label'>Получатели</label>
+
+              <Select
+                mode='tags'
+                labelInValue
+                tokenSeparators={[',']}
+                value={documentState.value}
+                filterOption={false}
+                notFoundContent={documentState.fetching ? <Spin size='small'/> : null}
+                onSearch={fetchUser}
+                onChange={handleSelect}
+                // disabled={documentState.fetching}
+                style={{ width: '100%' }}
+              >
+                {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
+              </Select>
+
+            </div>
+            <div className='input-group'>
+              <label className='label'>Получатели<br/> по УНП</label>
+              <Input kind='text' type='text' value={documentState.coNumbers}
+                     onChange={e => updateField('coNumbers', e.target.value)}/>
+            </div>
+            <div className='input-group'>
+              <label className='label'>Тема</label>
+              <Input kind='text' type='text' value={documentState.name}
+                     onChange={
+                       e => updateFieldProcess('name', e.target.value)
+                     }/>
+            </div>
+
+            <div className='input-group'>
+              <label className='label'>Комментарий</label>
+              <TextArea autosize={{ minRows: 4, maxRows: 10 }} value={documentState.description}
+                        onChange={e => updateFieldProcess('description', e.target.value)}/>
+            </div>
+
+            <div className='buttons-group'>
+              {documentState.message &&
+              <UploadFiles document_id={documentState.message.id}/>}
+            </div>
+
+            <div className='buttons-group'>
+              <Button
+                ghost
+                type='primary'
+                onClick={() => save2DraftDMessage(true)}
+                style={{ minWidth: 216 }}
+              >
+                <Icon type='file-text'/>
+                Сохранить в черновиках
+              </Button>
+
+              <div style={{ display: 'flex' }}>
+                <AddToCalendar
+                  buttonLabel='Добавить в календарь'
+                  listItems={[
+                    { apple: 'Apple Calendar' },
+                    { google: 'Google' },
+                    { outlook: 'Outlook' }
+                  ]}
+                  event={{
+                    title: 'Контроль сообщения',
+                    description: '',
+                    location: 'Minsk',
+                    startTime: moment().add(1, 'days').startOf('day').hour('10').minute('00'),
+                    endTime: moment().add(1, 'days').startOf('day').hour('11').minute('00')
+                  }}
+                />
+
+                <Button
+                  style={{ marginLeft: '2rem' }}
+                  type='primary'
+                  onClick={() => save2DraftDMessage(false)}
+                >
+                  <Icon type='cloud-upload'/>
+                  Отправить
+                </Button>
+              </div>
+            </div>
+          </Spin>
+        }
       </div>
 
       {!isIE && <Text type='secondary'>
         Подпись файлов возможна только в браузере Internet Explorer
       </Text>
-      }
-
-      {documentState.showModal &&
-      <Modal
-        visible
-        closable={false}
-        footer={null}
-      >
-        {documentState.modalType === 'filesLoad' &&
-            <Fragment>
-              <p>Файлов к загрузке: {documentState.files.length}</p>
-              <p>Файлов
-                загруженно: {list.filter((i, idx) => documentState.files.find(e => e.name === i.original_name)).length}</p>
-              <Progress
-                  status='active'
-                  percent={Math.floor((
-                      list.filter((i, idx) => documentState.files.find(e => e.name === i.original_name)).length / documentState.files.length) * 100)}/>
-              {list.filter((i, idx) => documentState.files.find(e => e.name === i.original_name)).length === documentState.files.length
-                  ? <Button
-                      type='primary'
-                      onClick={hideUploadedModal}
-                  >Закрыть
-                  </Button>
-                  : <Button type='primary' disabled={documentState.disabled} onClick={getFiles}>Загрузить</Button>
-              }
-            </Fragment>
-        }
-        {documentState.modalType === 'info' &&
-        <EscDataSlider data={documentState.fileInfo} onCancel={hideEscInfo} />
-        }
-      </Modal>
       }
     </Fragment>
   )

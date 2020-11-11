@@ -1,11 +1,16 @@
 import React, { Fragment, useEffect, useState } from 'react'
 
-import { Skeleton, Button, Modal } from 'antd'
-import { HeaderUser, HeaderTariff } from './internal'
+import { message, Modal, notification, Skeleton } from 'antd'
+import { Button } from '../'
+import { HeaderTariff, HeaderUser } from './internal'
 import { CompanyCreate } from '../'
 import { HeaderContent } from './styled'
 import { logo } from '../../resources/img'
 import { getActiveCompany } from '../../utils'
+import axios from 'axios'
+
+import fileDownload from 'js-file-download'
+import { api } from '../../services'
 
 const defaultState = {
   isModalVisible: false,
@@ -14,7 +19,8 @@ const defaultState = {
 
 const HeaderBlock = props => {
   const {
-    user: { data, isFetching }
+    user: { data, isFetching },
+    config
   } = props
 
   const [state, setState] = useState({ ...defaultState })
@@ -41,23 +47,51 @@ const HeaderBlock = props => {
     })
   }
 
+  const isIE = /*@cc_on!@*/false || !!document.documentMode
+
+  const importCerts = () => {
+
+    if (isIE) {
+      // window.pluginLoaded()
+      setTimeout(() => {
+        axios.get(`${process.env.REACT_APP_BASE_URL}/ruc/get`, {
+          'responseType': 'arraybuffer',
+          headers: {
+            'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
+          }
+        }).then(({ data }) => {
+          fileDownload(data, `ruc.cer`)
+          window.importCerts(data)
+          notification.success({
+            message: 'Сертификаты обновлены!'
+          })
+        }).catch(error => console.error(error))
+
+      }, 3000)
+    }
+
+  }
+
   const { isModalVisible, activeCompany } = state
+  const coBrandLogo = config.data.co_brand_config ? config.data.co_brand_config.logo_png : logo
+  const LogoUri = config.data.co_brand_config ? config.data.co_brand_config.logout_uri : 'https://quidox.by'
   return (
     <Fragment>
       <HeaderContent>
         <HeaderContent.Row>
           <HeaderContent.LeftAside>
-            <HeaderContent.Logo src={logo} alt='Quidox Logo' style={{ maxHeight: '5rem' }} />
+            {!isFetching &&
+              <a href={LogoUri}>
+                <HeaderContent.Logo src={coBrandLogo} alt='Quidox Logo' style={{ maxHeight: '5rem' }}/>
+              </a>
+            }
           </HeaderContent.LeftAside>
-          {window.localStorage.getItem('authToken') &&
+          {(window.localStorage.getItem('authToken') || window.sessionStorage.getItem('authToken')) &&
           <Fragment>
             <Skeleton loading={isFetching} active paragraph={false}>
-              <HeaderTariff />
-              {activeCompany && +activeCompany.company_number === 0 &&
-                <Button type='primary' ghost onClick={handleOpenModal}>Подключить ЭЦП</Button>
-              }
-
-              <HeaderUser />
+              <HeaderTariff/>
+              <Button ghost type='primary' onClick={handleOpenModal}>Подключить ЭЦП</Button>
+              <HeaderUser/>
             </Skeleton>
           </Fragment>
           }
@@ -72,7 +106,7 @@ const HeaderBlock = props => {
         closable={false}
         footer={null}
       >
-        <CompanyCreate onCancel={handleCloseModal} redirect />
+        <CompanyCreate onCancel={handleCloseModal} redirect/>
       </Modal>
       }
     </Fragment>

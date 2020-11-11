@@ -1,6 +1,7 @@
 import LoginPage from './LoginPage'
 import RegisterPage from './RegisterPage'
 import CompleteRegistrationForm from './CompleteRegistrationForm'
+import CompleteResetForm from './CompleteResetForm'
 import UserInfoPage from './UserInfoPage'
 import Home from './Home'
 import SingleDocumentPage from './SingleDocumentPage'
@@ -13,11 +14,17 @@ import DocumentsPage from './DocumentsPage'
 import AttachmentsPage from './AttachmentsPage'
 import EcsCheckingPage from './EcsCheckingPage'
 import RegistryPage from './RegistryPage'
+import StoredRegistryPage from './StoredRegistryPage'
+import SingleSharedDocumentPage from './SingleSharedDocumentPage'
+import EsignLoginPage from './EsignLoginPage'
+import EsignFirstStepPage from './EsignFirstStepPage'
+import ExternalRedirectPage from './ExternalRedirectPage'
 
 export {
   LoginPage,
   RegisterPage,
   CompleteRegistrationForm,
+  CompleteResetForm,
   UserInfoPage,
   ResetPasswordPage,
   Home,
@@ -29,5 +36,10 @@ export {
   DocumentsPage,
   AttachmentsPage,
   EcsCheckingPage,
-  RegistryPage
+  RegistryPage,
+  StoredRegistryPage,
+  SingleSharedDocumentPage,
+  EsignLoginPage,
+  ExternalRedirectPage,
+  EsignFirstStepPage
 }

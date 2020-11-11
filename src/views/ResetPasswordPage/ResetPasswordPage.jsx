@@ -2,7 +2,8 @@ import React from 'react'
 
 import axios from 'axios'
 import history from '../../history.js'
-import { Form, Input, Button, message } from 'antd'
+import { Form, Input, message } from 'antd'
+import { Button } from '../../components'
 
 import './ResetPasswordPage.scss'
 

@@ -13,10 +13,10 @@ export default (state = initialState, action) => {
         ...state,
         isFetching: action.payload
       }
-    case t.CREATE_DOCUMENT_SUCCESS:
+    case t.CREATE_MESSAGE_SUCCESS:
       return {
         ...state,
-        isFetching: action.payload
+        singleDocument: action.payload.data
       }
     case t.GET_DOCUMENT_BY_ID_FETCHING:
       return {

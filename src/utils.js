@@ -8,7 +8,7 @@ export const decryptionCompanyData = (data) => ({
   name: data.verifiedData.subject['2.5.4.3'] ? data.verifiedData.subject['2.5.4.3'] : 'Данные отсутствуют',
   key: data.verifiedData.cert['2.5.29.14'] ? data.verifiedData.cert['2.5.29.14'] : 'Невозможно создать цифровой ключ',
   city: (data.verifiedData.subject['2.5.4.7'] || data.verifiedData.subject['2.5.4.9']) ? data.verifiedData.subject['2.5.4.7'] + ', ' + data.verifiedData.subject['2.5.4.9'] : 'Данные отсутствуют',
-  number: data.verifiedData.cert['1.2.112.1.2.1.1.1.1.2'] ? +data.verifiedData.cert['1.2.112.1.2.1.1.1.1.2'] : 'Данные отсутствуют',
+  number: data.verifiedData.cert['1.2.112.1.2.1.1.1.1.2'] ? data.verifiedData.cert['1.2.112.1.2.1.1.1.1.2'] : window.strToHex(data.verifiedData.subject['2.5.4.3']),
   position: data.verifiedData.cert['1.2.112.1.2.1.1.5.1'] ? data.verifiedData.cert['1.2.112.1.2.1.1.5.1'] : 'Данные отсутствуют'
 })
 
@@ -52,3 +52,42 @@ export const checkBrowser = browser => {
     default: return true
   }
 }
+/**
+ *
+ * @param activeTariff
+ * @returns {boolean}
+ */
+export const checkActiveTariff = activeTariff => {
+  if (moment(moment().unix()).isAfter(moment(activeTariff.expired_at).unix()) ||
+    activeTariff.max_bytes === 0 ||
+    activeTariff.max_actions === 0) {
+    return true
+  } else {
+    return false
+  }
+}
+/**
+ *
+ * @param textContent
+ */
+export const copy2Clipboard = textContent => {
+  const textarea = document.createElement('textarea')
+
+  textarea.style.width = '1px'
+  textarea.style.height = '1px'
+  textarea.style.position = 'fixed'
+  textarea.style.top = '-1px'
+  textarea.style.left = '-1px'
+
+  textarea.textContent = textContent
+
+  document.body.appendChild(textarea)
+  try {
+    textarea.select()
+    document.execCommand('copy')
+  } catch (error) {
+    console.error(error)
+  }
+  document.body.removeChild(textarea)
+}
+

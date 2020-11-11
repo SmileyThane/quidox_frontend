@@ -9,6 +9,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   verifyFile: data => dispatch(actions.files.verifyFile(data)),
+  removeDocumentsByIds: (ids, type) => dispatch(actions.documents.removeDocumentsByIds(ids, type)),
   getDocumentsByActiveCompanyId: (id, params) => dispatch(actions.documents.getDocumentsByActiveCompanyId(id, params))
 })
 

@@ -2,15 +2,19 @@ import { combineReducers } from 'redux'
 import * as t from '../types'
 
 import user from './user'
+import tariff from './tariff'
 import companies from './companies'
 import documents from './documents'
 import files from './files'
+import config from './config'
 
 const appReducer = combineReducers({
   user,
   documents,
   companies,
-  files
+  files,
+  tariff,
+  config
 })
 
 const rootReducer = (state, action) => {

@@ -14,6 +14,11 @@ const getUser = () => dispatch => {
           type: t.GET_USER_SUCCESS,
           payload: data
         })
+
+        dispatch({
+          type: t.GET_CONFIG_SUCCESS,
+          payload: { co_brand_config: data.data.co_brand_config }
+        })
       }
       dispatch({
         type: t.GET_USER_FETCHING,
@@ -57,8 +62,78 @@ const updateUser = data => dispatch => {
     })
 }
 
+const shareUser = data => dispatch => {
+  dispatch({
+    type: t.UPDATE_USER_FETCHING,
+    payload: true
+  })
+  return api.user.shareUser(data)
+    .then(({ data }) => {
+      if (data.success) {
+        dispatch({
+          type: t.UPDATE_USER_SUCCESS,
+          payload: data
+        })
+      }
+      dispatch({
+        type: t.UPDATE_USER_FETCHING,
+        payload: false
+      })
+      return data
+    })
+}
+
+const getSharedUser = data => dispatch => {
+  dispatch({
+    type: t.UPDATE_USER_FETCHING,
+    payload: true
+  })
+  return api.user.getSharedUser(data)
+    .then(({ data }) => {
+      if (data.success) {
+        dispatch({
+          type: t.UPDATE_USER_SUCCESS,
+          payload: data
+        })
+      }
+      dispatch({
+        type: t.UPDATE_USER_FETCHING,
+        payload: false
+      })
+      return data
+    })
+}
+
+const getTariffications = () => dispatch => {
+  dispatch({
+    type: t.GET_TARIFF_FETCHING,
+    payload: true
+  })
+  return api.user.getTariffications()
+    .then(({ data }) => {
+      if (data.success) {
+        dispatch({
+          type: t.GET_TARIFF_SUCCESS,
+          payload: data.data
+        })
+        dispatch({
+          type: t.GET_TARIFF_FETCHING,
+          payload: false
+        })
+      } else {
+        dispatch({
+          type: t.GET_TARIFF_FETCHING,
+          payload: false
+        })
+      }
+    })
+}
+
 export {
   getUser,
+  shareUser,
+  getSharedUser,
   userLogout,
-  updateUser
+  updateUser,
+  getTariffications
 }
