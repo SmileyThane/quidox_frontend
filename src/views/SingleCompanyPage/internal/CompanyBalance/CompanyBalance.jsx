@@ -10,7 +10,7 @@ import axios from 'axios'
 
 const { Title, Text } = Typography
 
-const makeOrder = () => (cost, paymentType, comment, tariffId = null) => {
+const makeOrder = (cost, paymentType, comment, tariffId = null) => {
   try {
     let data = {
       'cost': cost,
@@ -78,7 +78,7 @@ const CompanyBalance = ({ balance }) => {
             <Text>Пополнить на 20 BYN</Text>
             <Button
               type='link'
-              onClick={makeOrder(20, 2, 'Пополнить на 20 BYN')}
+              onClick={() => makeOrder(20, 2, 'Пополнить на 20 BYN')}
             >Пополнить счет</Button>
 
             <Button
@@ -92,7 +92,7 @@ const CompanyBalance = ({ balance }) => {
 
             <Button
               type='link'
-              onClick={makeOrder(100, 2, 'Пополнить на 100 BYN')}
+              onClick={() => makeOrder(100, 2, 'Пополнить на 100 BYN')}
             >Пополнить счет</Button>
 
             <Button
@@ -108,7 +108,7 @@ const CompanyBalance = ({ balance }) => {
 
             <Button
               type='link'
-              onClick={makeOrder(500, 2, 'Пополнить на 500 BYN')}
+              onClick={() => makeOrder(500, 2, 'Пополнить на 500 BYN')}
             >Пополнить счет</Button>
 
             <Button
@@ -124,7 +124,7 @@ const CompanyBalance = ({ balance }) => {
 
             <Button
               type='link'
-              onClick={makeOrder(1000, 2, 'Пополнить на 1000 BYN')}
+              onClick={() => makeOrder(1000, 2, 'Пополнить на 1000 BYN')}
             >Пополнить счет</Button>
 
             <Button
@@ -139,12 +139,12 @@ const CompanyBalance = ({ balance }) => {
         <div>
           <Button
             type='link'
-            onClick={makeOrder(0, 2, 'Оплата картой', 2)}
+            onClick={() => makeOrder(0, 2, 'Оплата картой', 2)}
           >Подключить Легкий Старт! (карта)</Button>
 
           <Button
             type='link'
-            onClick={makeOrder(0, 1, 'Оплата балансом', 2)}
+            onClick={() => makeOrder(0, 1, 'Оплата балансом', 2)}
           >Подключить Легкий Старт! (баланс)</Button>
         </div>
         <br/>
