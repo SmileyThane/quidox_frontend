@@ -29,7 +29,7 @@ const makeOrder = (cost, paymentType, comment, tariffId = null) => {
     })
       .then(({}) => {
         message.success('Заказ успешно оформлен.')
-        window.location.reload()
+        setTimeout(window.location.reload(), 2000)
       })
       .catch(error => {
         message.error('Ошибка оформления заказа!')
