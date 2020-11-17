@@ -10,7 +10,7 @@ import axios from 'axios'
 
 const { Title, Text } = Typography
 
-const makeOrder = (cost, paymentType, comment, tariffId = null) => {
+const makeOrder = () => (cost, paymentType, comment, tariffId = null) => {
   try {
     let data = {
       'cost': cost,
