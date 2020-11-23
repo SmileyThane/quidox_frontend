@@ -205,6 +205,7 @@ const NewDocumentPage = props => {
     notification['success']({
       message: 'Ваше сообщение успешно отправлено'
     })
+    history.push({ pathname: '/documents', search: '?status=3', state: { id: '/documents/3' } })
     setDocumentState({ ...defaultDocumentData })
     setMessage(!message)
     dispatch({ type: 'RESET' })
