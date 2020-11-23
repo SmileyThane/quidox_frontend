@@ -517,7 +517,7 @@ const SingleDocumentPage = props => {
                     Отправить
                   </Button>
                   }
-                  {singleDocument.status_id != 1 &&
+                  {singleDocument.status_id != 1 && singleDocument.document.is_chain === 0 &&
                   <Button onClick={() => openModal('send')} type='primary' style={{ marginRight: '1rem' }}>
                     <Icon type='redo'/>
                     Перенаправить
