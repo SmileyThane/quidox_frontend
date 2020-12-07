@@ -92,11 +92,16 @@ const PrivateRoute = ({ component: Component, config, user: { data, isFetching }
                       >
                         {
                           config.data.co_brand_config ?
+                            activeCompany.company_data.is_owner === true ?
+
                             'Внимание! Вы израсходовали ваш пакет услуг. ' +
                             'Чтобы продолжить пользование сервисом, пожалуйста, ' +
                             'подключите новый пакет услуг на следующие 30 дней. ' +
-                            'При нажатии на кнопку Подключить стоимость пакета ' +
-                            'с учетом НДС спишется с лицевого счета вашего абонентского номера.' :
+                            'При нажатии на кнопку "Перейти к продлению тарифа" ' +
+                            'стоимость пакета с учетом НДС спишется с лицевого счета вашего абонентского номера.' :
+                              'Внимание! Вы израсходовали ваш пакет услуг. Чтобы продолжить пользоваться сервисом, пожалуйста, ' +
+                              'подключите новый пакет услуг на следующие 30 дней на номере ' + activeCompany.company_data.owner_phone_number
+                          :
 
                             'Внимание! Недостаточно средств на Вашем балансе и ' +
                             'мы не можем активировать очередной пакет услуг. ' +
@@ -107,7 +112,9 @@ const PrivateRoute = ({ component: Component, config, user: { data, isFetching }
                           <Button type='primary' onClick={handleChangeTariff}>
                             {config.data.co_brand_config ? 'Перейти к продлению тарифа' : 'Перейти к пополнению баланса'}
                           </Button>
-                          <Button type='link' onClick={handleStayOnPage}>Пополнить позже</Button>
+                          <Button type='link' onClick={handleStayOnPage}>
+                            {config.data.co_brand_config ? 'Отмена' : 'Пополнить позже'}
+                          </Button>
                         </div>
                       </Modal>
                       }
