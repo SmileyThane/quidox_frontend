@@ -34,6 +34,9 @@ const PrivateRoute = ({ component: Component, config, user: { data, isFetching }
     if (config.data.co_brand_config) {
       document.title = 'MTC SmartDoc'
       favicon.href = faviconIcon
+    }else {
+      document.title = 'Quidox'
+      favicon.href = `${process.env.REACT_APP_URL}/favicon.ico`
     }
   }, [config.data.co_brand_config])
 
