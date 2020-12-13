@@ -7,9 +7,11 @@
     "antd-mask-input": "^0.1.10",
     "axios": "^0.18.1",
     "classnames": "^2.2.6",
+    "customize-cra": "^1.0.0",
     "iplocation": "^6.1.0",
     "js-base64": "^2.5.1",
     "js-file-download": "^0.4.8",
+    "less": "^3.13.0",
     "local-ip-url": "^1.0.2",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
@@ -20,6 +22,7 @@
     "react": "^16.8.6",
     "react-add-to-calendar": "^0.1.5",
     "react-app-polyfill": "^1.0.1",
+    "react-app-rewired": "^2.1.8",
     "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.8.6",
     "react-geocode": "^0.2.0",
@@ -40,9 +43,9 @@
     "typeface-roboto": "^0.0.54"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -65,6 +68,7 @@
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-eslint": "^10.1.0",
+    "babel-plugin-import": "^1.13.3",
     "eslint": "^6.6.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-config-standard-react": "^7.0.2",
@@ -72,6 +76,7 @@
     "eslint-plugin-node": "^9.1.0",
     "eslint-plugin-promise": "^4.1.1",
     "eslint-plugin-standard": "^4.0.0",
+    "less-loader": "^7.1.0",
     "standard": "^12.0.1"
   }
 }

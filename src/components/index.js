@@ -1,45 +1,21 @@
-import PrivateRoute from './PrivateRoute'
-import PublicRoute from './PublicRoute'
-import LayoutBlock from './LayoutBlock'
-import HeaderBlock from './HeaderBlock'
-import ContentBlock from './ContentBlock'
-import SiderBlock from './SiderBlock'
-import FooterBlock from './FooterBlock'
-import Menu from './Menu'
-import Input from './Input'
-import Button from './Button'
-import FormGroup from './FormGroup'
-import Table from './Table'
-import PDFViewer from './PDFViewer'
-import PageDescription from './PageDescription'
-import EscDataSlider from './EscDataSlider'
-import CompanyCreate from './CompanyCreate'
-import AvestErrorHandling from './AvestErrorHandling'
-import UploadFiles from './UploadFiles'
-import RouterLink from './RouterLink'
-import GoBack from './GoBack'
-import TariffTimePeriod from './TariffTimePeriod'
-
-export {
-  PrivateRoute,
-  PublicRoute,
-  LayoutBlock,
-  HeaderBlock,
-  ContentBlock,
-  SiderBlock,
-  FooterBlock,
-  Menu,
-  Input,
-  Button,
-  FormGroup,
-  Table,
-  PDFViewer,
-  PageDescription,
-  EscDataSlider,
-  CompanyCreate,
-  AvestErrorHandling,
-  UploadFiles,
-  RouterLink,
-  GoBack,
-  TariffTimePeriod
-}
+export { default as PrivateRoute } from './PrivateRoute'
+export { default as PublicRoute } from './PublicRoute'
+export { default as LayoutContent } from './LayoutContent'
+export { default as LayoutBlock } from './LayoutBlock'
+export { default as Header } from './Header'
+export { default as ContentBlock } from './ContentBlock'
+export { default as Footer } from './Footer'
+export { default as MainMenu } from './MainMenu'
+export { default as Input } from './Input'
+export { default as Button } from './Button'
+export { default as FormGroup } from './FormGroup'
+export { default as Table } from './Table'
+export { default as PDFViewer } from './PDFViewer'
+export { default as PageDescription } from './PageDescription'
+export { default as EscDataSlider } from './EscDataSlider'
+export { default as CompanyCreate } from './CompanyCreate'
+export { default as AvestErrorHandling } from './AvestErrorHandling'
+export { default as UploadFiles } from './UploadFiles'
+export { default as RouterLink } from './RouterLink'
+export { default as GoBack } from './GoBack'
+export { default as TariffTimePeriod } from './TariffTimePeriod'

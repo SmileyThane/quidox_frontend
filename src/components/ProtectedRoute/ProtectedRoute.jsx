@@ -4,7 +4,7 @@ import { faviconIcon } from '../../resources/img'
 
 import { Layout } from 'antd'
 import { getActiveCompany } from '../../utils'
-import { ContentBlock, FooterBlock, HeaderBlock, LayoutBlock, SiderBlock } from '../'
+import { ContentBlock, Footer, Header, LayoutBlock, MainMenu } from '../'
 
 const favicon = document.querySelector(('[rel=icon]'))
 
@@ -45,14 +45,14 @@ const ProtectedRoute = ({ component: Component, config, user: { data }, getUser,
                 render={props =>
                   <Fragment>
                     <LayoutBlock content>
-                      <HeaderBlock/>
+                      <Header/>
                       <Layout>
-                        <SiderBlock/>
+                        <MainMenu/>
                         <Layout>
                           <ContentBlock>
                             <Component {...props} />
                           </ContentBlock>
-                          <FooterBlock/>
+                          <Footer/>
                         </Layout>
                       </Layout>
                     </LayoutBlock>

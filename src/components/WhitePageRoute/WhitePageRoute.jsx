@@ -3,9 +3,9 @@ import { Redirect, Route } from 'react-router-dom'
 
 import {
   LayoutBlock,
-  FooterBlock,
+  Footer,
   ContentBlock,
-  HeaderBlock
+  Header
 } from '../'
 
 import './WhitePageRoute.scss'
@@ -39,11 +39,11 @@ const WhitePageRoute = ({ component: Component, getConfig, config: { isFetching 
                     : <Fragment>
                       <LayoutBlock>
                         <ContentBlock logWrapp>
-                          <HeaderBlock/>
+                          <Header/>
                           <div className='app'>
                             <div className='app-content-white'>
                               <Component {...props} />
-                              <FooterBlock className='footer public-footer white-background'/>
+                              <Footer className='footer public-footer white-background'/>
                             </div>
                           </div>
                         </ContentBlock>
