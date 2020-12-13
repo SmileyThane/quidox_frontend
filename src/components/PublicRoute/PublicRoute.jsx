@@ -5,9 +5,9 @@ import { faviconIcon } from '../../resources/img'
 
 import {
   LayoutBlock,
-  FooterBlock,
+  Footer,
   ContentBlock,
-  HeaderBlock
+  Header
 } from '../'
 
 import './PublicRoute.scss'
@@ -60,11 +60,11 @@ const PublicRoute = ({ component: Component, getConfig, config, ...rest }) => {
         : <Fragment>
           <LayoutBlock>
             <ContentBlock logWrapp>
-              <HeaderBlock />
+              <Header />
               <div className='app'>
                 <div className='app-content'>
                   <Component {...props} />
-                  <FooterBlock className='footer public-footer' />
+                  <Footer className='footer public-footer' />
                 </div>
               </div>
             </ContentBlock>

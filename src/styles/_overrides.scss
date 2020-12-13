@@ -1,8 +1,5 @@
 @import './variables.scss';
-.ant-layout-header {
-  padding: 0;
-  line-height: 0;
-}
+
 .ant-layout.ant-layout-has-sider {
   min-height: calc(100vh - 7.1rem);
 }
@@ -12,55 +9,6 @@
     background-color: map-get($colors, blue);
     margin-right: 1rem;
     border-radius: .2rem;
-  }
-}
-//sider menu
-.ant-layout-sider {
-  background-color: transparent;
-  .ant-menu {
-    background-color: transparent !important;
-    border-right: 0;
-
-    .ant-menu-submenu {
-
-      .ant-menu-submenu-title {
-
-        &:hover {
-          color: map-get($colors, dark);
-
-          .ant-menu-submenu-arrow {
-            &:before,
-            &:after {
-              background: linear-gradient(to right, map-get($colors, dark), map-get($colors, dark)) !important;
-            }
-          }
-        }
-      }
-    }
-
-    .ant-menu-item {
-      color: map-get($colors, dark);
-      border-radius: .2rem;
-
-      a {
-        &:hover {
-          color: inherit !important;
-        }
-
-        i {
-          font-size: 1.8rem;
-        }
-      }
-
-      &.ant-menu-item-selected {
-        background-color: map-get($colors, blueSecond);
-        color: map-get($colors, dark);
-
-        a {
-          color: inherit;
-        }
-      }
-    }
   }
 }
 
@@ -174,13 +122,7 @@ table {
   min-width: 20rem;
   text-align: right;
 }
-//.ant-btn-disabled, .ant-btn.disabled, .ant-btn[disabled], .ant-btn-disabled:hover, .ant-btn.disabled:hover, .ant-btn[disabled]:hover, .ant-btn-disabled:focus, .ant-btn.disabled:focus, .ant-btn[disabled]:focus, .ant-btn-disabled:active, .ant-btn.disabled:active, .ant-btn[disabled]:active, .ant-btn-disabled.active, .ant-btn.disabled.active, .ant-btn[disabled].active {
-//  color: map-get($colors , white);
-//  opacity: .5;
-//}
-.ant-btn.ant-btn-background-ghost {
-  border-radius: 0 !important;
-}
+
 .ant-typography.document-title {
   margin-bottom: 0 !important;
 }
@@ -192,8 +134,4 @@ table {
       color: #000;
     }
   }
-}
-
-.ant-btn-primary-disabled, .ant-btn-primary-disabled.active, .ant-btn-primary-disabled:active, .ant-btn-primary-disabled:focus, .ant-btn-primary-disabled:hover, .ant-btn-primary.disabled, .ant-btn-primary.disabled.active, .ant-btn-primary.disabled:active, .ant-btn-primary.disabled:focus, .ant-btn-primary.disabled:hover, .ant-btn-primary[disabled], .ant-btn-primary[disabled].active, .ant-btn-primary[disabled]:active, .ant-btn-primary[disabled]:focus, .ant-btn-primary[disabled]:hover {
-  background-color: #f5f5f5 !important;
 }

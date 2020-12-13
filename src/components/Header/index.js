@@ -1,12 +1,12 @@
 import { connect } from 'react-redux'
-import HeaderBlock from './HeaderBlock'
+import Header from './Header'
 
 const mapStateToProps = state => ({
   user: state.user,
-  config: state.config
+  brand: state.config.data.co_brand_config
 })
 
 export default connect(
   mapStateToProps,
   null
-)(HeaderBlock)
+)(Header)
