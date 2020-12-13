@@ -1,12 +1,12 @@
-import React, { Fragment, useEffect, useState, useReducer } from 'react'
+import React, { Fragment, useEffect, useReducer, useState } from 'react'
 import useForm from 'rc-form-hooks'
 import AddToCalendar from 'react-add-to-calendar'
 import _ from 'lodash'
 import moment from 'moment'
 
-import { Icon, Input, notification, Select, Spin, Typography, Table } from 'antd'
+import { Icon, Input, notification, Select, Spin, Table, Typography } from 'antd'
 
-import { UploadFiles, Button } from '../../components'
+import { Button, UploadFiles } from '../../components'
 
 import forbiddenEmails from '../../constants/forbiddenEmails'
 import history from '../../history'
@@ -77,7 +77,6 @@ function reducer (state = initialState, action) {
   }
 }
 
-
 const NewDocumentPage = props => {
   const {
     createMessage,
@@ -116,12 +115,12 @@ const NewDocumentPage = props => {
       title: 'УНП',
       render: record => <Fragment>
         {!!record.unp.length &&
-          <Select style={{ minWidth: '20rem' }} onChange={value => editUNP(value, record)} placeholder='Выберете УНП'>
-            {record.unp.map(i => (
-              <Option value={i.id} key={i.company_number}>{i.company_number}</Option>
-            ))}
-          </Select>
-      }
+        <Select style={{ minWidth: '20rem' }} onChange={value => editUNP(value, record)} placeholder='Выберете УНП'>
+          {record.unp.map(i => (
+            <Option value={i.id} key={i.company_number}>{i.company_number}</Option>
+          ))}
+        </Select>
+        }
       </Fragment>
     },
     // {
@@ -136,7 +135,8 @@ const NewDocumentPage = props => {
     {
       key: '4',
       title: 'Дополнительно',
-      render: record => <Select  onChange={value => editAdditionallyStatus(value, record)} style={{ minWidth: '20rem' }} value={record.additionally}>
+      render: record => <Select onChange={value => editAdditionallyStatus(value, record)} style={{ minWidth: '20rem' }}
+                                value={record.additionally}>
         <Option value={1}>Прервать цепочку в случае отказа</Option>
         <Option value={2}>Не прерывать цепочку в случае отказа</Option>
       </Select>
@@ -144,7 +144,16 @@ const NewDocumentPage = props => {
   ]
 
   const addUser = () => {
-    dispatch({ type: 'ADD_USER', payload: { id: state.users.length + 1, email: '', activeUNP: '', unp: [], status: state.users[state.users.length -1].status, additionally: state.users[state.users.length -1].additionally } })
+    dispatch({ type: 'ADD_USER',
+      payload: {
+        id: state.users.length + 1,
+        email: '',
+        activeUNP: '',
+        unp: [],
+        status: state.users[state.users.length - 1].status,
+        additionally: state.users[state.users.length - 1].additionally
+      }
+    })
   }
 
   const editStatus = (value, record) => {
@@ -205,6 +214,7 @@ const NewDocumentPage = props => {
     notification['success']({
       message: 'Ваше сообщение успешно отправлено'
     })
+    history.push({ pathname: '/documents', search: '?status=3', state: { id: '/documents/3' } })
     setDocumentState({ ...defaultDocumentData })
     setMessage(!message)
     dispatch({ type: 'RESET' })
@@ -219,8 +229,8 @@ const NewDocumentPage = props => {
   }
 
   const updateFieldProcess = (field, v) => {
-    updateField(field, v);
-    updateDocumentById(documentState.message.id, { [field]: v });
+    updateField(field, v)
+    updateDocumentById(documentState.message.id, { [field]: v })
   }
 
   const save2DraftDMessage = is2Draft => {
@@ -326,7 +336,7 @@ const NewDocumentPage = props => {
       })
     }
 
-    updateDocumentById(documentState.message.id, { user_company_ids: JSON.stringify(validEmails.map(i => i.key)) });
+    updateDocumentById(documentState.message.id, { user_company_ids: JSON.stringify(validEmails.map(i => i.key)) })
 
     setDocumentState({
       ...documentState,
@@ -336,46 +346,50 @@ const NewDocumentPage = props => {
 
   return (
     <Fragment>
-      <Button onClick={() => dispatch({ type: 'TOGGLE_MESSAGE' })} style={{ marginBottom: '2rem' }} type='primary'>{state.isChainMessage ? 'Обычная отправка' : 'Отправка цепочкой'}</Button>
+      <Button onClick={() => dispatch({ type: 'TOGGLE_MESSAGE' })} style={{ marginBottom: '2rem' }}
+              type='primary'>{state.isChainMessage ? 'Обычная отправка' : 'Отправка цепочкой'}</Button>
       <div className='content content_padding' style={{ marginBottom: '2rem' }}>
         {state.isChainMessage
           ? <div>
             <div className='input-group'>
               <label className='label'>Тема</label>
-              <Input kind='text' type='text' value={documentState.name} onChange={e => updateFieldProcess('name', e.target.value)} />
+              <Input kind='text' type='text' value={documentState.name}
+                     onChange={e => updateFieldProcess('name', e.target.value)}/>
             </div>
 
             <div className='input-group'>
               <label className='label'>Комментарий</label>
-              <TextArea autosize={{ minRows: 4, maxRows: 10 }} value={documentState.description} onChange={e => updateFieldProcess('description', e.target.value)}/>
+              <TextArea autosize={{ minRows: 4, maxRows: 10 }} value={documentState.description}
+                        onChange={e => updateFieldProcess('description', e.target.value)}/>
             </div>
 
             <div className='buttons-group'>
-              <Button type='primary' onClick={() => dispatch({ type: 'SHOW_TABLE' })}>Добавить файл и указать маршрут</Button>
+              <Button type='primary' onClick={() => dispatch({ type: 'SHOW_TABLE' })}>Добавить файл и указать
+                маршрут</Button>
             </div>
 
             {state.isTableVisible &&
-              <>
-                <div className='buttons-group'>
-                  {documentState.message &&
-                  <UploadFiles isStatus={false} document_id={documentState.message.id}/>}
-                </div>
+            <>
+              <div className='buttons-group'>
+                {documentState.message &&
+                <UploadFiles isStatus={false} document_id={documentState.message.id}/>}
+              </div>
 
-                <div className='buttons-group'>
-                  <Table
-                    className='user_table'
-                    pagination={false}
-                    style={{ width: '100%' }}
-                    columns={tableColumns}
-                    dataSource={state.users}
-                  />
-                </div>
-                <Button type='link' onClick={addUser}>+ Добавить получателя</Button>
+              <div className='buttons-group'>
+                <Table
+                  className='user_table'
+                  pagination={false}
+                  style={{ width: '100%' }}
+                  columns={tableColumns}
+                  dataSource={state.users}
+                />
+              </div>
+              <Button type='link' onClick={addUser}>+ Добавить получателя</Button>
 
-                <div className='buttons-group'>
-                  <Button onClick={chainSend} type='primary'>Отправить</Button>
-                </div>
-              </>
+              <div className='buttons-group'>
+                <Button onClick={chainSend} type='primary'>Отправить</Button>
+              </div>
+            </>
             }
 
           </div>

@@ -433,7 +433,7 @@ const FileActions = props => {
           <Form onSubmit={handleDeclineFile}>
             <Form.Item label='Введите причину отклонения'>
               {getFieldDecorator('decline_message', {
-                rules: [{ required: true, message: 'Текст отлконения является обязательным' }]
+                rules: [{ required: true, message: 'Текст отклонения является обязательным' }]
               })(
                 <TextArea style={{ resize: 'none' }} autoSize={{ minRows: 3, maxRows: 5 }} size='large'
                           placeholder='Введите причину отклонения'/>

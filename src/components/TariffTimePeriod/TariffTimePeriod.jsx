@@ -11,8 +11,9 @@ const { Countdown } = Statistic;
 
 export default function ({ user: { data }, config }) {
   const [isVisible, setVisible] = useState(true)
-  const expired_at = Object.keys(data).length && data.companies.length && data.companies.length && data.companies[0].tarification.expired_at
+  const expired_at = Object.keys(data).length  && data.active_company_object.tarification.expired_at
   const smartdocUri = config.data.co_brand_config && config.data.co_brand_config.logout_uri
+  console.log(data)
   return (
     <div className='c-period'>
       {isVisible ?

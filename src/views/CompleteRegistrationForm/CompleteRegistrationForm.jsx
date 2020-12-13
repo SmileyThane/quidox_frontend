@@ -32,7 +32,7 @@ class CompleteRegistrationForm extends React.Component {
     autoCompleteResult: [],
     currentStep: 0,
     phone: '',
-    password:'',
+    password: '',
     code: '',
     seconds: 60
   }
@@ -103,6 +103,9 @@ class CompleteRegistrationForm extends React.Component {
               })
               .catch(function (error) {
                 message.error(error.message)
+                setTimeout(() => {
+                  window.location.href(`${process.env.REACT_APP_URL}/complete-registration/${this.props.match.params.id}`)
+                }, 2000)
               })
             break
           case 1:
@@ -173,7 +176,7 @@ class CompleteRegistrationForm extends React.Component {
   handleConfirmBlur = e => {
     const value = e.target.value
     this.setState({ confirmDirty: this.state.confirmDirty || !!value })
-  };
+  }
 
   compareToFirstPassword = (rule, value, callback) => {
     const form = this.props.form
@@ -183,7 +186,7 @@ class CompleteRegistrationForm extends React.Component {
       this.state.password = value
       callback()
     }
-  };
+  }
 
   validateToNextPassword = (rule, value, callback) => {
     const form = this.props.form
@@ -191,7 +194,7 @@ class CompleteRegistrationForm extends React.Component {
       form.validateFields(['confirm'], { force: true })
     }
     callback()
-  };
+  }
 
   render () {
     const { currentStep, seconds } = this.state
@@ -249,10 +252,12 @@ class CompleteRegistrationForm extends React.Component {
                     style={{ width: '100%' }}
                   />)}
                 </Form.Item>
-                <Checkbox style={{ marginBottom: '1rem' }} onClick={this.handleCheck}>Я ознакомился и принимаю условия &nbsp;
+                <Checkbox style={{ marginBottom: '1rem' }} onClick={this.handleCheck}>Я ознакомился и принимаю
+                  условия &nbsp;
                   {data.co_brand_config
                     ? <a href={data.co_brand_config.terms_link}>Правил использования</a>
-                    : <span><a href='https://quidox.by/agreement/'>Публичного договора, <a href='https://quidox.by/agreement/'>Политикой конфиденциальности</a></a></span>
+                    : <span><a href='https://quidox.by/agreement/'>Публичного договора, <a
+                      href='https://quidox.by/agreement/'>Политикой конфиденциальности</a></a></span>
                   }.
                 </Checkbox>
                 <div style={{ marginBottom: '1rem' }}>

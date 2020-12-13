@@ -65,19 +65,21 @@ const SingleCompanyPage = props => {
             >
               <CompanyUsers users={singleCompany.users} />
             </ThemeTabs.Pane>
+            {
+              coBrand === null &&
+              <ThemeTabs.Pane
+                key='3'
+                tab={
+                  <Fragment>
+                    <Icon type='wallet' />
+                    Баланс
+                  </Fragment>
+                }
+              >
+                <CompanyBalance balance={singleCompany.balance} />
+              </ThemeTabs.Pane>
 
-            <ThemeTabs.Pane
-              key='3'
-              tab={
-                <Fragment>
-                  <Icon type='wallet' />
-                   Баланс
-                </Fragment>
-              }
-            >
-              <CompanyBalance balance={singleCompany.balance} />
-            </ThemeTabs.Pane>
-
+            }
             <ThemeTabs.Pane
               key='4'
               tab={
