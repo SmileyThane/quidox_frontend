@@ -131,7 +131,7 @@ const EscDataSlider = ({ data = [], onCancel, }) => {
             <EscData.BodyItemRightCert>
               <Text type='secondary'>
                 {moment.utc(data[activeEscSlide].verification_date, 'YYYY-MM-DD HH:mm:ss')
-                  .local().format('DD/MM/YYYY HH:mm:ss')}
+                  .format('DD/MM/YYYY HH:mm:ss')}
               </Text>
             </EscData.BodyItemRightCert>
           </EscData.BodyItemRight>
