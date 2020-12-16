@@ -191,7 +191,7 @@ const SingleSharedDocumentPage = props => {
 
             <div className='document__header_right'>
               <p className='document__date'>
-                {moment.utc(message.created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD/MM/YYYY HH:mm:ss')}
+                {moment.utc(message.created_at, 'YYYY-MM-DD HH:mm:ss').format('DD/MM/YYYY HH:mm:ss')}
               </p>
             </div>
           </div>
