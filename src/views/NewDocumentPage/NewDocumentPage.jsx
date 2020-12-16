@@ -1,17 +1,33 @@
 import React, { Fragment, useEffect, useReducer, useState } from 'react'
-import useForm from 'rc-form-hooks'
 import AddToCalendar from 'react-add-to-calendar'
 import _ from 'lodash'
 import moment from 'moment'
 
-import { Icon, Input, notification, Select, Spin, Table, Typography } from 'antd'
+import {
+  Row,
+  Col,
+  // Icon,
+  Input,
+  notification,
+  Select,
+  Spin,
+  // Table,
+  Typography
+} from 'antd'
 
-import { Button, UploadFiles } from '../../components'
+import {
+  LayoutScroll,
+  FooterFixed,
+  Button,
+  UploadFiles
+} from '../../components'
 
 import forbiddenEmails from '../../constants/forbiddenEmails'
 import history from '../../history'
-import './NewDocumentPage.scss'
+
 import { findUsersByParams } from '../../services/api/user'
+
+import { Layout } from './styled'
 
 const defaultDocumentData = {
   name: '',
@@ -29,7 +45,7 @@ const isIE = /*@cc_on!@*/!!document.documentMode
 
 const { Option } = Select
 const { TextArea } = Input
-const { Text, Paragraph } = Typography
+const { Title, Paragraph } = Typography
 
 const initialState = {
   isChainMessage: false,
@@ -82,14 +98,11 @@ const NewDocumentPage = props => {
     createMessage,
     getUser,
     sendDocumentToUser,
-    updateDocumentById,
+    updateDocumentById
   } = props
-
-  const { getFieldDecorator, validateFields } = useForm()
 
   const [documentState, setDocumentState] = useState({ ...defaultDocumentData })
   const [state, dispatch] = useReducer(reducer, initialState)
-  const [isChainSend, setChainSend] = useState(false)
   const [message, setMessage] = useState(false)
 
   useEffect(() => {
@@ -135,11 +148,16 @@ const NewDocumentPage = props => {
     {
       key: '4',
       title: 'Дополнительно',
-      render: record => <Select onChange={value => editAdditionallyStatus(value, record)} style={{ minWidth: '20rem' }}
-                                value={record.additionally}>
-        <Option value={1}>Прервать цепочку в случае отказа</Option>
-        <Option value={2}>Не прерывать цепочку в случае отказа</Option>
-      </Select>
+      render: record => (
+        <Select
+          onChange={value => editAdditionallyStatus(value, record)}
+          style={{ minWidth: '20rem' }}
+          value={record.additionally}
+        >
+          <Option value={1}>Прервать цепочку в случае отказа</Option>
+          <Option value={2}>Не прерывать цепочку в случае отказа</Option>
+        </Select>
+      )
     }
   ]
 
@@ -345,145 +363,185 @@ const NewDocumentPage = props => {
   }
 
   return (
-    <Fragment>
-      <Button onClick={() => dispatch({ type: 'TOGGLE_MESSAGE' })} style={{ marginBottom: '2rem' }}
-              type='primary'>{state.isChainMessage ? 'Обычная отправка' : 'Отправка цепочкой'}</Button>
-      <div className='content content_padding' style={{ marginBottom: '2rem' }}>
+    <LayoutScroll withFooter>
+      <Layout>
+        {/* <Button
+          onClick={() => dispatch({ type: 'TOGGLE_MESSAGE' })}
+          type='primary'
+        >
+          {state.isChainMessage ? 'Обычная отправка' : 'Отправка цепочкой'}
+        </Button>
+
         {state.isChainMessage
           ? <div>
-            <div className='input-group'>
-              <label className='label'>Тема</label>
-              <Input kind='text' type='text' value={documentState.name}
-                     onChange={e => updateFieldProcess('name', e.target.value)}/>
-            </div>
+            <Layout.Control>
+              <label>Тема</label>
 
-            <div className='input-group'>
-              <label className='label'>Комментарий</label>
-              <TextArea autosize={{ minRows: 4, maxRows: 10 }} value={documentState.description}
-                        onChange={e => updateFieldProcess('description', e.target.value)}/>
-            </div>
+              <Input
+                kind='text'
+                type='text'
+                value={documentState.name}
+                onChange={e => updateFieldProcess('name', e.target.value)}
+              />
+            </Layout.Control>
 
-            <div className='buttons-group'>
-              <Button type='primary' onClick={() => dispatch({ type: 'SHOW_TABLE' })}>Добавить файл и указать
-                маршрут</Button>
-            </div>
+            <Layout.Control>
+              <label>Комментарий</label>
 
-            {state.isTableVisible &&
-            <>
-              <div className='buttons-group'>
-                {documentState.message &&
-                <UploadFiles isStatus={false} document_id={documentState.message.id}/>}
-              </div>
-
-              <div className='buttons-group'>
-                <Table
-                  className='user_table'
-                  pagination={false}
-                  style={{ width: '100%' }}
-                  columns={tableColumns}
-                  dataSource={state.users}
-                />
-              </div>
-              <Button type='link' onClick={addUser}>+ Добавить получателя</Button>
-
-              <div className='buttons-group'>
-                <Button onClick={chainSend} type='primary'>Отправить</Button>
-              </div>
-            </>
-            }
-
-          </div>
-          : <Spin spinning={!!documentState.fetching}>
-            <div className='input-group'>
-              <label className='label'>Получатели</label>
-
-              <Select
-                mode='tags'
-                labelInValue
-                tokenSeparators={[',']}
-                value={documentState.value}
-                filterOption={false}
-                notFoundContent={documentState.fetching ? <Spin size='small'/> : null}
-                onSearch={fetchUser}
-                onChange={handleSelect}
-                // disabled={documentState.fetching}
-                style={{ width: '100%' }}
-              >
-                {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
-              </Select>
-
-            </div>
-            <div className='input-group'>
-              <label className='label'>Получатели<br/> по УНП</label>
-              <Input kind='text' type='text' value={documentState.coNumbers}
-                     onChange={e => updateField('coNumbers', e.target.value)}/>
-            </div>
-            <div className='input-group'>
-              <label className='label'>Тема</label>
-              <Input kind='text' type='text' value={documentState.name}
-                     onChange={
-                       e => updateFieldProcess('name', e.target.value)
-                     }/>
-            </div>
-
-            <div className='input-group'>
-              <label className='label'>Комментарий</label>
-              <TextArea autosize={{ minRows: 4, maxRows: 10 }} value={documentState.description}
-                        onChange={e => updateFieldProcess('description', e.target.value)}/>
-            </div>
-
-            <div className='buttons-group'>
-              {documentState.message &&
-              <UploadFiles document_id={documentState.message.id}/>}
-            </div>
+              <TextArea
+                autoSize={{ minRows: 5, maxRows: 12 }}
+                value={documentState.description}
+                onChange={e => updateFieldProcess('description', e.target.value)}
+              />
+            </Layout.Control>
 
             <div className='buttons-group'>
               <Button
-                ghost
                 type='primary'
-                onClick={() => save2DraftDMessage(true)}
-                style={{ minWidth: 216 }}
+                onClick={() => dispatch({ type: 'SHOW_TABLE' })}
               >
-                <Icon type='file-text'/>
-                Сохранить в черновиках
+                Добавить файл и указать маршрут
               </Button>
-
-              <div style={{ display: 'flex' }}>
-                <AddToCalendar
-                  buttonLabel='Добавить в календарь'
-                  listItems={[
-                    { apple: 'Apple Calendar' },
-                    { google: 'Google' },
-                    { outlook: 'Outlook' }
-                  ]}
-                  event={{
-                    title: 'Контроль сообщения',
-                    description: '',
-                    location: 'Minsk',
-                    startTime: moment().add(1, 'days').startOf('day').hour('10').minute('00'),
-                    endTime: moment().add(1, 'days').startOf('day').hour('11').minute('00')
-                  }}
-                />
-
-                <Button
-                  style={{ marginLeft: '2rem' }}
-                  type='primary'
-                  onClick={() => save2DraftDMessage(false)}
-                >
-                  <Icon type='cloud-upload'/>
-                  Отправить
-                </Button>
-              </div>
             </div>
-          </Spin>
-        }
-      </div>
 
-      {!isIE && <Text type='secondary'>
-        Подпись файлов возможна только в браузере Internet Explorer
-      </Text>
-      }
-    </Fragment>
+            {state.isTableVisible && (
+              <>
+                <div className='buttons-group'>
+                  {documentState.message &&
+                  <UploadFiles isStatus={false} document_id={documentState.message.id}/>}
+                </div>
+
+                <div className='buttons-group'>
+                  <Table
+                    className='user_table'
+                    pagination={false}
+                    style={{ width: '100%' }}
+                    columns={tableColumns}
+                    dataSource={state.users}
+                  />
+                </div>
+                <Button type='link' onClick={addUser}>+ Добавить получателя</Button>
+
+                <div className='buttons-group'>
+                  <Button onClick={chainSend} type='primary'>Отправить</Button>
+                </div>
+              </>)}
+          </div> */}
+
+        <Layout.Inner>
+          <Title level={3}>Новое сообщение</Title>
+
+          <Spin spinning={!!documentState.fetching}>
+            <Row gutter={[12, 16]}>
+              <Col span={24}>
+                <Layout.Control>
+                  <label>Получатели по почте</label>
+
+                  <Select
+                    mode='tags'
+                    labelInValue
+                    tokenSeparators={[',']}
+                    value={documentState.value}
+                    filterOption={false}
+                    notFoundContent={documentState.fetching ? <Spin size='small' /> : null}
+                    onSearch={fetchUser}
+                    placeholder='Введите электронную почту'
+                    onChange={handleSelect}
+                    style={{ width: '100%' }}
+                  >
+                    {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
+                  </Select>
+                </Layout.Control>
+              </Col>
+
+              <Col span={12}>
+                <Layout.Control>
+                  <label>Получатели по УНП</label>
+
+                  <Input
+                    kind='text'
+                    type='text'
+                    value={documentState.coNumbers}
+                    placeholder='Введите УНП получателя'
+                    onChange={e => updateField('coNumbers', e.target.value)}
+                  />
+                </Layout.Control>
+
+                <Layout.Control>
+                  <label>Тема</label>
+
+                  <Input
+                    kind='text'
+                    type='text'
+                    value={documentState.name}
+                    placeholder='Ёмкое название сообщения'
+                    onChange={e => updateFieldProcess('name', e.target.value)}
+                  />
+                </Layout.Control>
+              </Col>
+
+              <Col span={12}>
+                <Layout.Control>
+                  <label>Комментарий</label>
+
+                  <TextArea
+                    autoSize={{ minRows: 5, maxRows: 12 }}
+                    placeholder='Опишите все, что важно знать получателю'
+                    value={documentState.description}
+                    onChange={e => updateFieldProcess('description', e.target.value)}
+                  />
+                </Layout.Control>
+              </Col>
+
+              {documentState.message && (
+                <Col span={24}>
+                  <UploadFiles document_id={documentState.message.id} />
+                </Col>)}
+            </Row>
+          </Spin>
+        </Layout.Inner>
+
+        <FooterFixed>
+          <Layout.Actions>
+            <Button
+              type='primary'
+              onClick={() => save2DraftDMessage(true)}
+              icon='file-text'
+              ghost
+            >
+              Сохранить в черновиках
+            </Button>
+
+            <Layout.Actions.Calendar>
+              <AddToCalendar
+                buttonClassClosed='ant-btn ant-btn-primary ant-btn-background-ghost'
+                buttonLabel='Добавить в календарь'
+                listItems={[
+                  { apple: 'Apple Calendar' },
+                  { google: 'Google' },
+                  { outlook: 'Outlook' }
+                ]}
+                event={{
+                  title: 'Контроль сообщения',
+                  description: '',
+                  location: 'Minsk',
+                  startTime: moment().add(1, 'days').startOf('day').hour('10').minute('00'),
+                  endTime: moment().add(1, 'days').startOf('day').hour('11').minute('00')
+                }}
+              />
+            </Layout.Actions.Calendar>
+          </Layout.Actions>
+
+          <Button
+            type='primary'
+            icon='export'
+            onClick={() => save2DraftDMessage(false)}
+          >
+            Отправить сообщение
+          </Button>
+        </FooterFixed>
+      </Layout>
+    </LayoutScroll>
   )
 }
 

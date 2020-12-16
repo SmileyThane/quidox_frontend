@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Redirect, Route } from 'react-router-dom'
 
-import {
-  Layout,
-  Modal
-} from 'antd'
+import { Modal } from 'antd'
 
 import {
   Button,
+  Layout,
+  LayoutInner,
   LayoutContent,
   Header,
   Footer,
@@ -117,11 +116,14 @@ const PrivateRoute = ({ component: Component, config, user: { data, isFetching }
               </Modal>)}
 
             <Header />
-            <MainMenu />
 
-            <LayoutContent>
-              <Component {...props} />
-            </LayoutContent>
+            <LayoutInner>
+              <MainMenu />
+
+              <LayoutContent>
+                <Component {...props} />
+              </LayoutContent>
+            </LayoutInner>
 
             {/* <TariffTimePeriod /> */}
 

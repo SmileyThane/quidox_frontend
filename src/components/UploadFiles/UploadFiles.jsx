@@ -8,6 +8,8 @@ import { File, Upload } from './styled'
 import axios from 'axios'
 import { Base64 } from 'js-base64'
 
+import * as images from './images'
+
 const getSignedHex = base64 => {
   try {
 //need to be modified!!!!!
@@ -333,17 +335,16 @@ export default function (props) {
 
   const coBrand = data.co_brand_config && data.co_brand_config
   const simButtonName = config.data.co_brand_config ? config.data.co_brand_config.co_brand_name : 'Mobile'
+
   return (
-    <Fragment>
+    <>
       <Upload>
         <Upload.Button
           brand={coBrand}
-          type='primary'
           htmlFor='uploadInput'
-          ghost
         >
-          <Icon type='upload' style={{ marginRight: 10 }}/>
-          Прикрепить файл(ы)
+          <Icon component={images.IconAttach} />
+          Прикрепить файлы
           <Upload.Input
             type='file'
             id='uploadInput'
@@ -357,8 +358,7 @@ export default function (props) {
         <Upload.List>
           <List
             itemLayout='horizontal'
-            dataSource={list && list}
-            locale={{ emptyText: 'Нет прикрепленных файлов' }}
+            dataSource={list}
             renderItem={(file, idx) => {
               const isFileWithECP = file.users_companies.length ? !!getECP(file.users_companies).length : false
               return (
@@ -380,7 +380,7 @@ export default function (props) {
                       </Tag>
                       }
                     </div>
-                    {/*{isStatus &&*/}
+
                     <div>
                       <Select
                         style={{ minWidth: '20rem' }}
@@ -392,7 +392,6 @@ export default function (props) {
                         <Option value={3}>Подпись получателя</Option>
                       </Select>
                     </div>
-                    {/*}*/}
                   </File>
                   <Dropdown
                     overlay={() => (
@@ -480,6 +479,6 @@ export default function (props) {
         </>}
       </Modal>
       }
-    </Fragment>
+    </>
   )
 }
