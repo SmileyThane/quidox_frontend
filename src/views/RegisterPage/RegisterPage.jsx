@@ -303,7 +303,7 @@ class RegistrationForm extends React.Component {
                     rules: [
                       {
                         type: 'string',
-                        message: 'Код введен не правильно!'
+                        message: 'Код введен Неправильно!'
                       },
                       {
                         required: true,
@@ -324,7 +324,7 @@ class RegistrationForm extends React.Component {
                       rules: [
                         {
                           type: 'email',
-                          message: 'Не правильный адрес электронной почты!'
+                          message: 'Неправильный адрес электронной почты!'
                         },
                         {
                           required: true,
@@ -338,7 +338,7 @@ class RegistrationForm extends React.Component {
                       rules: [
                         {
                           type: 'string',
-                          message: 'Не правильное имя'
+                          message: 'Неправильное имя'
                         },
                         {
                           required: true,

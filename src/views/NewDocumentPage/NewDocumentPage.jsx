@@ -180,7 +180,7 @@ const NewDocumentPage = props => {
     } else {
       dispatch({ type: 'EDIT_FIELD', payload: { ...record, email: '' } })
       notification['error']({
-        message: 'Не правильный электронный адрес'
+        message: 'Неправильный электронный адрес'
       })
     }
 
@@ -332,7 +332,7 @@ const NewDocumentPage = props => {
 
     if (v.length !== validEmails.length) {
       notification['error']({
-        message: 'Не правильный электронный адрес'
+        message: 'Неправильный электронный адрес'
       })
     }
 

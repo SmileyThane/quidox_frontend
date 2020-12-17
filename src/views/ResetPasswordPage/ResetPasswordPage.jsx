@@ -46,7 +46,7 @@ class LoginPage extends React.Component {
             rules: [
               {
                 type: 'email',
-                message: 'Не правильный адрес электронной почты!'
+                message: 'Неправильный адрес электронной почты!'
               },
               {
                 required: true,

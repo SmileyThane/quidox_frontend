@@ -268,7 +268,7 @@ class UserInfoPage extends React.Component {
                           rules: [
                             {
                               type: 'email',
-                              message: 'Не правильный адрес электронной почты!'
+                              message: 'Неправильный адрес электронной почты!'
                             },
                             {
                               required: true,
@@ -534,7 +534,7 @@ class UserInfoPage extends React.Component {
                     rules: [
                       {
                         type: 'string',
-                        message: 'Код введен не правильно!'
+                        message: 'Код введен неправильно!'
                       },
                       {
                         required: true,

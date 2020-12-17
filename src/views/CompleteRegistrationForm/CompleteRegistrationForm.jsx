@@ -276,7 +276,7 @@ class CompleteRegistrationForm extends React.Component {
                   rules: [
                     {
                       type: 'string',
-                      message: 'Код введен не правильно!'
+                      message: 'Код введен неправильно!'
                     },
                     {
                       required: true,

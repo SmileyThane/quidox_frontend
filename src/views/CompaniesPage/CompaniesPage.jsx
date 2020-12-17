@@ -200,7 +200,7 @@ const CompaniesPage = props => {
                     rules: [
                       {
                         type: 'email',
-                        message: 'Не правильный адрес электронной почты!'
+                        message: 'Неправильный адрес электронной почты!'
                       },
                       {
                         required: true,
