@@ -7,12 +7,9 @@ const { colors } = styleguide
 
 const MainMenu = styled.div`
   width: 27rem;
+  min-width: 27rem;
   background-color: ${colors.gray.light};
-  padding: 0 1.2rem;
-  position: fixed;
-  top: 8.2rem;
-  left: 0;
-  bottom: 0;
+  margin-right: 1.2rem;
 `
 
 MainMenu.CreateMessage = styled.div`

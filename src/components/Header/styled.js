@@ -3,9 +3,10 @@ import { Layout } from 'antd'
 
 const Header = styled(Layout.Header)`
   width: 100%;
-  position: fixed;
+  /* position: fixed;
   top: 0;
   left: 0;
+  z-index: 999; */
 `
 
 Header.Inner = styled.div`

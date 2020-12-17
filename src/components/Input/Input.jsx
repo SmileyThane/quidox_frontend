@@ -1,19 +1,16 @@
-import React, { Fragment } from 'react'
+import React, { forwardRef } from 'react'
 
-import './Input.scss'
 import { Input } from 'antd'
 
-const Search = Input.Search
-const TextArea = Input.TextArea
-const AntdInput = ({ kind, ...rest }, ref) => {
+const {
+  Search,
+  TextArea
+} = Input
 
-  return (
-    <Fragment>
-      {kind === 'search' && <Search {...rest} /> }
-      {kind === 'text' && <Input {...rest} /> }
-      {kind === 'textarea' && <TextArea autosize={{ minRows: 1, maxRows: 6 }} {...rest} /> }
-    </Fragment>
-  )
-}
-
-export default React.forwardRef(AntdInput)
+export default forwardRef(({ kind, ...rest }) => (
+  <>
+    {kind === 'search' && <Search {...rest} /> }
+    {kind === 'text' && <Input {...rest} /> }
+    {kind === 'textarea' && <TextArea autosize={{ minRows: 1, maxRows: 6 }} {...rest} /> }
+  </>
+))

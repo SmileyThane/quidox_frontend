@@ -1,7 +1,9 @@
-import React, { Fragment } from 'react'
-import { Router, Switch, Route, Redirect } from 'react-router-dom'
+import React from 'react'
+import { Router, Switch, Redirect } from 'react-router-dom'
 import history from './history'
 import 'typeface-roboto'
+
+import { GlobalStyles } from './styles'
 
 import { PrivateRoute, PublicRoute } from './components'
 
@@ -32,7 +34,9 @@ import WhitePageRoute from './components/WhitePageRoute'
 
 function App () {
   return (
-    <Fragment>
+    <>
+      <GlobalStyles />
+
       <Router history={history}>
         <Switch>
           <PrivateRoute exact path='/'><Redirect to={{ pathname: '/documents', search: '?status=2', state: { id: '/documents/2' } }} /></PrivateRoute>
@@ -64,7 +68,7 @@ function App () {
           <PublicRoute path='*' component={LoginPage} />
         </Switch>
       </Router>
-    </Fragment>
+    </>
   )
 }
 

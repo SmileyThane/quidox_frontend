@@ -37,6 +37,7 @@ module.exports = override(
 
         '@btn-height-base': '42px',
         '@btn-height-lg': '42px',
+        '@btn-padding-base': '0 28px',
 
         '@menu-inline-toplevel-item-height': '44px',
         '@menu-item-height': '44px',
@@ -44,7 +45,14 @@ module.exports = override(
         '@menu-item-active-border-width': 0,
         '@menu-icon-size': '18px',
         '@menu-item-color': '#595A5A',
-        '@menu-item-vertical-margin': 0
+        '@menu-item-vertical-margin': 0,
+
+        '@control-padding-horizontal': '16px',
+        '@input-height-base': '42px',
+        '@input-placeholder-color': '#999',
+
+        '@typography-title-font-weight': 400,
+        '@typography-title-margin-bottom': '16px'
       }
     }
   })

@@ -1,16 +1,1 @@
 @import './variables.scss';
-@import './overrides.scss';
-@import 'layout.scss';
-
-html {
-  font-size: 62.5%;
-}
-
-body {
-  text-rendering: optimizeLegibility;
-}
-
-p {
-  padding: 0;
-  margin: 0;
-}
