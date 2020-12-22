@@ -106,6 +106,9 @@ class LoginPage extends React.Component {
           <Link className="ant-btn ant-btn-default login-form-button" style={{ marginTop: '.5rem' }} to="/e-sign-login">
             Войти с помощью ЭЦП
           </Link>
+          <Link className="ant-btn ant-btn-default login-form-button" style={{ marginTop: '.5rem' }} to="/tzi-sign-login">
+            Войти с помощью ЭЦП(ТЗИ)
+          </Link>
           <Link className="ant-btn ant-btn-default login-form-button" style={{ marginTop: '.5rem' }}
             onClick={(event) => {
               event.preventDefault()
