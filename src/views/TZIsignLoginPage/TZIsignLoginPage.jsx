@@ -14,7 +14,7 @@ const TZIsignLoginPage = ({ config: { data } }) => {
 
   const isConfig = data.co_brand_config
 
-  const handleTZIVerifyFile = (item) => {
+  const signLogin = (item) => {
     try {
       let sign = {}
       sign.data = Base64.encode('new company')
