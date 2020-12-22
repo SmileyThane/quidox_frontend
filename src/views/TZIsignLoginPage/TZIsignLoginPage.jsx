@@ -3,7 +3,7 @@ import { message, notification, Typography } from 'antd'
 
 import { Button } from '../../components'
 import axios from 'axios'
-import { verifyFileTZI } from '../../store/actions/files'
+import { Base64 } from 'js-base64'
 import { api } from '../../services'
 import history from '../../history'
 // import axios from 'axios'
