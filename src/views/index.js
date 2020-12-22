@@ -19,6 +19,7 @@ import SingleSharedDocumentPage from './SingleSharedDocumentPage'
 import EsignLoginPage from './EsignLoginPage'
 import EsignFirstStepPage from './EsignFirstStepPage'
 import ExternalRedirectPage from './ExternalRedirectPage'
+import TZIsignLoginPage from './TZIsignLoginPage'
 
 export {
   LoginPage,
@@ -40,6 +41,7 @@ export {
   StoredRegistryPage,
   SingleSharedDocumentPage,
   EsignLoginPage,
+  TZIsignLoginPage,
   ExternalRedirectPage,
   EsignFirstStepPage
 }

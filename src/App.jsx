@@ -23,6 +23,7 @@ import {
   StoredRegistryPage,
   EsignLoginPage,
   EsignFirstStepPage,
+  TZIsignLoginPage,
   ExternalRedirectPage,
   CompleteResetForm
 } from './views'
@@ -60,6 +61,7 @@ function App () {
           <ProtectedRoute path='/document/:id/shared/:code' component={SingleSharedDocumentPage} />
           <WhitePageRoute path='/e-sign-first-step' component={EsignFirstStepPage} />
           <WhitePageRoute path='/e-sign-login' component={EsignLoginPage} />
+          <WhitePageRoute path='/tzi-sign-login' component={TZIsignLoginPage} />
           <WhitePageRoute path='/external/auth' component={ExternalRedirectPage} />
           <PublicRoute path='*' component={LoginPage} />
         </Switch>
