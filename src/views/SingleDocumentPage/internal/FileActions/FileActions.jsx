@@ -202,16 +202,17 @@ const FileActions = props => {
           let sign = {}
           sign.data = data.data.encoded_base64_file
           sign.isDetached = true
-          sign.token_qdx = window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken')
+          sign.token_qdx = 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken')
           const request = axios.post('http://127.0.0.1:8083/sign', sign)
             .then(({ data }) => {
               if (data.cms) {
                 let signObj = {}
                 signObj.raw_sign = data.cms
                 signObj.comment = 'Подписано при помощи сервиса НИИ ТЗИ'
+                console.log(sign.token_qdx)
                 axios.post(`${process.env.REACT_APP_BASE_URL}/attachment/${item.id}/sign/add`, signObj, {
                   headers: {
-                    'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken'),
+                    'Authorization': sign.token_qdx,
                   }
                 })
                   .then(({ data }) => {

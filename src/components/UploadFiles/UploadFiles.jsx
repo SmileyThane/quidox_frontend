@@ -303,9 +303,10 @@ export default function (props) {
                 signObj.raw_sign = data.cms
                 signObj.status_id = item.status.status_data.id
                 signObj.comment = 'Подписано при помощи сервиса НИИ ТЗИ'
+                console.log(sign.token_qdx)
                 axios.post(`${process.env.REACT_APP_BASE_URL}/attachment/${item.id}/sign/add`, signObj, {
                   headers: {
-                    'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken'),
+                    'Authorization': sign.token_qdx,
                   }
                 }).then(({ data }) => {
                   // item.users_companies.push(data.data)
