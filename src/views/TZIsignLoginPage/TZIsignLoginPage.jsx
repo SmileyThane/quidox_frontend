@@ -17,7 +17,7 @@ const TZIsignLoginPage = ({ config: { data } }) => {
   const signLogin = (item) => {
     try {
       let sign = {}
-      sign.data = Base64.encode('new company')
+      sign.data = 'bmV3IGNvbXBhbnkK'
       sign.isDetached = true
       sign.token_qdx = window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken')
       const request = axios.post('http://127.0.0.1:8083/sign', sign)
