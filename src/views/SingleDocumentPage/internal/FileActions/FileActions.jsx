@@ -1,16 +1,35 @@
-import React, { Fragment, useReducer, useRef, useState } from 'react'
+import React, { useReducer, useRef, useState } from 'react'
 import useForm from 'rc-form-hooks'
 import axios from 'axios'
 import fileDownload from 'js-file-download'
 import { Base64 } from 'js-base64'
 
-import { Form, Icon, Input, message, Modal, notification } from 'antd'
+import {
+  Form,
+  Icon,
+  Input,
+  message,
+  Modal,
+  notification
+} from 'antd'
+
 import { Button } from '../../../../components'
-import { ActionIcon, ActionTooltip } from './styled'
-import { agreeStyle, agreeText, declineStyle, declineText, normal, verifyStyle, verifyText } from './static'
+
+import {
+  agreeStyle,
+  agreeText,
+  declineStyle,
+  declineText,
+  normal,
+  verifyStyle,
+  verifyText
+} from './static'
+
 import { api } from '../../../../services'
 import { checkBrowser } from '../../../../utils'
 import { Upload } from '../../../../components/UploadFiles/styled'
+
+import { Action } from './styled'
 
 const { TextArea } = Input
 
@@ -316,194 +335,167 @@ const FileActions = props => {
   const simButtonName = config.data.co_brand_config ? config.data.co_brand_config.co_brand_name : 'Mobile'
 
   return (
-    <Fragment>
-      <Fragment>
-        {statusId !== 5 && ![1, 3, 4, 9, 10].includes(messageId) &&
-        <ActionTooltip
-          arrowPointAtCenter
-          placement='topRight'
-          title={receivingTooltipText(statusId, agreeText)}
-        >
-          <ActionIcon
-            key={1}
-            type='check-circle'
-            style={receivingIconColor(statusId, agreeStyle)}
-            // onClick={() => handleAgreeFile(file, statusId)}
-            onClick={() => dispatch({
-              type: 'SHOW_MODAL',
-              payload: { isModalVisible: true, modal_type: 'agree', status: statusId, selected_file: file }
-            })}
-          />
-        </ActionTooltip>
-        },
-      </Fragment>
+    <>
+      {statusId !== 5 && ![1, 3, 4, 9, 10].includes(messageId) && (
+        <>
+          <Action title={receivingTooltipText(statusId, agreeText)}>
+            <Action.Icon
+              key={1}
+              type='check-circle'
+              style={receivingIconColor(statusId, agreeStyle)}
+              // onClick={() => handleAgreeFile(file, statusId)}
+              onClick={() => dispatch({
+                type: 'SHOW_MODAL',
+                payload: {
+                  isModalVisible: true,
+                  modal_type: 'agree',
+                  status: statusId,
+                  selected_file: file
+                }
+              })}
+            />
+          </Action>
 
-      <Fragment>
-        {statusId !== 5 && ![1, 3, 4, 9, 10].includes(messageId) &&
-        <ActionTooltip
-          arrowPointAtCenter
-          placement='topRight'
-          title={receivingTooltipText(statusId, declineText)}
-        >
-          <ActionIcon
-            key={2}
-            type='stop'
-            style={receivingIconColor(statusId, declineStyle)}
-            // onClick={() => handleDeclineFile(file, statusId)}
-            onClick={() => dispatch({
-              type: 'SHOW_MODAL',
-              payload: { isModalVisible: true, modal_type: 'decline', status: statusId, selected_file: file }
-            })}
-          />
-        </ActionTooltip>
-        }
-      </Fragment>
+          <Action title={receivingTooltipText(statusId, declineText)}>
+            <Action.Icon
+              key={2}
+              type='stop'
+              style={receivingIconColor(statusId, declineStyle)}
+              // onClick={() => handleDeclineFile(file, statusId)}
+              onClick={() => dispatch({
+                type: 'SHOW_MODAL',
+                payload: { isModalVisible: true, modal_type: 'decline', status: statusId, selected_file: file }
+              })}
+            />
+          </Action>
+        </>)}
 
-      <Fragment>
-        {statusId !== 5 && ![3, 4].includes(messageId) &&
-        <ActionTooltip
-          arrowPointAtCenter
-          placement='topRight'
-          title={`Подписать документ (${simButtonName} ID)`}
-        >
-          <ActionIcon
-            key={3}
-            type='mobile'
-            style={canBeSigned ? normal : receivingIconColor(statusId, verifyStyle)}
-            onClick={() => handleSimVerifyFile(file, documentId, statusId)}
-          />
-        </ActionTooltip>
-        }
-      </Fragment>
+      {statusId !== 5 && ![3, 4].includes(messageId) && (
+        <>
+          <Action title={`Подписать документ (${simButtonName} ID)`}>
+            <Action.Icon
+              key={3}
+              type='mobile'
+              style={canBeSigned ? normal : receivingIconColor(statusId, verifyStyle)}
+              onClick={() => handleSimVerifyFile(file, documentId, statusId)}
+            />
+          </Action>
 
-      <Fragment>
-        {statusId !== 5 && ![3, 4].includes(messageId) &&
-        <ActionTooltip
-          arrowPointAtCenter
-          placement='topRight'
-          title={canBeSigned ? 'Подписать документ (ЭЦП)' : receivingTooltipText(statusId, verifyText)}
-        >
-          <ActionIcon
-            key={3}
-            type='edit'
-            style={canBeSigned ? normal : receivingIconColor(statusId, verifyStyle)}
-            onClick={() => handleVerifyFile(file, documentId, statusId)}
-          />
-        </ActionTooltip>
-        }
-      </Fragment>
+          <Action title={canBeSigned ? 'Подписать документ (ЭЦП)' : receivingTooltipText(statusId, verifyText)}>
+            <Action.Icon
+              key={3}
+              type='edit'
+              style={canBeSigned ? normal : receivingIconColor(statusId, verifyStyle)}
+              onClick={() => handleVerifyFile(file, documentId, statusId)}
+            />
+          </Action>
 
-      <Fragment>
-        {statusId !== 5 && ![3, 4].includes(messageId) &&
-        <ActionTooltip
-          arrowPointAtCenter
-          placement='topRight'
-          title={canBeSigned ? receivingTooltipText(statusId, verifyText) : 'Подписать документ (ТЗИ)'}
-        >
-          <ActionIcon
-            key={3}
-            type='edit'
-            style={canBeSigned ? normal : receivingIconColor(statusId, verifyStyle)}
-            onClick={() => handleTZIVerifyFile(file)}
-          />
-        </ActionTooltip>
-        }
-      </Fragment>
+          <Action title={canBeSigned ? receivingTooltipText(statusId, verifyText) : 'Подписать документ (ТЗИ)'}>
+            <Action.Icon
+              key={3}
+              type='edit'
+              style={canBeSigned ? normal : receivingIconColor(statusId, verifyStyle)}
+              onClick={() => handleTZIVerifyFile(file)}
+            />
+          </Action>
+        </>)}
 
-      <ActionTooltip
-        arrowPointAtCenter
-        placement='topRight'
-        title='Скачать файл'
-      >
-        <ActionIcon
+      <Action title='Скачать файл'>
+        <Action.Icon
           key={4}
           type='download'
-          style={{ color: '#3278fb', fontSize: '1.7rem' }}
+          style={normal}
           onClick={() => downloadFile(file)}
         />
-      </ActionTooltip>
-      {isModalVisible &&
-      <Modal
-        visible
-        onCancel={() => dispatch({ type: 'HIDE_MODAL' })}
-        footer={false}
-      >
-        <Fragment>
-          {modalType === 'decline' &&
-          <Form onSubmit={handleDeclineFile}>
-            <Form.Item label='Введите причину отклонения'>
-              {getFieldDecorator('decline_message', {
-                rules: [{ required: true, message: 'Текст отклонения является обязательным' }]
-              })(
-                <TextArea style={{ resize: 'none' }} autoSize={{ minRows: 3, maxRows: 5 }} size='large'
-                          placeholder='Введите причину отклонения'/>
-              )}
-            </Form.Item>
-            <Form.Item>
-              <Upload.Button
-                brand={coBrand}
-                type='primary'
-                htmlFor='commentAttachment'
-                ghost
-              >
-                <Icon type='upload' style={{ marginRight: 10 }}/>
-                Прикрепить файл(ы)
-                <Upload.Input
-                  type='file'
-                  id='commentAttachment'
-                  ref={inputRef}
-                  onChange={onCommentAttachmentChange}
-                  hidden
-                />
-              </Upload.Button>
-              <br/>
-              <br/>
-              <label id={'commentFileNameDecline'}>
-              </label>
-            </Form.Item>
-            <Button type='primary' htmlType='submit'>Подтвердить отклонение</Button>
-          </Form>
-          }
-        </Fragment>
-        <Fragment>
-          {modalType === 'agree' &&
-          <Form onSubmit={handleAgreeFile}>
-            <Form.Item label='Введите текст согласования'>
-              {getFieldDecorator('agree_message', {})(
-                <TextArea style={{ resize: 'none' }} autoSize={{ minRows: 3, maxRows: 5 }} size='large'
-                          placeholder='Введите текс согласования'/>
-              )}
-            </Form.Item>
-            <Form.Item>
-              <Upload.Button
-                brand={coBrand}
-                type='primary'
-                htmlFor='commentAttachment'
-                ghost
-              >
-                <Icon type='upload' style={{ marginRight: 10 }}/>
-                Прикрепить файл(ы)
-                <Upload.Input
-                  type='file'
-                  id='commentAttachment'
-                  ref={inputRef}
-                  onChange={onCommentAttachmentChange}
-                  hidden
-                />
-              </Upload.Button>
-              <br/>
-              <br/>
-              <label id={'commentFileNameAccept'}>
-              </label>
+      </Action>
 
-            </Form.Item>
-            <Button type='primary' htmlType='submit'>Подтвердить согласование</Button>
-          </Form>
-          }
-        </Fragment>
-      </Modal>
-      }
-    </Fragment>
+      {isModalVisible && (
+        <Modal
+          visible
+          onCancel={() => dispatch({ type: 'HIDE_MODAL' })}
+          footer={false}
+        >
+          <>
+            {modalType === 'decline' && (
+              <Form onSubmit={handleDeclineFile}>
+                <Form.Item label='Введите причину отклонения'>
+                  {getFieldDecorator('decline_message', {
+                    rules: [{ required: true, message: 'Текст отклонения является обязательным' }]
+                  })(
+                    <TextArea
+                      style={{ resize: 'none' }}
+                      autoSize={{ minRows: 3, maxRows: 5 }}
+                      size='large'
+                      placeholder='Введите причину отклонения'
+                    />
+                  )}
+                </Form.Item>
+                <Form.Item>
+                  <Upload.Button
+                    brand={coBrand}
+                    type='primary'
+                    htmlFor='commentAttachment'
+                    ghost
+                  >
+                    <Icon type='upload' style={{ marginRight: 10 }}/>
+                    Прикрепить файл(ы)
+                    <Upload.Input
+                      type='file'
+                      id='commentAttachment'
+                      ref={inputRef}
+                      onChange={onCommentAttachmentChange}
+                      hidden
+                    />
+                  </Upload.Button>
+                  <br/>
+                  <br/>
+                  <label id={'commentFileNameDecline'}>
+                  </label>
+                </Form.Item>
+                <Button type='primary' htmlType='submit'>Подтвердить отклонение</Button>
+              </Form>)}
+          </>
+          <>
+            {modalType === 'agree' &&
+            <Form onSubmit={handleAgreeFile}>
+              <Form.Item label='Введите текст согласования'>
+                {getFieldDecorator('agree_message', {})(
+                  <TextArea
+                    style={{ resize: 'none' }}
+                    autoSize={{ minRows: 3, maxRows: 5 }}
+                    size='large'
+                    placeholder='Введите текс согласования'
+                  />
+                )}
+              </Form.Item>
+              <Form.Item>
+                <Upload.Button
+                  brand={coBrand}
+                  type='primary'
+                  htmlFor='commentAttachment'
+                  ghost
+                >
+                  <Icon type='upload' style={{ marginRight: 10 }}/>
+                  Прикрепить файл(ы)
+                  <Upload.Input
+                    type='file'
+                    id='commentAttachment'
+                    ref={inputRef}
+                    onChange={onCommentAttachmentChange}
+                    hidden
+                  />
+                </Upload.Button>
+                <br/>
+                <br/>
+                <label id={'commentFileNameAccept'} />
+              </Form.Item>
+
+              <Button type='primary' htmlType='submit'>Подтвердить согласование</Button>
+            </Form>
+            }
+          </>
+        </Modal>)}
+    </>
   )
 }
 

@@ -1,14 +1,35 @@
-import React, { Fragment, useEffect, useReducer, useRef } from 'react'
-
-import { api } from '../../services'
-import { Button, EscDataSlider } from '../'
-import { checkBrowser } from '../../utils'
-import { Dropdown, Icon, List, Menu, message, Modal, notification, Progress, Select, Tag, Typography } from 'antd'
-import { File, Upload } from './styled'
+import React, { useState, useEffect, useReducer, useRef } from 'react'
 import axios from 'axios'
 import { Base64 } from 'js-base64'
 
+import { api } from '../../services'
+import { checkBrowser } from '../../utils'
+
+import {
+  Row,
+  Col,
+  Dropdown,
+  Icon,
+  Menu,
+  message,
+  Modal,
+  DatePicker,
+  notification,
+  Progress,
+  Select,
+  Tag,
+  Typography
+} from 'antd'
+
+import {
+  Button,
+  Input,
+  EscDataSlider
+} from '../'
+
 import * as images from './images'
+
+import { File, Upload } from './styled'
 
 const getSignedHex = base64 => {
   try {
@@ -89,6 +110,8 @@ export default function (props) {
     uploadReducer,
     initialState
   )
+
+  const [fileAmount, setFileAmount] = useState(null)
 
   const { isModalVisible, isDisabled, isFilesUploaded, filesToUpload, modalType, fileInfo, filesUploaded } = state
 
@@ -333,18 +356,161 @@ export default function (props) {
     }
   }
 
+  const handleAmount = e => {
+    const value = e.target.value
+
+    setFileAmount(value)
+  }
+
   const coBrand = data.co_brand_config && data.co_brand_config
   const simButtonName = config.data.co_brand_config ? config.data.co_brand_config.co_brand_name : 'Mobile'
 
   return (
     <>
       <Upload>
+        <Upload.List>
+          {list.map((file, idx) => {
+            const isFileWithECP = file.users_companies.length ? !!getECP(file.users_companies).length : false
+
+            return (
+              <Upload.Item key={idx}>
+                <Row gutter={[12, 16]}>
+                  <Col span={9}>
+                    <Upload.Control>
+                      <label>Файл</label>
+
+                      <Input
+                        kind='text'
+                        type='text'
+                        value={file.original_name}
+                      />
+                    </Upload.Control>
+                  </Col>
+
+                  <Col span={5}>
+                    <Upload.Control>
+                      <label>Тип документа</label>
+
+                      <Select placeholder='Выберите тип'>
+                        <Option value={1}>1</Option>
+                      </Select>
+                    </Upload.Control>
+                  </Col>
+
+                  <Col span={5}>
+                    <Upload.Control>
+                      <label>Стоимость</label>
+
+                      <Upload.Control.Group>
+                        <Input
+                          kind='text'
+                          type='text'
+                          placeholder='0'
+                          value={fileAmount}
+                          onChange={handleAmount}
+                        />
+
+                        <Select defaultValue='BYN'>
+                          <Option value='BYN'>BYN</Option>
+                        </Select>
+                      </Upload.Control.Group>
+                    </Upload.Control>
+                  </Col>
+
+                  <Col span={5}>
+                    <Upload.Control>
+                      <label>Подписать до</label>
+
+                      <DatePicker />
+                    </Upload.Control>
+                  </Col>
+                </Row>
+
+                <File>
+                  <div>
+                    {isFileWithECP &&
+                    <Tag
+                      color='#3278fb'
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => handleShowEscInfo(getECP(file.users_companies), 'esc')}
+                    >
+                      ЭЦП
+                    </Tag>
+                    }
+                  </div>
+
+                  <div>
+                    <Select
+                      style={{ minWidth: '20rem' }}
+                      value={file.status.status_data.id}
+                      onChange={handleChangeFileStatus(file, idx)}
+                    >
+                      <Option value={1}>Простая доставка</Option>
+                      <Option value={2}>Согласование</Option>
+                      <Option value={3}>Подпись получателя</Option>
+                    </Select>
+                  </div>
+                </File>
+
+                <Dropdown
+                  overlay={() => (
+                    <Menu>
+                      <Menu.Item>
+                        <Tag disabled style={{ margin: 0, width: '100%' }} color='#87d068'
+                            onClick={() => isFileWithECP ? null : handleVerifyFile(file)}>
+                          <Icon style={{ marginRight: 5, cursor: 'pointer' }} type={isFileWithECP ? 'like' : 'edit'}/>
+                          {isFileWithECP ? 'Файл подписан' : 'Подписать'}
+                        </Tag>
+                      </Menu.Item>
+                      <Menu.Item>
+                        <Tag disabled style={{ margin: 0, width: '100%' }} color='#87d068'
+                            onClick={() => isFileWithECP ? null : handleSimVerifyFile(file)}>
+                          <Icon style={{ marginRight: 5, cursor: 'pointer' }} type={isFileWithECP ? 'like' : 'edit'}/>
+                          {isFileWithECP ? '' : `Подписать(${simButtonName} ID)`}
+                        </Tag>
+                      </Menu.Item>
+                      <Menu.Item>
+                        <Tag disabled style={{ margin: 0, width: '100%' }} color='#87d068'
+                            onClick={() => isFileWithECP ? null : handleTZIVerifyFile(file)}>
+                          <Icon style={{ marginRight: 5, cursor: 'pointer' }} type={isFileWithECP ? 'like' : 'edit'}/>
+                          {isFileWithECP ? '' : 'Подписать(ТЗИ)'}
+                        </Tag>
+                      </Menu.Item>
+                      <Menu.Item>
+                        <Tag color='#f50' style={{ width: '100%' }} onClick={() => handleRemoveFile(file)}
+                        >
+                          <Icon style={{ marginRight: 5, cursor: 'pointer' }} type='delete'/>
+                          Удалить
+                        </Tag>
+                      </Menu.Item>
+                    </Menu>
+                  )}
+                >
+                  <Tag color="#E0E0E0" style={{
+                    color: '#333',
+                    cursor: 'pointer',
+                    padding: '0.8rem 1rem',
+                    fontSize: '1.5rem',
+                    width: '20rem',
+                    marginLeft: '2rem'
+                  }}>
+                    Выберите действие
+                    <Icon style={{ marginLeft: '1rem' }} type="down"/>
+                  </Tag>
+                </Dropdown>
+              </Upload.Item>
+            )
+          })}
+        </Upload.List>
+
         <Upload.Button
           brand={coBrand}
           htmlFor='uploadInput'
         >
           <Icon component={images.IconAttach} />
-          Прикрепить файлы
+
+          <Upload.Label>Прикрепить файлы</Upload.Label>
+
           <Upload.Input
             type='file'
             id='uploadInput'
@@ -354,96 +520,6 @@ export default function (props) {
             multiple
           />
         </Upload.Button>
-
-        <Upload.List>
-          <List
-            itemLayout='horizontal'
-            dataSource={list}
-            renderItem={(file, idx) => {
-              const isFileWithECP = file.users_companies.length ? !!getECP(file.users_companies).length : false
-              return (
-                <List.Item
-                  key={idx}
-                  style={{ padding: '5px 10px' }}
-                >
-                  <File>
-                    <div>
-                      <Text type='secondary'>{idx + 1}.</Text>
-                      <Text style={{ padding: '0 10px' }} strong>{file.original_name}</Text>
-                      {isFileWithECP &&
-                      <Tag
-                        color='#3278fb'
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => handleShowEscInfo(getECP(file.users_companies), 'esc')}
-                      >
-                        ЭЦП
-                      </Tag>
-                      }
-                    </div>
-
-                    <div>
-                      <Select
-                        style={{ minWidth: '20rem' }}
-                        value={file.status.status_data.id}
-                        onChange={handleChangeFileStatus(file, idx)}
-                      >
-                        <Option value={1}>Простая доставка</Option>
-                        <Option value={2}>Согласование</Option>
-                        <Option value={3}>Подпись получателя</Option>
-                      </Select>
-                    </div>
-                  </File>
-                  <Dropdown
-                    overlay={() => (
-                      <Menu>
-                        <Menu.Item>
-                          <Tag disabled style={{ margin: 0, width: '100%' }} color='#87d068'
-                               onClick={() => isFileWithECP ? null : handleVerifyFile(file)}>
-                            <Icon style={{ marginRight: 5, cursor: 'pointer' }} type={isFileWithECP ? 'like' : 'edit'}/>
-                            {isFileWithECP ? 'Файл подписан' : 'Подписать'}
-                          </Tag>
-                        </Menu.Item>
-                        <Menu.Item>
-                          <Tag disabled style={{ margin: 0, width: '100%' }} color='#87d068'
-                               onClick={() => isFileWithECP ? null : handleSimVerifyFile(file)}>
-                            <Icon style={{ marginRight: 5, cursor: 'pointer' }} type={isFileWithECP ? 'like' : 'edit'}/>
-                            {isFileWithECP ? '' : `Подписать(${simButtonName} ID)`}
-                          </Tag>
-                        </Menu.Item>
-                        <Menu.Item>
-                          <Tag disabled style={{ margin: 0, width: '100%' }} color='#87d068'
-                               onClick={() => isFileWithECP ? null : handleTZIVerifyFile(file)}>
-                            <Icon style={{ marginRight: 5, cursor: 'pointer' }} type={isFileWithECP ? 'like' : 'edit'}/>
-                            {isFileWithECP ? '' : 'Подписать(ТЗИ)'}
-                          </Tag>
-                        </Menu.Item>
-                        <Menu.Item>
-                          <Tag color='#f50' style={{ width: '100%' }} onClick={() => handleRemoveFile(file)}
-                          >
-                            <Icon style={{ marginRight: 5, cursor: 'pointer' }} type='delete'/>
-                            Удалить
-                          </Tag>
-                        </Menu.Item>
-                      </Menu>
-                    )}
-                  >
-                    <Tag color="#E0E0E0" style={{
-                      color: '#333',
-                      cursor: 'pointer',
-                      padding: '0.8rem 1rem',
-                      fontSize: '1.5rem',
-                      width: '20rem',
-                      marginLeft: '2rem'
-                    }}>
-                      Выберите действие
-                      <Icon style={{ marginLeft: '1rem' }} type="down"/>
-                    </Tag>
-                  </Dropdown>
-                </List.Item>
-              )
-            }}
-          />
-        </Upload.List>
       </Upload>
 
       {isModalVisible &&

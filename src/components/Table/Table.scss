@@ -1,69 +1,68 @@
 @import '../../styles/variables';
-.document-table {
-
-}
-.ant-table-title {
-  background-color: #fafafa;
-  border-bottom: .1rem solid map-get($colors, gray);
-  top: 0 !important;
-}
-.table__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  flex-wrap: wrap;
-  .table-header__actions {
-    padding: 0 0 1rem 1.4rem;
+.table-old {
+  .ant-table-title {
+    background-color: #fafafa;
+    border-bottom: .1rem solid map-get($colors, gray);
+    top: 0 !important;
   }
-  &.table-header-bottom {
-    justify-content: flex-start;
-    padding-left: 5.6rem;
-  }
-  .table-header__search {
-    width: 100%;
+  .table__header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    // max-width: 55rem;
-  }
-}
-.ant-table-title {
-  padding: .5rem 0 !important;
-}
-.ant-table-tbody {
-  .ant-table-row {
-    td {
-      text-align: left;
+    padding: 1rem 2rem;
+    flex-wrap: wrap;
+    .table-header__actions {
+      padding: 0 0 1rem 1.4rem;
+    }
+    &.table-header-bottom {
+      justify-content: flex-start;
+      padding-left: 5.6rem;
+    }
+    .table-header__search {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      // max-width: 55rem;
     }
   }
-}
-.table-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  .table-footer-left {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
+  .ant-table-title {
+    padding: .5rem 0 !important;
   }
-
-  .table-footer__item {
-    &:first-of-type {
-      margin-right: 1rem;
+  .ant-table-tbody {
+    .ant-table-row {
+      td {
+        text-align: left;
+      }
     }
   }
-}
-.status-column,
-.date-column,
-.table-download {
-  text-align: center !important;
-}
-.ant-table-body {
-  .unread {
-    background-color: rgba(242,245,245,0.8);
-    td {
-      font-weight: bold;
+  .table-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .table-footer-left {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    .table-footer__item {
+      &:first-of-type {
+        margin-right: 1rem;
+      }
+    }
+  }
+  .status-column,
+  .date-column,
+  .table-download {
+    text-align: center !important;
+  }
+  .ant-table-body {
+    .unread {
+      background-color: rgba(242,245,245,0.8);
+      td {
+        font-weight: bold;
+      }
     }
   }
 }

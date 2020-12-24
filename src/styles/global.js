@@ -41,4 +41,58 @@ export default createGlobalStyle`
       }
     }
   }
+
+  .ant-tag {
+    line-height: 2.2rem !important;
+
+    &.ant-tag-orange {
+      border: 0;
+      color: ${colors.orange};
+    }
+  }
+
+  .ui-table-inside {
+    .ant-table {
+      .ant-table-thead {
+        th {
+          background: transparent;
+          border: 0;
+          color: ${colors.gray.dark};
+          font-size: 1.2rem;
+          padding: 0 1.2rem;
+
+          &:first-child {
+            padding-left: 0;
+          }
+
+          &:last-child {
+            padding-right: 0;
+          }
+        }
+      }
+
+      .ant-table-tbody {
+        .ant-table-row {
+          &:hover {
+            td {
+              background-color: ${colors.white};
+            }
+          }
+
+          td {
+            border-color: ${colors.gray.middle};
+            padding: 1.6rem 1.2rem;
+
+            &:first-child {
+              padding-left: 0;
+            }
+
+            &:last-child {
+              padding-right: 0;
+            }
+          }
+        }
+      }
+    }
+  }
 `

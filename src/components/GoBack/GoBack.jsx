@@ -1,12 +1,18 @@
 import React from 'react'
 
+import { Icon } from 'antd'
+
 import history from '../../history'
-import GoBack from './styled'
-export default function ({ config: { data }, children, ...rest }) {
-  const coBrand = data.co_brand_config && data.co_brand_config
+
+import { Button } from './styled'
+
+export default ({ ...rest }) => {
   return (
-    <GoBack brand={coBrand} onClick={() => history.goBack()} {...rest}>
-      {children}
-    </GoBack>
+    <Button
+      onClick={() => history.goBack()}
+      {...rest}
+    >
+      <Icon type='left' />
+    </Button>
   )
 }
