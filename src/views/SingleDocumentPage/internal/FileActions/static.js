@@ -1,24 +1,29 @@
-const disabled = {
-  color: '#E0E0E0',
-  fontSize: '1.6rem',
-  cursor: 'not-allowed'
-}
-export const normal = {
-  color: '#3278fb',
-  fontSize: '1.6rem'
+import { styleguide } from '../../../../constants'
+
+const { colors } = styleguide
+
+const normal = {
+  color: colors.primary,
+  fontSize: '1.8rem'
 }
 
 const active = {
-  color: 'green',
-  fontSize: '1.6rem'
+  color: colors.green,
+  fontSize: '1.8rem'
 }
 
 const decline = {
-  color: 'red',
-  fontSize: '1.6rem'
+  color: colors.red,
+  fontSize: '1.8rem'
 }
 
-export const agreeText = [
+const disabled = {
+  color: colors.gray.middle,
+  fontSize: '1.8rem',
+  cursor: 'not-allowed'
+}
+
+const agreeText = [
   {
     status: 1,
     text: 'Согласование не требуется'
@@ -41,7 +46,7 @@ export const agreeText = [
   }
 ]
 
-export const declineText = [
+const declineText = [
   {
     status: 1,
     text: 'Нельзя отклонить, документ для ознакомления'
@@ -64,10 +69,10 @@ export const declineText = [
   }
 ]
 
-export const verifyText = [
+const verifyText = [
   {
     status: 1,
-    text: 'Подписание не требуется',
+    text: 'Подписание не требуется'
   },
   {
     status: 2,
@@ -87,7 +92,7 @@ export const verifyText = [
   }
 ]
 
-export const agreeStyle = [
+const agreeStyle = [
   {
     status: 1,
     style: disabled
@@ -110,7 +115,7 @@ export const agreeStyle = [
   }
 ]
 
-export const declineStyle = [
+const declineStyle = [
   {
     status: 1,
     style: disabled
@@ -133,7 +138,7 @@ export const declineStyle = [
   }
 ]
 
-export const verifyStyle = [
+const verifyStyle = [
   {
     status: 1,
     style: disabled
@@ -155,3 +160,16 @@ export const verifyStyle = [
     style: disabled
   }
 ]
+
+export {
+  normal,
+  active,
+  decline,
+  disabled,
+  agreeText,
+  declineText,
+  verifyText,
+  agreeStyle,
+  declineStyle,
+  verifyStyle
+}

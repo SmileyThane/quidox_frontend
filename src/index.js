@@ -7,11 +7,17 @@ import { Provider } from 'react-redux'
 import { store } from './store'
 import App from './App'
 
+import { ConfigProvider } from 'antd'
+
+import ruRU from 'antd/es/locale/ru_RU'
+
 import './styles/app.scss'
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <ConfigProvider locale={ruRU}>
+      <App />
+    </ConfigProvider>
   </Provider>,
   document.getElementById('root')
 )

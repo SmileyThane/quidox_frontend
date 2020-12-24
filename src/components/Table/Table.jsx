@@ -472,7 +472,7 @@ const AntdTable = props => {
       }
       <Spin spinning={tableState.isFetching}>
         <Table
-          className='table'
+          className='table table-old'
           scroll={{ x: true }}
           columns={columns}
           rowSelection={rowSelection}

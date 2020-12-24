@@ -1,203 +1,126 @@
 @import '../../styles/variables';
-.document {
-  padding: 1.5rem;
-  &.document_modal {
-    padding: 0;
-  }
-  .document__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 
-    .document__header_left {
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-    }
-  }
-  .document__icon {
-    font-size: 4rem;
-    color: map-get($colors, blue);
-    margin-right: 1.5rem;
-  }
-  .document__title {
-    font-size: 2rem;
-    margin: 0;
-  }
-  .document__date {
-    font-size: 1.5rem;
-  }
-  .document__content {
-    margin-top: 3rem;
-  }
-  .info__item {
-    display: flex;
-    justify-content: flex-start;
-    align-items: baseline;
-    margin-bottom: 1.5rem;
-    &:last-of-type {
-      margin-bottom: 0;
-    }
-  }
-  .info__title {
-    width: 14.2rem;
-    min-width: 14.2rem;;
-    padding-right: 1.5rem;
-    text-align: right;
-    color: map-get($colors, darkSecond);
-    font-size: 1.5rem;
-  }
-  .info__content {
-    padding-left: 1.5rem;
-    border-left: .1rem solid map-get($colors, gray);
-    font-size: 1.5rem;
-  }
-  .document__attached-doc {
-    margin-top: 4rem;
-  }
-  .document__actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 5rem !important;
-  }
-}
+// .pdf-container {
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   width: 100%;
+//   height: 100%;
+//   z-index: 10;
+//   padding: 4rem;
+//   background-color: rgba(map-get($colors, black), .6);
 
-.single-document {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  width: 100%;
+//   .pdf-container__close {
+//     height: 4rem;
+//     width: 100%;
+//     position: absolute;
+//     left: 0;
+//     top: 0;
+//     display: flex;
+//     justify-content: flex-end;
+//     align-items: center;
+//   }
+//   .close {
+//     width: 4rem;
+//     height: 4rem;
+//     max-width: 4rem;
+//     background-repeat: no-repeat;
+//     background-position: center;
+//     background-size: 80%;
+//     cursor: pointer;
+//     transition: .3s linear;
+//     &:hover {
+//       background-color: rgba(map-get($colors, black), .3);
+//     }
+//   }
+//   .img-wrapp {
+//     width: 100%;
+//     height: 100%;
+//     display: flex;
+//     flex-direction: column;
+//     justify-content: center;
+//   }
+//   .modal-img {
+//     width: 50%;
+//     height: auto;
+//     margin: 0 auto;
+//   }
+// }
+// .back {
+//   width: 4rem;
+//   height: 4rem;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   align-items: center;
+//   border: .1rem solid map-get($colors, blue);
+//   font-size: 2rem;
+//   color: map-get($colors, blue);
+//   transition: .3s linear;
+//   cursor: pointer;
+//   margin-right: 2rem;
+//   &:hover {
+//     background-color: rgba(map-get($colors, blue), .2);
+//   }
+// }
 
-  .single-document__name {
-    font-size: 1.5rem;
-    font-weight: 700;
-  }
-}
+// //cert modal
+// .modal-title {
+//   padding-bottom: 2rem;
+//   border-bottom: .1rem solid map-get($colors, gray);
+//   margin-bottom: 2rem;
+//   display: flex;
+//   align-content: center;
+//   justify-content: flex-start;
+// }
+// .cert-modal {
 
-.ant-list-item {
-  border-bottom: .1rem solid map-get($colors, gray) !important; 
-}
-.pdf-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10;
-  padding: 4rem;
-  background-color: rgba(map-get($colors, black), .6);
-
-  .pdf-container__close {
-    height: 4rem;
-    width: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-  }
-  .close {
-    width: 4rem;
-    height: 4rem;
-    max-width: 4rem;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: 80%;
-    cursor: pointer;
-    transition: .3s linear;
-    &:hover {
-      background-color: rgba(map-get($colors, black), .3);
-    }
-  }
-  .img-wrapp {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .modal-img {
-    width: 50%;
-    height: auto;
-    margin: 0 auto;
-  }
-}
-.back {
-  width: 4rem;
-  height: 4rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border: .1rem solid map-get($colors, blue);
-  font-size: 2rem;
-  color: map-get($colors, blue);
-  transition: .3s linear;
-  cursor: pointer;
-  margin-right: 2rem;
-  &:hover {
-    background-color: rgba(map-get($colors, blue), .2);
-  }
-}
-
-//cert modal
-.modal-title {
-  padding-bottom: 2rem;
-  border-bottom: .1rem solid map-get($colors, gray);
-  margin-bottom: 2rem;
-  display: flex;
-  align-content: center;
-  justify-content: flex-start;
-}
-.cert-modal {
-
-  .cert-modal__item {
-    display: flex;
-    margin-bottom: 1rem;
-  }
-  .cert-modal__item-left {
-    text-align: right;
-    flex-basis: 30%;
-    padding-right: .5rem;
-  }
-  .cert-modal__item-right {
-    text-align: left;
-    flex-basis: 70%;
-    padding-left: .5rem;
-    border-left: .1rem solid map_get($colors, gray);
-    display: flex;
-    flex-direction: column;
-  }
-  .cert-item {
-    margin-bottom: .5rem;
-  }
-}
-.arr-wrapp {
-  display: inline-block;
-  text-align: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: .4rem;
-  transition: .3s linear;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  &:first-of-type {
-    margin-left: 1rem;
-    margin-right: .5rem;
-  }
-  &:hover {
-    background: rgba(map-get($colors, blue), 0.2);
-  }
-}
-.edit-disabled {
-  cursor: not-allowed !important;
-}
-.document-title {
-  font-weight: bold;
-  font-size: 2rem;
-  color: rgba(0, 0, 0, .75);
-}
+//   .cert-modal__item {
+//     display: flex;
+//     margin-bottom: 1rem;
+//   }
+//   .cert-modal__item-left {
+//     text-align: right;
+//     flex-basis: 30%;
+//     padding-right: .5rem;
+//   }
+//   .cert-modal__item-right {
+//     text-align: left;
+//     flex-basis: 70%;
+//     padding-left: .5rem;
+//     border-left: .1rem solid map_get($colors, gray);
+//     display: flex;
+//     flex-direction: column;
+//   }
+//   .cert-item {
+//     margin-bottom: .5rem;
+//   }
+// }
+// .arr-wrapp {
+//   display: inline-block;
+//   text-align: center;
+//   width: 2rem;
+//   height: 2rem;
+//   border-radius: .4rem;
+//   transition: .3s linear;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   align-items: center;
+//   cursor: pointer;
+//   &:first-of-type {
+//     margin-left: 1rem;
+//     margin-right: .5rem;
+//   }
+//   &:hover {
+//     background: rgba(map-get($colors, blue), 0.2);
+//   }
+// }
+// .edit-disabled {
+//   cursor: not-allowed !important;
+// }
+// .document-title {
+//   font-weight: bold;
+//   font-size: 2rem;
+//   color: rgba(0, 0, 0, .75);
+// }

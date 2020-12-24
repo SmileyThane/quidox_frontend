@@ -1,22 +1,29 @@
 import styled from 'styled-components'
+import { rgba } from 'polished'
 
-const GoBack = styled.div`
-  width: 4rem;
-  height: 4rem;
+import { styleguide } from '../../constants'
+
+const { colors } = styleguide
+
+const Button = styled.div`
+  width: 4.2rem;
+  height: 4.2rem;
+  cursor: pointer;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: .1rem solid ${({ brand }) => brand ? brand.border_color : '#40a9ff'};
-  font-size: 2rem;
-  color: map-get($colors, blue);
+  border: .1rem solid ${rgba(colors.primary, 0.5)};
+  border-radius: .4rem;
+  font-size: 2.1rem;
+  color: ${colors.primary};
   transition: .3s linear;
-  cursor: pointer;
-  margin-right: 2rem;
+  margin-right: 2.8rem;
+
   &:hover {
-    background-color: ${({ brand }) => brand ? brand.border_color : '#40a9ff'};
-    color: ${({ brand }) => brand ? brand.brand_color : '#40a9ff'};
+    border-color: ${colors.primary};
   }
 `
 
-export default GoBack
+export {
+  Button
+}

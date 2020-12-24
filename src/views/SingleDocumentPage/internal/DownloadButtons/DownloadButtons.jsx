@@ -1,22 +1,18 @@
-import React, { Fragment, useState } from 'react'
+import React, { useState } from 'react'
 import axios from 'axios'
 import fileDownload from 'js-file-download'
 
-import { message, Icon } from 'antd'
+import { message } from 'antd'
+
 import { Button } from '../../../../components'
 import { api } from '../../../../services'
 
-const defaultState = {
-  fetching: [false, false]
-}
-const DownloadButtons = ({ document }) => {
-  const [state, setState] = useState({ ...defaultState })
+export default ({ document }) => {
+  const [isFetching, setIsFetching] = useState([false, false])
 
   const downloadArchive = (document, withCert = false) => {
-    setState({
-      ...state,
-      fetching: [!withCert, withCert]
-    })
+    setIsFetching([!withCert, withCert])
+
     api.document.downloadDocument(document.id, withCert)
       .then(({ data }) => {
         if (data.success) {
@@ -31,7 +27,8 @@ const DownloadButtons = ({ document }) => {
               if (data) {
                 fileDownload(data, `${document.author.company_number}_${document.created_at.split(' ')[0].split('-').join('')}_${document.name}.zip`)
                 message.success('Архив успешно загружен!')
-                setState({ ...defaultState })
+
+                setIsFetching([false, false])
               }
             })
             .catch(error => {
@@ -46,27 +43,13 @@ const DownloadButtons = ({ document }) => {
       })
   }
 
-  const { fetching } = state
   return (
-    <Fragment>
-      {/*<Button*/}
-      {/*  type='primary'*/}
-      {/*  onClick={() => downloadArchive(document, false)}*/}
-      {/*  style={{ marginRight: '2rem' }}*/}
-      {/*>*/}
-      {/*  <Icon type={fetching[0] ? 'loading' : 'file-zip'} />*/}
-      {/*  Скачать всe*/}
-      {/*</Button>*/}
-      <Button
-        type='primary'
-        onClick={() => downloadArchive(document, true)}
-      >
-        <Icon type={fetching[1] ? 'loading' : 'file-zip'} />
-        Скачать всe
-        {/*c сигнатурами*/}
-      </Button>
-    </Fragment>
+    <Button
+      type='primary'
+      icon={isFetching[1] ? 'loading' : 'download'}
+      onClick={() => downloadArchive(document, true)}
+    >
+      Скачать всe
+    </Button>
   )
 }
-
-export default DownloadButtons

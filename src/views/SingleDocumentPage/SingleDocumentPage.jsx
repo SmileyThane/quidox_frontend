@@ -1,27 +1,74 @@
 import React, { Fragment, useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import fileDownload from 'js-file-download'
 import axios from 'axios'
 import moment from 'moment'
 import _ from 'lodash'
 
-import forbiddenEmails from '../../constants/forbiddenEmails'
+import { api } from '../../services'
+import { findUsersByParams } from '../../services/api/user'
+import { copy2Clipboard } from '../../utils'
 import history from '../../history'
+import forbiddenEmails from '../../constants/forbiddenEmails'
 import PDFJSBACKEND from '../../backends/pdfjs'
 
-import { Icon, List, message, Modal, notification, Select, Spin, Tag, Tooltip, Typography } from 'antd'
-import { DownloadButtons, FileActions, FileHistory } from './internal'
-import { findUsersByParams } from '../../services/api/user'
-import { AvestErrorHandling, Button, EscDataSlider, PDFViewer, UploadFiles } from '../../components'
+import {
+  Table,
+  Icon,
+  List,
+  message,
+  Modal,
+  notification,
+  Select,
+  Spin,
+  Tag,
+  Tooltip,
+  Typography,
+  Descriptions
+} from 'antd'
+
+import {
+  DownloadButtons,
+  FileActions,
+  FileHistory
+} from './internal'
+
+import {
+  LayoutScroll,
+  FooterFixed,
+  GoBack,
+  AvestErrorHandling,
+  Button,
+  EscDataSlider,
+  PDFViewer,
+  UploadFiles
+} from '../../components'
+
 import { close } from '../../resources/img'
 
-import { api } from '../../services'
-import { copy2Clipboard } from '../../utils'
+import {
+  Layout,
+  Header,
+  Details,
+  Attached
+} from './styled'
+
+import { styleguide } from '../../constants'
+
 import './SingleDocumentPage.scss'
-import GoBack from '../../components/GoBack'
-import { Link } from 'react-router-dom'
-import fileDownload from "js-file-download"
 
 var signFetching = false
-const { Text, Paragraph } = Typography
+
+const { colors } = styleguide
+
+const {
+  Title,
+  Text,
+  Paragraph
+} = Typography
+
+const { Column } = Table
+
 const { Option } = Select
 
 const defaultDocumentState = {
@@ -59,8 +106,7 @@ const SingleDocumentPage = props => {
     getDocumentById,
     sendDocumentToUser,
     updateDocumentById,
-    getUser,
-
+    getUser
   } = props
 
   const { document, sender, recipient, statuses } = singleDocument
@@ -143,7 +189,6 @@ const SingleDocumentPage = props => {
       })
       .catch(error => {
         message.success('Система создает копию для предпросмотра. Пожалуйста подождите!')
-        // message.error(error.message)
       })
   }
 
@@ -170,25 +215,6 @@ const SingleDocumentPage = props => {
         fileCerts: dataArray
       })
     }
-  }
-
-  const showComment = (type, status) => {
-    setDocumentState({
-      ...documentState,
-      showModal: true,
-      modalType: type,
-      comment: status.comment,
-      commentLink: status.comment_link,
-      commentFile: status.comment_link_basename
-    })
-  }
-
-  const openHistoryModal = (history) => {
-    setDocumentState({
-      ...documentState,
-      isHistoryModalOpen: true,
-      fileHistory: history,
-    })
   }
 
   const closeHistoryModal = () => {
@@ -231,7 +257,6 @@ const SingleDocumentPage = props => {
       .catch(error => {
         message.error(error.message)
       })
-
   }
 
   const fetchUser = _.debounce(v => {
@@ -363,264 +388,291 @@ const SingleDocumentPage = props => {
         message.error(error.message)
       })
   }
-  console.log(documentState)
-  return (
-    <Fragment>
-      <Spin spinning={(isFetching || fetch)}>
-        <div className='content'>
-          <div className='document'>
-            <div className='document__header'>
-              <div className='document__header_left'>
-                <GoBack><Icon type='left'/></GoBack>
 
-                {(statuses && statuses.length && statuses[0].user_company_document_list_id === 1)
-                  ? <Paragraph
-                    className='document-title'
+  return (
+    <LayoutScroll withFooter>
+      <Layout>
+        <Layout.Inner>
+          <Spin spinning={(isFetching || fetch)}>
+            <Header>
+              <GoBack />
+
+              <Header.Inner>
+                {(statuses && statuses.length && statuses[0].user_company_document_list_id === 1) ? (
+                  <Header.Title
+                    level={3}
                     editable={{ onChange: handleEditDocumentName }}
                   >
                     {document && document.name}
-                  </Paragraph>
-                  : <h2 className='document__title'>{document && document.name}</h2>
-                }
-              </div>
+                  </Header.Title>
+                ) : (
+                  <Header.Title level={3}>
+                    {document && document.name}
+                  </Header.Title>
+                )}
 
-              <div className='document__header_right'>
-                <p className='document__date'>
+                <Header.Secondary>
                   {moment.utc(singleDocument.created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD/MM/YYYY HH:mm:ss')}
-                </p>
-              </div>
-            </div>
-            <div className='document__content'>
-              <div className='document__info info'>
-                <div className='info__item'>
-                  <div className='info__title'>Получатели</div>
-                  <div className='info__content'>
-                    {recipient &&
-                    <div style={{ padding: '.5rem 0' }}>
-                      <Text>{recipient['user_email']}</Text>
-                      <br/>
-                      <Text>{`[ ${recipient['company_name']} ]`}</Text>
-                    </div>
-                    }
-                  </div>
-                </div>
+                </Header.Secondary>
+              </Header.Inner>
+            </Header>
 
-                <div className='info__item'>
-                  <div className='info__title'>Отправители</div>
-                  <div className='info__content'>
-                    {sender &&
-                    <div>
-                      <Text>{sender.user_email}</Text>
-                      <br/>
-                      <Text>{`[ ${sender.company_name} ]`}</Text>
-                    </div>
-                    }
-                  </div>
-                </div>
+            <Details>
+              <Details.Inner>
+                <Details.Item>
+                  <Details.Label>Получатели:</Details.Label>
 
-                <div className='info__item'>
-                  <div className='info__title'>Комментарий</div>
-                  {(statuses && statuses.length && statuses[0].user_company_document_list_id === 1)
-                    ? <Paragraph
-                      editable={{ onChange: handleEditDocumentDescription }}
-                      className='info__content'
-                    >
+                  {recipient && (
+                    <Details.Info>
+                      <Details.Text>{recipient['user_email']}</Details.Text>
+                      <Details.Secondary>{recipient['company_name']}</Details.Secondary>
+                    </Details.Info>)}
+                </Details.Item>
+
+                <Details.Item>
+                  <Details.Label>Отправители:</Details.Label>
+
+                  {sender && (
+                    <Details.Info>
+                      <Details.Text>{sender.user_email}</Details.Text>
+                      <Details.Secondary>{sender.company_name}</Details.Secondary>
+                    </Details.Info>)}
+                </Details.Item>
+              </Details.Inner>
+
+              <Details.Inner>
+                <Details.Item align='vertical'>
+                  <Details.Label>Комментарий:</Details.Label>
+
+                  {(statuses && statuses.length && statuses[0].user_company_document_list_id === 1) ? (
+                    <Details.Text editable={{ onChange: handleEditDocumentDescription }}>
                       {document && document.description}
-                    </Paragraph>
-                    : <div className='info__content'>{document && document.description}</div>
-                  }
-                </div>
-              </div>
-              <div className='document__attached-doc attached-doc'>
-                {singleDocument.status_id !== 1
-                  ?
-                  <List
-                    itemLayout='horizontal'
-                    locale={{ emptyText: 'Нет приложенных документов' }}
-                    dataSource={document && document.attachments}
-                    style={{ maxHeight: '25rem', display: 'block', overflow: 'auto' }}
-                    renderItem={(item, index) => (
-                      <List.Item
-                        key={item.id}
-                        extra={
-                          <FileActions
-                            file={item}
-                            documentId={singleDocument.document.id}
-                            getDocument={() => getDocumentById(match.params.id)}
-                            canBeSigned={singleDocument.can_be_signed}
-                            messageId={singleDocument.status_id}
-                          />
-                        }
-                      >
-                        <div className='single-document'>
-                          <Tooltip
-                            title='Просмотреть содержимое файла'
-                            placement='top'
-                            arrowPointAtCenter
-                          >
-                            <Icon
-                              type='eye'
-                              style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }}
-                              onClick={() => showModal(item)}
-                            />
-                          </Tooltip>
+                    </Details.Text>
+                  ) : (
+                    <Details.Text>{document && document.description}</Details.Text>
+                  )}
+                </Details.Item>
+              </Details.Inner>
+            </Details>
 
-                          <p style={{ marginRight: 10 }} className='single-document__name'>{item.name}</p>
+            {singleDocument.status_id !== 1 ? (
+              <Attached>
+                <Table
+                  className='ui-table-inside'
+                  rowKey={record => record.id}
+                  dataSource={document && document.attachments}
+                  pagination={false}
+                >
+                  <Column
+                    title='Вложения'
+                    dataIndex='name'
+                    key='name'
+                    width={360}
+                    render={(name, record, index) => (
+                      <Attached.Name>
+                        <Attached.Name.Text>{`${index + 1}. ${name}`}</Attached.Name.Text>
+                        <Attached.Name.Type>PDF</Attached.Name.Type>
 
-                          {getEcpCount(item.users_companies) > 0 &&
-                          <Tag
-                            color='#3278fb'
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => showUserData('ecp', item.users_companies)}
-                          >
-                            ЭЦП {getEcpCount(item.users_companies)}
-                          </Tag>
-                          }
-                          {singleDocument.status_id === 3 &&
-                          <Tag color='blue' style={{ cursor: 'pointer' }} onClick={() => openHistoryModal(item.users_companies)}>История</Tag>
-                          }
-                          {item.status && singleDocument.status_id !== 3 &&
-                          <Tag color={item.status.status_data.color}>{item.status.status_data.name}</Tag>
-                          }
+                        <Tooltip
+                          title='Просмотреть содержимое файла'
+                          placement='top'
+                          arrowPointAtCenter
+                        >
+                          <Attached.Action onClick={() => showModal(record)}>
+                            <Icon type='eye' />
+                          </Attached.Action>
+                        </Tooltip>
 
-                          {singleDocument.status_id !== 3 && item.status && ((item.status.comment && item.status.comment.length) || item.status.comment_link_basename) &&
-                          <Tooltip
-                            title='Просмотреть комментарий'
-                            placement='top'
-                            arrowPointAtCenter
-                          >
-                            <Icon type='question-circle' onClick={() => showComment('comment', item.status)}/>
-                          </Tooltip>
-                          }
-                        </div>
-                      </List.Item>
+                        <FileActions
+                          file={record}
+                          documentId={singleDocument.document.id}
+                          getDocument={() => getDocumentById(match.params.id)}
+                          canBeSigned={singleDocument.can_be_signed}
+                          messageId={singleDocument.status_id}
+                        />
+                      </Attached.Name>
                     )}
                   />
-                  : <UploadFiles document_id={singleDocument.document_id}/>
-                }
-              </div>
+
+                  <Column
+                    title='Тип документа'
+                    dataIndex='type'
+                    key='type'
+                    render={() => <Text>Дополнительное соглашение</Text>}
+                  />
+
+                  <Column
+                    title='Стоимость'
+                    key='amount'
+                    dataIndex='amount'
+                    render={() => <Text>1000 BYN</Text>}
+                  />
+
+                  <Column
+                    title='Подписать до'
+                    dataIndex='date'
+                    key='date'
+                    render={() => <Text>30.11.2020</Text>}
+                  />
+
+                  <Column
+                    title='Статус'
+                    dataIndex='status'
+                    key='status'
+                    render={status => (
+                      <Tag color='orange'>{status.status_data.name}</Tag>
+                    )}
+                  />
+
+                  <Column
+                    title='Подписан'
+                    dataIndex='users_companies'
+                    key='users_companies'
+                    align='right'
+                    render={companies => (
+                      getEcpCount(companies) > 0 && (
+                        <Tag
+                          color={colors.primary}
+                          onClick={() => showUserData('ecp', companies)}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          ЭЦП {getEcpCount(companies)}
+                        </Tag>)
+                    )}
+                  />
+                </Table>
+              </Attached>
+            ) : (
+              <UploadFiles document_id={singleDocument.document_id} />
+            )}
+          </Spin>
+        </Layout.Inner>
+
+        {(document && document.attachments) && (
+          <FooterFixed>
+            <Layout.Actions>
+              {singleDocument.status_id === 1 && (
+                <Button
+                  type='primary'
+                  onClick={() => openModal('send')}
+                  icon='redo'
+                  ghost
+                >
+                  Отправить
+                </Button>)}
+
+              {singleDocument.status_id !== 1 && singleDocument.document.is_chain === 0 && (
+                <Button
+                  type='primary'
+                  onClick={() => openModal('send')}
+                  icon='redo'
+                  ghost
+                >
+                  Перенаправить
+                </Button>)}
+
+              <Button
+                type='primary'
+                disabled={singleDocument.status_id === 1}
+                onClick={() => handleMessageShare()}
+                icon='share-alt'
+                ghost
+              >
+                Поделиться
+              </Button>
+            </Layout.Actions>
+
+            {!!document.attachments.length && (
+              <DownloadButtons document={document} />)}
+          </FooterFixed>)}
+
+        {documentState.isVisible &&
+        <div className='pdf-container'>
+          <div className='pdf-container__close'>
+            <div className='close' style={{ backgroundImage: `url(${close})` }} onClick={() => hideModal()}/>
+          </div>
+          {['jpg', 'png', 'jpeg'].includes(documentState.fileType.split('.').pop())
+            ? <div className='img-wrapp'>
+              <img className='modal-img' src={documentState.fileLink} alt='img'/>
             </div>
+            : <PDFViewer
+              backend={PDFJSBACKEND}
+              src={documentState.fileLink}
+            />
+          }
 
-            {(document && document.attachments) &&
-            <Fragment>
-              <div className='document__actions'>
-                <div className='document__actions__left'>
-                  {!!document.attachments.length &&
-                  <DownloadButtons document={document}/>
-                  }
-                </div>
-
-                <div className='document__actions__right'>
-                  {singleDocument.status_id == 1 &&
-                  <Button onClick={() => openModal('send')} type='primary' style={{ marginRight: '1rem' }}>
-                    <Icon type='redo'/>
-                    Отправить
-                  </Button>
-                  }
-                  {singleDocument.status_id != 1 && singleDocument.document.is_chain === 0 &&
-                  <Button onClick={() => openModal('send')} type='primary' style={{ marginRight: '1rem' }}>
-                    <Icon type='redo'/>
-                    Перенаправить
-                  </Button>
-                  }
-                  <Button disabled={singleDocument.status_id === 1} onClick={() => handleMessageShare()} type='primary'>
-                    <Icon type='share-alt'/>
-                    Поделиться
-                  </Button>
-                </div>
-              </div>
-            </Fragment>
-            }
+        </div>
+        }
+        {documentState.isHistoryModalOpen &&
+        <Modal
+          visible
+          footer={null}
+          closable={false}
+        >
+          <FileHistory history={documentState.fileHistory} />
+          <Button type='primary' onClick={closeHistoryModal}>Закрыть</Button>
+        </Modal>
+        }
+        {documentState.showModal &&
+        <Modal
+          visible
+          closable={false}
+          footer={null}
+        >
+          {documentState.modalType === 'ecp' &&
+          <EscDataSlider onCancel={handleCloseModal} data={documentState.fileCerts}/>
+          }
+          {documentState.modalType === 'comment' &&
+          <div>
+            <Text>{documentState.comment}</Text><br/>
+            <Button  style={{ marginTop: 20 }} disabled={documentState.commentFile == ""} type='primary' onClick={downloadCommentFile}>Скачать вложение</Button>
+            <br/>
+            <Button style={{ marginTop: 20 }} type='primary' onClick={handleCloseModal}>Закрыть</Button>
           </div>
-        </div>
-      </Spin>
+          }
+          {documentState.modalType === 'send' &&
+          <Fragment>
+            <Text>Получатели:</Text>
+            <Select
+              mode='tags'
+              labelInValue
+              tokenSeparators={[',']}
+              value={documentState.value}
+              filterOption={false}
+              notFoundContent={documentState.fetching ? <Spin size='small'/> : null}
+              onSearch={fetchUser}
+              onChange={handleSelect}
+              style={{ width: '100%', margin: '2rem 0 5rem 0' }}
+            >
+              {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
+            </Select>
+            <p><strong>Проверьте указанных Вами получателей!</strong></p>
+            <Button
+              type='primary'
+              style={{ marginTop: 20 }}
+              onClick={sendToUser}
+            >
+              Отправить
+            </Button>
 
-      {documentState.isVisible &&
-      <div className='pdf-container'>
-        <div className='pdf-container__close'>
-          <div className='close' style={{ backgroundImage: `url(${close})` }} onClick={() => hideModal()}/>
-        </div>
-        {['jpg', 'png', 'jpeg'].includes(documentState.fileType.split('.').pop())
-          ? <div className='img-wrapp'>
-            <img className='modal-img' src={documentState.fileLink} alt='img'/>
-          </div>
-          : <PDFViewer
-            backend={PDFJSBACKEND}
-            src={documentState.fileLink}
-          />
-        }
+            <Button
+              type='primary'
+              style={{ marginLeft: 20 }}
+              onClick={() => setDocumentState({ ...documentState, showModal: false })}
+              ghost
+            >
+              Отмена
+            </Button>
+          </Fragment>
+          }
 
-      </div>
-      }
-      {documentState.isHistoryModalOpen &&
-      <Modal
-        visible
-        footer={null}
-        closable={false}
-      >
-        <FileHistory history={documentState.fileHistory} />
-        <Button type='primary' onClick={closeHistoryModal}>Закрыть</Button>
-      </Modal>
-      }
-      {documentState.showModal &&
-      <Modal
-        visible
-        closable={false}
-        footer={null}
-      >
-        {documentState.modalType === 'ecp' &&
-        <EscDataSlider onCancel={handleCloseModal} data={documentState.fileCerts}/>
+          {documentState.modalType === 'error' &&
+          <AvestErrorHandling onCancel={handleCloseModal}/>
+          }
+        </Modal>
         }
-        {documentState.modalType === 'comment' &&
-        <div>
-          <Text>{documentState.comment}</Text><br/>
-          <Button  style={{ marginTop: 20 }} disabled={documentState.commentFile == ""} type='primary' onClick={downloadCommentFile}>Скачать вложение</Button>
-          <br/>
-          <Button style={{ marginTop: 20 }} type='primary' onClick={handleCloseModal}>Закрыть</Button>
-        </div>
-        }
-        {documentState.modalType === 'send' &&
-        <Fragment>
-          <Text>Получатели:</Text>
-          <Select
-            mode='tags'
-            labelInValue
-            tokenSeparators={[',']}
-            value={documentState.value}
-            filterOption={false}
-            notFoundContent={documentState.fetching ? <Spin size='small'/> : null}
-            onSearch={fetchUser}
-            onChange={handleSelect}
-            style={{ width: '100%', margin: '2rem 0 5rem 0' }}
-          >
-            {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
-          </Select>
-          <p><strong>Проверьте указанных Вами получателей!</strong></p>
-          <Button
-            type='primary'
-            style={{ marginTop: 20 }}
-            onClick={sendToUser}
-          >
-            Отправить
-          </Button>
-
-          <Button
-            type='primary'
-            style={{ marginLeft: 20 }}
-            onClick={() => setDocumentState({ ...documentState, showModal: false })}
-            ghost
-          >
-            Отмена
-          </Button>
-        </Fragment>
-        }
-
-        {documentState.modalType === 'error' &&
-        <AvestErrorHandling onCancel={handleCloseModal}/>
-        }
-      </Modal>
-      }
-    </Fragment>
+      </Layout>
+    </LayoutScroll>
   )
 }
 
