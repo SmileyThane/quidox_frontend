@@ -20,6 +20,10 @@ Layout.Control = styled.div`
     display: block;
     margin-bottom: .8rem;
   }
+
+  .control-comment {
+    height: 12.4rem !important;
+  }
 `
 
 Layout.Actions = styled.div`

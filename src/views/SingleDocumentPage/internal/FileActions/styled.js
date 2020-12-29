@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Icon, Tooltip } from 'antd'
 
 import { styleguide } from '../../../../constants'
@@ -29,6 +29,36 @@ Action.Icon = styled(Icon)`
   }
 `
 
+const List = styled.div`
+  display: flex;
+  align-items: center;
+`
+
+List.Item = styled.div`
+  padding: 0 1.6rem;
+
+  &:not(:first-child) {
+    border-left: .1rem solid ${colors.gray.middle};
+  }
+
+  ${({ type }) => type === 'danger' && css`
+    ${List.Item.Link} {
+      color: ${colors.red};
+    }
+  `}
+`
+
+List.Item.Link = styled.a`
+  display: inline-flex;
+  align-items: center;
+
+  .anticon {
+    font-size: 1.8rem;
+    margin-right: .8rem;
+  }
+`
+
 export {
-  Action
+  Action,
+  List
 }

@@ -1,5 +1,4 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
 import fileDownload from 'js-file-download'
 import axios from 'axios'
 import moment from 'moment'
@@ -10,12 +9,10 @@ import { findUsersByParams } from '../../services/api/user'
 import { copy2Clipboard } from '../../utils'
 import history from '../../history'
 import forbiddenEmails from '../../constants/forbiddenEmails'
-import PDFJSBACKEND from '../../backends/pdfjs'
 
 import {
   Table,
   Icon,
-  List,
   message,
   Modal,
   notification,
@@ -23,8 +20,7 @@ import {
   Spin,
   Tag,
   Tooltip,
-  Typography,
-  Descriptions
+  Typography
 } from 'antd'
 
 import {
@@ -40,11 +36,9 @@ import {
   AvestErrorHandling,
   Button,
   EscDataSlider,
-  PDFViewer,
+  ModalViewer,
   UploadFiles
 } from '../../components'
-
-import { close } from '../../resources/img'
 
 import {
   Layout,
@@ -54,8 +48,6 @@ import {
 } from './styled'
 
 import { styleguide } from '../../constants'
-
-import './SingleDocumentPage.scss'
 
 var signFetching = false
 
@@ -77,8 +69,8 @@ const defaultDocumentState = {
   fileType: '',
   showModal: false,
   comment: '',
-  commentFile:'',
-  commentLink:'',
+  commentFile: '',
+  commentLink: '',
   data: [],
   value: [],
   fetching: false,
@@ -98,38 +90,47 @@ const defaultDocumentState = {
   singleFile: null
 }
 
-const SingleDocumentPage = props => {
+const SingleDocumentPage = ({
+  documents: {
+    isFetching,
+    singleDocument
+  },
+  match,
+  getDocumentById,
+  sendDocumentToUser,
+  updateDocumentById,
+  getUser
+}) => {
   const [fetch, setFetch] = useState(false)
-  const {
-    documents: { isFetching, singleDocument },
-    match,
-    getDocumentById,
-    sendDocumentToUser,
-    updateDocumentById,
-    getUser
-  } = props
-
-  const { document, sender, recipient, statuses } = singleDocument
-
   const [documentState, setDocumentState] = useState({ ...defaultDocumentState })
+
+  const {
+    document,
+    sender,
+    recipient,
+    statuses
+  } = singleDocument
 
   useEffect(() => {
     let search = window.location.search
     let params = new URLSearchParams(search)
     let hash = params.get('hash')
     let attachmentId = params.get('attachment_id')
+
     if (hash && attachmentId) {
       try {
         setFetch(true)
-        let id = match.params.id
+
         axios.get(`${process.env.REACT_APP_BASE_URL}/attachment/sim-sign/check/${attachmentId}?hash=${hash}`, {
           headers: {
-            'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken'),
+            'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken')
           }
         })
           .then(response => {
             setFetch(false)
+
             const { data: { success } } = response
+
             if (success) {
               message.success('Совершено успешное подписание!')
               getDocumentById(match.params.id)
@@ -140,6 +141,7 @@ const SingleDocumentPage = props => {
           .catch(error => {
             signFetching = false
             message.error('Извините, что-то пошло не так. Перезагрузите страницу и попробуйте еще раз.')
+
             // setTimeout(() => {
             // window.location.reload();
             // }, 2000)
@@ -207,6 +209,7 @@ const SingleDocumentPage = props => {
 
   const showUserData = (type, arr = []) => {
     const dataArray = arr.filter(i => i.verification_hash)
+
     if (type === 'ecp') {
       setDocumentState({
         ...documentState,
@@ -226,11 +229,17 @@ const SingleDocumentPage = props => {
   }
 
   const openModal = type => {
-    documentState.data = documentState.value = [];
+    documentState.data = documentState.value = []
+
     if (singleDocument.status_id === 1 && recipient.id !== sender.id) {
-      let value = {"key": recipient['id'], "label": recipient['user_email'] + '[' + recipient['company_name'] +']' };
-      documentState.value.push(value);
+      let value = {
+        key: recipient['id'],
+        label: `${recipient['user_email']}[${recipient['company_name']}]`
+      }
+
+      documentState.value.push(value)
     }
+
     setDocumentState({
       ...documentState,
       modalType: type,
@@ -248,6 +257,7 @@ const SingleDocumentPage = props => {
             key: `${user.id}`
           }))
           .filter(i => !dataIds.includes(i.key))
+
         setDocumentState({
           ...documentState,
           data: [...documentState.data, ...dataArray],
@@ -265,7 +275,8 @@ const SingleDocumentPage = props => {
         ...documentState,
         fetching: true
       })
-      setUsersByParams(v);
+
+      setUsersByParams(v)
     }
   }, 200)
 
@@ -278,11 +289,11 @@ const SingleDocumentPage = props => {
   }
 
   const sendToUser = () => {
-
     if (documentState.value.filter(i => forbiddenEmails.includes(i.key)).length) {
       notification.error({
         message: 'Отправка/перенаправление по реквизиту УНП для данного адресата запрещено. Укажите точный адрес (E-mail) получателя.'
       })
+
       return false
     }
 
@@ -290,11 +301,14 @@ const SingleDocumentPage = props => {
       document_ids: [document.id],
       user_company_id: JSON.stringify(documentState.value.map(i => i.key))
     }
+
     sendDocumentToUser(docDataToUser)
       .then(response => {
         if (response.success) {
           message.success('Сообщение успешно отправлено!')
+
           getUser()
+
           setDocumentState({
             ...documentState,
             fetching: false,
@@ -314,8 +328,10 @@ const SingleDocumentPage = props => {
   const handleEditDocumentName = str => {
     if (str === '') {
       message.error('Поле не может быть пустым')
+
       return null
     }
+
     updateDocumentById(document.id, { name: str, description: document.description })
       .then(response => {
         if (response.success) {
@@ -332,8 +348,10 @@ const SingleDocumentPage = props => {
   const handleEditDocumentDescription = str => {
     if (str === '') {
       message.error('Поле не может быть пустым')
+
       return null
     }
+
     updateDocumentById(document.id, { name: document.name, description: str })
       .then(response => {
         if (response.success) {
@@ -350,6 +368,7 @@ const SingleDocumentPage = props => {
   const getEcpCount = arr => {
     if (arr.length) {
       let acpCount = arr.filter(i => i.verification_hash !== null)
+
       return acpCount.length
     }
   }
@@ -391,164 +410,268 @@ const SingleDocumentPage = props => {
 
   return (
     <LayoutScroll withFooter>
-      <Layout>
-        <Layout.Inner>
-          <Spin spinning={(isFetching || fetch)}>
-            <Header>
-              <GoBack />
+      {singleDocument.id && (
+        <Layout>
+          <Layout.Inner>
+            <Spin spinning={(isFetching || fetch)}>
+              <Header>
+                <GoBack />
 
-              <Header.Inner>
-                {(statuses && statuses.length && statuses[0].user_company_document_list_id === 1) ? (
-                  <Header.Title
-                    level={3}
-                    editable={{ onChange: handleEditDocumentName }}
-                  >
-                    {document && document.name}
-                  </Header.Title>
-                ) : (
-                  <Header.Title level={3}>
-                    {document && document.name}
-                  </Header.Title>
-                )}
-
-                <Header.Secondary>
-                  {moment.utc(singleDocument.created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD/MM/YYYY HH:mm:ss')}
-                </Header.Secondary>
-              </Header.Inner>
-            </Header>
-
-            <Details>
-              <Details.Inner>
-                <Details.Item>
-                  <Details.Label>Получатели:</Details.Label>
-
-                  {recipient && (
-                    <Details.Info>
-                      <Details.Text>{recipient['user_email']}</Details.Text>
-                      <Details.Secondary>{recipient['company_name']}</Details.Secondary>
-                    </Details.Info>)}
-                </Details.Item>
-
-                <Details.Item>
-                  <Details.Label>Отправители:</Details.Label>
-
-                  {sender && (
-                    <Details.Info>
-                      <Details.Text>{sender.user_email}</Details.Text>
-                      <Details.Secondary>{sender.company_name}</Details.Secondary>
-                    </Details.Info>)}
-                </Details.Item>
-              </Details.Inner>
-
-              <Details.Inner>
-                <Details.Item align='vertical'>
-                  <Details.Label>Комментарий:</Details.Label>
-
-                  {(statuses && statuses.length && statuses[0].user_company_document_list_id === 1) ? (
-                    <Details.Text editable={{ onChange: handleEditDocumentDescription }}>
-                      {document && document.description}
-                    </Details.Text>
+                <Header.Inner>
+                  {(statuses.length && statuses[0].user_company_document_list_id === 1) ? (
+                    <Header.Title
+                      level={3}
+                      editable={{ onChange: handleEditDocumentName }}
+                    >
+                      {document.name}
+                    </Header.Title>
                   ) : (
-                    <Details.Text>{document && document.description}</Details.Text>
+                    <Header.Title level={3}>{document.name}</Header.Title>
                   )}
-                </Details.Item>
-              </Details.Inner>
-            </Details>
 
-            {singleDocument.status_id !== 1 ? (
-              <Attached>
-                <Table
-                  className='ui-table-inside'
-                  rowKey={record => record.id}
-                  dataSource={document && document.attachments}
-                  pagination={false}
-                >
-                  <Column
-                    title='Вложения'
-                    dataIndex='name'
-                    key='name'
-                    width={360}
-                    render={(name, record, index) => (
-                      <Attached.Name>
-                        <Attached.Name.Text>{`${index + 1}. ${name}`}</Attached.Name.Text>
-                        <Attached.Name.Type>PDF</Attached.Name.Type>
+                  <Header.Secondary>
+                    {moment.utc(singleDocument.created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD MMM YYYY HH:mm:ss')}
+                  </Header.Secondary>
+                </Header.Inner>
+              </Header>
 
-                        <Tooltip
-                          title='Просмотреть содержимое файла'
-                          placement='top'
-                          arrowPointAtCenter
-                        >
-                          <Attached.Action onClick={() => showModal(record)}>
-                            <Icon type='eye' />
-                          </Attached.Action>
-                        </Tooltip>
+              <Details>
+                <Details.Inner>
+                  <Details.Item>
+                    <Details.Label>Получатели:</Details.Label>
 
-                        <FileActions
-                          file={record}
-                          documentId={singleDocument.document.id}
-                          getDocument={() => getDocumentById(match.params.id)}
-                          canBeSigned={singleDocument.can_be_signed}
-                          messageId={singleDocument.status_id}
+                    {recipient && (
+                      <Details.Info>
+                        <Details.Text>{recipient['user_email']}</Details.Text>
+                        <Details.Secondary>{recipient['company_name']}</Details.Secondary>
+                      </Details.Info>)}
+                  </Details.Item>
+
+                  <Details.Item>
+                    <Details.Label>Отправители:</Details.Label>
+
+                    {sender && (
+                      <Details.Info>
+                        <Details.Text>{sender.user_email}</Details.Text>
+                        <Details.Secondary>{sender.company_name}</Details.Secondary>
+                      </Details.Info>)}
+                  </Details.Item>
+                </Details.Inner>
+
+                <Details.Inner>
+                  <Details.Item align='vertical'>
+                    <Details.Label>Комментарий:</Details.Label>
+
+                    {(statuses.length && statuses[0].user_company_document_list_id === 1) ? (
+                      <Details.Text editable={{ onChange: handleEditDocumentDescription }}>
+                        {document.description}
+                      </Details.Text>
+                    ) : (
+                      <Details.Text>{document.description}</Details.Text>
+                    )}
+                  </Details.Item>
+                </Details.Inner>
+              </Details>
+
+              {document.attachments.length ? (
+                <>
+                  {[1, 3].includes(singleDocument.status_id) && (
+                    <Attached>
+                      <Table
+                        className='ui-table-inside'
+                        rowKey={record => record.id}
+                        dataSource={document.attachments}
+                        pagination={false}
+                      >
+                        <Column
+                          title='Вложения'
+                          dataIndex='name'
+                          key='name'
+                          width={360}
+                          render={(name, record, index) => (
+                            <Attached.Name>
+                              <Attached.Name.Text>{`${index + 1}. ${name}`}</Attached.Name.Text>
+                              <Attached.Name.Type>PDF</Attached.Name.Type>
+
+                              <Tooltip
+                                title='Просмотреть содержимое файла'
+                                placement='top'
+                                arrowPointAtCenter
+                              >
+                                <Attached.Action onClick={() => showModal(record)}>
+                                  <Icon type='eye' />
+                                </Attached.Action>
+                              </Tooltip>
+
+                              <FileActions
+                                file={record}
+                                getDocument={() => getDocumentById(match.params.id)}
+                                params={{
+                                  documentId: singleDocument.document.id,
+                                  canBeSigned: singleDocument.can_be_signed,
+                                  messageId: singleDocument.status_id
+                                }}
+                              />
+                            </Attached.Name>
+                          )}
                         />
-                      </Attached.Name>
-                    )}
-                  />
 
-                  <Column
-                    title='Тип документа'
-                    dataIndex='type'
-                    key='type'
-                    render={() => <Text>Дополнительное соглашение</Text>}
-                  />
+                        <Column
+                          title='Тип документа'
+                          dataIndex='type'
+                          key='type'
+                          render={() => <Text>Дополнительное соглашение</Text>}
+                        />
 
-                  <Column
-                    title='Стоимость'
-                    key='amount'
-                    dataIndex='amount'
-                    render={() => <Text>1000 BYN</Text>}
-                  />
+                        <Column
+                          title='Стоимость'
+                          key='amount'
+                          dataIndex='amount'
+                          render={() => <Text>1000 BYN</Text>}
+                        />
 
-                  <Column
-                    title='Подписать до'
-                    dataIndex='date'
-                    key='date'
-                    render={() => <Text>30.11.2020</Text>}
-                  />
+                        <Column
+                          title='Подписать до'
+                          dataIndex='date'
+                          key='date'
+                          render={() => <Text>30.11.2020</Text>}
+                        />
 
-                  <Column
-                    title='Статус'
-                    dataIndex='status'
-                    key='status'
-                    render={status => (
-                      <Tag color='orange'>{status.status_data.name}</Tag>
-                    )}
-                  />
+                        <Column
+                          title='Статус'
+                          dataIndex='status'
+                          key='status'
+                          render={status => (
+                            <Tag color='orange'>{status.status_data.name}</Tag>
+                          )}
+                        />
 
-                  <Column
-                    title='Подписан'
-                    dataIndex='users_companies'
-                    key='users_companies'
-                    align='right'
-                    render={companies => (
-                      getEcpCount(companies) > 0 && (
-                        <Tag
-                          color={colors.primary}
-                          onClick={() => showUserData('ecp', companies)}
-                          style={{ cursor: 'pointer' }}
-                        >
-                          ЭЦП {getEcpCount(companies)}
-                        </Tag>)
-                    )}
-                  />
-                </Table>
-              </Attached>
-            ) : (
-              <UploadFiles document_id={singleDocument.document_id} />
-            )}
-          </Spin>
-        </Layout.Inner>
+                        <Column
+                          title='Подписан'
+                          dataIndex='users_companies'
+                          key='users_companies'
+                          align='right'
+                          render={companies => (
+                            getEcpCount(companies) > 0 && (
+                              <Tag
+                                color={colors.primary}
+                                onClick={() => showUserData('ecp', companies)}
+                                style={{ cursor: 'pointer' }}
+                              >
+                                ЭЦП {getEcpCount(companies)}
+                              </Tag>)
+                          )}
+                        />
+                      </Table>
+                    </Attached>)}
 
-        {(document && document.attachments) && (
+                  {[2, 11].includes(singleDocument.status_id) && (
+                    document.attachments.map((item, i) => (
+                      <Attached key={i}>
+                        <Attached.Header>
+                          <Attached.Inner>
+                            <Attached.Name>
+                              <Attached.Name.Text>{`${i + 1}. ${item.name}`}</Attached.Name.Text>
+                              <Attached.Name.Type>PDF</Attached.Name.Type>
+
+                              <Tooltip
+                                title='Просмотреть содержимое файла'
+                                placement='top'
+                                arrowPointAtCenter
+                              >
+                                <Attached.Action onClick={() => showModal(item)}>
+                                  <Icon type='eye' />
+                                </Attached.Action>
+                              </Tooltip>
+
+                              <FileActions
+                                file={item}
+                                getDocument={() => getDocumentById(match.params.id)}
+                                params={{
+                                  documentId: singleDocument.document.id,
+                                  canBeSigned: singleDocument.can_be_signed,
+                                  messageId: singleDocument.status_id
+                                }}
+                              />
+                            </Attached.Name>
+
+                            <Attached.Tag>
+                              <Tag color='orange'>{item.status.status_data.name}</Tag>
+                            </Attached.Tag>
+                          </Attached.Inner>
+
+                          <Attached.Inner>
+                            <FileActions
+                              file={item}
+                              getDocument={() => getDocumentById(match.params.id)}
+                              params={{
+                                documentId: singleDocument.document.id,
+                                canBeSigned: singleDocument.can_be_signed,
+                                messageId: singleDocument.status_id
+                              }}
+                              showList
+                            />
+                          </Attached.Inner>
+                        </Attached.Header>
+
+                        <Attached.Body>
+                          <Details noStyle>
+                            <Details.Inner>
+                              <Details.Item>
+                                <Details.Label>Тип:</Details.Label>
+
+                                <Details.Info>
+                                  <Details.Text>Допсоглашение</Details.Text>
+                                </Details.Info>
+                              </Details.Item>
+
+                              <Details.Item>
+                                <Details.Label>Стоимость:</Details.Label>
+
+                                <Details.Info>
+                                  <Details.Text>5000 BYN</Details.Text>
+                                </Details.Info>
+                              </Details.Item>
+                            </Details.Inner>
+
+                            <Details.Inner>
+                              <Details.Item>
+                                <Details.Label>Подписано:</Details.Label>
+
+                                <Details.Info>
+                                  <Details.Text>
+                                    {getEcpCount(item.users_companies) > 0 && (
+                                      <Tag
+                                        color={colors.primary}
+                                        onClick={() => showUserData('ecp', item.users_companies)}
+                                        style={{ cursor: 'pointer' }}
+                                      >
+                                        ЭЦП {getEcpCount(item.users_companies)}
+                                      </Tag>)}
+                                  </Details.Text>
+                                </Details.Info>
+                              </Details.Item>
+
+                              <Details.Item>
+                                <Details.Label>Решение до:</Details.Label>
+
+                                <Details.Info>
+                                  <Details.Text>до 30.11.2020 <Details.Secondary>еще 5 дней</Details.Secondary></Details.Text>
+                                </Details.Info>
+                              </Details.Item>
+                            </Details.Inner>
+                          </Details>
+                        </Attached.Body>
+                      </Attached>
+                    ))
+                  )}
+                </>
+              ) : (
+                <UploadFiles document_id={singleDocument.document_id} />
+              )}
+            </Spin>
+          </Layout.Inner>
+
           <FooterFixed>
             <Layout.Actions>
               {singleDocument.status_id === 1 && (
@@ -568,7 +691,7 @@ const SingleDocumentPage = props => {
                   icon='redo'
                   ghost
                 >
-                  Перенаправить
+                  Отправить повторно
                 </Button>)}
 
               <Button
@@ -584,94 +707,83 @@ const SingleDocumentPage = props => {
 
             {!!document.attachments.length && (
               <DownloadButtons document={document} />)}
-          </FooterFixed>)}
+          </FooterFixed>
 
-        {documentState.isVisible &&
-        <div className='pdf-container'>
-          <div className='pdf-container__close'>
-            <div className='close' style={{ backgroundImage: `url(${close})` }} onClick={() => hideModal()}/>
-          </div>
-          {['jpg', 'png', 'jpeg'].includes(documentState.fileType.split('.').pop())
-            ? <div className='img-wrapp'>
-              <img className='modal-img' src={documentState.fileLink} alt='img'/>
+          {documentState.isVisible && (
+            <ModalViewer
+              document={documentState}
+              onClose={hideModal}
+            />)}
+
+          {documentState.isHistoryModalOpen &&
+          <Modal
+            visible
+            footer={null}
+            closable={false}
+          >
+            <FileHistory history={documentState.fileHistory} />
+            <Button type='primary' onClick={closeHistoryModal}>Закрыть</Button>
+          </Modal>
+          }
+          {documentState.showModal &&
+          <Modal
+            visible
+            closable={false}
+            footer={null}
+          >
+            {documentState.modalType === 'ecp' &&
+            <EscDataSlider onCancel={handleCloseModal} data={documentState.fileCerts}/>
+            }
+            {documentState.modalType === 'comment' &&
+            <div>
+              <Text>{documentState.comment}</Text><br/>
+              <Button  style={{ marginTop: 20 }} disabled={documentState.commentFile == ""} type='primary' onClick={downloadCommentFile}>Скачать вложение</Button>
+              <br/>
+              <Button style={{ marginTop: 20 }} type='primary' onClick={handleCloseModal}>Закрыть</Button>
             </div>
-            : <PDFViewer
-              backend={PDFJSBACKEND}
-              src={documentState.fileLink}
-            />
-          }
+            }
+            {documentState.modalType === 'send' &&
+            <Fragment>
+              <Text>Получатели:</Text>
+              <Select
+                mode='tags'
+                labelInValue
+                tokenSeparators={[',']}
+                value={documentState.value}
+                filterOption={false}
+                notFoundContent={documentState.fetching ? <Spin size='small'/> : null}
+                onSearch={fetchUser}
+                onChange={handleSelect}
+                style={{ width: '100%', margin: '2rem 0 5rem 0' }}
+              >
+                {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
+              </Select>
+              <p><strong>Проверьте указанных Вами получателей!</strong></p>
+              <Button
+                type='primary'
+                style={{ marginTop: 20 }}
+                onClick={sendToUser}
+              >
+                Отправить
+              </Button>
 
-        </div>
-        }
-        {documentState.isHistoryModalOpen &&
-        <Modal
-          visible
-          footer={null}
-          closable={false}
-        >
-          <FileHistory history={documentState.fileHistory} />
-          <Button type='primary' onClick={closeHistoryModal}>Закрыть</Button>
-        </Modal>
-        }
-        {documentState.showModal &&
-        <Modal
-          visible
-          closable={false}
-          footer={null}
-        >
-          {documentState.modalType === 'ecp' &&
-          <EscDataSlider onCancel={handleCloseModal} data={documentState.fileCerts}/>
-          }
-          {documentState.modalType === 'comment' &&
-          <div>
-            <Text>{documentState.comment}</Text><br/>
-            <Button  style={{ marginTop: 20 }} disabled={documentState.commentFile == ""} type='primary' onClick={downloadCommentFile}>Скачать вложение</Button>
-            <br/>
-            <Button style={{ marginTop: 20 }} type='primary' onClick={handleCloseModal}>Закрыть</Button>
-          </div>
-          }
-          {documentState.modalType === 'send' &&
-          <Fragment>
-            <Text>Получатели:</Text>
-            <Select
-              mode='tags'
-              labelInValue
-              tokenSeparators={[',']}
-              value={documentState.value}
-              filterOption={false}
-              notFoundContent={documentState.fetching ? <Spin size='small'/> : null}
-              onSearch={fetchUser}
-              onChange={handleSelect}
-              style={{ width: '100%', margin: '2rem 0 5rem 0' }}
-            >
-              {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
-            </Select>
-            <p><strong>Проверьте указанных Вами получателей!</strong></p>
-            <Button
-              type='primary'
-              style={{ marginTop: 20 }}
-              onClick={sendToUser}
-            >
-              Отправить
-            </Button>
+              <Button
+                type='primary'
+                style={{ marginLeft: 20 }}
+                onClick={() => setDocumentState({ ...documentState, showModal: false })}
+                ghost
+              >
+                Отмена
+              </Button>
+            </Fragment>
+            }
 
-            <Button
-              type='primary'
-              style={{ marginLeft: 20 }}
-              onClick={() => setDocumentState({ ...documentState, showModal: false })}
-              ghost
-            >
-              Отмена
-            </Button>
-          </Fragment>
+            {documentState.modalType === 'error' &&
+            <AvestErrorHandling onCancel={handleCloseModal}/>
+            }
+          </Modal>
           }
-
-          {documentState.modalType === 'error' &&
-          <AvestErrorHandling onCancel={handleCloseModal}/>
-          }
-        </Modal>
-        }
-      </Layout>
+      </Layout>)}
     </LayoutScroll>
   )
 }
