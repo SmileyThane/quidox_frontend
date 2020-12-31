@@ -9,6 +9,7 @@ import App from './App'
 
 import { ConfigProvider } from 'antd'
 
+import 'moment/locale/ru'
 import ruRU from 'antd/es/locale/ru_RU'
 
 import './styles/app.scss'

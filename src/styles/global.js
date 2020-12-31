@@ -95,4 +95,16 @@ export default createGlobalStyle`
       }
     }
   }
+
+  .ant-calendar-picker {
+    .anticon {
+      &.anticon-calendar {
+        width: 1.8rem;
+        height: 1.8rem;
+        color: ${colors.primary};
+        font-size: 1.8rem;
+        margin-top: -1rem;
+      }
+    }
+  }
 `

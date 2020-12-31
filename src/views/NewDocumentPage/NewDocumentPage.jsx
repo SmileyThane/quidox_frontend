@@ -485,6 +485,7 @@ const NewDocumentPage = props => {
                   <label>Комментарий</label>
 
                   <TextArea
+                    className='control-comment'
                     autoSize={{ minRows: 5, maxRows: 12 }}
                     placeholder='Опишите все, что важно знать получателю'
                     value={documentState.description}
