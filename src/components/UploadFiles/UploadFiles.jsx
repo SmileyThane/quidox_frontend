@@ -8,17 +8,13 @@ import { checkBrowser } from '../../utils'
 import {
   Row,
   Col,
-  Dropdown,
   Icon,
-  Menu,
   message,
   Modal,
   DatePicker,
   notification,
   Progress,
-  Select,
-  Tag,
-  Typography
+  Select
 } from 'antd'
 
 import {
@@ -33,7 +29,6 @@ import { File, Upload } from './styled'
 
 const getSignedHex = base64 => {
   try {
-//need to be modified!!!!!
     let result = window.signProcess(base64).hex
     return result
   } catch (error) {
@@ -42,7 +37,6 @@ const getSignedHex = base64 => {
 }
 
 const { Option } = Select
-const { Text } = Typography
 
 const initialState = {
   isModalVisible: false,
@@ -92,7 +86,6 @@ function uploadReducer (state, action) {
 
 export default function (props) {
   const {
-    isStatus = true,
     document_id = null,
     user: { data },
     config,
@@ -196,7 +189,7 @@ export default function (props) {
     dispatch({ type: 'HIDE_MODAL' })
   }
 
-  const handleChangeFileStatus = (file, idx) => value => {
+  const handleChangeFileStatus = (file, idx, value) => {
     changeFileStatus({ attachment_id: file.id, status: value, index: idx })
   }
 
@@ -427,7 +420,7 @@ export default function (props) {
                 </Row>
 
                 <File>
-                  <div>
+                  {/* <div>
                     {isFileWithECP &&
                     <Tag
                       color='#3278fb'
@@ -437,67 +430,74 @@ export default function (props) {
                       ЭЦП
                     </Tag>
                     }
-                  </div>
+                  </div> */}
 
-                  <div>
-                    <Select
-                      style={{ minWidth: '20rem' }}
-                      value={file.status.status_data.id}
-                      onChange={handleChangeFileStatus(file, idx)}
-                    >
-                      <Option value={1}>Простая доставка</Option>
-                      <Option value={2}>Согласование</Option>
-                      <Option value={3}>Подпись получателя</Option>
-                    </Select>
-                  </div>
+                  <File.Controls>
+                    <File.Controls.Label>Действие получателя:</File.Controls.Label>
+
+                    <File.Controls.List>
+                      <File.Controls.Item
+                        type='gray'
+                        onClick={() => handleChangeFileStatus(file, idx, 1)}
+                        selected={file.status.status_data.id === 1}
+                      >
+                        Простая доставка
+                      </File.Controls.Item>
+
+                      <File.Controls.Item
+                        type='orange'
+                        onClick={() => handleChangeFileStatus(file, idx, 2)}
+                        selected={file.status.status_data.id === 2}
+                      >
+                        Согласование
+                      </File.Controls.Item>
+
+                      <File.Controls.Item
+                        type='green'
+                        onClick={() => handleChangeFileStatus(file, idx, 3)}
+                        selected={file.status.status_data.id === 3}
+                      >
+                        Подпись
+                      </File.Controls.Item>
+                    </File.Controls.List>
+                  </File.Controls>
+
+                  <File.Controls>
+                    <File.Controls.Label>Ваша подпись:</File.Controls.Label>
+
+                    <File.Controls.List>
+                      <File.Controls.Item
+                        type='blue'
+                        onClick={() => handleVerifyFile(file)}
+                      >
+                        В браузере
+                      </File.Controls.Item>
+
+                      <File.Controls.Item
+                        type='blue'
+                        onClick={() => handleVerifyFile(file)}
+                      >
+                        Mobile ID
+                      </File.Controls.Item>
+
+                      <File.Controls.Item
+                        type='blue'
+                        onClick={() => handleVerifyFile(file)}
+                      >
+                        ТЗИ
+                      </File.Controls.Item>
+                    </File.Controls.List>
+                  </File.Controls>
+
+                  <Button
+                    type='primary'
+                    icon='delete'
+                    onClick={() => handleRemoveFile(file)}
+                    ghost
+                  >
+                    Удалить файл
+                  </Button>
                 </File>
-
-                <Dropdown
-                  overlay={() => (
-                    <Menu>
-                      <Menu.Item>
-                        <Tag disabled style={{ margin: 0, width: '100%' }} color='#87d068'
-                            onClick={() => isFileWithECP ? null : handleVerifyFile(file)}>
-                          <Icon style={{ marginRight: 5, cursor: 'pointer' }} type={isFileWithECP ? 'like' : 'edit'}/>
-                          {isFileWithECP ? 'Файл подписан' : 'Подписать'}
-                        </Tag>
-                      </Menu.Item>
-                      <Menu.Item>
-                        <Tag disabled style={{ margin: 0, width: '100%' }} color='#87d068'
-                            onClick={() => isFileWithECP ? null : handleSimVerifyFile(file)}>
-                          <Icon style={{ marginRight: 5, cursor: 'pointer' }} type={isFileWithECP ? 'like' : 'edit'}/>
-                          {isFileWithECP ? '' : `Подписать(${simButtonName} ID)`}
-                        </Tag>
-                      </Menu.Item>
-                      <Menu.Item>
-                        <Tag disabled style={{ margin: 0, width: '100%' }} color='#87d068'
-                            onClick={() => isFileWithECP ? null : handleTZIVerifyFile(file)}>
-                          <Icon style={{ marginRight: 5, cursor: 'pointer' }} type={isFileWithECP ? 'like' : 'edit'}/>
-                          {isFileWithECP ? '' : 'Подписать(ТЗИ)'}
-                        </Tag>
-                      </Menu.Item>
-                      <Menu.Item>
-                        <Tag color='#f50' style={{ width: '100%' }} onClick={() => handleRemoveFile(file)}
-                        >
-                          <Icon style={{ marginRight: 5, cursor: 'pointer' }} type='delete'/>
-                          Удалить
-                        </Tag>
-                      </Menu.Item>
-                    </Menu>
-                  )}
-                >
-                  <Tag color="#E0E0E0" style={{
-                    color: '#333',
-                    cursor: 'pointer',
-                    padding: '0.8rem 1rem',
-                    fontSize: '1.5rem',
-                    width: '20rem',
-                    marginLeft: '2rem'
-                  }}>
-                    Выберите действие
-                    <Icon style={{ marginLeft: '1rem' }} type="down"/>
-                  </Tag>
-                </Dropdown>
               </Upload.Item>
             )
           })}

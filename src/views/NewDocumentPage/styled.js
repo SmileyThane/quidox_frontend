@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { rgba } from 'polished'
 
 import { styleguide } from '../../constants'
 
@@ -39,12 +40,12 @@ Layout.Actions.Calendar = styled.div`
   .react-add-to-calendar__dropdown {
     width: 100%;
     background-color: ${colors.white};
-    border: .1rem solid ${colors.gray.middle};
+    box-shadow: 0 0 1.2rem .4rem ${rgba(colors.black, 0.1)};
     border-radius: .4rem;
     position: absolute;
-    bottom: 4.2rem;
+    bottom: 4.8rem;
     right: 0;
-    padding: 1.2rem;
+    padding: 1.8rem;
     z-index: 999;
 
     ul {
@@ -53,14 +54,10 @@ Layout.Actions.Calendar = styled.div`
       padding: 0;
 
       li {
-        &:not(:last-child) {
-          border-bottom: .1rem solid ${colors.gray.middle};
-        }
-
         a {
           color: ${colors.gray.dark};
           display: block;
-          padding: .8rem 1.2rem;
+          padding: .8rem 0;
 
           &:hover {
             color: ${colors.primary};

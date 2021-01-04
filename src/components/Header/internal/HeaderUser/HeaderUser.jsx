@@ -1,33 +1,45 @@
 import React, { useEffect, useState } from 'react'
 
-import { Dropdown, Typography, message } from 'antd'
-import { User } from './styled'
+import {
+  Icon,
+  Dropdown,
+  Tag,
+  message
+} from 'antd'
+
 import { getActiveCompany } from '../../../../utils'
+
 import history from '../../../../history'
 
-const { Text } = Typography
-const defaultState = {
-  activeCompany: null
-}
-const HeaderUser = ({ user: { data }, userLogout }) => {
-  const [state, setState] = useState({ ...defaultState })
+import { styleguide } from '../../../../constants'
+
+import { User } from './styled'
+
+const { colors } = styleguide
+
+const HeaderUser = ({
+  user: {
+    data
+  },
+  userLogout
+}) => {
+  const [activeCompany, setActiveCompany] = useState(null)
 
   useEffect(() => {
     if (data) {
-      setState({
-        ...state,
-        activeCompany: data.hasOwnProperty('companies') && getActiveCompany(data)
-      })
+      setActiveCompany(data.hasOwnProperty('companies') && getActiveCompany(data))
     }
   }, [data])
 
   const handleLogout = () => {
     const logoutUri = data.co_brand_config ? data.co_brand_config.logout_uri : false
+
     userLogout()
       .then(({ data }) => {
         if (data.success) {
           window.localStorage.clear()
           window.sessionStorage.clear()
+
           if (logoutUri) {
             window.open(`${logoutUri}`, '_self')
           } else {
@@ -42,53 +54,41 @@ const HeaderUser = ({ user: { data }, userLogout }) => {
       })
   }
 
-  const { activeCompany } = state
   return (
     <User>
       <Dropdown
         trigger={['click']}
         overlay={(
-          <User.Dropdown>
-            {activeCompany &&
-              <User.DropdownItem>
-                <User.DropdownTag
-                  color='#87d068'
-                >
+          <User.Menu>
+            {activeCompany && (
+              <User.Menu.Item>
+                <Tag color={colors.green}>
                   { activeCompany.company_number && +activeCompany.company_number === 0
                     ? activeCompany.company_name
                     : (`УНП: ${activeCompany.company_number}`)
                   }
-                </User.DropdownTag>
-              </User.DropdownItem>
-            }
+                </Tag>
+              </User.Menu.Item>
+            )}
 
-            <User.DropdownItem
-              onClick={() => history.push('/user-me')}
-            >
-              <User.DropdownIcon type='profile' />
+            <User.Menu.Item>
+              <User.Menu.Link onClick={() => history.push('/user-me')}>
+                <Icon type='profile' /> Профиль
+              </User.Menu.Link>
+            </User.Menu.Item>
 
-              <Text>Профиль</Text>
-            </User.DropdownItem>
-
-            <User.DropdownItem
-              onClick={handleLogout}
-            >
-              <User.DropdownIcon type='logout' />
-
-              <Text>Выйти</Text>
-            </User.DropdownItem>
-          </User.Dropdown>
+            <User.Menu.Item>
+              <User.Menu.Link onClick={handleLogout}>
+                <Icon type='logout' /> Выйти
+              </User.Menu.Link>
+            </User.Menu.Item>
+          </User.Menu>
         )}
       >
-        <User.Info>
-          <User.InfoAvatar icon='user' />
-
-          <Text>
-            { data.email && data.email }
-          </Text>
-
-          <User.InfoArrow type='down' />
-        </User.Info>
+        <User.Toggle>
+          <User.Toggle.Email>{data.email || ''}</User.Toggle.Email>
+          <Icon type='down' />
+        </User.Toggle>
       </Dropdown>
     </User>
   )

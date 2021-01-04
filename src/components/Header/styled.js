@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+
 import { Layout } from 'antd'
 
 const Header = styled(Layout.Header)`
@@ -25,6 +26,13 @@ Header.Brand.Logo = styled.a`
   height: 4rem;
   background: url(${({ src }) => src}) no-repeat center / contain;
   display: block;
+`
+
+Header.Params = styled.div`
+  width: calc(100% - 28.2rem);
+  height: 5rem;
+  display: flex;
+  align-items: center;
 `
 
 export {
