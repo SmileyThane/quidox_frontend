@@ -5,7 +5,7 @@
   "dependencies": {
     "antd": "^3.19.1",
     "antd-mask-input": "^0.1.10",
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "classnames": "^2.2.6",
     "iplocation": "^6.1.0",
     "js-base64": "^2.5.1",
