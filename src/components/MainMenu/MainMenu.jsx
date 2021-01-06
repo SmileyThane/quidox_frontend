@@ -15,16 +15,7 @@ import { MainMenu } from './styled'
 
 export default withRouter(({ location }) => {
   const [menuParams, setMenuParams] = useState(null)
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await api.documents.getDocumentsStatuses()
-
-      setMenuParams(result.data.data)
-    }
-
-    fetchData()
-  }, [])
+  const [subMenuKeys, setSubMenuKeys] = useState([])
 
   const mainMenuList = [
     {
@@ -95,6 +86,16 @@ export default withRouter(({ location }) => {
     }
   ]
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await api.documents.getDocumentsStatuses()
+
+      setMenuParams(result.data.data)
+    }
+
+    fetchData()
+  }, [])
+
   return (
     <MainMenu>
       <MainMenu.CreateMessage>
@@ -110,7 +111,9 @@ export default withRouter(({ location }) => {
       <MainMenu.Inner>
         <Menu
           mode='inline'
+          openKeys={subMenuKeys}
           selectedKeys={[`${location.pathname ? `${location.pathname}${location.search}` : ''}`]}
+          onOpenChange={keys => setSubMenuKeys(keys)}
         >
           {mainMenuList.map((link, i) => {
             return link.subMenu ? (
@@ -128,7 +131,10 @@ export default withRouter(({ location }) => {
                   </Menu.Item>))}
               </Menu.SubMenu>
             ) : (
-              <Menu.Item key={link.url}>
+              <Menu.Item
+                key={link.url}
+                onClick={() => setSubMenuKeys([])}
+              >
                 <Link to={link.url}>
                   <Icon component={link.icon} /> {link.name}
                 </Link>

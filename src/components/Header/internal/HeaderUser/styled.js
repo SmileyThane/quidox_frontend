@@ -1,85 +1,74 @@
 import styled from 'styled-components'
 import { rgba } from 'polished'
+
 import { styleguide } from '../../../../constants'
-import { Icon, Tag, Avatar } from 'antd'
 
 const { colors } = styleguide
 
 const User = styled.div`
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: nowrap;
   height: 100%;
-  padding: 0 2rem 0 1.5rem;
-`
-
-User.Dropdown = styled.ul`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 5;
-  padding: 0;
-  list-style: none;
-  border: .1rem solid ${colors.alto};
   background-color: ${colors.white};
-  box-shadow: -0.9rem .9rem .5rem -0.5rem ${rgba('#000', 0.1)};
-`
-
-User.DropdownItem = styled.li`
+  border-radius: .4rem;
   display: flex;
-  justify-content: flex-start;
   align-items: center;
+  padding: 0 1.6rem;
   position: relative;
-  border-bottom: .1rem solid ${rgba('#E0E0E0', 0.5)};
-  transition: .3s ease-in-out;
-  padding: 1rem 1rem 1rem 2rem;
-  cursor: pointer;
-  
+`
+
+User.Menu = styled.ul`
+  background-color: ${colors.white};
+  border-radius: .4rem;
+  box-shadow: 0 0 1.2rem .4rem ${rgba(colors.black, 0.1)};
+  padding: 1.8rem;
+  margin: -.6rem -1.6rem 0 0;
+  list-style: none;
+`
+
+User.Menu.Item = styled.li`
+  color: ${colors.gray.dark};
+
   &:hover {
-    background-color: ${rgba('#E0E0E0', 0.3)};
+    color: ${colors.primary};
+  }
+
+  .ant-tag {
+    width: 100%;
+    margin-bottom: 1.2rem;
+    text-align: center;
   }
 `
 
-User.DropdownIcon = styled(Icon)`
-  margin-right: 1rem;
-`
-
-User.DropdownTag = styled(Tag)`
+User.Menu.Link = styled.a`
   width: 100%;
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-`
-
-User.Info = styled.a`
+  color: ${colors.gray.dark};
   display: flex;
-  width: 100%;
-  color: ${colors.alto};
   align-items: center;
-  cursor: pointer;
-  
-  i {
-  color: ${rgba('#000', 0.65)};
-  }
-  
-  &:active,
-  &:focus,
+  padding: .8rem 0;
+
   &:hover {
-    color: ${rgba('#000', 0.65)};
+    color: ${colors.primary};
+  }
+
+  .anticon {
+    font-size: 1.8rem;
+    margin-right: 1.2rem;
   }
 `
 
-User.InfoAvatar = styled(Avatar)`
-  && {
-    margin-right: 1rem;
+User.Toggle = styled.a`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  color: ${colors.black};
+  cursor: pointer;
+
+  .anticon {
+    color: ${colors.primary};
   }
 `
 
-User.InfoArrow = styled(Icon)`
-  margin-left: 1rem;
+User.Toggle.Email = styled.div`
+  margin-right: 1.2rem;
 `
 
 export {

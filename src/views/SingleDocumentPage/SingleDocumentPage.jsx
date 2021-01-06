@@ -418,7 +418,7 @@ const SingleDocumentPage = ({
                 <GoBack />
 
                 <Header.Inner>
-                  {(statuses.length && statuses[0].user_company_document_list_id === 1) ? (
+                  {(statuses && statuses.length && statuses[0].user_company_document_list_id === 1) ? (
                     <Header.Title
                       level={3}
                       editable={{ onChange: handleEditDocumentName }}
@@ -462,7 +462,7 @@ const SingleDocumentPage = ({
                   <Details.Item align='vertical'>
                     <Details.Label>Комментарий:</Details.Label>
 
-                    {(statuses.length && statuses[0].user_company_document_list_id === 1) ? (
+                    {(statuses && statuses.length && statuses[0].user_company_document_list_id === 1) ? (
                       <Details.Text editable={{ onChange: handleEditDocumentDescription }}>
                         {document.description}
                       </Details.Text>

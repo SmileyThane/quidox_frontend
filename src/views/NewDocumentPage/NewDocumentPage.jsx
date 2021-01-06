@@ -201,7 +201,6 @@ const NewDocumentPage = props => {
         message: 'Не правильный электронный адрес'
       })
     }
-
   }
 
   const chainSend = () => {
@@ -464,6 +463,7 @@ const NewDocumentPage = props => {
                     value={documentState.coNumbers}
                     placeholder='Введите УНП получателя'
                     onChange={e => updateField('coNumbers', e.target.value)}
+                    maxLength={9}
                   />
                 </Layout.Control>
 
