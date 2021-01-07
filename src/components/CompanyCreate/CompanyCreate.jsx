@@ -40,13 +40,54 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, user, config, redirec
     }
   }
 
+  const tziCompanyCreate = (item) => {
+    try {
+      let sign = {}
+      sign.data = 'bmV3IGNvbXBhbnkK'
+      sign.isDetached = true
+      sign.token_qdx = window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken')
+      const request = axios.post('http://127.0.0.1:8083/sign', sign)
+        .then(({ data }) => {
+          if (data.cms) {
+            let body = {}
+            body.raw_sign = data.cms
+            createCompany(body)
+              .then(response => {
+                if (response.success) {
+                  setState({ ...defaultState })
+                  message.success('ЭЦП(ТЗИ) подключена успешно')
+                  getUser()
+                  onCancel()
+                  if (redirect) {
+                    history.push('/companies')
+                  }
+                } else {
+                  throw new Error(response.error)
+                }
+              })
+              .catch(error => {
+                message.error(error.message)
+              })
+          }
+        })
+        .catch(function (error) {
+          message.error(error.message)
+        })
+
+    } catch (error) {
+      notification['error']({
+        message: error.message
+      })
+    }
+  }
+
   const handleCreateCompany = () => {
     const body = {
       name: companyData.name,
       company_number: companyData.number,
       description: companyData.city,
       registration_date: companyData.date,
-      your_position: companyData.position,
+      position: companyData.position,
       key: companyData.key
     }
 
@@ -255,8 +296,21 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, user, config, redirec
           >Отмена</Button>
         </Fragment>
       </TabPane>
-      <TabPane disabled tab='ТЗИ' key='3'>
-        ТЗИ
+      <TabPane tab='ТЗИ' key='3'>
+        <p>Убедитесь в том, что:</p>
+        <ol>
+          <li><Text>У Вас установлен комплект абонента ГосСУОК</Text></li>
+          <li><Text>Текущий браузер MS Internet Explorer</Text></li>
+          <li><Text>Ключ ЭЦП вставлен в компьютер</Text></li>
+          <li><Text>Выполнена первичная настройка компьютера по </Text><a href="https://quidox.by/settings_download/"> инструкции</a></li>
+        </ol>
+        <Button
+          type='primary'
+          style={{ marginRight: '2rem' }}
+          onClick={tziCompanyCreate}
+        >
+          Подключить
+        </Button>
         <Button
           type='primary'
           ghost
