@@ -46,7 +46,7 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, user, config, redirec
       sign.data = 'bmV3IGNvbXBhbnkK'
       sign.isDetached = true
       sign.token_qdx = window.localStorage.getItem('authToken') || window.sessionStorage.getItem('authToken')
-      sign.token_qdx += 'Bearer ' + sign.token_qdx
+      sign.token_qdx = 'Bearer ' + sign.token_qdx
       const request = axios.post('http://127.0.0.1:8083/sign', sign)
         .then(({ data }) => {
           if (data.cms) {
