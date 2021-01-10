@@ -165,7 +165,7 @@ const AntdTable = props => {
       title: 'Дата создания',
       key: 'created_at',
       className: 'date-column',
-      render: record => <Text>{moment.utc(record.created_at, 'YYYY-MM-DD HH:mm:ss').format('DD/MM/YYYY HH:mm:ss')}</Text>,
+      render: record => <Text>{moment(record.created_at, 'YYYY-MM-DD HH:mm:ss').format('DD/MM/YYYY HH:mm:ss')}</Text>,
       sorter: true,
       defaultSortOrder: 'descend'
     },

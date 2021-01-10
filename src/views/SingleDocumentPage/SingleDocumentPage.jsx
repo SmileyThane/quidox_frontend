@@ -386,7 +386,7 @@ const SingleDocumentPage = props => {
 
               <div className='document__header_right'>
                 <p className='document__date'>
-                  {moment.utc(singleDocument.created_at, 'YYYY-MM-DD HH:mm:ss').format('DD/MM/YYYY HH:mm:ss')}
+                  {moment(singleDocument.created_at, 'YYYY-MM-DD HH:mm:ss').format('DD/MM/YYYY HH:mm:ss')}
                 </p>
               </div>
             </div>
