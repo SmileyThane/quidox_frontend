@@ -295,7 +295,7 @@ export default function (props) {
           let sign = {}
           sign.data = data.data.encoded_base64_file
           sign.isDetached = true
-          sign.token_qdx = window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken')
+          sign.token_qdx = 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken')
           const request = axios.post('http://127.0.0.1:8083/sign', sign)
             .then(({ data }) => {
               if (data.cms) {
