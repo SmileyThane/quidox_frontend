@@ -60,6 +60,7 @@ export const checkBrowser = browser => {
 export const checkActiveTariff = activeTariff => {
   if (moment(moment().unix()).isAfter(moment(activeTariff.expired_at).unix()) ||
     activeTariff.max_bytes === 0 ||
+    activeTariff.is_paid === 0 ||
     activeTariff.max_actions === 0) {
     return true
   } else {
