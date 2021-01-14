@@ -298,12 +298,13 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, user, config, redirec
         </Fragment>
       </TabPane>
       <TabPane tab='ТЗИ' key='3'>
+        <strong>Что это такое и как это работает? <a href={'https://quidox.by'}>Подробнее</a></strong>
         <p>Убедитесь в том, что:</p>
         <ol>
-          <li><Text>У Вас установлен комплект абонента ГосСУОК</Text></li>
-          <li><Text>Текущий браузер MS Internet Explorer</Text></li>
-          <li><Text>Ключ ЭЦП вставлен в компьютер</Text></li>
-          <li><Text>Выполнена первичная настройка компьютера по </Text><a href="https://quidox.by/settings_download/"> инструкции</a></li>
+          <li><Text>Ваш текущий активный пакет услуг (тариф) допускает использование утилиты</Text></li>
+          <li><Text>Если нет, выбрать и подключить Вы можете </Text><a href={'https://quidox.by'}>ТУТ</a></li>
+          <li><Text>Утилита ТЗИ установлена и запущена. </Text><a href={'https://quidox.by'}>Запросить установку утилиты</a></li>
+          <li>USB-ключ ЭЦП подключен к компьютеру, списки отозванных сертификатов обновлены</li>
         </ol>
         <Button
           type='primary'
