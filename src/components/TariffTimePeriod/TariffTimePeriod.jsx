@@ -11,14 +11,14 @@ const { Countdown } = Statistic;
 
 export default function ({ user: { data }, config }) {
   const [isVisible, setVisible] = useState(true)
-  const expired_at = Object.keys(data).length  && data.active_company_object.tarification.expired_at
+  const expired_at = Object.keys(data).length && data.active_company_object.tarification.expired_at
   const smartdocUri = config.data.co_brand_config && config.data.co_brand_config.logout_uri
   console.log(data)
   return (
     <div className='c-period'>
       {isVisible ?
         <div className='c-period__content'>
-          <Countdown title='До окончания действующего пакета услуг осталось' value={data.active_company_object.tarification.is_paid === 1 ? moment(expired_at) : 0} format="D дней" />
+          <Countdown title='До окончания действующего пакета услуг осталось' value={Object.keys(data).length && data.active_company_object.tarification.is_paid === 1 ? moment(expired_at) : 0} format="D дней" />
           <div className='c-period__links'>
             <Button onClick={() => window.open(`${smartdocUri}/services`, '_self')} type='link'>Подключить новый пакет услуг.</Button>
             <Button onClick={() => window.open(`${smartdocUri}/free-functional`, '_self')} type='link'>Что будет, если я не приобрету ни один из пакетов?</Button>
