@@ -121,8 +121,34 @@ const SingleDocumentPage = props => {
     }
   }, [documentState.isErrorWitchEcp])
 
+  const showSignedModal = item => {
+    axios.get(`${process.env.REACT_APP_BASE_URL}/preview/sign/${item['id']}`, {
+      'responseType': 'arraybuffer',
+      headers: {
+        'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken'),
+        'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
+      }
+    })
+      .then(response => {
+        const blob = new window.Blob([response.data], { type: 'application/pdf' })
+        const blobURL = window.URL.createObjectURL(blob)
+        const fileType = response.headers['content-type'].split('/').pop()
+
+        setDocumentState({
+          ...documentState,
+          isVisible: true,
+          fileLink: blobURL,
+          fileType: fileType
+        })
+      })
+      .catch(error => {
+        message.success('Система создает копию для предпросмотра. Пожалуйста подождите!')
+        // message.error(error.message)
+      })
+  }
+
   const showModal = item => {
-    axios.get(item['preview_path'], {
+    axios.get(  item['preview_path'], {
       'responseType': 'arraybuffer',
       headers: {
         'Authorization': 'Bearer ' + window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken'),
@@ -462,6 +488,11 @@ const SingleDocumentPage = props => {
                               type='eye'
                               style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }}
                               onClick={() => showModal(item)}
+                            />
+                            <Icon
+                              type='eye'
+                              style={{ color: '#3278fb', marginRight: 10, fontSize: 20 }}
+                              onClick={() => showSignedModal(item)}
                             />
                           </Tooltip>
 
