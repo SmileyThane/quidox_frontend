@@ -161,7 +161,7 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, user, config, redirec
               <li><Text>У Вас установлен комплект абонента ГосСУОК</Text></li>
               <li><Text>Текущий браузер MS Internet Explorer</Text></li>
               <li><Text>Ключ ЭЦП вставлен в компьютер</Text></li>
-              <li><Text>Выполнена первичная настройка компьютера по </Text><a href="https://quidox.by/settings_download/"> инструкции</a></li>
+              <li><Text>Выполнена первичная настройка компьютера по </Text><a href={config.data.co_brand_config && config.data.co_brand_config.brand_name === 'SmartDoc' ? 'https://smartdoc.mts.by/sign-faq' : 'https://quidox.by/settings_download/'}> инструкции</a></li>
             </ol>
           </Fragment>
           : <CompanyData>
@@ -238,7 +238,7 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, user, config, redirec
           onClick={onCancel}
         >Отмена</Button>
       </TabPane>
-      <TabPane tab='Mobile ID' key='2'>
+      <TabPane tab={simButtonName} key='2'>
         <Fragment>
           <Text type='danger'>Внимание!</Text><br />
           <Text>Процессы подключения ЭЦП на sim-картах к учетной записи пользователя, равно как и процесс подписания имеет ряд особенностей. Процедура отличается от таковой для USB-ключей. </Text>
