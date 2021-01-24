@@ -32,6 +32,7 @@ class LoginPage extends React.Component {
           .then(({ data }) => {
             if (data.success) {
               window.localStorage.setItem('authToken', data.data.token)
+              window.carrotquest.auth(data.data.id, data.data.cc_token)
               history.push('/')
             } else {
               throw new Error(data.error)
