@@ -62,6 +62,61 @@ MainMenu.Inner = styled.div`
           height: 3.2rem;
           line-height: 3.2rem;
           border-radius: 0 .4rem .4rem 0;
+          display: flex;
+          align-items: center;
+
+          &.menu-item-status {
+            padding-left: 2.2rem !important;
+
+            &:before {
+              content: '';
+              width: .8rem;
+              height: .8rem;
+              border: .2rem solid ${colors.gray.middle};
+              border-radius: 50%;
+            }
+
+            &.status-1 {
+              &:before {
+                background-color: ${colors.gray.middle};
+              }
+            }
+
+            &.status-2 {
+              &:before {
+                background-color: ${colors.orange};
+                border-color: ${colors.orange};
+              }
+            }
+
+            &.status-3 {
+              &:before {
+                background-color: ${colors.green};
+                border-color: ${colors.green};
+              }
+            }
+
+            &.status-4 {
+              &:before {
+                background-color: ${colors.white};
+                border-color: ${colors.orange};
+              }
+            }
+
+            &.status-5 {
+              &:before {
+                background-color: ${colors.white};
+                border-color: ${colors.green};
+              }
+            }
+
+            &.status-6 {
+              &:before {
+                background-color: ${colors.red};
+                border-color: ${colors.red};
+              }
+            }
+          }
 
           a {
             padding-left: 1.2rem;

@@ -1,19 +1,41 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { useHistory } from 'react-router-dom'
 
-import { Icon, Modal, notification, Progress, Steps, Table } from 'antd'
-import { Button } from '../../components'
-import { Upload } from './styled'
+import {
+  Icon,
+  notification,
+  Table,
+  Typography
+} from 'antd'
+
+import {
+  LayoutScroll,
+  Button
+} from '../../components'
+
+import { ModalUploadMessages } from './components'
+
 import { api } from '../../services'
 
+import {
+  folder,
+  folderFinish
+} from './images'
 
+import {
+  Layout,
+  Steps,
+  Upload
+} from './styled'
 
-const { Step } = Steps
+const { Title } = Typography
 
 const defaultState = {
   registryData: [],
   registryHash: '',
   files: [],
   sync: false,
+  completed: false,
   fetching: false,
   showModal: false,
   filesUploaded: 0,
@@ -29,16 +51,24 @@ const getSignedHex = (base64) => {
   }
 }
 
-const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
-  const [state, setState] = useState(defaultState)
+export default ({
+  createMessage,
+  uploadFile,
+  changeFileStatus
+}) => {
+  const history = useHistory()
+
   const inputNode = useRef(null)
   const filesNode = useRef(null)
 
+  const [state, setState] = useState(defaultState)
+
   const isIE = /*@cc_on!@*/false || !!document.documentMode
+
   useEffect(() => {
     if (isIE) {
       // setTimeout(() => {
-        window.pluginLoaded()
+      window.pluginLoaded()
       // }, 1500)
     }
   }, [isIE])
@@ -78,7 +108,7 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
             registryHash: data.data.registryHash
           })
           notification['success']({
-            message: 'Файл реестра успешно добавлен'
+            message: 'Реестр успешно загружен'
           })
         } else {
           throw new Error(data.error)
@@ -91,7 +121,7 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
       })
   }
 
-  const asyncFileReader = async (file) => {
+  const asyncFileReader = async file => {
     const base64 = file => new Promise((resolve, reject) => {
       const reader = window.FileReader()
       reader.readAsDataURL(file)
@@ -117,8 +147,10 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
       'document_id': newMessage.data.id,
       'file': state.files.find(i => i.name === message.file)
     })
+
     const newFile = await uploadFile(formData, { 'Content-Type': 'multipart/form-data' })
     const updateStatus = await changeFileStatus({ attachment_id: newFile.data.id, status: message.status })
+
     if (updateStatus.success) {
       setState({
         ...state,
@@ -139,14 +171,29 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
     })
   }
 
+  const handleCancelMessages = () => {
+    setState({
+      ...state,
+      showModal: false,
+      completed: true
+    })
+  }
+
   const getFiles = e => {
     const oldFileNames = state.registryData.map(i => i.file)
     const newFileNames = [...e.target.files].map(i => i.name)
+
     setState({
       ...state,
       files: [...e.target.files].filter(e => oldFileNames.includes(e.name)),
       registryData: state.registryData.map(i => ({ ...i, system_status: newFileNames.includes(i.file) }))
     })
+  }
+
+  const handleCompleted = () => {
+    setState(defaultState)
+
+    history.push('/documents?status=10')
   }
 
   const getStatusName = id => {
@@ -162,129 +209,208 @@ const RegistryPage = ({ createMessage, uploadFile, changeFileStatus }) => {
 
   const getSystemStatus = (bool, files = []) => {
     if (bool && !files.length) {
-      return <p style={{ color: 'orange' }}>processing</p>
+      return {
+        label: 'Обработка',
+        status: 'process'
+      }
     } else if (bool && files.length) {
-      return <p style={{ color: 'green' }}>ok</p>
+      return {
+        label: 'Готов',
+        status: 'completed'
+      }
     } else {
-      return <p style={{ color: 'red' }}>error</p>
+      return {
+        label: 'Ошибка',
+        status: 'error'
+      }
     }
   }
 
   const columns = [
     {
-      title: 'File',
+      title: 'Файл',
       key: 'file',
-      render: record => <p>{record.file}</p>
+      dataIndex: 'file'
     },
     {
-      title: 'E-mail',
-      key: 'e-mail',
-      render: record => <p>{record.e_mail}</p>
+      title: 'Получатель',
+      key: 'e_mail',
+      dataIndex: 'e_mail',
+      render: (email, record) => (
+        <Layout.Column>
+          <Layout.Column.Email>{email}</Layout.Column.Email>
+
+          <Layout.Column.Number>
+            <Layout.Column.Label>УНП</Layout.Column.Label> {record.company_number}
+          </Layout.Column.Number>
+        </Layout.Column>
+      )
     },
     {
-      title: 'UNP*',
-      key: 'unp',
-      render: record => <p>{record.company_number}</p>
-    },
-    {
-      title: 'Topic',
+      title: 'Тема',
       key: 'topic',
       render: record => <p>{record.name}</p>
     },
     {
-      title: 'Comment',
+      width: 250,
+      title: 'Комментарий',
       key: 'comment',
       render: record => <p>{record.description}</p>
     },
     {
-      title: 'Request',
-      key: 'request',
-      render: record => <p>{getStatusName(record.status)}</p>
+      title: 'Тип запроса',
+      key: 'status',
+      dataIndex: 'status',
+      render: status => getStatusName(status)
     },
     {
-      title: 'Success',
+      title: 'Статус',
       key: 'success',
-      render: record => getSystemStatus(record.system_status, state.files)
+      render: record => {
+        const systemStatus = getSystemStatus(record.system_status, state.files)
+
+        return (
+          <Layout.Column.Status status={systemStatus.status}>
+            {systemStatus.label}
+          </Layout.Column.Status>
+        )
+      }
     }
   ]
+
   return (
-    <div className='content' style={{ padding: '1rem' }}>
-      <Steps size='small' style={{ maxWidth: '100%' }}>
-        <Step status={state.registryData.length ? 'finish' : 'process'} title='Шаг 1'
-              description='Загрузите файл реестра' icon={<Icon type='file-excel'/>}/>
-        <Step status={
-          state.registryData.length && !!state.registryData.reduce((a, b) => a.system_status * b.system_status) ? 'finish' : 'wait'
-        } title='Шаг 2' description='Загрузите файлы, указанные в реестре' icon={<Icon type='file'/>}/>
-        <Step status={state.sync ? 'finish' : 'wait'} title='Шаг 3'
-              description='Синхронизация окончена, сохраните сообщения' icon={<Icon type='file-done'/>}/>
-      </Steps>
-      <div className='buttons-group'>
-        <input
-          type='file'
-          id='upload'
-          hidden
-          onChange={event => handleImportRegistry(event)}
-          accept='application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-          ref={inputNode}
-        />
+    <LayoutScroll>
+      <Layout>
+        {!state.registryData.length && (
+          <Layout.Centering>
+            <Layout.Inner>
+              <Layout.Picture src={folder} />
 
-        <label style={{ minWidth: 216 }} className='ant-btn ant-btn-primary ant-btn-background-ghost label-btn'
-               htmlFor='upload'>
-          <Icon type='upload' style={{ marginRight: 10 }}/>
-          Загрузить реестр
-        </label>
-      </div>
-      <Upload>
-        {!!state.registryData.length &&
-        <Fragment>
-          <Table rowKey='file' scroll={{ x: true }} dataSource={state.registryData} columns={columns}/>
-          <div className='buttons-group'>
-            <input
-              type='file'
-              id='upload-file'
-              hidden
-              multiple
-              onChange={event => getFiles(event)}
-              ref={filesNode}
-            />
+              <Layout.Secondary>Шаг 1 из 3</Layout.Secondary>
+              <Title level={3}>Для начала работы загрузите реестр</Title>
+              <Layout.Secondary>Чтобы загрузить файлы нажмите на кнопку ниже.<br />Подходят файлы с разрешением .xls, не более 10 МБ</Layout.Secondary>
 
-            <label style={{ minWidth: 216 }} className='ant-btn ant-btn-primary ant-btn-background-ghost label-btn'
-                   htmlFor='upload-file'>
-              <Icon type='upload' style={{ marginRight: 10 }}/>
-              Загрузить файл(ы)
-            </label>
-            {state.sync &&
-            <Button type='primary' onClick={() => setState({ ...state, showModal: true })}>
-              <Icon type={state.fetching ? 'loading' : 'upload'}/>
-              Сохранить</Button>
-            }
-          </div>
-        </Fragment>
-        }
-      </Upload>
-      {state.showModal &&
-      <Modal
-        visible
-        closable={false}
-        footer={null}
-      >
-        <p>Сообщений к загрузке: {state.registryData.length}</p>
-        <p>Сообщений сохранено: {state.filesUploaded}</p>
-        <Progress
-          status='active'
-          percent={Math.floor(
-            (state.filesUploaded / state.registryData.length) * 100
-          )}
+              <Layout.Action>
+                <Upload type='primary'>
+                  <Upload.Field
+                    accept='application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                    type='file'
+                    id='upload'
+                    ref={inputNode}
+                    onChange={e => handleImportRegistry(e)}
+                    hidden
+                  />
+
+                  <Upload.Label htmlFor='upload'>
+                    <Icon type='upload' /> Загрузить реестр
+                  </Upload.Label>
+                </Upload>
+              </Layout.Action>
+            </Layout.Inner>
+          </Layout.Centering>)}
+
+        {!!state.registryData.length && (
+          <>
+            <Steps>
+              <Steps.Item status='completed'>
+                1. Загрузка реестра
+                <Icon type='check' />
+              </Steps.Item>
+
+              <Steps.Item status={state.sync ? 'completed' : 'process'}>
+                2. Загрузка файлов
+                {state.sync && <Icon type='check' />}
+              </Steps.Item>
+
+              <Steps.Item status={state.completed ? 'completed' : 'process'}>
+                3. Создание сообщений
+                {state.completed && <Icon type='check' />}
+              </Steps.Item>
+            </Steps>
+
+            {!state.completed ? (
+              <Layout.Upload>
+                <Layout.Upload.Inner>
+                  {!state.sync ? (
+                    <>
+                      <Title level={3}>Загрузите файлы указанные в реестре</Title>
+                      <Layout.Secondary>Чтобы загрузить файлы нажмите на кнопку ниже.<br />Подходят файлы с разрешением .pdf, не более 10 МБ</Layout.Secondary>
+
+                      <Layout.Action>
+                        <Upload type='primary'>
+                          <Upload.Field
+                            type='file'
+                            id='upload-file'
+                            ref={filesNode}
+                            onChange={e => getFiles(e)}
+                            multiple
+                            hidden
+                          />
+
+                          <Upload.Label htmlFor='upload-file'>
+                            <Icon type='upload' /> Загрузить файлы
+                          </Upload.Label>
+                        </Upload>
+                      </Layout.Action>
+                    </>
+                  ) : (
+                    <>
+                      <Title level={3}>Создайте сообщения</Title>
+                      <Layout.Secondary>Файлы загружены, создайте сообщения чтобы<br />автоматически распределить файлы по адресатам</Layout.Secondary>
+
+                      <Layout.Action>
+                        <Button
+                          type='primary'
+                          icon='mail'
+                          onClick={() => setState({
+                            ...state,
+                            showModal: true
+                          })}
+                        >
+                          Создать сообщения
+                        </Button>
+                      </Layout.Action>
+                    </>
+                  )}
+
+                  <Layout.Table>
+                    <Table
+                      className='ui-table-list'
+                      rowKey='file'
+                      dataSource={state.registryData}
+                      columns={columns}
+                    />
+                  </Layout.Table>
+                </Layout.Upload.Inner>
+              </Layout.Upload>
+            ) : (
+              <Layout.Centering withSteps>
+                <Layout.Inner>
+                  <Layout.Picture src={folderFinish} />
+
+                  <Title level={3}>Сообщение сформированны</Title>
+                  <Layout.Secondary>По загруженым файлам сформированы сообщения<br />и перенесы в раздел «Сообщения по реестру»</Layout.Secondary>
+
+                  <Layout.Action>
+                    <Button
+                      type='primary'
+                      icon='mail'
+                      onClick={handleCompleted}
+                    >
+                      Перейти к сообщениям
+                    </Button>
+                  </Layout.Action>
+                </Layout.Inner>
+              </Layout.Centering>)}
+          </>)}
+
+        <ModalUploadMessages
+          visible={state.showModal}
+          data={state}
+          onSave={handleCreateMessages}
+          onCancel={handleCancelMessages}
         />
-        {state.filesUploaded !== state.registryData.length
-          ? <Button type='primary' disabled={state.disabled} onClick={() => handleCreateMessages()}>Сохранить
-            сообщения</Button>
-          : <Button type='primary' ghost onClick={() => { setState({ ...defaultState }) }}>Закрыть</Button>
-        }
-      </Modal>
-      }
-    </div>
+      </Layout>
+    </LayoutScroll>
   )
 }
-
-export default RegistryPage

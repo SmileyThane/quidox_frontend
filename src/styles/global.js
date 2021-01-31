@@ -96,6 +96,69 @@ export default createGlobalStyle`
     }
   }
 
+  .ui-table-list {
+    .ant-table {
+      .ant-table-thead {
+        th {
+          background: transparent;
+          border-bottom: .1rem solid ${colors.gray.middle};
+          color: ${colors.gray.dark};
+          padding: 1.4rem 1.2rem;
+
+          &:first-child {
+            padding-right: 0;
+            padding-left: 0;
+            text-align: left;
+          }
+
+          &:last-child {
+            padding-right: 0;
+            text-align: right;
+          }
+
+          &.ant-table-column-sort {
+            background: ${colors.white};
+
+            &:hover {
+              background: ${colors.white};
+            }
+          }
+        }
+      }
+
+      .ant-table-tbody {
+        .ant-table-row {
+          &.ant-table-row-selected,
+          &:hover {
+            td {
+              background-color: ${colors.white};
+            }
+          }
+
+          td {
+            border-color: ${colors.gray.middle};
+            padding: 2rem 1.2rem;
+
+            &:first-child {
+              padding-right: 0;
+              padding-left: 0;
+              text-align: left;
+            }
+
+            &:last-child {
+              padding-right: 0;
+              text-align: right;
+            }
+
+            &.ant-table-column-sort {
+              background-color: ${colors.white};
+            }
+          }
+        }
+      }
+    }
+  }
+
   .ant-calendar-picker {
     .anticon {
       &.anticon-calendar {

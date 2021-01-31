@@ -1,8 +1,23 @@
-import React, { Fragment, useState } from 'react'
+import React, { useState } from 'react'
 
-import { Icon, Modal, notification } from 'antd'
-import { PageDescription, Table, Button } from '../../components'
+import {
+  Icon,
+  notification
+} from 'antd'
+
+import {
+  LayoutScroll,
+  Table,
+  Button
+} from '../../components'
+
 import { api } from '../../services'
+
+import { IconSend } from './images'
+
+import { ModalProcess } from './components'
+
+import { Layout } from './styled'
 
 const defaultState = {
   isVisible: false,
@@ -17,16 +32,19 @@ const defaultState = {
   idsForRemove: null,
   idsForSend: null
 }
-const DocumentsPage = props => {
-  const {
-    user: { data },
-    documents: { documents, isFetching },
-    getDocumentsByActiveCompanyId
-  } = props
 
+export default ({
+  user: { data },
+  documents: {
+    documents,
+    isFetching
+  },
+  getDocumentsByActiveCompanyId,
+  location
+}) => {
   const [state, setState] = useState({ ...defaultState })
 
-  const params = new URLSearchParams(props.location.search)
+  const params = new URLSearchParams(location.search)
   const status = params.get('status')
 
   const showVerifyModal = () => {
@@ -34,8 +52,9 @@ const DocumentsPage = props => {
       ...state,
       buttonsFetching: [true, false, false]
     })
+
     api.documents.getDocumentsByActiveCompanyId(data.active_company_id, {
-      status: Number(status),
+      status: +status,
       selection_type: 'document',
       is_minified: true
     })
@@ -60,8 +79,9 @@ const DocumentsPage = props => {
       ...state,
       buttonsFetching: [false, true, false]
     })
+
     api.documents.getDocumentsByActiveCompanyId(data.active_company_id, {
-      status: Number(status),
+      status: +status,
       selection_type: 'document',
       is_minified: true
     })
@@ -69,6 +89,7 @@ const DocumentsPage = props => {
         if (data.success) {
           const notApplied = data.data.data.length
           const ids = data.data.data.map(i => i.id)
+
           setState({
             ...state,
             isVisible: true,
@@ -88,8 +109,9 @@ const DocumentsPage = props => {
       ...state,
       buttonsFetching: [false, false, true]
     })
+
     api.documents.getDocumentsByActiveCompanyId(data.active_company_id, {
-      status: Number(status),
+      status: +status,
       selection_type: 'document',
       is_minified: true
     })
@@ -97,6 +119,7 @@ const DocumentsPage = props => {
         if (data.success) {
           const notApplied = data.data.data.length
           const ids = [...new Set(data.data.data.map(i => i.document_id))]
+
           setState({
             ...state,
             isVisible: true,
@@ -115,8 +138,10 @@ const DocumentsPage = props => {
     for (const file of files) {
       if (bool || file.status.status_data.id === 3) {
         const base64 = await api.files.getBase64File(file.id)
+
         try {
           const sertificationObject = await window.signProcess(base64.data.data.encoded_base64_file, file.hash_for_sign, true)
+
           const verifiedData = {
             id: file.id,
             hash: sertificationObject.signedData,
@@ -124,10 +149,12 @@ const DocumentsPage = props => {
             hash_for_sign: sertificationObject.hex,
             status: bool ? null : 5
           }
+
           const confirm = await api.documents.attachmentSignCanConfirm({
             key: sertificationObject.verifiedData.key,
             attachment_id: file.id
           })
+
           if (confirm.data.success) {
             api.files.verifyFile(verifiedData)
           }
@@ -138,8 +165,7 @@ const DocumentsPage = props => {
     }
   }
 
-  const proccesMessageForVerifyFiles = async (messages) => {
-
+  const proccesMessageForVerifyFiles = async messages => {
     for (const [index, message] of messages.entries()) {
       await proccesFilesForVerifyFile(message.can_be_signed, message.document.attachments)
     }
@@ -147,10 +173,10 @@ const DocumentsPage = props => {
 
   const multipleVerifyPreparation = () => {
     window.pluginLoaded()
-    // setTimeout(() => {
-      multipleVerify()
-    // }, 3000)
 
+    // setTimeout(() => {
+    multipleVerify()
+    // }, 3000)
   }
 
   const multipleVerify = async () => {
@@ -159,18 +185,15 @@ const DocumentsPage = props => {
       disabled: true,
       disabledCloseButton: true
     })
-    proccesMessageForVerifyFiles(state.messages).then(() =>
-        {
-        setState({
-          ...state,
-          disabledCloseButton: false
-        })
-        notification.success({
-          message: 'Подпись завершена! закройте окно и перезагрузите страницу.'
-        })
-      }
-    )
 
+    proccesMessageForVerifyFiles(state.messages).then(() => {
+      setState({
+        ...state,
+        disabledCloseButton: false
+      })
+
+      notification.success('Подпись завершена! закройте окно и перезагрузите страницу.')
+    })
   }
 
   const multipleRemove = () => {
@@ -179,7 +202,10 @@ const DocumentsPage = props => {
       disabled: true,
       disabledCloseButton: true
     })
-    api.documents.removeDocumentsByIds({ ids: state.idsForRemove }).then(() => window.location.reload())
+
+    api.documents.removeDocumentsByIds({
+      ids: state.idsForRemove
+    }).then(() => window.location.reload())
   }
 
   const multipleSend = () => {
@@ -188,115 +214,90 @@ const DocumentsPage = props => {
       disabled: true,
       disabledCloseButton: true
     })
+
     let chain = Promise.resolve()
+
     state.idsForSend.forEach(id => {
       chain = chain.then(() => asyncSend(id))
     })
-    chain.finally(() => { window.location.reload() })
+
+    chain.finally(() => {
+      window.location.reload()
+    })
   }
 
-  const asyncSend = async (id) => {
-    await api.documents.sendDocumentToUser({ document_ids: [id], user_company_id: JSON.stringify([]) })
+  const asyncSend = async id => {
+    await api.documents.sendDocumentToUser({
+      document_ids: [id],
+      user_company_id: JSON.stringify([])
+    })
   }
 
   return (
-    <Fragment>
-      <div className='content'>
-        {!!(documents.data && documents.data.length > 0) && Number(status) !== 3 &&
-        <div style={{ margin: '2rem' }}>
-          <Button
-            type='primary'
-            style={{ marginLeft: '1.4rem' }}
-            onClick={showVerifyModal}
-          >
-            <Icon type={state.buttonsFetching[0] ? 'loading' : 'edit'}/>
-            Подписать все
-          </Button>
-          <Button
-            type='primary'
-            disabled={Number(status) === 11}
-            style={{ marginLeft: '1rem' }}
-            onClick={showRemoveModal}
-          >
-            <Icon type={state.buttonsFetching[1] ? 'loading' : 'delete'}/>
-            Удалить все
-          </Button>
-          <Button
-            type='primary'
-            style={{ marginLeft: '1rem' }}
-            onClick={showSendModal}
-          >
-            <Icon type={state.buttonsFetching[2] ? 'loading' : 'upload'}/>
-            Отправить все
-          </Button>
-        </div>
-        }
-        <Table
-          className='document-table'
-          tableData={documents}
-          loading={isFetching}
-          getDocumentsWithParams={getDocumentsByActiveCompanyId}
-          activeCompany={data.active_company_id}
-          type='document'
-          status={Number(status)}
-        />
-      </div>
+    <LayoutScroll>
+      <Layout>
+        <Layout.Inner>
+          <Layout.Table>
+            {!!(documents.data && documents.data.length > 0) && +status !== 3 && +status !== 4 && (
+              <Layout.Table.Header>
+                <Layout.Table.Column>
+                  <Button
+                    type='link'
+                    icon={state.buttonsFetching[0] ? 'loading' : 'edit'}
+                    onClick={showVerifyModal}
+                  >
+                    Подписать все
+                  </Button>
 
-      <PageDescription
-        title='В эту папку Вы сможете сохранить черновик любого сообщения.'
-        text={['Вы сможете в любой момент продолжить редактирование сообщения и отправить его адресату.']}
-      />
-      {state.isVisible &&
-      <Modal visible closable={false} footer={null}>
-        {state.type === 'verify' &&
-        <p>Файлов к подписанию: {state.not_applied_attachments_count}</p>
-        }
-        {state.type === 'remove' &&
-        <p>Файлов к удалению: {state.not_applied_attachments_count}</p>
-        }
-        {state.type === 'send' &&
-        <p>Сообщений к отправке: {state.not_applied_attachments_count}</p>
-        }
-        {state.type === 'verify' &&
-        <Button
-          type='primary'
-          style={{ marginTop: '2rem' }}
-          disabled={state.disabled}
-          onClick={multipleVerifyPreparation}
-        >
-          <Icon type={state.disabled ? 'loading' : 'edit'}/>
-          {state.disabled ? 'Подождите, идет процесс подписания' : 'Подписать файлы'}
-        </Button>
-        }
-        {state.type === 'remove' &&
-        <Button
-          type='primary'
-          style={{ marginTop: '2rem' }}
-          disabled={state.disabled}
-          onClick={multipleRemove}
-        >
-          <Icon type={state.disabled ? 'loading' : 'edit'}/>
-          {state.disabled ? 'Подождите, идет процесс удаления' : 'Удалить файлы'}
-        </Button>
-        }
-        {state.type === 'send' &&
-        <Button
-          type='primary'
-          style={{ marginTop: '2rem' }}
-          disabled={state.disabled}
-          onClick={multipleSend}
-        >
-          <Icon type={state.disabled ? 'loading' : 'edit'}/>
-          {state.disabled ? 'Подождите, идет процесс отправки' : 'Отправить сообщения'}
-        </Button>
-        }
+                  <Button
+                    type='link'
+                    onClick={showSendModal}
+                  >
+                    {state.buttonsFetching[0] ? (
+                      <Icon type='loading' />
+                    ) : (
+                      <Icon component={IconSend} />
+                    )}
 
-        <Button disabled={state.disabledCloseButton} style={{ marginLeft: '2rem' }}
-                onClick={() => setState({ ...defaultState })}>Закрыть</Button>
-      </Modal>
-      }
-    </Fragment>
+                    Отправить все
+                  </Button>
+                </Layout.Table.Column>
+
+                <Layout.Table.Column>
+                  <Button
+                    type='link'
+                    icon={state.buttonsFetching[0] ? 'loading' : 'delete'}
+                    disabled={+status === 11}
+                    onClick={showRemoveModal}
+                  >
+                    Удалить все
+                  </Button>
+                </Layout.Table.Column>
+              </Layout.Table.Header>)}
+
+            <Layout.Table.Body>
+              <Table
+                className='ui-table-list'
+                tableData={documents}
+                loading={isFetching}
+                getDocumentsWithParams={getDocumentsByActiveCompanyId}
+                activeCompany={data.active_company_id}
+                type='document'
+                status={+status}
+              />
+            </Layout.Table.Body>
+          </Layout.Table>
+
+          <ModalProcess
+            visible={state.isVisible}
+            data={state}
+            onVerify={multipleVerifyPreparation}
+            onRemove={multipleRemove}
+            onSend={multipleSend}
+            onCancel={() => setState({ ...defaultState })}
+          />
+        </Layout.Inner>
+      </Layout>
+    </LayoutScroll>
   )
 }
-
-export default DocumentsPage

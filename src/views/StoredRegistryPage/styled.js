@@ -1,20 +1,29 @@
 import styled from 'styled-components'
+
 import { styleguide } from '../../constants'
 
 const { colors } = styleguide
 
-const Upload = styled.div`
+const Layout = styled.div`
+  padding: 2rem;
 
-`
+  && {
+    .ant-btn {
+      height: auto;
+      color: ${colors.black};
+      padding: 0;
 
-Upload.Button = styled.label`
-  display: inline-block;
-  padding: .5rem 1rem;
-  text-align: center;
-  border: 1px solid ${colors.dodgerBlue};
-  cursor: pointer;
+      .anticon {
+        color: ${colors.primary};
+      }
+
+      &:hover {
+        color: ${colors.primary};
+      }
+    }
+  }
 `
 
 export {
-  Upload
+  Layout
 }

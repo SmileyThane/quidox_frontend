@@ -1,34 +1,41 @@
-import React, { useState, useEffect, Fragment, useRef } from 'react'
-import axios from 'axios'
+import React, { useState, useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
+import axios from 'axios'
 import fileDownload from 'js-file-download'
-import { api } from '../../services'
-
 import _ from 'lodash'
-import { Link } from 'react-router-dom'
+import moment from 'moment'
 
 import {
   Table,
-  Icon,
-  Popconfirm,
-  AutoComplete,
-  message,
   Typography,
   Select,
   Modal,
   Spin,
   Pagination,
-  Tooltip,
+  Checkbox,
+  Tag,
   notification,
-  Tag
+  message
 } from 'antd'
 
-import { Button, RouterLink } from '../'
-import './Table.scss'
+import {
+  Button,
+  FooterFixed
+} from '../'
+
+import { api } from '../../services'
+
 import { findUsersByParams } from '../../services/api/user'
-import history from '../../history'
-import moment from 'moment'
 import forbiddenEmails from '../../constants/forbiddenEmails'
+
+import {
+  ColumnAddressee,
+  ColumnActions,
+  ColumnAttachments,
+  ColumnStatus
+} from './components'
+
+import { Layout } from './styled'
 
 const defaultTableState = {
   selectedRowKeys: [],
@@ -39,7 +46,8 @@ const defaultTableState = {
   showModal: false,
   sorter: '',
   isFetching: false,
-  loading: false
+  loading: false,
+  indeterminate: false
 }
 
 const defaultParameterState = {
@@ -55,31 +63,30 @@ const defaultParameterState = {
 const { Text } = Typography
 const { Option } = Select
 
-const AntdTable = props => {
-  const {
-    getDocumentsWithParams,
-    activeCompany,
-    verifyFile,
-    children,
-    type,
-    getUser,
-    removeDocumentById,
-    removeDocumentsByIds,
-    documents,
-    sendDocumentToUser,
-    tableData,
-    status,
-    files,
-    ...rest
-  } = props
-
+export default ({
+  getDocumentsWithParams,
+  activeCompany,
+  verifyFile,
+  children,
+  type,
+  getUser,
+  removeDocumentById,
+  removeDocumentsByIds,
+  documents,
+  sendDocumentToUser,
+  tableData,
+  status,
+  files,
+  ...rest
+}) => {
   const location = useLocation()
 
   const input = useRef(null)
 
   const [tableState, setTableState] = useState({ ...defaultTableState })
-
   const [parameterState, setParameterState] = useState({ ...defaultParameterState })
+
+  const tablePerPage = window.localStorage.getItem('perPage')
 
   useEffect(() => {
     setTableState({
@@ -94,7 +101,7 @@ const AntdTable = props => {
         ...parameterState,
         status: status,
         selection_type: type,
-        per_page: window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 15,
+        per_page: tablePerPage || 15,
         page: 1
       })
     }
@@ -104,89 +111,19 @@ const AntdTable = props => {
     if (parameterState.status) {
       getDocumentsWithParams(activeCompany, parameterState)
     }
-  }, [parameterState.status])
+  }, [
+    parameterState.per_page,
+    parameterState.page,
+    parameterState.parameter,
+    parameterState.sort_by,
+    parameterState.sort_value
+  ])
 
-  const columns = [
-    {
-      title: (status === 1 || status === 3 || status === 9 || status === 10) ? 'Получатель' : 'Отправитель',
-      key: type,
-      render: record =>
-        <Fragment>
-          {(status === 1 || status === 3 || status === 9 || status === 10)
-            ? <RouterLink to={{ pathname: `/documents/${record.id}` }}>
-              <div>
-                {record.recipient &&
-                    record.recipient['user_email']
-                }
-                <br />
-                {record.recipient &&
-                  <p>{`[ ${record.recipient['company_name']} ]`}</p>
-                }
-              </div>
-            </RouterLink>
-            : <RouterLink to={{ pathname: `/documents/${record.id}` }}>
-              <div>
-                {record.sender &&
-                    record.sender['user_email']
-                }
-                <br />
-                {record.sender &&
-                  <p>{`[ ${record.sender['company_name']} ]`}</p>
-                }
-              </div>
-            </RouterLink>
-          }
-        </Fragment>
-    },
-    {
-      title: (status === 9 ? 'УНП' : ''),
-      key: 'unp'
-    },
-    {
-      title: (status === 10 ? 'ЭЦП' : ''),
-      key: 'file-status',
-      render: (status === 10
-        ? record => <Tag color={!!record.document.applied_attachments_count ? 'green' : 'orange'}>{!!record.document.applied_attachments_count ? 'ЭЦП имеется' : 'ЭЦП отсутствует'}</Tag>
-        : ''
-      )
-    },
-    {
-      title: 'Тема',
-      key: 'descr',
-      render: record => <RouterLink to={{ pathname: `/documents/${record.id}` }}>{record.document.name}</RouterLink>
-    },
-    {
-      title: () => <Icon type='paper-clip' />,
-      key: 'attachments',
-      render: record => <RouterLink to={{ pathname: `/documents/${record.id}` }} style={{ textAlign: 'center' }} >{record.document.attachments.length === 0 ? 'Нет приложенных документов' : record.document.attachments.length }</RouterLink>,
-      sorter: false
-    },
-    {
-      title: 'Дата создания',
-      key: 'created_at',
-      className: 'date-column',
-      render: record => <Text>{moment.utc(record.created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD/MM/YYYY HH:mm:ss')}</Text>,
-      sorter: true,
-      defaultSortOrder: 'descend'
-    },
-    {
-      title: (status === 9 ? 'ЭЦП' : '')
-    },
-    {
-      title: 'Квитанция',
-      key: 'receipt',
-      className: 'table-download',
-      render: record => <Fragment>
-        <Tooltip placement='topRight' title='Скачать квитанцию в формате pdf' arrowPointAtCenter>
-          <Icon onClick={() => downloadReceipt(record.id, record.document.name, 'pdf')} type='file-pdf' style={{ marginRight: '0.5rem', fontSize: '1.8rem', cursor: 'pointer' }} />
-        </Tooltip>
-
-        <Tooltip placement='topRight' title='Скачать квитанцию в формате xml  (Скоро...)' arrowPointAtCenter>
-          <Icon onClick={() => downloadReceipt(record.id, record.document.name, 'xml')} type='file-text' style={{ marginRight: '0.5rem', fontSize: '1.8rem', cursor: 'pointer' }} />
-        </Tooltip>
-      </Fragment>
+  useEffect(() => {
+    if (parameterState.status) {
+      getDocumentsWithParams(activeCompany, parameterState)
     }
-  ]
+  }, [parameterState.status])
 
   const downloadReceipt = (id, name, type) => {
     setTableState({
@@ -194,17 +131,21 @@ const AntdTable = props => {
       isFetching: true
     })
 
-    let auth = window.localStorage.getItem('authToken') != null ? window.localStorage.getItem('authToken') : window.sessionStorage.getItem('authToken')
+    let auth = window.localStorage.getItem('authToken') != null
+      ? window.localStorage.getItem('authToken')
+      : window.sessionStorage.getItem('authToken')
+
     axios.get(`${process.env.REACT_APP_BASE_URL}/receipt/${type}/${id}`, {
       'responseType': 'arraybuffer',
       headers: {
-        'Authorization': 'Bearer ' + auth ,
+        'Authorization': 'Bearer ' + auth,
         'Access-Control-Expose-Headers': 'Content-Disposition,X-Suggested-Filename'
       }
     })
       .then(({ data }) => {
         if (data) {
           fileDownload(data, `${name}.${type}`)
+
           setTableState({
             ...tableState,
             isFetching: false
@@ -219,6 +160,7 @@ const AntdTable = props => {
   const onSelectChange = selectedRowKeys => {
     setTableState({
       ...tableState,
+      indeterminate: !!selectedRowKeys.length,
       selectedRowKeys
     })
   }
@@ -226,12 +168,15 @@ const AntdTable = props => {
   const handleRemove = () => {
     if (tableState.selectedRowKeys.length === 0) {
       message.error('Нет выбраных документов!')
+
       return null
     }
+
     if (tableState.selectedRowKeys.length > 1) {
       const obj = {
         ids: tableState.selectedRowKeys
       }
+
       removeDocumentsByIds(obj)
         .then(response => {
           if (response.success) {
@@ -260,27 +205,17 @@ const AntdTable = props => {
     }
   }
 
-  const handleSearch = value => {
-    setParameterState({
-      ...parameterState,
-      parameter: value
-    })
-  }
-
-  const rowSelection = {
-    selectedRowKeys: tableState.selectedRowKeys,
-    onChange: onSelectChange
-  }
-
   const fetchUser = _.debounce(v => {
     if (v.length > 2) {
       setTableState({
         ...tableState,
         fetching: true
       })
+
       findUsersByParams(v)
         .then(({ data }) => {
           const dataIds = tableState.data.map(i => i.key)
+
           const dataArray = data.data
             .map(user => ({
               label: `${user.user_data.email} (УНП:${user.company_data.company_number}; Компания:${user.company_data.name})`,
@@ -315,8 +250,10 @@ const AntdTable = props => {
   const openModal = () => {
     if (tableState.selectedRowKeys.length === 0) {
       message.error('Нет выбраных документов!')
+
       return null
     }
+
     setTableState({
       ...tableState,
       showModal: true
@@ -328,11 +265,9 @@ const AntdTable = props => {
   }
 
   const sendToUser = () => {
-
     if (tableState.value.filter(i => forbiddenEmails.includes(i.key)).length) {
-      notification.error({
-        message: 'Отправка/перенаправление по реквизиту УНП для данного адресата запрещено. Укажите точный адрес (E-mail) получателя.'
-      })
+      notification.error('Отправка/перенаправление по реквизиту УНП для данного адресата запрещено. Укажите точный адрес (E-mail) получателя.')
+
       return false
     }
 
@@ -341,12 +276,15 @@ const AntdTable = props => {
         .filter(i => tableState.selectedRowKeys.includes(i.id)).map(i => i.document_id),
       user_company_id: JSON.stringify(tableState.value.map(i => i.key))
     }
+
     let chain = Promise.resolve()
+
     const uniqueMessagesIds = [...new Set(docsDataToUser.messages)]
 
     uniqueMessagesIds.forEach(id => {
       chain = chain.then(() => asyncSendMessage(id, docsDataToUser.user_company_id))
     })
+
     chain.finally(() => {
       window.location.reload()
     })
@@ -354,6 +292,7 @@ const AntdTable = props => {
 
   const handleChangePerPage = value => {
     window.localStorage.setItem('perPage', value)
+
     setParameterState({
       ...parameterState,
       per_page: value
@@ -379,8 +318,10 @@ const AntdTable = props => {
     for (const file of files) {
       if (bool || file.status.status_data.id === 3) {
         const base64 = await api.files.getBase64File(file.id)
+
         try {
           const sertificationObject = await window.signProcess(base64.data.data.encoded_base64_file, file.hash_for_sign, true)
+
           const verifiedData = {
             id: file.id,
             hash: sertificationObject.signedData,
@@ -388,7 +329,12 @@ const AntdTable = props => {
             hash_for_sign: sertificationObject.hex,
             status: bool ? null : 5
           }
-          const confirm = await api.documents.attachmentSignCanConfirm({ key: sertificationObject.verifiedData.key, attachment_id: file.id })
+
+          const confirm = await api.documents.attachmentSignCanConfirm({
+            key: sertificationObject.verifiedData.key,
+            attachment_id: file.id
+          })
+
           if (confirm.data.success) {
             api.files.verifyFile(verifiedData)
           }
@@ -406,47 +352,361 @@ const AntdTable = props => {
       ...tableState,
       loading: true
     })
+
     proccesMessageForVerifyFiles(tableData.data.filter(i => tableState.selectedRowKeys.includes(i.id)))
       .then(() => {
         setTableState({ ...defaultTableState })
-        notification.success({
-          message: 'Подпись завершена! закройте окно и перезагрузите страницу.'
-        })
+
+        notification.success('Подпись завершена! закройте окно и перезагрузите страницу.')
       })
   }
 
   const reloadPlugin = () => {
-     window.pluginLoaded()
+    window.pluginLoaded()
+
     multipleVerify()
   }
 
-  const proccesMessageForVerifyFiles = async (messages) => {
-     for (const [index, message] of messages.entries()) {
+  const proccesMessageForVerifyFiles = async messages => {
+    for (const [index, message] of messages.entries()) {
       await proccesFilesForVerifyFile(message.can_be_signed, message.document.attachments)
     }
   }
 
-  useEffect(() => {
-    if (parameterState.status) {
-      getDocumentsWithParams(activeCompany, parameterState)
+  const handleChangeIndeterminate = e => {
+    if (e.target.checked) {
+      setTableState({
+        ...tableState,
+        indeterminate: false,
+        selectedRowKeys: []
+      })
     }
-  }, [parameterState.per_page,
-    parameterState.page,
-    parameterState.parameter,
-    parameterState.sort_by,
-    parameterState.sort_value
-  ])
+  }
+
+  const columns = [
+    {
+      title: (status === 1 || status === 3 || status === 10) ? 'Получатель' : 'Отправитель',
+      key: type,
+      render: record => (
+        <ColumnAddressee
+          status={status}
+          record={record}
+        />
+      )
+    },
+    {
+      title: (status === 9 ? 'УНП' : ''),
+      key: 'unp'
+    },
+    {
+      title: (status === 10 ? 'ЭЦП' : ''),
+      key: 'file-status',
+      render: record => {
+        if (status === 10) {
+          return <ColumnStatus status={!!record.document.applied_attachments_count} />
+        } else {
+          return ''
+        }
+      }
+    },
+    {
+      title: 'Тема',
+      key: 'descr',
+      render: record => (
+        <Layout.Column.Theme to={`/documents/${record.id}`}>
+          {record.document.name}
+        </Layout.Column.Theme>
+      )
+    },
+    {
+      title: 'Вложения',
+      key: 'attachments',
+      align: 'center',
+      render: record => <ColumnAttachments files={record.document.attachments} />
+    },
+    {
+      title: 'Дата',
+      key: 'created_at',
+      align: 'right',
+      sorter: true,
+      defaultSortOrder: 'descend',
+      render: record => <Text>{moment.utc(record.created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD.MM.YYYY, HH:mm:ss')}</Text>
+    },
+    {
+      title: (status === 9 ? 'ЭЦП' : '')
+    },
+    {
+      title: 'Квитанция',
+      key: 'receipt',
+      render: record => {
+        const {
+          id,
+          document
+        } = record
+
+        return (
+          <ColumnActions
+            onDownloadPDF={() => downloadReceipt(id, document.name, 'pdf')}
+            onDownloadXml={() => downloadReceipt(id, document.name, 'xml')}
+          />
+        )
+      }
+    }
+  ]
+
+  const columnsArchive = [
+    {
+      title: 'Адресат',
+      key: type,
+      render: record => (
+        <ColumnAddressee
+          status={status}
+          record={record}
+        />
+      )
+    },
+    {
+      title: 'Тема',
+      key: 'descr',
+      render: record => (
+        <Layout.Column.Theme to={`/documents/${record.id}`}>
+          {record.document.name}
+        </Layout.Column.Theme>
+      )
+    },
+    {
+      title: 'Добавлено из',
+      key: 'status',
+      render: () => 'Архив'
+    },
+    {
+      title: 'Дата',
+      key: 'created_at',
+      align: 'right',
+      sorter: true,
+      defaultSortOrder: 'descend',
+      render: record => <Text>{moment.utc(record.created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD.MM.YYYY, HH:mm:ss')}</Text>
+    },
+    {
+      title: 'Квитанция',
+      key: 'receipt',
+      render: record => {
+        const {
+          id,
+          document
+        } = record
+
+        return (
+          <ColumnActions
+            onDownloadPDF={() => downloadReceipt(id, document.name, 'pdf')}
+            onDownloadXml={() => downloadReceipt(id, document.name, 'xml')}
+          />
+        )
+      }
+    }
+  ]
+
+  const columnsPartySources = [
+    {
+      title: 'Получатель',
+      key: type,
+      render: record => (
+        <ColumnAddressee
+          status={status}
+          record={record}
+        />
+      )
+    },
+    {
+      title: (status === 10 ? 'ЭЦП' : ''),
+      key: 'file-status',
+      render: record => {
+        if (status === 10) {
+          return <ColumnStatus status={!!record.document.applied_attachments_count} />
+        } else {
+          return ''
+        }
+      }
+    },
+    {
+      title: 'Тема',
+      key: 'descr',
+      render: record => (
+        <Layout.Column.Theme to={`/documents/${record.id}`}>
+          {record.document.name}
+        </Layout.Column.Theme>
+      )
+    },
+    {
+      title: 'Вложения',
+      key: 'attachments',
+      align: 'center',
+      render: record => <ColumnAttachments files={record.document.attachments} />
+    },
+    {
+      title: 'Дата',
+      key: 'created_at',
+      align: 'right',
+      sorter: true,
+      defaultSortOrder: 'descend',
+      render: record => <Text>{moment.utc(record.created_at, 'YYYY-MM-DD HH:mm:ss').local().format('DD.MM.YYYY, HH:mm:ss')}</Text>
+    },
+    {
+      title: 'Квитанция',
+      key: 'receipt',
+      render: record => {
+        const {
+          id,
+          document
+        } = record
+
+        return (
+          <ColumnActions
+            onDownloadPDF={() => downloadReceipt(id, document.name, 'pdf')}
+            onDownloadXml={() => downloadReceipt(id, document.name, 'xml')}
+          />
+        )
+      }
+    }
+  ]
+
+  const handleTableColumns = () => {
+    if (status === 1 || status === 3 || status === 10) {
+      return columns
+    } else if (status === 4) {
+      return columnsArchive
+    } else if (status === 9) {
+      return columnsPartySources
+    } else {
+      return columns
+    }
+  }
 
   return (
-    <Fragment>
-      {tableState.showModal && <Modal
+    <Layout>
+      <Spin spinning={tableState.isFetching}>
+        <Table
+          rowKey='id'
+          rowSelection={{
+            selectedRowKeys: tableState.selectedRowKeys,
+            onChange: onSelectChange
+          }}
+          rowClassName={record => record.is_read === 0 ? 'unread' : ''}
+          locale={{ emptyText: 'Нет данных' }}
+          columns={handleTableColumns()}
+          dataSource={tableData ? tableData.data : []}
+          pagination={false}
+          onChange={handleTableChange}
+          {...rest}
+        >
+          {children}
+        </Table>
+      </Spin>
+
+      <FooterFixed>
+        {tableState.selectedRowKeys.length ? (
+          <>
+            <Layout.Selected>
+              <Checkbox
+                indeterminate={tableState.indeterminate}
+                onChange={handleChangeIndeterminate}
+                checked={false}
+              >
+                Снять выделение
+              </Checkbox>
+
+              <Layout.Selected.Count>Выделено: {tableState.selectedRowKeys.length}</Layout.Selected.Count>
+            </Layout.Selected>
+
+            <Layout.Actions>
+              <Layout.Actions.Item>
+                <Button
+                  type='link'
+                  icon='export'
+                  onClick={() => openModal()}
+                >
+                  Отправить выделенное
+                </Button>
+              </Layout.Actions.Item>
+
+              <Layout.Actions.Item>
+                <Button
+                  type='link'
+                  icon='edit'
+                  onClick={reloadPlugin}
+                >
+                  Групповое подписание
+                </Button>
+              </Layout.Actions.Item>
+
+              {status !== 4 && (
+                <Layout.Actions.Item>
+                  <Button
+                    type='link'
+                    icon='delete'
+                    onClick={() => handleRemove(type)}
+                  >
+                    В архив
+                  </Button>
+                </Layout.Actions.Item>)}
+            </Layout.Actions>
+          </>
+        ) : (
+          <Layout.Pagination>
+            <Layout.Pagination.List>
+              <Layout.Pagination.Label>На странице</Layout.Pagination.Label>
+
+              <Layout.Pagination.Item
+                onClick={() => handleChangePerPage(15)}
+                active={tablePerPage === '15'}
+              >
+                15
+              </Layout.Pagination.Item>
+
+              <Layout.Pagination.Item
+                onClick={() => handleChangePerPage(30)}
+                active={tablePerPage === '30'}
+              >
+                30
+              </Layout.Pagination.Item>
+
+              <Layout.Pagination.Item
+                onClick={() => handleChangePerPage(60)}
+                active={tablePerPage === '60'}
+              >
+                60
+              </Layout.Pagination.Item>
+            </Layout.Pagination.List>
+
+            <Pagination
+              current={parameterState.page}
+              total={tableData && !isNaN(Math.ceil(tableData.total / +tableData.per_page) * 10) ? Math.ceil(tableData.total / +tableData.per_page) * 10 : 0}
+              onChange={handleChangePage}
+              hideOnSinglePage
+              simple
+            />
+          </Layout.Pagination>
+        )}
+      </FooterFixed>
+
+      <Modal
         title={null}
-        visible
+        visible={tableState.showModal}
         closable={false}
         footer={null}
       >
         <Text>Получатели:</Text>
-        <input type='text' ref={input} style={{ opacity: 0, width: '100%', height: 0 }} />
+
+        <input
+          type='text'
+          ref={input}
+          style={{
+            opacity: 0,
+            width: '100%',
+            height: 0
+          }}
+        />
+
         <Select
           mode='tags'
           labelInValue
@@ -461,78 +721,24 @@ const AntdTable = props => {
         >
           {tableState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
         </Select>
-        <Button style={{ marginTop: 20 }} type='primary' onClick={sendToUser}>Отправить</Button>
-        <Button
-          style={{ marginLeft: 20 }}
-          type='primary'
-          ghost
-          onClick={() => setTableState({ ...tableState, showModal: false })}
-        >Отмена</Button>
-      </Modal>
-      }
-      <Spin spinning={tableState.isFetching}>
-        <Table
-          className='table table-old'
-          scroll={{ x: true }}
-          columns={columns}
-          rowSelection={rowSelection}
-          dataSource={tableData ? tableData.data : []}
-          rowKey='id'
-          locale={{ emptyText: 'Нет данных' }}
-          rowClassName={record => record.is_read === 0 ? 'unread' : ''}
-          pagination={false}
-          onChange={handleTableChange}
-          title={() =>
-            (
-              <div>
-                <div className='table__header table-header'>
-                  <div className='table-header__actions'>
-                    <Button style={{ marginRight: '1rem' }} disabled={!(!!tableState.selectedRowKeys.length)} icon='cloud-upload' type='primary' onClick={() => openModal()}>Отправить выделенное</Button>
-                    <Button style={{ marginRight: '1rem' }} disabled={!(!!tableState.selectedRowKeys.length) || status === 11} icon='delete' type='primary' onClick={() => handleRemove(type)}>Переместить в архив</Button>
-                    <Button disabled={!(!!tableState.selectedRowKeys.length && status !== 3)} type='primary' icon={tableState.loading ? 'loading' : 'edit'} onClick={reloadPlugin}>Групповое подписание</Button>
-                  </div>
-                  <div className='table-header__search'>
-                    <AutoComplete onSearch={_.debounce(handleSearch, 500)} placeholder={`Введите тему, ${(status === 1 || status === 3) ? '  получателя' : 'отправителя'}...`} />
-                    <Pagination
-                      simple
-                      current={parameterState.page}
-                      hideOnSinglePage
-                      total={tableData && !isNaN(Math.ceil(tableData.total / +tableData.per_page) * 10) ? Math.ceil(tableData.total / +tableData.per_page) * 10 : 0}
-                      onChange={handleChangePage}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-          footer={() =>
-            (
-              <div className='table__footer table-footer'>
-                <div className='table-footer-left'>
-                  <div className='table-footer__item'>
-                    <Text>Отмечено: {tableState.selectedRowKeys.length}</Text>
-                  </div>
-                  <div className='table-footer__item'>
-                    <Text>Всего: {tableData && tableData.hasOwnProperty('data') && tableData.data.length}</Text>
-                  </div>
-                </div>
-                <div>
-                  <Text>На странице:</Text>
-                  <Select onChange={handleChangePerPage} defaultValue={window.localStorage.getItem('perPage') ? window.localStorage.getItem('perPage') : 15} style={{ width: 120, marginLeft: '1rem' }}>
-                    <Option value={15}>15</Option>
-                    <Option value={30}>30</Option>
-                    <Option value={60}>60</Option>
-                  </Select>
-                </div>
-              </div>
-            )}
-          {...rest}
-        >
-          {children}
-        </Table>
-      </Spin>
 
-    </Fragment>
+        <Button
+          type='primary'
+          onClick={sendToUser}
+          style={{ marginTop: 20 }}
+        >
+          Отправить
+        </Button>
+
+        <Button
+          type='primary'
+          onClick={() => setTableState({ ...tableState, showModal: false })}
+          style={{ marginLeft: 20 }}
+          ghost
+        >
+          Отмена
+        </Button>
+      </Modal>
+    </Layout>
   )
 }
-
-export default AntdTable
