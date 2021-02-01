@@ -1,10 +1,18 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react'
-
-import { notification,Table } from 'antd'
-import { api } from '../../services'
+import React, { useEffect, useState } from 'react'
 import fileDownload from 'js-file-download'
 import axios from 'axios'
 
+import {
+  Table,
+  notification,
+  Button
+} from 'antd'
+
+import { LayoutScroll } from '../../components'
+
+import { api } from '../../services'
+
+import { Layout } from './styled'
 
 const defaultState = {
   registryData: [],
@@ -15,11 +23,12 @@ const defaultState = {
   disabled: false
 }
 
-
-
-const StoredRegistryPage = () => {
+export default () => {
   const [state, setState] = useState(defaultState)
-  const inputNode = useRef(null)
+
+  useEffect(() => {
+    handleImportRegistry()
+  }, [])
 
   const handleImportRegistry = e => {
     api.registry.importStoredRegistry()
@@ -29,6 +38,7 @@ const StoredRegistryPage = () => {
             ...state,
             registryData: data.data,
           })
+
           notification['success']({
             message: 'Ваши файлы реестров успешно загружены!'
           })
@@ -43,8 +53,11 @@ const StoredRegistryPage = () => {
       })
   }
 
-  const downloadRegistry = (id) => {
-    let auth = window.localStorage.getItem('authToken') != null ? window.localStorage.getItem('authToken') : window.sessionStorage.getItem('authToken')
+  const downloadRegistry = id => {
+    let auth = window.localStorage.getItem('authToken') != null
+      ? window.localStorage.getItem('authToken')
+      : window.sessionStorage.getItem('authToken')
+
     axios.get(`${process.env.REACT_APP_BASE_URL}/registry/stored/${id}`, {
       'responseType': 'arraybuffer',
       headers: {
@@ -55,6 +68,7 @@ const StoredRegistryPage = () => {
       .then(({ data }) => {
         if (data) {
           fileDownload(data, `registry.xls`)
+
           notification['success']({
             message: ' Файл подготовлен к загрузке!'
           })
@@ -68,40 +82,43 @@ const StoredRegistryPage = () => {
         })
       })
   }
-  useEffect(() => {
-      handleImportRegistry();
-  }, [])
 
   const columns = [
     {
-      title: 'Имя файла',
+      title: 'Название файла',
       key: 'filename',
-      render: record => <p>{record.filename}</p>
+      dataIndex: 'filename'
     },
     {
       title: 'Создано',
       key: 'created_at',
-      render: record => <p>{record.created_at}</p>
+      dataIndex: 'created_at'
+    },
+    {
+      key: 'download',
+      render: record => (
+        <Button
+          type='link'
+          icon='download'
+          onClick={() => downloadRegistry(record.id)}
+        >
+          Скачать
+        </Button>
+      )
     }
   ]
+
   return (
-    <div className='content' style={{ padding: '1rem' }}>
-      <div className='buttons-group'>
-      </div>
-        {!!state.registryData.length &&
-        <Fragment>
+    <LayoutScroll>
+      <Layout>
+        {!!state.registryData.length && (
           <Table
+            rowKey='id'
+            className='ui-table-list'
             dataSource={state.registryData}
             columns={columns}
-            rowKey='id'
-            onRow={(record, index) => ({
-              onClick: (event) => { downloadRegistry(record.id) }
-            })}
-          />
-        </Fragment>
-        }
-    </div>
+          />)}
+      </Layout>
+    </LayoutScroll>
   )
 }
-
-export default StoredRegistryPage

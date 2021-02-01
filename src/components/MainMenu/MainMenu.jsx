@@ -66,6 +66,7 @@ export default withRouter(({ location }) => {
       icon: images.IconStatus,
       subMenu: menuParams ? menuParams.attachment_statuses.map(item => ({
         ...item,
+        status: `status-${item.id}`,
         url: `/documents?status=${item.id}`
       })) : []
     },
@@ -126,7 +127,10 @@ export default withRouter(({ location }) => {
                 }
               >
                 {link.subMenu.map(subLink => (
-                  <Menu.Item key={subLink.url}>
+                  <Menu.Item
+                    key={subLink.url}
+                    className={subLink.status ? `menu-item-status ${subLink.status}` : ''}
+                  >
                     <Link to={subLink.url}>{subLink.name}</Link>
                   </Menu.Item>))}
               </Menu.SubMenu>
