@@ -106,11 +106,23 @@ const PrivateRoute = ({ component: Component, config, user: { data, isFetching }
                               'Внимание! Вы израсходовали ваш пакет услуг. Чтобы продолжить пользоваться сервисом, пожалуйста, ' +
                               'подключите новый пакет услуг на следующие 30 дней на номере ' + activeCompany.company_data.owner_phone_number
                             :
-
-                            'Внимание! Недостаточно средств на Вашем балансе и ' +
-                            'мы не можем активировать очередной пакет услуг. ' +
-                            'Чтобы продолжить пользование сервисом пополните, пожалуйста, баланс.' +
-                            'Кнопка - "Пополнить баланс"'
+                            <div dangerouslySetInnerHTML={{
+                              __html:
+                                'Уважаемый пользователь!\n' +
+                                '\n' +
+                                'Поскольку по окончании демо-периода Вами не активирован ни один из постоянных пакетов услуг, ' +
+                                'возможность создания и отправки (перенаправления) сообщений и документов отключена.\n' +
+                                ' \n' +
+                                'РАБОТА С ВХОДЯЩИМИ ПО-ПРЕЖНЕМУ БЕСПЛАТНА\n' +
+                                '\n' +
+                                'Работа со ВХОДЯЩИМИ документами – их получение/сохранение, подписание и согласование ' +
+                                'по прежнему доступна и для Вас абсолютно бесплатна.\n' +
+                                '\n' +
+                                'По вопросам подбора оптимального ' +
+                                '<a href="https://quidox.by/wp-content/uploads/2020/12/price_14_12_2020-3.xlsx">тарифа</a>  ' +
+                                'Вы можете связаться с нами по указанным ' +
+                                '<a href="https://quidox.by/#callback"> контактам. </a>'
+                            }} />
                         }
                         <div style={{ marginTop: '2rem' }}>
                           {
@@ -119,15 +131,15 @@ const PrivateRoute = ({ component: Component, config, user: { data, isFetching }
                               Перейти к продлению тарифа
                             </Button>
                           }
-                          {
-                            config.data.co_brand_config === null &&
-                            <Button type='primary' onClick={handleChangeTariff}>
-                              Перейти к пополнению баланса
-                            </Button>
+                          {/*{*/}
+                          {/*  config.data.co_brand_config === null &&*/}
+                          {/*  <Button type='primary' onClick={handleChangeTariff}>*/}
+                          {/*    Перейти к пополнению баланса*/}
+                          {/*  </Button>*/}
 
-                          }
+                          {/*}*/}
                           <Button type='link' onClick={handleStayOnPage}>
-                            {config.data.co_brand_config ? 'Отмена' : 'Пополнить позже'}
+                            {config.data.co_brand_config ? 'Отмена' : 'Продолжить бесплатно'}
                           </Button>
                         </div>
                       </Modal>
