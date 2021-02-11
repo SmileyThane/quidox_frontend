@@ -1,165 +1,182 @@
-import React, { Fragment } from 'react'
+import React from 'react'
+import axios from 'axios'
 
-import { message, notification, Typography } from 'antd'
-import { pdf100, pdf1000, pdf20, pdf500 } from '../../../../resources/pdf'
+import {
+  message,
+  notification,
+  Typography
+} from 'antd'
 
 import { Button } from '../../../../components'
 
-import './CompanyBalance.scss'
-import axios from 'axios'
+import {
+  Layout,
+  List
+} from './styled'
 
-const { Title, Text } = Typography
+const {
+  Paragraph,
+  Title
+} = Typography
 
-const makeOrder = (cost, paymentType, comment, tariffId = null) => {
-  try {
-    let data = {
-      'cost': cost,
-      'payment_type_id': paymentType,
-      'currency_id': 1,
-      'order_data': 'qwertyu',
-      'comment': comment,
-      'config_id': '1',
-      'tarification_id': tariffId
-    }
-    let auth = window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken')
-    axios.post(`${process.env.REACT_APP_BASE_URL}/orders`, data, {
-      headers: {
-        'Authorization': 'Bearer ' + auth
-      }
-    })
-      .then(({}) => {
-        message.success('Заказ успешно оформлен.')
-        setTimeout(window.location.reload(), 2000)
-      })
-      .catch(error => {
-        message.error('Ошибка оформления заказа!')
-      })
-  } catch (error) {
-    notification['error']({
-      message: error.message
-    })
+const monthlyPlans = [
+  {
+    tarificationId: 4,
+    name: 'Лайт',
+    amount: 20,
+    count: 100,
+    link: 'https://drive.google.com/file/d/1FhMcgVpoyr-ZJUWmSKvPC0r_Lqtj1Lkb/view?usp=sharing'
+  },
+  {
+    tarificationId: 5,
+    name: 'Стандарт',
+    amount: 150,
+    count: 1000,
+    link: 'https://drive.google.com/file/d/1Y3mPGOfUTW6L07gSnkX03dIuiem4M9tl/view?usp=sharing'
+  },
+  {
+    tarificationId: 3,
+    name: 'Про',
+    amount: 750,
+    count: 10000,
+    link: 'https://drive.google.com/file/d/1cDj6qA4gnOD2Bt6qO8ewr2tf6zFUWj1Z/view?usp=sharing'
   }
-}
+]
 
-const CompanyBalance = ({ balance }) => {
+const yearPlans = [
+  {
+    tarificationId: 15,
+    name: 'Год.600',
+    amount: 120,
+    count: 600,
+    link: 'https://drive.google.com/file/d/1MY9Jex1oa-bMzpdcmL5BWdV7PeoZjzUP/view?usp=sharing'
+  },
+  {
+    tarificationId: 16,
+    name: 'Год.1200',
+    amount: 180,
+    count: 1200,
+    link: 'https://drive.google.com/file/d/1NicPdGqc08gsK25TsY-4-OeKCPtB4mFJ/view?usp=sharing'
+  },
+  {
+    tarificationId: 17,
+    name: 'Год.Стандарт',
+    amount: 1350,
+    count: 12000,
+    link: 'https://drive.google.com/file/d/1qhiEGsB62CjIDGyokJZmCJflGjwskiUM/view?usp=sharing'
+  }
+]
+
+export default () => {
+  const handleMakeOrder = (cost, paymentType, comment, tariffId = null) => {
+    try {
+      const data = {
+        payment_type_id: paymentType,
+        currency_id: 1,
+        order_data: 'qwertyu',
+        config_id: '1',
+        tarification_id: tariffId,
+        comment,
+        cost
+      }
+
+      const auth = window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken')
+
+      axios.post(`${process.env.REACT_APP_BASE_URL}/orders`, data, {
+        headers: {
+          'Authorization': 'Bearer ' + auth
+        }
+      })
+        .then(() => {
+          message.success('Заказ успешно оформлен.')
+
+          setTimeout(window.location.reload(), 2000)
+        })
+        .catch(error => {
+          message.error('Ошибка оформления заказа!')
+        })
+    } catch (error) {
+      notification['error']({
+        message: error.message
+      })
+    }
+  }
+
   return (
-    <Fragment>
-      <div className='balance-header'>
-        <Title level={3}>
-          Пополнить баланс
-        </Title>
+    <Layout>
+      <Layout.Inner>
+        <Title level={3}>Пакеты услуг со сроком действия календарный месяц</Title>
+        <Paragraph>Пример: оплачено 02 января 2021 года – действует до 31 января 2021 года или до расходования доступного лимита отправок/перенаправлений (что наступит ранее). Остаток неиспользованных действий на следующий календарный месяц не переносится.</Paragraph>
 
-        <Title level={3}>
-          {`Текущее состояние баланса: ${balance} BYN`}
-        </Title>
-      </div>
+        <List>
+          {monthlyPlans.map((item, i) => (
+            <List.Item key={i}>
+              <List.Item.Name>{item.name}</List.Item.Name>
 
-      <div style={{ marginTop: '1rem' }}>
-        <Text>
-          Активация заказанной услуги происходит одновременно со списанием ее стоимости с баланса Заказчика. По
-          окончании
-          срока действия активированной услуги, будет произведено автоматическое ее продление с одновременным списанием
-          средств
-          с баланса Заказчика. При недостаточности средств на балансе, его необходимо предварительно пополнить.
-          Первичная
-          активация или продление услуги при недостаточном количестве средств на балансе невозможно.
-        </Text><br/><br/>
+              <List.Item.Amount>
+                {item.amount} <span>BYN</span>
+              </List.Item.Amount>
 
-        <Text>
-          В настоящее время пополнение возможно платежным поручением на Р/с Исполнителя. Скоро будет доступно пополнение
-          через ЕРИП и банковской картой.
-        </Text><br/><br/>
+              <List.Item.Count>
+                {item.count} <span>отправок</span>
+              </List.Item.Count>
 
-        <Text>
-          Для пополнения баланса выберите и сохраните для оплаты один из ниже расположенных счетов:
-        </Text>
-        <div className='balance-links' style={{ marginTop: '1rem' }}>
-          <div className='balance-links-item'>
-            <Text>Пополнить на 20 BYN</Text>
-            <Button
-              type='link'
-              onClick={() => makeOrder(20, 2, 'Пополнить на 20 BYN')}
-            >Пополнить счет</Button>
+              <Button
+                type='primary'
+                onClick={() => handleMakeOrder(item.amount, 1, `Пополнить на ${item.amount} BYN`, item.tarificationId)}
+              >
+                Пополнить счет
+              </Button>
 
-            <Button
-              type='link'
-              onClick={() => window.open(pdf20, '_blank')}
-            >Скачать счет</Button>
-          </div>
+              <Button
+                type='link'
+                href={item.link}
+                target='_blank'
+              >
+                Скачать счет
+              </Button>
+            </List.Item>
+          ))}
+        </List>
+      </Layout.Inner>
 
-          <div className='balance-links-item'>
-            <Text>Пополнить на 100 BYN</Text>
+      <Layout.Inner>
+        <Title level={3}>Пакеты услуг со сроком действия до 31.12.2021г.</Title>
+        <Paragraph>Пример: оплачено 02 января 2021 года – действует в течение 12 календарных месяцев, включая месяц активации года или до расходования доступного лимита отправок/перенаправлений (что наступит ранее). Гибкое расходование на ежемесячные отправки в пределах доступного общего лимита и срока действия пакета услуг.</Paragraph>
 
-            <Button
-              type='link'
-              onClick={() => makeOrder(100, 2, 'Пополнить на 100 BYN')}
-            >Пополнить счет</Button>
+        <List>
+          {yearPlans.map((item, i) => (
+            <List.Item key={i}>
+              <List.Item.Name>{item.name}</List.Item.Name>
 
-            <Button
-              type='link'
-              onClick={() => window.open(pdf100, '_blank')}
-            >
-              Скачать счет
-            </Button>
-          </div>
+              <List.Item.Amount>
+                {item.amount} <span>BYN</span>
+              </List.Item.Amount>
 
-          <div className='balance-links-item'>
-            <Text>Пополнить на 500 BYN</Text>
+              <List.Item.Count>
+                {item.count} <span>отправок</span>
+              </List.Item.Count>
 
-            <Button
-              type='link'
-              onClick={() => makeOrder(500, 2, 'Пополнить на 500 BYN')}
-            >Пополнить счет</Button>
+              <Button
+                type='primary'
+                onClick={() => handleMakeOrder(item.amount, 1, `Пополнить на ${item.amount} BYN`, item.tarificationId)}
+              >
+                Пополнить счет
+              </Button>
 
-            <Button
-              type='link'
-              onClick={() => window.open(pdf500, '_blank')}
-            >
-              Скачать счет
-            </Button>
-          </div>
+              <Button
+                type='link'
+                href={item.link}
+                target='_blank'
+              >
+                Скачать счет
+              </Button>
+            </List.Item>
+          ))}
+        </List>
+      </Layout.Inner>
 
-          <div className='balance-links-item'>
-            <Text>Пополнить на 1000 BYN</Text>
-
-            <Button
-              type='link'
-              onClick={() => makeOrder(1000, 2, 'Пополнить на 1000 BYN')}
-            >Пополнить счет</Button>
-
-            <Button
-              type='link'
-              onClick={() => window.open(pdf1000, '_blank')}
-            >
-              Скачать счет
-            </Button>
-          </div>
-        </div>
-        <br/>
-        <div>
-          <Button
-            type='link'
-            onClick={() => makeOrder(0, 2, 'Оплата картой', 2)}
-          >Подключить Легкий Старт! (карта)</Button>
-
-          <Button
-            type='link'
-            onClick={() => makeOrder(0, 1, 'Оплата балансом', 2)}
-          >Подключить Легкий Старт! (баланс)</Button>
-        </div>
-        <br/>
-          <Text>
-            После зачисления платежа на наш расчетный счет служба поддержки проверит его назначение и откорректирует
-            состояние
-            баланса Вашей организации.
-          </Text><br/>
-
-          <Text>
-            Благодарим Вас за сотрудничество!
-          </Text>
-      </div>
-    </Fragment>
-)
+      <Paragraph>Консультации по выбору оптимального пакета услуг с учетом Ваших потребностей: +375 29 647-25-25, +375 33 647-25-25, ask@quidox.by</Paragraph>
+    </Layout>
+  )
 }
-
-export default CompanyBalance

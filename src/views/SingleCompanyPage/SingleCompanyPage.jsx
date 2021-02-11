@@ -72,11 +72,11 @@ const SingleCompanyPage = props => {
                 tab={
                   <Fragment>
                     <Icon type='wallet' />
-                    Баланс
+                    Баланс ({singleCompany.balance} BYN)
                   </Fragment>
                 }
               >
-                <CompanyBalance balance={singleCompany.balance} />
+                <CompanyBalance />
               </ThemeTabs.Pane>
 
             }
