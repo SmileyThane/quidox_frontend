@@ -1,9 +1,9 @@
 import React from 'react'
-import axios from 'axios'
+// import axios from 'axios'
 
 import {
-  message,
-  notification,
+  // message,
+  // notification,
   Typography
 } from 'antd'
 
@@ -68,39 +68,39 @@ const yearPlans = [
 ]
 
 export default () => {
-  const handleMakeOrder = (cost, paymentType, comment, tariffId = null) => {
-    try {
-      const data = {
-        payment_type_id: paymentType,
-        currency_id: 1,
-        order_data: 'qwertyu',
-        config_id: '1',
-        tarification_id: tariffId,
-        comment,
-        cost
-      }
+  // const handleMakeOrder = (cost, paymentType, comment, tariffId = null) => {
+  //   try {
+  //     const data = {
+  //       payment_type_id: paymentType,
+  //       currency_id: 1,
+  //       order_data: 'qwertyu',
+  //       config_id: '1',
+  //       tarification_id: tariffId,
+  //       comment,
+  //       cost
+  //     }
 
-      const auth = window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken')
+  //     const auth = window.localStorage.getItem('authToken') || 'Bearer ' + window.sessionStorage.getItem('authToken')
 
-      axios.post(`${process.env.REACT_APP_BASE_URL}/orders`, data, {
-        headers: {
-          'Authorization': 'Bearer ' + auth
-        }
-      })
-        .then(() => {
-          message.success('Заказ успешно оформлен.')
+  //     axios.post(`${process.env.REACT_APP_BASE_URL}/orders`, data, {
+  //       headers: {
+  //         'Authorization': 'Bearer ' + auth
+  //       }
+  //     })
+  //       .then(() => {
+  //         message.success('Заказ успешно оформлен.')
 
-          setTimeout(window.location.reload(), 2000)
-        })
-        .catch(error => {
-          message.error('Ошибка оформления заказа!')
-        })
-    } catch (error) {
-      notification['error']({
-        message: error.message
-      })
-    }
-  }
+  //         setTimeout(window.location.reload(), 2000)
+  //       })
+  //       .catch(error => {
+  //         message.error('Ошибка оформления заказа!')
+  //       })
+  //   } catch (error) {
+  //     notification['error']({
+  //       message: error.message
+  //     })
+  //   }
+  // }
 
   return (
     <Layout>
@@ -121,15 +121,15 @@ export default () => {
                 {item.count} <span>отправок</span>
               </List.Item.Count>
 
-              <Button
+              {/* <Button
                 type='primary'
                 onClick={() => handleMakeOrder(item.amount, 1, `Пополнить на ${item.amount} BYN`, item.tarificationId)}
               >
                 Пополнить счет
-              </Button>
+              </Button> */}
 
               <Button
-                type='link'
+                type='primary'
                 href={item.link}
                 target='_blank'
               >
@@ -157,15 +157,15 @@ export default () => {
                 {item.count} <span>отправок</span>
               </List.Item.Count>
 
-              <Button
+              {/* <Button
                 type='primary'
                 onClick={() => handleMakeOrder(item.amount, 1, `Пополнить на ${item.amount} BYN`, item.tarificationId)}
               >
                 Пополнить счет
-              </Button>
+              </Button> */}
 
               <Button
-                type='link'
+                type='primary'
                 href={item.link}
                 target='_blank'
               >
@@ -176,6 +176,7 @@ export default () => {
         </List>
       </Layout.Inner>
 
+      <Paragraph>Вся линейка тарифов доступна <a href='https://quidox.by/prices/' target='_blank'>тут</a>.</Paragraph>
       <Paragraph>Консультации по выбору оптимального пакета услуг с учетом Ваших потребностей: +375 29 647-25-25, +375 33 647-25-25, ask@quidox.by</Paragraph>
     </Layout>
   )
