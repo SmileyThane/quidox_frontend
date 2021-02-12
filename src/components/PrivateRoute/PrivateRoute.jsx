@@ -92,23 +92,24 @@ const PrivateRoute = ({ component: Component, config, user: { data, isFetching }
                       >
                         {
                           config.data.co_brand_config ?
-                            activeCompany.company_data.is_blocked === true ?
+                            activeCompany.company_data.is_blocked === true && activeCompany.company_data.is_dummy === 1 ?
                               'Внимание! Для продолжения пользования сервисом подключите услугу линейки "МТС SmartDoc".' :
-                              // 'Внимание! Предоставление сервиса" МТС SmartDoc" на тарификационном номере ' +
-                              // activeCompany.company_data.owner_phone_number +
-                              // ' и всех пользователей Компании заблокировано!' :
-                              activeCompany.company_data.is_owner === true ?
-                              'Внимание! Вы израсходовали ваш пакет услуг. ' +
-                              'Чтобы продолжить пользование сервисом, пожалуйста, ' +
-                              'подключите новый пакет услуг на следующие 30 дней. ' +
-                              'При нажатии на кнопку "Перейти к продлению тарифа" ' +
-                              'стоимость пакета с учетом НДС спишется с лицевого счета вашего абонентского номера.' :
-                              'Внимание! Вы израсходовали ваш пакет услуг. Чтобы продолжить пользоваться сервисом, пожалуйста, ' +
-                              'подключите новый пакет услуг на следующие 30 дней на номере ' + activeCompany.company_data.owner_phone_number
+                              activeCompany.company_data.is_blocked === true && activeCompany.company_data.is_dummy === 0 ?
+                                'Внимание! Предоставление сервиса" МТС SmartDoc" на тарификационном номере ' +
+                                activeCompany.company_data.owner_phone_number +
+                                ' и всех пользователей Компании заблокировано!' :
+                                activeCompany.company_data.is_owner === true ?
+                                  'Внимание! Вы израсходовали ваш пакет услуг. ' +
+                                  'Чтобы продолжить пользование сервисом, пожалуйста, ' +
+                                  'подключите новый пакет услуг на следующие 30 дней. ' +
+                                  'При нажатии на кнопку "Перейти к продлению тарифа" ' +
+                                  'стоимость пакета с учетом НДС спишется с лицевого счета вашего абонентского номера.' :
+                                  'Внимание! Вы израсходовали ваш пакет услуг. Чтобы продолжить пользоваться сервисом, пожалуйста, ' +
+                                  'подключите новый пакет услуг на следующие 30 дней на номере ' + activeCompany.company_data.owner_phone_number
                             :
                             <div dangerouslySetInnerHTML={{
                               __html:
-                                'Уважаемый пользователь!<br>\n' +
+                                '<div style="text-align: justify;">Уважаемый пользователь!<br>\n' +
                                 '\n' +
                                 'Поскольку по окончании демо-периода Вами не активирован ни один из постоянных пакетов услуг, ' +
                                 'возможность создания и отправки (перенаправления) сообщений и документов отключена.<br>\n' +
@@ -121,8 +122,8 @@ const PrivateRoute = ({ component: Component, config, user: { data, isFetching }
                                 'По вопросам подбора оптимального ' +
                                 '<a href="https://quidox.by/wp-content/uploads/2020/12/price_14_12_2020-3.xlsx">тарифа</a>  ' +
                                 'Вы можете связаться с нами по указанным ' +
-                                '<a href="https://quidox.by/#callback"> контактам. </a>'
-                            }} />
+                                '<a href="https://quidox.by/#callback"> контактам. </a> </div>>'
+                            }}/>
                         }
                         <div style={{ marginTop: '2rem' }}>
                           {
