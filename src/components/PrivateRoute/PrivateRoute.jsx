@@ -66,7 +66,6 @@ const PrivateRoute = ({ component: Component, config, user: { data, isFetching }
   if (isFetching) {
     return 'Loading...'
   }
-
   return <Route {...rest}
                 render={props =>
                   (window.localStorage.getItem('authToken') || window.sessionStorage.getItem('authToken'))
@@ -92,7 +91,9 @@ const PrivateRoute = ({ component: Component, config, user: { data, isFetching }
                       >
                         {
                           config.data.co_brand_config ?
-                            activeCompany.company_data.is_blocked === true && activeCompany.company_data.is_dummy === 1 ?
+                            (activeCompany.company_data.is_blocked === true && activeCompany.company_data.is_dummy === 1) ||
+                            activeCompany.tarification.tarification_id === 13
+                            ?
                               'Внимание! Для продолжения пользования сервисом подключите услугу линейки "МТС SmartDoc".' :
                               activeCompany.company_data.is_blocked === true && activeCompany.company_data.is_dummy === 0 ?
                                 'Внимание! Предоставление сервиса" МТС SmartDoc" на тарификационном номере ' +
