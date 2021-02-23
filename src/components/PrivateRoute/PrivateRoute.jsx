@@ -95,7 +95,9 @@ const PrivateRoute = ({ component: Component, config, user: { data, isFetching }
                             activeCompany.tarification.tarification_id === 13
                             ?
                               'Внимание! Для продолжения пользования сервисом подключите услугу линейки "МТС SmartDoc".' :
-                              activeCompany.company_data.is_blocked === true && activeCompany.company_data.is_dummy === 0 ?
+                              activeCompany.company_data.is_blocked === true && activeCompany.company_data.is_dummy === 0 &&
+                              activeCompany.company_data.is_owner === false
+                                ?
                                 'Внимание! Предоставление сервиса" МТС SmartDoc" на тарификационном номере ' +
                                 activeCompany.company_data.owner_phone_number +
                                 ' и всех пользователей Компании заблокировано!' :
