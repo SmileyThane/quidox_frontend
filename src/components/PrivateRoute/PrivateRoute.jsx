@@ -91,7 +91,11 @@ const PrivateRoute = ({ component: Component, config, user: { data, isFetching }
                       >
                         {
                           config.data.co_brand_config ?
-                            (activeCompany.company_data.tariff_was_expired === true && activeCompany.company_data.is_dummy === 1) ||
+                            (activeCompany.company_data.tariff_was_expired === true &&
+                              activeCompany.company_data.is_dummy === 1) ||
+                            (activeCompany.company_data.tariff_was_expired === true &&
+                              activeCompany.company_data.is_dummy === 0 &&
+                              activeCompany.tarification.tarification_id === 9) ||
                             activeCompany.tarification.tarification_id === 13
                             ?
                               'Внимание! Для продолжения пользования сервисом подключите услугу линейки "МТС SmartDoc".' :
@@ -131,6 +135,8 @@ const PrivateRoute = ({ component: Component, config, user: { data, isFetching }
                         <div style={{ marginTop: '2rem' }}>
                           {
                             config.data.co_brand_config !== null && activeCompany.company_data.is_owner === true &&
+                            activeCompany.tarification.tarification_id !== 9 && activeCompany.tarification.tarification_id !== 13
+                            &&
                             <Button type='primary' onClick={handleChangeTariff}>
                               Перейти к продлению тарифа
                             </Button>
