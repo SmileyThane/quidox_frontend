@@ -91,7 +91,7 @@ const PrivateRoute = ({ component: Component, config, user: { data, isFetching }
                       >
                         {
                           config.data.co_brand_config ?
-                            (activeCompany.company_data.is_blocked === true && activeCompany.company_data.is_dummy === 1) ||
+                            (activeCompany.company_data.tariff_was_expired === true && activeCompany.company_data.is_dummy === 1) ||
                             activeCompany.tarification.tarification_id === 13
                             ?
                               'Внимание! Для продолжения пользования сервисом подключите услугу линейки "МТС SmartDoc".' :
