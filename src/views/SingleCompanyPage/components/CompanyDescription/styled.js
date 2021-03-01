@@ -1,31 +1,13 @@
-import styled from 'styled-components'
-import { styleguide } from '../../constants'
+import styled, { css } from 'styled-components'
+import { styleguide } from '../../../../constants'
 
 const { colors } = styleguide
 
 const Layout = styled.div`
 `
 
-Layout.Actions = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  margin-top: 2rem;
-
-  && {
-    .ant-btn {
-      margin-left: 1.6rem;
-    }
-  }
-`
-
-Layout.Instruction = styled.div`
-  .ant-steps {
-    margin-top: 2rem;
-  }
-`
-
 Layout.List = styled.div`
+  margin-top: 1.2rem;
 `
 
 Layout.Item = styled.li`
@@ -49,11 +31,21 @@ Layout.Item.Value = styled.div`
   border-left: .1rem solid ${colors.gray.light};
   padding-right: 2rem;
   overflow: hidden;
+
+  ${({ primary }) => primary && css`
+    color: ${colors.primary};
+  `}
 `
 
-Layout.Mobile = styled.div`
-  .ant-alert {
-    margin-bottom: 2rem;
+Layout.Actions = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 3.2rem;
+
+  && {
+    .ant-btn {
+      margin-right: 1.6rem;
+    }
   }
 `
 

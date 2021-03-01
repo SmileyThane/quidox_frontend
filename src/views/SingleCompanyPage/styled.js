@@ -1,24 +1,40 @@
 import styled from 'styled-components'
-import { Tabs } from 'antd'
 
-const { TabPane } = Tabs
+import { Typography } from 'antd'
 
-const ThemeTabs = styled(Tabs)`
+import { styleguide } from '../../constants'
 
-  .ant-tabs-tab {
-    color: ${({ brand }) => brand ? brand.link_color : '#40a9ff'};
-    &.ant-tabs-tab-active {
-      color: ${({ brand }) => brand ? brand.brand_color : '#40a9ff'};
-    }
-    &:hover {
-      color: ${({ brand }) => brand ? brand.brand_color : '#40a9ff'} !important;
-    }
-  }
-  .ant-tabs-ink-bar {
-    background-color: ${({ brand }) => brand ? brand.brand_color : '#40a9ff'};
+const { Paragraph } = Typography
+
+const { colors } = styleguide
+
+const Layout = styled.div`
+  padding: 2rem;
+`
+
+const Header = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 3.2rem;
+`
+
+Header.Inner = styled.div`
+`
+
+Header.Title = styled(Paragraph)`
+  && {
+    line-height: 1.2;
+    font-size: 2.4rem;
+    margin-bottom: 0;
   }
 `
 
-ThemeTabs.Pane = styled(TabPane)``
+Header.Secondary = styled.span`
+  color: ${colors.gray.dark};
+  font-size: 1.2rem;
+`
 
-export default ThemeTabs
+export {
+  Layout,
+  Header
+}

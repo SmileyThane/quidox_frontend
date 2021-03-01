@@ -1,10 +1,38 @@
-import React, { Fragment } from 'react'
-import axios from 'axios'
+import React from 'react'
+// import axios from 'axios'
+// import MaskedInput from 'antd-mask-input'
+
 import { api } from '../../services'
-import MaskedInput from 'antd-mask-input'
-import { Col, Form, Icon, Input, message, Modal, Row, Select, Spin, Tabs, List } from 'antd'
-import { Button } from '../../components'
-import './UserInfoPage.scss'
+
+import {
+  Row,
+  Col,
+  Form,
+  Input,
+  message,
+  Select,
+  Spin,
+  Tabs,
+  List,
+  Avatar
+} from 'antd'
+
+import {
+  LayoutScroll,
+  FooterFixed,
+  Button
+} from '../../components'
+
+import {
+  ModalShare,
+  ModalGetShared,
+  ModalPasswordEdit
+} from './components'
+
+import {
+  Layout,
+  Profile
+} from './styled'
 
 const { Option } = Select
 
@@ -15,11 +43,14 @@ class UserInfoPage extends React.Component {
     userId: null,
     activeCompanyId: null,
     isEditMode: false,
-    isModalVisible: false,
+    isModalPasswordVisible: false,
+    isModalGetSharedVisible: false,
+    isModalShareVisible: false,
     phone: '',
     modalType: '',
     isCode: false,
-    sharedUsers: []
+    sharedUsers: [],
+    activeTabKey: '1'
   }
 
   inputPhoneNode = React.createRef()
@@ -63,26 +94,23 @@ class UserInfoPage extends React.Component {
     }
   }
 
-  openModal = type => {
-    this.setState({ isModalVisible: !this.state.isModalVisible })
-    this.setState({ isCode: false })
-    this.setState({ modalType: type })
-  }
-
   changeMode = () => {
     this.setState({ isEditMode: true })
   }
 
   validateToNextPassword = (rule, value, callback) => {
-    const form = this.props.form
+    const { form } = this.props
+
     if (value && this.state.confirmDirty) {
       form.validateFields(['confirm'], { force: true })
     }
+
     callback()
   }
 
   compareToFirstPassword = (rule, value, callback) => {
-    const form = this.props.form
+    const { form } = this.props
+
     if (value && value !== form.getFieldValue('password')) {
       callback('Пароли не совпадают')
     } else {
@@ -90,63 +118,67 @@ class UserInfoPage extends React.Component {
     }
   }
 
-  changeUserPhone = e => {
-    e.preventDefault()
-    this.props.form.validateFieldsAndScroll(['phone', 'code'], (err, values) => {
-      const phoneData = {
-        phone: this.state.phone,
-        code: values.code,
-      }
-      if (this.state.isCode) {
-        axios.post(`${process.env.REACT_APP_BASE_URL}/sms/confirm`, phoneData)
-          .then(({ data }) => {
-            if (data.success) {
-              this.props.updateUser(phoneData)
-                .then(data => {
-                  if (data.success) {
-                    message.success('Номер успешно сохранен')
-                    this.setState({ isModalVisible: false })
-                  } else {
-                    throw new Error(data.error)
-                  }
-                })
-                .catch(error => {
-                  message.error(error.message)
-                })
-            } else {
-              throw new Error(data.error)
-            }
-          })
-          .catch(error => {
-            message.error(error.message)
-          })
-      } else {
-        axios.post(`${process.env.REACT_APP_BASE_URL}/sms/send`, phoneData)
-          .then(({ data }) => {
-            if (data.success) {
-              message.success('На указанный Вами номер отправлено SMS с кодом')
-              this.setState({ isCode: true })
-            } else {
-              throw new Error(data.error)
-            }
-          })
-          .catch(error => {
-            message.error(error.message)
-          })
-      }
+  // changeUserPhone = e => {
+  //   e.preventDefault()
 
-    })
-  }
+  //   this.props.form.validateFieldsAndScroll(['phone', 'code'], (err, values) => {
+  //     const phoneData = {
+  //       phone: this.state.phone,
+  //       code: values.code,
+  //     }
+  //     if (this.state.isCode) {
+  //       axios.post(`${process.env.REACT_APP_BASE_URL}/sms/confirm`, phoneData)
+  //         .then(({ data }) => {
+  //           if (data.success) {
+  //             this.props.updateUser(phoneData)
+  //               .then(data => {
+  //                 if (data.success) {
+  //                   message.success('Номер успешно сохранен')
+  //                   this.setState({ isModalVisible: false })
+  //                 } else {
+  //                   throw new Error(data.error)
+  //                 }
+  //               })
+  //               .catch(error => {
+  //                 message.error(error.message)
+  //               })
+  //           } else {
+  //             throw new Error(data.error)
+  //           }
+  //         })
+  //         .catch(error => {
+  //           message.error(error.message)
+  //         })
+  //     } else {
+  //       axios.post(`${process.env.REACT_APP_BASE_URL}/sms/send`, phoneData)
+  //         .then(({ data }) => {
+  //           if (data.success) {
+  //             message.success('На указанный Вами номер отправлено SMS с кодом')
+  //             this.setState({ isCode: true })
+  //           } else {
+  //             throw new Error(data.error)
+  //           }
+  //         })
+  //         .catch(error => {
+  //           message.error(error.message)
+  //         })
+  //     }
+  //   })
+  // }
 
   changeUserPassword = e => {
     e.preventDefault()
+
     this.props.form.validateFieldsAndScroll([/*'old_password',*/ 'password'], (err, values) => {
       if (!err) {
         this.props.updateUser(values)
           .then(data => {
             if (data.success) {
               message.success('Пароль обновлен')
-              this.setState({ isModalVisible: !this.state.isModalVisible })
+
+              this.setState({
+                isModalPasswordVisible: !this.state.isModalPasswordVisible
+              })
             } else {
               throw new Error(data.error)
             }
@@ -160,13 +192,17 @@ class UserInfoPage extends React.Component {
 
   shareUser = e => {
     e.preventDefault()
+
     this.props.form.validateFieldsAndScroll(['email'], (err, values) => {
       if (!err) {
         this.props.shareUser(values)
           .then(data => {
             if (data.success) {
               message.success('Доступ предоставлен. Передайте доверенному лицу пароль: ' + data.data.verification_code)
-              this.setState({ isModalVisible: !this.state.isModalVisible })
+
+              this.setState({
+                isModalShareVisible: !this.state.isModalShareVisible
+              })
             } else {
               throw new Error(data.error)
             }
@@ -180,6 +216,7 @@ class UserInfoPage extends React.Component {
 
   getSharedUser = e => {
     e.preventDefault()
+
     this.props.form.validateFieldsAndScroll(['value'], (err, values) => {
       if (!err) {
         this.props.getSharedUser(values)
@@ -187,8 +224,12 @@ class UserInfoPage extends React.Component {
             if (data.success) {
               window.localStorage.setItem('authToken', data.data.token)
               message.success('Пользователь переключен')
-              this.setState({ isModalVisible: !this.state.isModalVisible })
-              window.location.reload();
+
+              this.setState({
+                isModalGetSharedVisible: !this.state.isModalGetSharedVisible
+              })
+
+              window.location.reload()
             } else {
               throw new Error(data.error)
             }
@@ -202,6 +243,7 @@ class UserInfoPage extends React.Component {
 
   changeUserInfo = e => {
     e.preventDefault()
+
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         this.props.updateUser(values)
@@ -218,26 +260,48 @@ class UserInfoPage extends React.Component {
           })
       }
     })
+  }
 
+  handleModalVisible = type => {
+    this.setState({
+      isCode: false,
+      [type]: !this.state[type]
+    })
+  }
+
+  handleChangeTab = key => {
+    console.log(key)
+    this.setState({
+      activeTabKey: key
+    })
   }
 
   render () {
-    const { getFieldDecorator } = this.props.form
     const {
+      form: {
+        getFieldDecorator
+      }
+    } = this.props
+
+    const {
+      activeTabKey,
       isEditMode,
-      isModalVisible
+      isModalPasswordVisible,
+      isModalGetSharedVisible,
+      isModalShareVisible,
+      validateStatus
     } = this.state
 
-    const prefixSelector = getFieldDecorator('prefix', {
-      initialValue: '37529'
-    })(
-      <Select disabled={this.state.isCode} style={{ width: 100 }}>
-        <Option value='37529'>+375(29)</Option>
-        <Option value='37525'>+375(25)</Option>
-        <Option value='37533'>+375(33)</Option>
-        <Option value='37544'>+375(44)</Option>
-      </Select>
-    )
+    // const prefixSelector = getFieldDecorator('prefix', {
+    //   initialValue: '37529'
+    // })(
+    //   <Select disabled={this.state.isCode} style={{ width: 100 }}>
+    //     <Option value='37529'>+375(29)</Option>
+    //     <Option value='37525'>+375(25)</Option>
+    //     <Option value='37533'>+375(33)</Option>
+    //     <Option value='37544'>+375(44)</Option>
+    //   </Select>
+    // )
 
     const {
       user: { isFetching, data }
@@ -246,376 +310,279 @@ class UserInfoPage extends React.Component {
     const ActiveCompany = data.hasOwnProperty('companies') && data.companies.find(i => i.company_id === data.active_company_id)
 
     return (
-      <Fragment>
-        <Tabs defaultActiveKey="1">
-          <TabPane
-            tab={
-              <span>
-          <Icon type="user" />
-          Данные пользователя
-        </span>
-            }
-            key="1"
-          >
-            <div className='tab-content'>
-              <Form className='content content_user form-user'>
-                <Spin spinning={isFetching} style={{ maxWidth: '50rem', margin: '0 auto' }}>
-                  <Row gutter={30}>
-                    <Col span={24}>
-                      <Form.Item style={{ width: '50%' }} label='Адрес электронной почты'>
-                        {getFieldDecorator('email', {
-                          initialValue: data.email,
-                          rules: [
-                            {
-                              type: 'email',
-                              message: 'Не правильный адрес электронной почты!'
-                            },
-                            {
-                              required: true,
-                              message: 'Пожалуйста, введите адрес электронной почты!'
+      <LayoutScroll withFooter>
+        <Layout>
+          <Layout.Inner>
+            <ModalPasswordEdit
+              visible={isModalPasswordVisible}
+              onSubmit={this.changeUserPassword}
+              onCancel={() => this.handleModalVisible('isModalPasswordVisible')}
+              getFieldDecorator={getFieldDecorator}
+              validateTo={this.validateToNextPassword}
+              compareTo={this.compareToFirstPassword}
+            />
+
+            <ModalGetShared
+              visible={isModalGetSharedVisible}
+              onSubmit={this.getSharedUser}
+              onCancel={() => this.handleModalVisible('isModalGetSharedVisible')}
+              getFieldDecorator={getFieldDecorator}
+              validateStatus={validateStatus}
+            />
+
+            <ModalShare
+              visible={isModalShareVisible}
+              onSubmit={this.shareUser}
+              onCancel={() => this.handleModalVisible('isModalShareVisible')}
+              getFieldDecorator={getFieldDecorator}
+              validateStatus={validateStatus}
+            />
+
+            {data.id && (
+              <Profile>
+                <Avatar
+                  size={110}
+                  icon='user'
+                />
+
+                <Profile.Inner>
+                  <Profile.Email>{data.email}</Profile.Email>
+                  <Profile.Code>УНП: {data.active_company_object ? data.active_company_object.company_number : ''}</Profile.Code>
+                </Profile.Inner>
+              </Profile>
+            )}
+
+            <Tabs
+              defaultActiveKey={activeTabKey}
+              onChange={this.handleChangeTab}
+            >
+              <TabPane
+                tab='Личная информация'
+                key='1'
+              >
+                <Form colon={false}>
+                  <Spin spinning={isFetching}>
+                    <Row gutter={[12, 16]}>
+                      <Col span={12}>
+                        <Form.Item
+                          label='Адрес электронной почты'
+                          required={false}
+                        >
+                          {getFieldDecorator('email', {
+                            initialValue: data.email,
+                            rules: [
+                              {
+                                type: 'email',
+                                message: 'Не правильный адрес электронной почты!'
+                              },
+                              {
+                                required: true,
+                                message: 'Пожалуйста, введите адрес электронной почты!'
+                              }
+                            ]
+                          })(
+                            <Input placeholder='Введите электронной почту' disabled />
+                          )}
+                        </Form.Item>
+
+                        <Form.Item
+                          label='Мобильный телефон'
+                          required={false}
+                        >
+                          {getFieldDecorator('phone', {
+                            initialValue: data.phone,
+                            rules: [
+                              {
+                                required: true,
+                                message: 'Пожалуйста, введите номер телефона!'
+                              }
+                            ]
+                          })(
+                            <Input placeholder='Введите номер телефона' disabled />
+                          )}
+                        </Form.Item>
+
+                        <Form.Item
+                          label='Имя'
+                          required={false}
+                        >
+                          {getFieldDecorator('name', {
+                            initialValue: data.name,
+                            rules: [
+                              {
+                                type: 'string',
+                                message: 'Не похоже, что это имя!'
+                              },
+                              {
+                                required: true,
+                                message: 'Пожалуйста, введите ваше имя!'
+                              }
+                            ]
+                          })(
+                            <Input placeholder='Введите имя' disabled={!isEditMode} />
+                          )}
+                        </Form.Item>
+
+                        <Form.Item
+                          label='Отчество'
+                          required={false}
+                        >
+                          {getFieldDecorator('patronymic', {
+                            initialValue: data.patronymic,
+                            rules: [
+                              {
+                                type: 'string',
+                                message: 'Не похоже, что это отчество!'
+                              }
+                            ]
+                          })(
+                            <Input placeholder='Введите отчество' disabled={!isEditMode} />
+                          )}
+                        </Form.Item>
+
+                        <Form.Item
+                          label='Фамилия'
+                          required={false}
+                        >
+                          {getFieldDecorator('lastname', {
+                            initialValue: data.lastname,
+                            rules: [
+                              {
+                                type: 'string',
+                                message: 'Не похоже, что это фамилия!'
+                              },
+                              {
+                                required: true,
+                                message: 'Пожалуйста, введите вашу фамилию!'
+                              }
+                            ]
+                          })(
+                            <Input placeholder='Введите фамилию' disabled={!isEditMode} />
+                          )}
+                        </Form.Item>
+                      </Col>
+
+                      <Col span={12}>
+                        <Form.Item
+                          label='Активная компания'
+                          required={false}
+                        >
+                          {getFieldDecorator('active_company_id', {
+                            initialValue: data.active_company_id,
+                            rules: [
+                              {
+                                type: 'number',
+                                message: 'Пожалуйста, укажите активную'
+                              },
+                              {
+                                required: true,
+                                message: 'Пожалуйста, укажите активную компанию'
+                              }
+                            ]
+                          })(<Select disabled={!isEditMode}>
+                            {(data.companies && data.companies.length) &&
+                            data.companies.map(i => (
+                              <Option key={i.company_id} value={i.company_id}>{i.company_name}</Option>
+                            ))
                             }
-                          ]
-                        })(<Input disabled/>)}
-                      </Form.Item>
-                    </Col>
+                          </Select>)}
+                        </Form.Item>
 
-                    <Col span={24}>
-                      <Form.Item style={{ width: '50%' }} label='Мобильный телефон:'>
-                        {getFieldDecorator('phone', {
-                          initialValue: data.phone,
-                          rules: [
-                            {
-                              type: 'string',
-                              message: 'Не похоже, что это имя!'
-                            },
-                            {
-                              required: true,
-                              message: 'Пожалуйста, введите ваше имя!'
-                            }
-                          ]
-                        })(<Input disabled />)}
-                      </Form.Item>
-                    </Col>
+                        <Form.Item
+                          label='Должность'
+                          required={false}
+                        >
+                          {getFieldDecorator('position', {
+                            initialValue: ActiveCompany.position
+                              ? ActiveCompany.position
+                              : 'Отсутствует'
+                          })(
+                            <Input placeholder='Введите должность' disabled />
+                          )}
+                        </Form.Item>
+                      </Col>
+                    </Row>
+                  </Spin>
+                </Form>
+              </TabPane>
 
-                    <Col span={24}>
-                      <Form.Item style={{ width: '50%' }} label='Имя:'>
-                        {getFieldDecorator('name', {
-                          initialValue: data.name,
-                          rules: [
-                            {
-                              type: 'string',
-                              message: 'Не похоже, что это имя!'
-                            },
-                            {
-                              required: true,
-                              message: 'Пожалуйста, введите ваше имя!'
-                            }
-                          ]
-                        })(<Input disabled={!isEditMode}/>)}
-                      </Form.Item>
-                    </Col>
+              <TabPane
+                tab='Доверительный доступ'
+                key='2'
+              >
+                <List
+                  className='content content_user'
+                  dataSource={this.state.sharedUsers}
+                  rowKey='id'
+                  locale={{ emptyText: 'Нет расшаренных пользователей' }}
+                  renderItem={item => (
+                    <List.Item>
+                      <List.Item.Meta
+                        title={<h4>{item.shared.company_name}</h4>}
+                        description={item.shared.user_email}
+                      />
+                    </List.Item>
+                  )}
+                />
+              </TabPane>
+            </Tabs>
+          </Layout.Inner>
 
-                    <Col span={24}>
-                      <Form.Item style={{ width: '50%' }} label='Отчество:'>
-                        {getFieldDecorator('patronymic', {
-                          initialValue: data.patronymic,
-                          rules: [
-                            {
-                              type: 'string',
-                              message: 'Не похоже, что это отчество!'
-                            }
-                          ]
-                        })(<Input disabled={!isEditMode}/>)}
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={24}>
-                      <Form.Item style={{ width: '50%' }} label='Фамилия:'>
-                        {getFieldDecorator('lastname', {
-                          initialValue: data.lastname,
-                          rules: [
-                            {
-                              type: 'string',
-                              message: 'Не похоже, что это фамилия!'
-                            },
-                            {
-                              required: true,
-                              message: 'Пожалуйста, введите вашу фамилию!'
-                            }
-                          ]
-                        })(<Input disabled={!isEditMode}/>)}
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={24}>
-                      <Form.Item style={{ width: '50%' }} label='Активная компания:'>
-                        {getFieldDecorator('active_company_id', {
-                          initialValue: data.active_company_id,
-                          rules: [
-                            {
-                              type: 'number',
-                              message: 'Пожалуйста, укажите активную'
-                            },
-                            {
-                              required: true,
-                              message: 'Пожалуйста, укажите активную компанию'
-                            }
-                          ]
-                        })(<Select disabled={!isEditMode}>
-                          {(data.companies && data.companies.length) &&
-                          data.companies.map(i => (
-                            <Option key={i.company_id} value={i.company_id}>{i.company_name}</Option>
-                          ))
-                          }
-                        </Select>)}
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={24}>
-                      <Form.Item style={{ width: '50%' }} label='Должность:'>
-                        {getFieldDecorator('position', {
-                          initialValue: ActiveCompany.position ? ActiveCompany.position : 'Отсутствует'
-                        })(<Input disabled/>)}
-                      </Form.Item>
-                    </Col>
-
-
-                    {/*<Col span={24}>*/}
-                    {/*  <Form.Item style={{ width: '50%' }} label='Роль:'>*/}
-                    {/*    {getFieldDecorator('role_name', {*/}
-                    {/*      initialValue: ActiveCompany.role_name ? ActiveCompany.role_name : 'Отсутствует'*/}
-                    {/*    })(<Input disabled/>)}*/}
-                    {/*  </Form.Item>*/}
-                    {/*</Col>*/}
-                  </Row>
-                </Spin>
-              </Form>
-
-              <div>
-                <Button style={{ margin: '2rem 2rem 0 0' }} type='primary'
-                        onClick={isEditMode ? e => this.changeUserInfo(e) : (() => this.changeMode())}>
-                  <Icon type='edit'/>
-                  {isEditMode ? 'Сохранить изменения' : 'Изменить данные'}
-                </Button>
-
-                <Button type='primary' onClick={() => this.openModal('password')}>
-                  <Icon type='edit'/>
+          <FooterFixed>
+            {activeTabKey === '1' && (
+              <>
+                <Button
+                  type='primary'
+                  icon='lock'
+                  onClick={() => this.handleModalVisible('isModalPasswordVisible')}
+                  ghost
+                >
                   Сменить пароль
                 </Button>
 
-                {/*<Button type='primary' style={{ marginLeft: '2rem' }} onClick={() => this.openModal('phone')}>*/}
-                {/*  <Icon type='edit'/>*/}
-                {/*  Сменить номер телефона*/}
-                {/*</Button>*/}
-              </div>
-            </div>
-          </TabPane>
-          <TabPane
-            tab={
-              <span>
-          <Icon type="team" />
-          Доверительный доступ
-        </span>
-            }
-            key="2"
-          >
-            <div className='tab-content'>
-              <List
-                className='content content_user'
-                dataSource={this.state.sharedUsers}
-                rowKey='id'
-                locale={{ emptyText: 'Нет расшаренных пользователей' }}
-                style={{ marginBottom: 20 }}
-                renderItem={item => (
-                  <List.Item>
-                    <List.Item.Meta
-                      title={<h4>{item.shared.company_name}</h4>}
-                      description={item.shared.user_email}
-                    />
-                  </List.Item>
+                {isEditMode ? (
+                  <Button
+                    type='primary'
+                    onClick={e => this.changeUserInfo(e)}
+                    icon='edit'
+                  >
+                    Сохранить изменения
+                  </Button>
+                ) : (
+                  <Button
+                    type='primary'
+                    onClick={this.changeMode()}
+                    icon='edit'
+                  >
+                    Редактировать данные
+                  </Button>
                 )}
-              ></List>
-              <div>
-                <Button type='primary' onClick={() => this.openModal('share')}>
-                  <Icon type='cloud'/>
+              </>
+            )}
+
+            {activeTabKey === '2' && (
+              <>
+                <Button
+                  type='primary'
+                  onClick={() => this.handleModalVisible('isModalGetSharedVisible')}
+                  icon='user'
+                  ghost
+                >
+                  Учетная запись доверителя
+                </Button>
+
+                <Button
+                  type='primary'
+                  onClick={() => this.handleModalVisible('isModalShareVisible')}
+                  icon='share-alt'
+                >
                   Предоставить доступ
                 </Button>
-                <Button type='primary' style={{ marginLeft: '2rem' }} onClick={() => this.openModal('getShared')}>
-                  <Icon type='cloud-download'/>
-                  Перейти в учетную запись доверителя
-                </Button>
-              </div>
-            </div>
-          </TabPane>
-        </Tabs>
-        {isModalVisible &&
-        <Modal
-          title={`
-                  ${this.state.modalType === 'password' ? 'Изменить пароль' : ''}
-                  ${this.state.modalType === 'phone' ? 'Изменить номер телефона' : ''}
-                  ${this.state.modalType === 'share' ? 'Предоставить доступ' : ''}
-                  ${this.state.modalType === 'getShared' ? 'Перейти к активному расшареному пользователю' : ''}
-           `}
-          visible
-          closable={false}
-          footer={null}
-          className='reset-password'
-        >
-          <Form>
-            {this.state.modalType === 'password'
-              ? <Fragment>
-                {/*<Form.Item label='Старый пароль' hasFeedback>*/}
-                {/*  {getFieldDecorator('old_password', {*/}
-                {/*    rules: [*/}
-                {/*      {*/}
-                {/*        required: true,*/}
-                {/*        message: 'Введите старый пароль'*/}
-                {/*      }*/}
-                {/*    ]*/}
-                {/*  })(<Input.Password/>)}*/}
-                {/*</Form.Item>*/}
-
-                <Form.Item label='Новый пароль' hasFeedback>
-                  {getFieldDecorator('password', {
-                    rules: [
-                      {
-                        required: true,
-                        message: 'Минимум восемь символов.',
-                        pattern: /^.{8,128}$/
-                      },
-                      {
-                        validator: this.validateToNextPassword
-                      }
-                    ]
-                  })(<Input.Password/>)}
-                </Form.Item>
-
-                <Form.Item label='Подтвердите новый пароль' hasFeedback>
-                  {getFieldDecorator('confirm', {
-                    rules: [
-                      {
-                        required: true,
-                        message: 'Минимум восемь символов.',
-                        pattern: /^.{8,128}$/
-                      },
-                      {
-                        validator: this.compareToFirstPassword
-                      }
-                    ]
-                  })(<Input.Password/>)}
-                </Form.Item>
-              </Fragment>
-              : <Fragment>
-              </Fragment>
-            }
-            {this.state.modalType === 'phone'
-              ? <Fragment>
-                <Form.Item
-                  validateStatus={this.state.validateStatus}
-                  label='Введите номер мобильного телефона'
-                >
-                  {getFieldDecorator('phone', {
-                    rules: [{ required: true, message: 'Пожалуйста, введите номер мобильного телефона' }]
-                  })(<MaskedInput
-                    mask='111-11-11'
-                    placeholder='XXX-XX-XX'
-                    disabled={this.state.isCode}
-                    ref={this.inputPhoneNode}
-                    onChange={e => {
-                      this.handleChange(e.target.value, 'phone')
-                    }}
-                    addonBefore={prefixSelector}
-                    style={{ width: '100%' }}
-                  />)}
-                </Form.Item>
-                {this.state.isCode &&
-                <Form.Item label='Введите полученный код'>
-                  {getFieldDecorator('code', {
-                    rules: [
-                      {
-                        type: 'string',
-                        message: 'Код введен не правильно!'
-                      },
-                      {
-                        required: true,
-                        message: 'Пожалуйста, введите полученный код!'
-                      }
-                    ]
-                  })(<Input
-                    onChange={e => this.handleChange(e.target.value, 'code')}
-                    ref={this.inputNode}
-                    placeholder='Код из СМС'
-                  />)}
-                </Form.Item>
-                }
-              </Fragment>
-              : <Fragment>
-              </Fragment>
-            }
-            {this.state.modalType === 'share'
-              ? <Fragment>
-                <Form.Item
-                  validateStatus={this.state.validateStatus}
-                  label='Введите E-mail'
-                >
-                  {getFieldDecorator('email', {
-                    rules: [{ required: true, message: 'Пожалуйста, введите E-mail' }]
-                  })(<Input
-                    placeholder='email'
-                    style={{ width: '100%' }}
-                  />)}
-                </Form.Item>
-              </Fragment>
-              : <Fragment>
-              </Fragment>
-            }
-            {this.state.modalType === 'getShared'
-              ? <Fragment>
-                <Form.Item
-                  validateStatus={this.state.validateStatus}
-                  label='Введите код'
-                >
-                  {getFieldDecorator('value', {
-                    rules: [{ required: true, message: 'Пожалуйста, введите секретный код' }]
-                  })(<Input
-                    placeholder='Код'
-                    style={{ width: '100%' }}
-                  />)}
-                </Form.Item>
-              </Fragment>
-              : <Fragment>
-              </Fragment>
-            }
-
-          </Form>
-
-          <div style={{ marginTop: '2rem' }}>
-            {this.state.modalType === 'password'
-              ? <Button type='primary' onClick={this.changeUserPassword}>Сохранить новый пароль</Button>
-              : null
-            }
-            {this.state.modalType === 'phone'
-              ? <Button type='primary' onClick={this.changeUserPhone}>
-                {this.state.isCode
-                  ? 'Отправить код'
-                  : 'Изменить номер телефона'
-                }
-              </Button>
-              : null
-            }
-            {this.state.modalType === 'share'
-              ? <Button type='primary' onClick={this.shareUser}>Создать пароль доступа</Button>
-              : null
-            }
-            {this.state.modalType === 'getShared'
-              ? <Button type='primary' onClick={this.getSharedUser}>Подтвердить переход</Button>
-              : null
-            }
-            <Button type='primary' ghost onClick={this.openModal} style={{ marginLeft: '1rem' }}>Закрыть</Button>
-          </div>
-        </Modal>
-        }
-      </Fragment>
+              </>
+            )}
+          </FooterFixed>
+        </Layout>
+      </LayoutScroll>
     )
   }
 }

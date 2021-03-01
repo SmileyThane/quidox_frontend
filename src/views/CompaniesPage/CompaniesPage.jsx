@@ -1,49 +1,54 @@
-import React, { Fragment, useEffect, useState } from 'react'
-import useForm from 'rc-form-hooks'
-import { api } from '../../services'
-import { CompanyCreate, Button, RouterLink } from '../../components'
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
+import history from '../../history'
+
+import {
+  LayoutScroll,
+  Button,
+  RouterLink
+} from '../../components'
+
 import {
   Table,
   Tag,
   Popconfirm,
-  Form,
-  message,
-  Modal,
-  Typography,
-  Icon,
-  Row,
-  Col,
-  Input
+  message
 } from 'antd'
 
-import axios from 'axios'
-import history from '../../history'
-import './CompaniesPage.scss'
+import {
+  ModalNewUser,
+  ModalConnect
+} from './components'
 
-const defaultCompanyState = {
-  newUserEmail: '',
-  yourPosition: '',
-  showInput: false,
-  showModal: false,
-  modalFetching: false,
-  newCompany: {}
-}
+import {
+  Layout,
+  Explorer
+} from './styled'
 
-const { Text } = Typography
+import { explorer } from './images'
+
+import { styleguide } from '../../constants'
+
+const { colors } = styleguide
 
 // eslint-disable-next-line spaced-comment
-  const isIE = /*@cc_on!@*/!!document.documentMode
+const isIE = /*@cc_on!@*/!!document.documentMode
 
-const CompaniesPage = props => {
-  const {
-    getCompanies,
-    changeActiveCompanyById,
-    companies: { isFetching, list },
-    user: { data }
-  } = props
+const defaultCompanyState = {
+  newCompany: {},
+  isModalNewUserVisible: false,
+  isModalConnectVisible: false
+}
 
-  const { getFieldDecorator, validateFields } = useForm()
-
+export default ({
+  getCompanies,
+  changeActiveCompanyById,
+  companies: {
+    isFetching,
+    list
+  },
+  user: { data }
+}) => {
   const [companyState, setCompanyState] = useState({ ...defaultCompanyState })
 
   useEffect(() => {
@@ -63,9 +68,13 @@ const CompaniesPage = props => {
           }
         })
           .then(response => {
-            const { data: { success } } = response
+            const {
+              data: { success }
+            } = response
+
             if (success) {
               message.success('Совершено успешное обновление данных!')
+
               getCompanies()
             }
           })
@@ -80,27 +89,22 @@ const CompaniesPage = props => {
     }
   }, [])
 
-  const onClick = () => {
-    setCompanyState({
-      ...companyState,
-      showModal: true
-      // newCompany: getCompanyData()
-    })
-  }
-
   const changeActiveCompany = company => {
     if (company.company_data.id === data.active_company_id) {
-      message.error('Компания является активной!')
+      message.error('Компания является активной')
+
       return null
     } else {
       changeActiveCompanyById(company.company_data.id)
         .then(() => {
-          message.success('Активная компания изменена успешно!')
+          message.success('Активная компания изменена успешно')
 
           const inputVerifiedDataArray = Array.from(document.getElementsByClassName('verifiedData'))
+
           inputVerifiedDataArray.forEach(i => {
             i.parentNode.removeChild(i)
           })
+
           setTimeout(() => {
             try {
               window.pluginLoaded()
@@ -114,37 +118,22 @@ const CompaniesPage = props => {
     }
   }
 
-  const updateField = (field, value) => {
+  const handleModalVisible = modal => {
     setCompanyState({
       ...companyState,
-      [field]: value
+      [modal]: !companyState[modal]
     })
-  }
-
-  const sendInvite = e => {
-    e.preventDefault()
-    validateFields()
-      .then(() => {
-        api.companies.attachUnregisteredUserToCompany({ email: companyState.newUserEmail })
-          .then(({ data }) => {
-            if (data.success) {
-              message.success('Приглашение отправлено')
-              setCompanyState({ ...defaultCompanyState })
-            } else {
-              throw new Error(data.error)
-            }
-          })
-          .catch(error => {
-            message.error(error.message)
-          })
-      })
   }
 
   const columns = [
     {
       title: 'Наименование',
       key: 'name',
-      render: record => <RouterLink to={{ pathname: `/companies/${+record.company_id}`, state: { from: history.location.pathname } }}>{record.company_data.name}</RouterLink>
+      render: record => (
+        <RouterLink to={{ pathname: `/companies/${+record.company_id}`, state: { from: history.location.pathname } }}>
+          {record.company_data.name}
+        </RouterLink>
+      )
     },
     {
       title: 'УНП',
@@ -159,115 +148,83 @@ const CompaniesPage = props => {
     {
       title: 'Статус',
       render: record => (
-        <Fragment>
-          {data.active_company_id &&
-          <Popconfirm
-            placement='bottomLeft'
-            title='Сделать компанию активной?'
-            onConfirm={() => changeActiveCompany(record)}
-            okText='Сделать активной'
-            cancelText='Закрыть'
-          >
-            <Tag style={{ cursor: 'pointer' }} color={(record.company_data.id === data.active_company_id) ? '#87d068' : '#FF7D1D'}>
-              {(record.company_data.id === data.active_company_id) ? 'Активная' : 'Не активная'}
-            </Tag>
-          </Popconfirm>
-          }
-        </Fragment>
+        <>
+          {data.active_company_id && (
+            <Popconfirm
+              title='Вы хотите активировать компанию?'
+              okText='Активировать'
+              cancelText='Отмена'
+              placement='bottomLeft'
+              onConfirm={() => changeActiveCompany(record)}
+            >
+              <Tag color={(record.company_data.id === data.active_company_id) ? colors.green : colors.red}>
+                {(record.company_data.id === data.active_company_id)
+                  ? 'Активная'
+                  : 'Не активная'}
+              </Tag>
+            </Popconfirm>)}
+        </>
       )
-    }]
+    }
+  ]
 
   return (
-    <Fragment>
-      <div className='content content_small-margin'>
-        <Table
-          pagination
-          rowKey='id'
-          columns={columns}
-          dataSource={list}
-          loading={isFetching}
-          locale={{ emptyText: 'Нет созданных компаний' }}
-        />
-      </div>
+    <LayoutScroll>
+      <Layout>
+        <Layout.Inner>
+          <ModalNewUser
+            visible={companyState.isModalNewUserVisible}
+            onCancel={() => handleModalVisible('isModalNewUserVisible')}
+          />
 
-      {companyState.showInput &&
-        <div className='invite-block'>
-          <Row>
-            <Col span={12}>
-              <Form onSubmit={sendInvite} style={{ marginTop: '3rem' }}>
-                <Form.Item style={{ marginBottom: 0 }} label='Добавление нового пользователя в текущую компанию'>
-                  {getFieldDecorator('email', {
-                    rules: [
-                      {
-                        type: 'email',
-                        message: 'Не правильный адрес электронной почты!'
-                      },
-                      {
-                        required: true,
-                        message: 'Введите адрес электроной почты'
-                      }
-                    ]
-                  })(
-                    <Input
-                      prefix={<Icon type='user' style={{ color: 'rgba(0, 0, 0,.25)' }} />}
-                      placeholder='Электронный адрес пользователя'
-                      onChange={e => updateField('newUserEmail', e.target.value)}
-                      type='email'
-                    />
-                  )}
-                </Form.Item>
+          <ModalConnect
+            visible={companyState.isModalConnectVisible}
+            onCancel={() => handleModalVisible('isModalConnectVisible')}
+          />
 
-                <Button type='primary' style={{ marginTop: '1rem' }} htmlType='submit'>
-                  <Icon type='plus' />
-                  Отправить приглашение
-                </Button>
+          <Layout.Table>
+            <Layout.Table.Header>
+              <Button
+                type='link'
+                icon='select'
+                onClick={() => handleModalVisible('isModalConnectVisible')}
+              >
+                Подключить ЭЦП
+              </Button>
 
-                <Button
-                  type='primary'
-                  ghost
-                  style={{ marginLeft: '1rem' }}
-                  onClick={() => setCompanyState({ ...companyState, newUserEmail: '', showInput: false })}
-                >
-                  Отмена
-                </Button>
-              </Form>
-            </Col>
-          </Row>
-        </div>
-      }
+              <Button
+                type='link'
+                icon='usergroup-add'
+                onClick={() => handleModalVisible('isModalNewUserVisible')}
+              >
+                Добавить пользователя
+              </Button>
+            </Layout.Table.Header>
 
-      <Button
-        type='primary'
-        onClick={onClick}
-      >
-        Подключить ЭЦП
-      </Button>
+            {!isIE && (
+              <Explorer>
+                <Explorer.Picture src={explorer} />
 
-      <Button
-        type='primary'
-        style={{ marginLeft: '1rem' }}
-        onClick={() => setCompanyState({ ...companyState, showInput: true })}
-      >
-        <Icon type='usergroup-add' />
-        Добавить пользователя в компанию
-      </Button>
+                <Explorer.Inner>
+                  <Explorer.Title>Обратите внимание</Explorer.Title>
+                  <Explorer.Details>Создание компании возможно только в браузере Internet Explorer</Explorer.Details>
+                </Explorer.Inner>
+              </Explorer>)}
 
-      <div style={{ marginTop: '1rem' }}>
-        {!isIE &&
-        <Text type='secondary'>Создание компании возможно только в браузере Internet Explorer</Text>
-        }
-      </div>
-      <Modal
-        title='Подключение ЭЦП'
-        visible={companyState.showModal}
-        width={600}
-        closable={false}
-        footer={null}
-      >
-        <CompanyCreate onCancel={() => setCompanyState({ ...companyState, showModal: !companyState.showModal })} />
-      </Modal>
-    </Fragment>
+            <Layout.Table.Body>
+              <Table
+                className='ui-table-inside'
+                rowKey='id'
+                columns={columns}
+                dataSource={list}
+                loading={isFetching}
+                locale={{ emptyText: 'Нет созданных компаний' }}
+                pagination
+              />
+            </Layout.Table.Body>
+          </Layout.Table>
+        </Layout.Inner>
+      </Layout>
+    </LayoutScroll>
   )
 }
-
-export default CompaniesPage

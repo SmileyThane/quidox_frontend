@@ -93,14 +93,12 @@ function reducer (state = initialState, action) {
   }
 }
 
-const NewDocumentPage = props => {
-  const {
-    createMessage,
-    getUser,
-    sendDocumentToUser,
-    updateDocumentById
-  } = props
-
+export default ({
+  createMessage,
+  getUser,
+  sendDocumentToUser,
+  updateDocumentById
+}) => {
   const [documentState, setDocumentState] = useState({ ...defaultDocumentData })
   const [state, dispatch] = useReducer(reducer, initialState)
   const [message, setMessage] = useState(false)
@@ -303,29 +301,28 @@ const NewDocumentPage = props => {
       .catch(error => console.error(error))
   }
 
-  const fetchUser = _.debounce(v => {
-    if (v.length > 2) {
-      setDocumentState({
-        ...documentState
-        // fetching: true
-      })
-      findUsersByParams(v)
+  const fetchUser = _.debounce(email => {
+    if (email.length > 2) {
+      findUsersByParams(email)
         .then(({ data }) => {
           const dataIds = documentState.data.map(i => i.key)
+
           const dataArray = data.data
             .map(user => ({
-              label: `${user.user_data.email} (УНП:${user.company_data.company_number}; Компания:${user.company_data.name})`,
+              label: `${user.user_data.email} (УНП:${user.company_data.company_number}; ${user.company_data.name})`,
               key: `${user.id}`
             }))
             .filter(i => !dataIds.includes(i.key))
+
           setDocumentState({
             ...documentState,
-            data: [...documentState.data, ...dataArray],
-            // fetching: false
+            data: dataArray
           })
         })
         .catch(error => {
-          message.error(error.message)
+          if (error) {
+            message.error(error.message)
+          }
         })
     }
   }, 200)
@@ -353,7 +350,9 @@ const NewDocumentPage = props => {
       })
     }
 
-    updateDocumentById(documentState.message.id, { user_company_ids: JSON.stringify(validEmails.map(i => i.key)) })
+    updateDocumentById(documentState.message.id, {
+      user_company_ids: JSON.stringify(validEmails.map(i => i.key))
+    })
 
     setDocumentState({
       ...documentState,
@@ -438,17 +437,20 @@ const NewDocumentPage = props => {
 
                   <Select
                     mode='tags'
-                    labelInValue
                     tokenSeparators={[',']}
                     value={documentState.value}
-                    filterOption={false}
-                    notFoundContent={documentState.fetching ? <Spin size='small' /> : null}
                     onSearch={fetchUser}
                     placeholder='Введите электронную почту'
                     onChange={handleSelect}
                     style={{ width: '100%' }}
+                    filterOption={false}
+                    labelInValue
                   >
-                    {documentState.data.map(element => <Option key={element.key}>{element.label}</Option>)}
+                    {documentState.data.map(item => (
+                      <Option key={item.key}>
+                        {item.label}
+                      </Option>
+                    ))}
                   </Select>
                 </Layout.Control>
               </Col>
@@ -462,7 +464,7 @@ const NewDocumentPage = props => {
                     type='text'
                     value={documentState.coNumbers}
                     placeholder='Введите УНП получателя'
-                    onChange={e => updateField('coNumbers', e.target.value)}
+                    onChange={e => updateField('coNumbers', e.target.value.replace(/\D/, ''))}
                     maxLength={9}
                   />
                 </Layout.Control>
@@ -545,5 +547,3 @@ const NewDocumentPage = props => {
     </LayoutScroll>
   )
 }
-
-export default NewDocumentPage
