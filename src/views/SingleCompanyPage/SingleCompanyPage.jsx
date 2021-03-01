@@ -1,28 +1,38 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { useEffect } from 'react'
+import moment from 'moment'
 
-import history from '../../history'
 import {
-  Spin,
-  Icon
+  Tabs,
+  Spin
 } from 'antd'
+
+import {
+  LayoutScroll,
+  GoBack
+} from '../../components'
 
 import {
   CompanyUsers,
   CompanyDescription,
   CompanyBalance
-} from './internal'
+} from './components'
 
-import ThemeTabs from './styled'
+import {
+  Layout,
+  Header
+} from './styled'
 
-const SingleCompanyPage = props => {
-  const {
-    user: { data },
-    match,
-    location,
-    getCompanyById,
-    companies: { singleCompany, isFetching }
-  } = props
+const { TabPane } = Tabs
 
+export default ({
+  user: { data },
+  match,
+  getCompanyById,
+  companies: {
+    singleCompany,
+    isFetching
+  }
+}) => {
   useEffect(() => {
     if (match) {
       getCompanyById(match.params.id)
@@ -32,69 +42,50 @@ const SingleCompanyPage = props => {
   const coBrand = data.co_brand_config && data.co_brand_config
 
   return (
-    <Fragment>
-      <Spin spinning={isFetching}>
-        <div className='content content_user'>
-          <div style={{ marginBottom: '2rem' }} className='back' onClick={() => history.goBack()} >
-            <Icon type='left' />
-          </div>
-          <ThemeTabs
-            brand={coBrand}
-            defaultActiveKey={'1'}
-          >
-            <ThemeTabs.Pane
+    <LayoutScroll>
+      <Layout>
+        <Spin spinning={isFetching}>
+          <Header>
+            <GoBack />
+
+            <Header.Inner>
+              <Header.Title level={3}>{singleCompany.name}</Header.Title>
+              <Header.Secondary>{moment.utc(singleCompany.registration_date, 'YYYY-MM-DD').local().format('DD MMM YYYY')}</Header.Secondary>
+            </Header.Inner>
+          </Header>
+
+          <Tabs defaultActiveKey='1'>
+            <TabPane
               key='1'
-              tab={
-                <Fragment>
-                  <Icon type='desktop' />
-                  Данные компании
-                </Fragment>
-              }
+              tab='Данные компании'
             >
               <CompanyDescription data={singleCompany} />
-            </ThemeTabs.Pane>
+            </TabPane>
 
-            <ThemeTabs.Pane
+            <TabPane
               key='2'
-              tab={
-                <Fragment>
-                  <Icon type='team' />
-                  Пользователи компании
-                </Fragment>
-              }
+              tab='Пользователи компании'
             >
               <CompanyUsers users={singleCompany.users} />
-            </ThemeTabs.Pane>
-            {
-              coBrand === null &&
-              <ThemeTabs.Pane
+            </TabPane>
+
+            {coBrand === null && (
+              <TabPane
                 key='3'
-                tab={
-                  <Fragment>
-                    <Icon type='wallet' />
-                    Баланс
-                  </Fragment>
-                }
+                tab='Заказать пакет услуг'
               >
                 <CompanyBalance balance={singleCompany.balance} />
-              </ThemeTabs.Pane>
+              </TabPane>
+            )}
 
-            }
-            <ThemeTabs.Pane
+            <TabPane
               key='4'
-              tab={
-                <Fragment>
-                  <Icon type='wallet' />
-                  Документы
-                </Fragment>
-              }
+              tab='Документы'
               disabled
             />
-          </ThemeTabs>
-        </div>
-      </Spin>
-    </Fragment>
+          </Tabs>
+        </Spin>
+      </Layout>
+    </LayoutScroll>
   )
 }
-
-export default SingleCompanyPage

@@ -170,4 +170,41 @@ export default createGlobalStyle`
       }
     }
   }
+
+  .ant-modal {
+    .ant-modal-content {
+      .ant-row {
+        &.ant-form-item {
+          margin-bottom: 1.2rem;
+        }
+      }
+
+      .ant-modal-header {
+        border: 0;
+        padding-top: 2.4rem;
+
+        .ant-modal-title {
+          line-height: 2.8rem;
+          font-size: 2.1rem;
+        }
+      }
+
+      .ant-modal-footer {
+        border: 0;
+        padding: 2.4rem;
+
+        button {
+          & + button {
+            margin-left: 1.6rem;
+          }
+        }
+      }
+    }
+
+    &.ui-modal-connect {
+      .ant-modal-body {
+        padding-top: 0;
+      }
+    }
+  }
 `
