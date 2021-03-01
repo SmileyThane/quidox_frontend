@@ -1,9 +1,11 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import axios from 'axios'
 import MaskedInput from 'antd-mask-input'
 
 import history from '../../history'
+
 import {
+  Alert,
   Steps,
   Form,
   Input,
@@ -11,15 +13,19 @@ import {
   message,
   Typography,
   Checkbox,
-  Spin,
-  Result
+  Spin
 } from 'antd'
 
 import { Button } from '../../components'
 
-import './RegisterPage.scss'
+import { Layout } from './styled'
 
-const { Text, Title } = Typography
+const {
+  Text,
+  Title,
+  Paragraph
+} = Typography
+
 const { Option } = Select
 const { Step } = Steps
 
@@ -28,15 +34,15 @@ const privacyPolicy = 'https://quidox.by/privacy_policy/'
 
 const steps = [
   {
-    title: 'Шаг 1',
+    title: 'Номер телефона',
     content: 'First-content'
   },
   {
-    title: 'Шаг 2',
+    title: 'Код подтверждения',
     content: 'First-content'
   },
   {
-    title: 'Шаг 3',
+    title: 'Завершение регистрации',
     content: 'First-content'
   }
 ]
@@ -245,191 +251,198 @@ class RegistrationForm extends React.Component {
     )
 
     return (
-      <Fragment>
-        <div className='register'>
-          <div className='preview-header'>
-            <Title level={3}>
-              Регистрация в Quidox.by
-            </Title>
-            <Text>Обмен электронными документами с ЭЦП</Text>
-          </div>
-          <div className='steps'>
-            <Steps
-              size='small'
-              current={currentStep}
-            >
-              {steps.map(item => (
-                <Step key={item.title} title={item.title}/>
-              ))}
-            </Steps>
+      <Layout>
+        <Layout.Inner>
+          <Title level={3}>Регистрация</Title>
+          <Layout.SubTitle>Обмен электронными документами с ЭЦ</Layout.SubTitle>
+
+          <Layout.Steps>
+            <Layout.Steps.Points>
+              <Steps
+                size='small'
+                current={currentStep}
+              >
+                {steps.map(item => (
+                  <Step
+                    key={item.title}
+                    title={item.title}
+                  />
+                ))}
+              </Steps>
+            </Layout.Steps.Points>
+
             <Spin spinning={this.state.isFetching}>
-              <Form className='form form-register' onSubmit={this.handleSubmit}>
-                {currentStep === 0 &&
-                <Fragment>
-                  <Form.Item
-                    validateStatus={this.state.validateStatus}
-                    label='Введите номер мобильного телефона'
-                  >
-                    {getFieldDecorator('phone', {
-                      rules: [{ required: true, message: 'Пожалуйста, введите номер мобильного телефона' }]
-                    })(<MaskedInput
-                      mask='111-11-11'
-                      placeholder='XXX-XX-XX'
-                      ref={this.inputPhoneNode}
-                      onChange={e => {
-                        this.handleChange(e.target.value, 'phone')
-                      }}
-                      addonBefore={prefixSelector}
-                      style={{ width: '100%' }}
-                    />)}
-                  </Form.Item>
-                  <Checkbox style={{ marginBottom: '1rem' }} onClick={this.handleCheck}>
-                    Я ознакомился и принимаю условия <a style={{ textDecoration: 'underline' }} href={publicContract}
-                                                        target='_blank'>Публичного договора</a> и <a
-                    style={{ textDecoration: 'underline' }} href={privacyPolicy}>Политику конфиденцальности</a>.
-                  </Checkbox>
-                  <div style={{ marginBottom: '1rem' }}>
-                    <Text>
-                      Для начала регистрации и обеспечения безопасной двухфакторной аутентификации, пожалуйста введите
-                      номер
-                      Вашего мобильного телефона
-                    </Text>
-                  </div>
-                </Fragment>
-                }
-                {currentStep === 1 &&
-                <Form.Item label='Введите полученный код'>
-                  {getFieldDecorator('code', {
-                    rules: [
-                      {
-                        type: 'string',
-                        message: 'Код введен не правильно!'
-                      },
-                      {
-                        required: true,
-                        message: 'Пожалуйста, введите полученный код!'
-                      }
-                    ]
-                  })(<Input
-                    onChange={e => this.handleChange(e.target.value, 'code')}
-                    ref={this.inputNode}
-                    placeholder='Код из СМС'
-                  />)}
-                </Form.Item>
-                }
-                {currentStep === 2 &&
-                <Fragment>
-                  <Form.Item label='Введите адрес электронной почты'>
-                    {getFieldDecorator('email', {
-                      rules: [
-                        {
-                          type: 'email',
-                          message: 'Не правильный адрес электронной почты!'
-                        },
-                        {
+              <Form onSubmit={this.handleSubmit}>
+                {currentStep === 0 && (
+                  <>
+                    <Form.Item
+                      validateStatus={this.state.validateStatus}
+                      label='Введите номер мобильного телефона'
+                    >
+                      {getFieldDecorator('phone', {
+                        rules: [{
                           required: true,
-                          message: 'Пожалуйста, введите адрес электронной почты!'
-                        }
-                      ]
-                    })(<Input ref={this.inputNode}/>)}
-                  </Form.Item>
-                  <Form.Item label='Ваше имя'>
-                    {getFieldDecorator('name', {
+                          message: 'Пожалуйста, введите номер мобильного телефона'
+                        }]
+                      })(
+                        <MaskedInput
+                          mask='111-11-11'
+                          placeholder='XXX-XX-XX'
+                          ref={this.inputPhoneNode}
+                          onChange={e => {
+                            this.handleChange(e.target.value, 'phone')
+                          }}
+                          addonBefore={prefixSelector}
+                          style={{ width: '100%' }}
+                        />
+                      )}
+                    </Form.Item>
+
+                    <Layout.Check>
+                      <Checkbox onClick={this.handleCheck}>
+                        Я ознакомился и принимаю условия <a href={publicContract} target='_blank'>Публичного договора</a> и <a href={privacyPolicy}>Политику конфиденцальности</a>.
+                      </Checkbox>
+                    </Layout.Check>
+
+                    <Paragraph>Для начала регистрации и обеспечения безопасной двухфакторной аутентификации, пожалуйста введите номер Вашего мобильного телефона.</Paragraph>
+                  </>)}
+
+                {currentStep === 1 && (
+                  <Form.Item label='Введите полученный код'>
+                    {getFieldDecorator('code', {
                       rules: [
                         {
                           type: 'string',
-                          message: 'Не правильное имя'
+                          message: 'Код введен не правильно!'
                         },
                         {
                           required: true,
-                          message: 'Пожалуйста, введите ваше имя!'
+                          message: 'Пожалуйста, введите полученный код!'
                         }
                       ]
-                    })(<Input/>)}
-                  </Form.Item>
-                  <Form.Item label='Придумайте пароль' hasFeedback>
-                    {getFieldDecorator('password', {
-                      rules: [
-                        {
-                          required: true,
-                          message: 'Минимум восемь символов.',
-                          pattern: /^.{8,128}$/
-                        },
-                        {
-                          validator: this.validateToNextPassword
-                        }
-                      ]
-                    })(<Input.Password/>)}
-                  </Form.Item>
-                  <Form.Item label='Подтвердите пароль' hasFeedback>
-                    {getFieldDecorator('confirm', {
-                      rules: [
-                        {
-                          required: true,
-                          message: 'Пожалуйста, подтвердите ваш пороль!'
-                        },
-                        {
-                          validator: this.compareToFirstPassword
-                        }
-                      ]
-                    })(<Input.Password onBlur={this.handleConfirmBlur}/>)}
-                  </Form.Item>
-                </Fragment>
-                }
-                {currentStep === 3 &&
-                <Fragment>
-                  <p>Подтвердите регистрацию, пройдя по ссылке в сообщении, которое вы получите на указанный вами адрес
-                    электронной почты</p>
-                </Fragment>
-                }
-                <Form.Item>
-                  <div>
-                    <div>
-                      {currentStep === 1 &&
-                      <Fragment>
-                        <Text type='secondary'>Мы отправили вам код подтверждения на указанный вами номер.<br/>
-                          Пожалуйста, проверьте и введите в поле.<br/>
-                          Нажмите "Продолжить".
-                        </Text><br/><br/>
-                        <Text type='secondary'>Не получили код?<br/>
-                          {seconds > 0
-                            ? <Fragment>Выслать повторно через... {seconds}</Fragment>
-                            : <Button type='link' onClick={() => this.getSmsCode()}>Выслать повторно!</Button>
-                          }
-                        </Text>
-                      </Fragment>
-                      }
-                    </div>
-                    {currentStep === 0 &&
-                    <Fragment>
-                      <Text type='warning'><br />
-                        Подписывайте и сохраняйте полученные от Ваших контрагентов
-                        документы - для работы с <strong>входящими сообщениями</strong>
-                        &nbsp; достаточно простой регистрации в сервисе и&nbsp;
-                        <strong>не требуется платить!</strong>
-                      </Text>
+                    })(
+                      <Input
+                        onChange={e => this.handleChange(e.target.value, 'code')}
+                        ref={this.inputNode}
+                        placeholder='Код из СМС'
+                      />
+                    )}
+                  </Form.Item>)}
 
-                    </Fragment>
-                    }
-                    <div style={{ marginTop: '2rem' }}>
-                      <Button type='primary' htmlType='submit' disabled={currentStep === 0 && !this.state.isChecked}>
-                        {currentStep === 3 ? 'Завершить регистрацию' : 'Продолжить'}
-                      </Button>
-                    </div>
-                  </div>
+                {currentStep === 2 && (
+                  <>
+                    <Form.Item label='Введите адрес электронной почты'>
+                      {getFieldDecorator('email', {
+                        rules: [
+                          {
+                            type: 'email',
+                            message: 'Не правильный адрес электронной почты!'
+                          },
+                          {
+                            required: true,
+                            message: 'Пожалуйста, введите адрес электронной почты!'
+                          }
+                        ]
+                      })(
+                        <Input ref={this.inputNode} />
+                      )}
+                    </Form.Item>
+
+                    <Form.Item label='Ваше имя'>
+                      {getFieldDecorator('name', {
+                        rules: [
+                          {
+                            type: 'string',
+                            message: 'Не правильное имя'
+                          },
+                          {
+                            required: true,
+                            message: 'Пожалуйста, введите ваше имя!'
+                          }
+                        ]
+                      })(
+                        <Input />
+                      )}
+                    </Form.Item>
+
+                    <Form.Item label='Придумайте пароль' hasFeedback>
+                      {getFieldDecorator('password', {
+                        rules: [
+                          {
+                            required: true,
+                            message: 'Минимум восемь символов.',
+                            pattern: /^.{8,128}$/
+                          },
+                          {
+                            validator: this.validateToNextPassword
+                          }
+                        ]
+                      })(
+                        <Input.Password />
+                      )}
+                    </Form.Item>
+
+                    <Form.Item label='Подтвердите пароль' hasFeedback>
+                      {getFieldDecorator('confirm', {
+                        rules: [
+                          {
+                            required: true,
+                            message: 'Пожалуйста, подтвердите ваш пороль!'
+                          },
+                          {
+                            validator: this.compareToFirstPassword
+                          }
+                        ]
+                      })(
+                        <Input.Password onBlur={this.handleConfirmBlur} />
+                      )}
+                    </Form.Item>
+                  </>)}
+
+                {currentStep === 3 && (
+                  <Paragraph>Подтвердите регистрацию, пройдя по ссылке в сообщении, которое вы получите на указанный вами адрес электронной почты</Paragraph>)}
+
+                <Form.Item>
+                  {currentStep === 1 && (
+                    <>
+                      <Paragraph type='secondary'>Мы отправили вам код подтверждения на указанный вами номер. Пожалуйста, проверьте и введите в поле. Нажмите 'Продолжить'.</Paragraph>
+                      <Paragraph type='secondary'>
+                        {seconds > 0
+                          ? <>Не получили код? Выслать повторно через: {seconds}</>
+                          : (
+                            <Button
+                              type='primary'
+                              onClick={() => this.getSmsCode()}
+                              ghost
+                            >
+                              Выслать повторно
+                            </Button>
+                          )
+                        }
+                      </Paragraph>
+                    </>)}
+
+                  {currentStep === 0 && (
+                    <Alert
+                      description={<>Подписывайте и сохраняйте полученные от Ваших контрагентов документы - для работы с <strong>входящими сообщениями</strong> достаточно простой регистрации в сервисе и&nbsp; <strong>не требуется платить!</strong></>}
+                      type='info'
+                    />)}
+
+                  <Layout.Actions>
+                    <Button
+                      type='primary'
+                      htmlType='submit'
+                      disabled={currentStep === 0 && !this.state.isChecked}
+                    >
+                      {currentStep === 3 ? 'Завершить регистрацию' : 'Продолжить'}
+                    </Button>
+                  </Layout.Actions>
                 </Form.Item>
               </Form>
             </Spin>
-          </div>
-          <div className='register-footer-help'>
-            {currentStep !== 3 &&
-            <div>
-              <Text type='secondary'>* - обязательное поле</Text>
-            </div>
-            }
-          </div>
-        </div>
-      </Fragment>
+          </Layout.Steps>
+        </Layout.Inner>
+      </Layout>
     )
   }
 }

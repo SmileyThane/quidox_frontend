@@ -11,6 +11,7 @@ import {
   Input,
   Typography,
   Spin,
+  Carousel,
   message
 } from 'antd'
 
@@ -83,95 +84,105 @@ class LoginPage extends React.Component {
     return (
       <Layout>
         <Layout.Inner>
-          <Title level={3}>Вход</Title>
+          <Layout.Form>
+            <Title level={3}>Вход</Title>
 
-          <Form
-            colon={false}
-            onSubmit={this.handleSubmit}
-          >
-            <Form.Item
-              label='Электронная почта'
-              required={false}
+            <Form
+              colon={false}
+              onSubmit={this.handleSubmit}
             >
-              {getFieldDecorator('email', {
-                rules: [{
-                  required: true,
-                  message: 'Пожалуйста, введите адрес электронной почты!'
-                }]
-              })(
-                <Input
-                  name='email'
-                  placeholder='Введите адрес электронной почты'
-                />
-              )}
-            </Form.Item>
+              <Form.Item
+                label='Электронная почта'
+                required={false}
+              >
+                {getFieldDecorator('email', {
+                  rules: [{
+                    required: true,
+                    message: 'Пожалуйста, введите адрес электронной почты!'
+                  }]
+                })(
+                  <Input
+                    name='email'
+                    placeholder='Введите адрес электронной почты'
+                  />
+                )}
+              </Form.Item>
 
-            <Form.Item
-              label='Пароль'
-              required={false}
-            >
-              {getFieldDecorator('password', {
-                rules: [{
-                  required: true,
-                  message: 'Пожалуйста, введите пароль!'
-                }]
-              })(
-                <Input.Password
-                  name='password'
-                  type='password'
-                  placeholder='Введите пароль'
-                />
-              )}
-            </Form.Item>
+              <Form.Item
+                label='Пароль'
+                required={false}
+              >
+                {getFieldDecorator('password', {
+                  rules: [{
+                    required: true,
+                    message: 'Пожалуйста, введите пароль!'
+                  }]
+                })(
+                  <Input.Password
+                    name='password'
+                    type='password'
+                    placeholder='Введите пароль'
+                  />
+                )}
+              </Form.Item>
 
-            <Form.Item>
-              <Link className='login-form-forgot' to={'/password-recovery'}>
-                Забыли пароль?
-              </Link>
+              <Form.Item>
+                <Link className='login-form-forgot' to={'/password-recovery'}>
+                  Забыли пароль?
+                </Link>
 
-              <Layout.Actions>
-                <Button
-                  type='primary'
-                  htmlType='submit'
-                  block
-                >
-                  Войти
-                </Button>
-
-                <Link to='/e-sign-login'>
+                <Layout.Actions>
                   <Button
                     type='primary'
+                    htmlType='submit'
+                    block
+                  >
+                    Войти
+                  </Button>
+
+                  <Link to='/e-sign-login'>
+                    <Button
+                      type='primary'
+                      ghost
+                      block
+                    >
+                      Войти с помощью ЭЦП
+                    </Button>
+                  </Link>
+
+                  <Button
+                    type='primary'
+                    onClick={() => window.open(newPageUrl, '_self')}
                     ghost
                     block
                   >
-                    Войти с помощью ЭЦП
+                    Войти с помощью {simButtonName} ID
                   </Button>
-                </Link>
 
-                <Button
-                  type='primary'
-                  onClick={() => window.open(newPageUrl, '_self')}
-                  ghost
-                  block
-                >
-                  Войти с помощью {simButtonName} ID
-                </Button>
+                  <Layout.Actions.Register>
+                    <Paragraph type='secondary'>Начните обмен документами сейчас!<br />Нет аккаунта?</Paragraph>
 
-                <Layout.Actions.Register>
-                  <Paragraph type='secondary'>Начните обмен документами сейчас!<br />Нет аккаунта?</Paragraph>
+                    <Link to='/register'>
+                      <Button
+                        type='primary'
+                        block
+                      >
+                        Зарегистрируйтесь
+                      </Button>
+                    </Link>
+                  </Layout.Actions.Register>
+                </Layout.Actions>
+              </Form.Item>
+            </Form>
+          </Layout.Form>
 
-                  <Link to='/register'>
-                    <Button
-                      type='primary'
-                      block
-                    >
-                      Зарегистрируйтесь
-                    </Button>
-                  </Link>
-                </Layout.Actions.Register>
-              </Layout.Actions>
-            </Form.Item>
-          </Form>
+          <Layout.Carousel>
+            <Carousel>
+              <Layout.Carousel.Item src='https://quidox.by/wp-content/uploads/2021/01/technology-2818664_1280.jpg' />
+              <Layout.Carousel.Item src='https://quidox.by/wp-content/uploads/2021/01/technology-2818664_1280.jpg' />
+              <Layout.Carousel.Item src='https://quidox.by/wp-content/uploads/2021/01/technology-2818664_1280.jpg' />
+            </Carousel>
+          </Layout.Carousel>
         </Layout.Inner>
       </Layout>
     )

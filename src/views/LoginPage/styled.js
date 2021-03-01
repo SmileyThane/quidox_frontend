@@ -8,9 +8,14 @@ const Layout = styled.div`
 `
 
 Layout.Inner = styled.div`
+  display: flex;
+  align-items: stretch;
+`
+
+Layout.Form = styled.div`
   width: 38rem;
   background-color: ${colors.white};
-  border-radius: .4rem;
+  border-radius: .4rem 0 0 .4rem;
   padding: 3.2rem;
 
   .ant-row {
@@ -41,6 +46,26 @@ Layout.Actions = styled.div`
 Layout.Actions.Register = styled.div`
   width: 100%;
   margin-top: 2.4rem;
+`
+
+Layout.Carousel = styled.div`
+  width: 64rem;
+  border-radius: 0 .4rem .4rem 0;
+  overflow: hidden;
+
+  .ant-carousel {
+    height: 100%;
+
+    .slick-slider {
+      margin-bottom: -.5rem;
+    }
+  }
+`
+
+Layout.Carousel.Item = styled.div`
+  width: 100%;
+  height: 63.5rem;
+  background: url(${({ src }) => src}) no-repeat center / cover;
 `
 
 export {
