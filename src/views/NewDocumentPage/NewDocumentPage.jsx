@@ -194,7 +194,8 @@ const NewDocumentPage = props => {
         document_ids: [message.id],
         user_company_id: JSON.stringify([i.activeUNP]),
         continues_action: i.additionally !== 1,
-        is_disabled: idx !== 0
+        is_disabled: idx !== 0,
+        chain_number: idx
       }
     })
     sendData.forEach(element => {
