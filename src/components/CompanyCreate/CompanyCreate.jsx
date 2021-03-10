@@ -299,7 +299,7 @@ const CompanyCreate = ({ createCompany, onCancel, getUser, user, config, redirec
           >Отмена</Button>
         </Fragment>
       </TabPane>
-      <TabPane tab='ТЗИ' key='3'>
+      <TabPane disabled={config.data.co_brand_config} tab='ТЗИ' key='3'>
         <strong>Что это такое и как это работает? <a href={'https://quidox.by'}>Подробнее</a></strong>
         <p>Убедитесь в том, что:</p>
         <ol>
